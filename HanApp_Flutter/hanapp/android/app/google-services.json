@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "452290329088",
+    "project_id": "hanapp-a32ae",
+    "storage_bucket": "hanapp-a32ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:452290329088:android:9064564c4edd8d4ecaf6e5",
+        "android_client_info": {
+          "package_name": "com.hanapp.hanapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "452290329088-msc7ig0bs57j0eecfv3b82fpquuen588.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8rTxeEQatxKAJptA_Iro8P0uVHXJwUAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "452290329088-msc7ig0bs57j0eecfv3b82fpquuen588.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
