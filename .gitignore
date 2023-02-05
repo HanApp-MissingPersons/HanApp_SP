@@ -277,3 +277,4 @@ TSWLatexianTemp*
 
 # VSCode directory ignore
 .vs/
+HanApp_Flutter/hanapp/.idea
