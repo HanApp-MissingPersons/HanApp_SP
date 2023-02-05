@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hanapp/views/login_view.dart';
 import 'package:hanapp/views/register_view.dart';
@@ -35,7 +36,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('HOMEPAGE'), heightFactor: 240, widthFactor: 240) ,
+        title: const Center(heightFactor: 240, widthFactor: 240, child: Text('HOMEPAGE')) ,
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
@@ -44,23 +45,24 @@ class HomePage extends StatelessWidget {
         builder: (context, snapshot) {
           switch (snapshot.connectionState){
             case ConnectionState.none:
-              return Center(child: Text('None oh no'));
-              break;
+              return const Center(child: Text('None oh no'));
             case ConnectionState.waiting:
-              return Center(child: Text('Loading . . .'));
-              break;
+              return const Center(child: Text('Loading . . .'));
             case ConnectionState.active:
-              return Center(child: Text('App loading in...'));
-              break;
+              return const Center(child: Text('App loading in...'));
             case ConnectionState.done:
               final user = FirebaseAuth.instance.currentUser;
               final emailVerifiedCheck = user?.emailVerified ?? false;
               if(emailVerifiedCheck) {
-                print('[VERIFIED] User is Verified');
+                if (kDebugMode) {
+                  print('[VERIFIED] User is Verified');
+                }
                 return const Center(child: Text('BRO DONEZA'));
               }
               else {
-                print('[UNVERIFIED] User is not verified');
+                if (kDebugMode) {
+                  print('[UNVERIFIED] User is not verified');
+                }
                 Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const VerifyEmailView(),
@@ -92,6 +94,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       appBar: AppBar(
         title: const Center(child: Text('Verify Email')),
       ),
+      body: const Center(child: Text('verify email here')),
     );
   }
 }
