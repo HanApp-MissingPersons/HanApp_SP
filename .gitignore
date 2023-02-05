@@ -275,6 +275,7 @@ TSWLatexianTemp*
 # Makeindex log files
 *.lpz
 
-# VSCode directory ignore
+# [NEW] directories and dependencies
 .vs/
 HanApp_Flutter/hanapp/.idea
+/HanApp_Flutter/hanapp/pubspec.yaml
