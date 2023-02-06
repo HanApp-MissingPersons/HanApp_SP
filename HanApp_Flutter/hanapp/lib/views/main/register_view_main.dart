@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
+import 'package:hanapp/views/main/login_view_main.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -82,15 +83,15 @@ class _RegisterViewState extends State<RegisterView> {
                           }
                           final email = _email.text;
                           final password = _password.text;
-                          // TODO Register Exceptions 9:39:57
                           // initialize firebase
                           try{
                             final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                                 email: email, password: password
                             );
                             if (kDebugMode) {
-                              print(userCredential);
+                              print('[LOGGED IN] $userCredential');
                             }
+
                           } on FirebaseAuthException catch (e) {
                             if(e.code == 'email-already-in-use' ){
                               print('Email already in use!');
@@ -109,6 +110,11 @@ class _RegisterViewState extends State<RegisterView> {
                           if (kDebugMode) {
                             print('[LONG PRESS] Ballserist');
                           }
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const LoginView(),
+                            ),
+                          );
                         },
                         child: const Text('Register'),
                       ),
