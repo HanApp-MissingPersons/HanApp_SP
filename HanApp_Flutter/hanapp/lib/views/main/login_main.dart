@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
-import 'package:hanapp/views/main/homepage_view_main.dart';
-import 'package:hanapp/views/main/register_view_main.dart';
+import 'package:hanapp/views/main/homepage_main.dart';
+import 'package:hanapp/views/main/register_main.dart';
 
 import '../verify_email_view.dart';
 
@@ -93,6 +93,7 @@ class _LoginViewState extends State<LoginView> {
                                 .signInWithEmailAndPassword(
                                 email: email, password: password
                             );
+                            // if user has an unverified email
                             if (!userCredential.user!.emailVerified){
                               if (kDebugMode) {
                                 print('Email not verified!');
@@ -101,9 +102,21 @@ class _LoginViewState extends State<LoginView> {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VerifyEmailView()));
                               }
                             }
-                            if (kDebugMode) {
-                              print('[LOGGED IN] as: $userCredential');
+                            else {
+                              if (kDebugMode) {
+                                print('[LOGGED IN] as: $userCredential');
+                              }
+                              if(mounted){
+                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
+                                // Navigator.of(context).pushAndRemoveUntil(
+                                //     MaterialPageRoute(builder: (context) => const HomePage()),
+                                //     (
+                                //             (route) => false
+                                //     )
+                                // );
+                              }
                             }
+
                           } on FirebaseAuthException catch (e) {
                             if(e.code == 'user-not-found'){
                               if (kDebugMode) {
@@ -124,15 +137,6 @@ class _LoginViewState extends State<LoginView> {
                             }
                           }
                           // logging in with verified email, go to homepage
-                          if(mounted){
-                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
-                            // Navigator.of(context).pushAndRemoveUntil(
-                            //     MaterialPageRoute(builder: (context) => const HomePage()),
-                            //     (
-                            //             (route) => false
-                            //     )
-                            // );
-                          }
                         },
                         onLongPress: () {
                           if (kDebugMode) {
