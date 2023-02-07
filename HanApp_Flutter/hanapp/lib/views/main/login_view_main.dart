@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
+import 'package:hanapp/views/main/register_view_main.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -90,8 +91,14 @@ class _LoginViewState extends State<LoginView> {
                                 .signInWithEmailAndPassword(
                                 email: email, password: password
                             );
+                            if (!userCredential.user!.emailVerified){
+                              if (kDebugMode) {
+                                print('Email not verified!');
+                              }
+                              //TODO if user is not email verified, proceed to verification page
+                            }
                             if (kDebugMode) {
-                              print(userCredential);
+                              print('[LOGGED IN] as: $userCredential');
                             }
                           } on FirebaseAuthException catch (e) {
                             if(e.code == 'user-not-found'){
@@ -119,6 +126,20 @@ class _LoginViewState extends State<LoginView> {
                           }
                         },
                         child: const Text('Login'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // Navigate to Register View
+                          Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => const RegisterView()
+                              )
+                          );
+                          if (kDebugMode) {
+                            print('[PRESS] Register');
+                          }
+                        },
+                        child: const Text('Register Instead'),
                       ),
                     ], // children
                   ),
