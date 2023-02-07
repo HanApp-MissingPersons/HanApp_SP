@@ -78,30 +78,46 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                       TextButton(
                         onPressed: () async {
-                          if (kDebugMode) {
-                            print("[PRESS] Balls");
-                          }
                           final email = _email.text;
                           final password = _password.text;
-                          // initialize firebase
                           try{
                             final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                                 email: email, password: password
                             );
                             if (kDebugMode) {
-                              print('[LOGGED IN] $userCredential');
+                              print('[REGISTERED] $userCredential');
                             }
-
+                            if(mounted){
+                              Navigator.pop(context);
+                            }
                           } on FirebaseAuthException catch (e) {
                             if(e.code == 'email-already-in-use' ){
-                              print('Email already in use!');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Email already in use!'),
+                                  ),
+                              );
                             } else if (e.code == 'weak-password'){
-                              print('Weak Password!');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Weak Password!'),
+                                ),
+                              );
                             } else if (e.code == 'invalid-email') {
-                              print('Email inputted is invalid!');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid email!'),
+                                ),
+                              );
                             } else {
-                              print('Something wrong happened.');
-                              print(e);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Something Wrong Happened'),
+                                ),
+                              );
+                              if (kDebugMode) {
+                                print('[ERROR]: $e');
+                              }
                             }
                           }
 
