@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
-import 'package:hanapp/views/main/login_view_main.dart';
+import 'package:hanapp/views/main/login_main.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
