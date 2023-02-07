@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(heightFactor: 240, widthFactor: 240, child: Text('Landing Page')) ,
+        title: const Center(heightFactor: 240, widthFactor: 240, child: Text('HOME Page')) ,
       ),
       body: FutureBuilder(
         // initialize firebase
@@ -30,19 +30,13 @@ class HomePage extends StatelessWidget {
               return const Center(child: Text('App loading in...'));
             case ConnectionState.done:
               final user = FirebaseAuth.instance.currentUser;
-              final emailVerifiedCheck = user?.emailVerified ?? false;
-              if(emailVerifiedCheck) {
-                if (kDebugMode) {
-                  print('[VERIFIED] User is Verified');
-                }
-                return const Center(child: Text('User is verified'));
-              }
-              else {
-                if (kDebugMode) {
-                  print('[UNVERIFIED] User is not verified');
-                }
-                return const VerifyEmailView();
-              }
+              return Center(
+                child: Column(
+                  children: [
+                  const Text('This will be the Homepage'),
+                    Text('Current User: ${user!.email}'),
+                ],),
+              );
             default:
               return const Center(child: Text('Loading . . . '));
           }

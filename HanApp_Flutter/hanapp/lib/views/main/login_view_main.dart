@@ -3,7 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
+import 'package:hanapp/views/main/homepage_view_main.dart';
 import 'package:hanapp/views/main/register_view_main.dart';
+
+import '../verify_email_view.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -84,7 +87,6 @@ class _LoginViewState extends State<LoginView> {
                           }
                           final email = _email.text;
                           final password = _password.text;
-                          // TODO initialize firebase 8:49:09
                           // login user
                           try {
                             final userCredential = await FirebaseAuth.instance
@@ -95,7 +97,9 @@ class _LoginViewState extends State<LoginView> {
                               if (kDebugMode) {
                                 print('Email not verified!');
                               }
-                              //TODO if user is not email verified, proceed to verification page
+                              if(mounted){
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VerifyEmailView()));
+                              }
                             }
                             if (kDebugMode) {
                               print('[LOGGED IN] as: $userCredential');
@@ -119,10 +123,20 @@ class _LoginViewState extends State<LoginView> {
                               print('error logging in, [$error]');
                             }
                           }
+                          // logging in with verified email, go to homepage
+                          if(mounted){
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
+                            // Navigator.of(context).pushAndRemoveUntil(
+                            //     MaterialPageRoute(builder: (context) => const HomePage()),
+                            //     (
+                            //             (route) => false
+                            //     )
+                            // );
+                          }
                         },
                         onLongPress: () {
                           if (kDebugMode) {
-                            print('[LONG PRESS] Ballserist');
+                            print('[LONG PRESS] Button has been long pressed');
                           }
                         },
                         child: const Text('Login'),
@@ -136,7 +150,7 @@ class _LoginViewState extends State<LoginView> {
                               )
                           );
                           if (kDebugMode) {
-                            print('[PRESS] Register');
+                            print('[PRESS] Navigating to Register');
                           }
                         },
                         child: const Text('Register Instead'),
