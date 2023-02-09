@@ -7,20 +7,25 @@ import 'package:hanapp/views/main/homepage_main.dart';
 import 'package:hanapp/views/main/register_main.dart';
 
 import '../verify_email_view.dart';
-
+// this is the login view
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
+  // creating state means that the view is stateful, which means that it can change
+  // the state of the view and the data that the view contains
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
+// this class is the state of the view, which means that it contains the data
+// that the view contains
 class _LoginViewState extends State<LoginView> {
 
   // variables
   late final TextEditingController _email;
   late final TextEditingController _password;
 
+  // initialize the controllers
   @override
   void initState() {
     // binding?
@@ -29,6 +34,7 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
   }
 
+  // dispose of the controllers
   @override
   void dispose() {
     _email.dispose();
@@ -36,27 +42,32 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  // build the view
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar to be removed, preferably
       appBar: AppBar(
         title: const Center(child: Text('Login')) ,
       ),
+      // body is the main part of the view
       body: Center(
+        // FutureBuilder's purpose is to wait for the Firebase initialization
+        // to complete before proceeding to the rest of the code
         child: FutureBuilder(
+          // the future is the Firebase initialization, which is asynchronous
+          // this is required because without future, the code will not wait for the Firebase initialization to complete
           future: Firebase.initializeApp(
             options: DefaultFirebaseOptions.currentPlatform,
           ),
+          // context and snapshot are required parameters because the builder is a function that returns a widget
           builder: (context, snapshot) {
             switch (snapshot.connectionState){
               case ConnectionState.none:
-              // TODO: Handle this case.
                 return const Text('No Connection');
               case ConnectionState.waiting:
-              // TODO: Handle this case.
                 return const Text('Waiting for Connection');
               case ConnectionState.active:
-              // TODO: Handle this case.
                 return const Text('Connection active!');
               case ConnectionState.done:
                 return Center(
@@ -87,27 +98,39 @@ class _LoginViewState extends State<LoginView> {
                           }
                           final email = _email.text;
                           final password = _password.text;
-                          // login user
+                          // login user with email and password and check if email is verified
                           try {
                             final userCredential = await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                 email: email, password: password
                             );
-                            // if user has an unverified email
+                            // if user has an unverified email address, proceed to verify email view
                             if (!userCredential.user!.emailVerified){
                               if (kDebugMode) {
-                                print('Email not verified!');
+                                print('[UNVERIFIED] Email not verified!');
                               }
+                              // navigate to verify email view and pass the user's email address through the route
+                              // this is done so that the user does not have to enter their email address again
                               if(mounted){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VerifyEmailView()));
                               }
                             }
+                            // if user has a verified email address, proceed to homepage
                             else {
                               if (kDebugMode) {
                                 print('[LOGGED IN] as: $userCredential');
                               }
-                              if(mounted){
-                                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const HomePage()));
+                              // navigate to homepage
+                              if (mounted) {
+                                // pushReplacement will remove the login view from the stack, so that the user cannot go back to the login view
+                                // pushAndRemoveUntil will remove all the views from the stack, so that the user cannot go back to any view
+                                // for now, pushReplacement will be used
+                                // preferably, pushReplacement should be used when the user is logging in, and pushAndRemoveUntil should be used when the user is logging out
+                                // this is because the user should not be able to go back to the login view after logging in, and the user should not be able to go back to the homepage after logging out
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(builder: (
+                                        context) => const HomePage()));
+
                                 // Navigator.of(context).pushAndRemoveUntil(
                                 //     MaterialPageRoute(builder: (context) => const HomePage()),
                                 //     (
@@ -116,7 +139,6 @@ class _LoginViewState extends State<LoginView> {
                                 // );
                               }
                             }
-
                           } on FirebaseAuthException catch (e) {
                             if(e.code == 'user-not-found'){
                               if (kDebugMode) {
