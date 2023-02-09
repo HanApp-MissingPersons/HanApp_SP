@@ -1,14 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hanapp/views/main/login_main.dart';
-import 'package:hanapp/views/main/register_main.dart';
-
-import 'firebase_options.dart';
 
 void main() {
   // initialize firebase
+  // ensureInitialized is used to ensure that the app is initialized before the
+  // runApp() function is called because the runApp() function is asynchronous
+  // WidgetsFlutterBinding is needed because the app is a Flutter app
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -20,11 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'HanApp Initial Set Up',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      // LANDING PAGE HERE
+      // proceed to login
       home: const LoginView(),
     );
   }
