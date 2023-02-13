@@ -46,10 +46,6 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar to be removed, preferably
-      appBar: AppBar(
-        title: const Center(child: Text('Login')) ,
-      ),
       // body is the main part of the view
       body: Center(
         // FutureBuilder's purpose is to wait for the Firebase initialization
@@ -72,26 +68,81 @@ class _LoginViewState extends State<LoginView> {
               case ConnectionState.done:
                 return Center(
                   child: Column(
-                    children: [
-                      TextField( // email
-                        controller: _email,
-                        autocorrect: false,
-                        enableSuggestions: false,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter Email',
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      // Login Image
+                      Image.asset('assets/images/login.png',
+                          width: 300,
+                          height: 300,
+                          fit: BoxFit.fitWidth),
+                      // Label for Login
+                      const Text('Login',
+                      style: TextStyle(
+                          fontSize: 25,
                         ),
                       ),
-                      TextField( // password
-                        controller: _password,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter Password',
+                      const Padding(
+                        padding: EdgeInsets.only(top: 40, right: 380),
+                        child:
+                        // Label for Email
+                        Text('Email',
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
                         ),
                       ),
-                      TextButton(
+
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5, left: 40, right: 40),
+                      child:
+                        TextField( // email
+                          controller: _email,
+                          autocorrect: false,
+                          enableSuggestions: false,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                            hintText: 'Email address',
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const Padding(
+                        padding: EdgeInsets.only(top: 5, right: 350),
+                        child:
+                        // Label for Email
+                        Text('Password',
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+
+                      Padding(padding: const EdgeInsets.only(top: 5, left: 40, right: 40),
+                        child:
+                          TextField( // password
+                            controller: _password,
+                            obscureText: true,
+                            enableSuggestions: false,
+                            autocorrect: false,
+                            decoration: InputDecoration(
+                              hintText: 'Password',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0)
+                              ),
+                            ),
+                          ),
+                        ),
+                      Padding(padding: const EdgeInsets.only(top: 20, left: 40, right: 40),
+                      child:
+                        TextButton(
+                        // UI of Login Button
+                        style: TextButton.styleFrom(
+                            textStyle: const TextStyle(fontSize: 20)
+                        ),
+
                         onPressed: () async {
                           if (kDebugMode) {
                             print("[PRESS] Balls");
@@ -166,6 +217,7 @@ class _LoginViewState extends State<LoginView> {
                           }
                         },
                         child: const Text('Login'),
+                      ),
                       ),
                       TextButton(
                         onPressed: () {
