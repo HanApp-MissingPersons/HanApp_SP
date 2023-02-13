@@ -24,6 +24,7 @@ class _LoginViewState extends State<LoginView> {
   // variables
   late final TextEditingController _email;
   late final TextEditingController _password;
+  bool _obscured = true;
 
   // initialize the controllers
   @override
@@ -66,35 +67,68 @@ class _LoginViewState extends State<LoginView> {
               case ConnectionState.none:
                 return const Text('No Connection');
               case ConnectionState.waiting:
-                return const Text('Waiting for Connection');
+                return const Text('Loading . . .');
               case ConnectionState.active:
                 return const Text('Connection active!');
               case ConnectionState.done:
                 return Center(
                   child: Column(
                     children: [
-                      TextField( // email
+                      TextFormField( // email
                         controller: _email,
                         autocorrect: false,
                         enableSuggestions: false,
                         keyboardType: TextInputType.emailAddress,
                         decoration: const InputDecoration(
-                          hintText: 'Enter Email',
+                          icon: Icon(Icons.email),
+                          hintText: 'Enter valid Email',
+                          labelText: 'Email',
                         ),
-                      ),
-                      TextField( // password
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          else if (!value.contains('@')) {
+                            return 'Please enter a valid email';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ), // email
+                      TextFormField(
                         controller: _password,
-                        obscureText: true,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter Password',
+                        obscureText: _obscured,
+                        decoration: InputDecoration(
+                            icon: const Icon(Icons.key),
+                            labelText: 'Password',
+                            hintText: 'Enter your password',
+                            // this button is used to toggle the password visibility
+                            suffixIcon: IconButton(
+                                // if the password is obscured, show the visibility icon
+                                // if the password is not obscured, show the visibility_off icon
+                                icon: Icon(
+                                    _obscured ? Icons.visibility : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscured = !_obscured;
+                                  });
+                                })
                         ),
-                      ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          else if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ), // password
                       TextButton(
                         onPressed: () async {
                           if (kDebugMode) {
-                            print("[PRESS] Balls");
+                            print("[PRESS] Logging in User");
                           }
                           final email = _email.text;
                           final password = _password.text;
