@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:hanapp/views/main/login_main.dart';
 
 class RegisterView extends StatefulWidget {
@@ -17,6 +18,11 @@ class _RegisterViewState extends State<RegisterView> {
   // Controllers to contain the text in the text fields
   late final TextEditingController _email;
   late final TextEditingController _password;
+
+  //
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  DatabaseReference registrationRef = FirebaseDatabase.instance.ref("Main Users");
+
 
   // initialize the controllers
   @override
@@ -99,6 +105,13 @@ class _RegisterViewState extends State<RegisterView> {
                             final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                                 email: email, password: password
                             );
+
+                            // Realtime Database User
+                            await registrationRef.child(userCredential.user!.uid).set({
+                              'email': email,
+                              'password': password,
+                            });
+
                             // if the user is created, then proceed to the next step
                             if (kDebugMode) {
                               print('[REGISTERED] $userCredential');
