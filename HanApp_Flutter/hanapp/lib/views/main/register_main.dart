@@ -20,11 +20,11 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _password;
   late final TextEditingController _fullName;
   late final TextEditingController _phoneNumber;
-  // _obscured is used to obscure the password, and is set to true by default
-  bool _obscured = true;
+  late final Future<FirebaseApp> _firebaseInit;
   // _formKey is used to validate the form
   final _formKey = GlobalKey<FormState>();
-
+  // _obscured is used to obscure the password, and is set to true by default
+  bool _obscured = true;
   // Firebase Realtime Database initialize
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference registrationRef = FirebaseDatabase.instance.ref("Main Users");
@@ -38,6 +38,9 @@ class _RegisterViewState extends State<RegisterView> {
     _password = TextEditingController();
     _fullName = TextEditingController();
     _phoneNumber = TextEditingController();
+    _firebaseInit = Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     super.initState();
   }
 
@@ -48,6 +51,7 @@ class _RegisterViewState extends State<RegisterView> {
     _password.dispose();
     _fullName.dispose();
     _phoneNumber.dispose();
+    _firebaseInit.asStream().drain();
     super.dispose();
   }
 
@@ -65,9 +69,7 @@ class _RegisterViewState extends State<RegisterView> {
         child: FutureBuilder(
           // the future is the Firebase initialization, which is asynchronous
           // without future, the code will not wait for the Firebase initialization to complete
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
+          future: _firebaseInit,
           // context and snapshot are required parameters because the builder is a function that returns a widget
           // what it does is it builds the widget based on the snapshot's connection state
           builder: (context, snapshot) {

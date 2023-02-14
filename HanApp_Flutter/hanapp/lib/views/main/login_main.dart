@@ -24,6 +24,7 @@ class _LoginViewState extends State<LoginView> {
   // variables
   late final TextEditingController _email;
   late final TextEditingController _password;
+  late final Future<FirebaseApp> _firebaseInit;
 
   // obscured is used to obscure the password
   bool _obscured = true;
@@ -36,6 +37,9 @@ class _LoginViewState extends State<LoginView> {
     // binding?
     _email = TextEditingController();
     _password = TextEditingController();
+    _firebaseInit = Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     super.initState();
   }
 
@@ -44,6 +48,7 @@ class _LoginViewState extends State<LoginView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
+    _firebaseInit.asStream().drain();
     super.dispose();
   }
 
@@ -62,9 +67,7 @@ class _LoginViewState extends State<LoginView> {
         child: FutureBuilder(
           // the future is the Firebase initialization, which is asynchronous
           // this is required because without future, the code will not wait for the Firebase initialization to complete
-          future: Firebase.initializeApp(
-            options: DefaultFirebaseOptions.currentPlatform,
-          ),
+          future: _firebaseInit,
           // context and snapshot are required parameters because the builder is a function that returns a widget
           builder: (context, snapshot) {
             switch (snapshot.connectionState){
