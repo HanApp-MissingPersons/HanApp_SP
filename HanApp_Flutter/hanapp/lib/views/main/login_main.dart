@@ -25,6 +25,11 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
 
+  // obscured is used to obscure the password
+  bool _obscured = true;
+  // _formKey is used to validate the form
+  final _formKey = GlobalKey<FormState>();
+
   // initialize the controllers
   @override
   void initState() {
@@ -46,6 +51,10 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar to be removed, preferably
+      appBar: AppBar(
+        title: const Center(child: Text('Login')) ,
+      ),
       // body is the main part of the view
       body: Center(
         // FutureBuilder's purpose is to wait for the Firebase initialization
@@ -62,147 +71,154 @@ class _LoginViewState extends State<LoginView> {
               case ConnectionState.none:
                 return const Text('No Connection');
               case ConnectionState.waiting:
-                return const Text('Waiting for Connection');
+                return const Text('Loading . . .');
               case ConnectionState.active:
                 return const Text('Connection active!');
               case ConnectionState.done:
-                return Center(
+                return Form(
+                  key: _formKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      // Login Image
-                      Image.asset('assets/images/login.png',
-                          width: 300,
-                          height: 300,
-                          fit: BoxFit.fitWidth),
-                      // Label for Login
-                      const Text('Login',
-                      style: TextStyle(
-                          fontSize: 25,
+                    children: [
+                      TextFormField( // email
+                        controller: _email,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.email),
+                          hintText: 'Enter valid Email',
+                          labelText: 'Email',
                         ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 40, right: 380),
-                        child:
-                        // Label for Email
-                        Text('Email',
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          else if (!value.contains('@')) {
+                            return 'Please enter a valid email';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ), // email
+                      TextFormField(
+                        controller: _password,
+                        obscureText: _obscured,
+                        decoration: InputDecoration(
+                            icon: const Icon(Icons.key),
+                            labelText: 'Password',
+                            hintText: 'Enter your password',
+                            // this button is used to toggle the password visibility
+                            suffixIcon: IconButton(
+                              // if the password is obscured, show the visibility icon
+                              // if the password is not obscured, show the visibility_off icon
+                                icon: Icon(
+                                    _obscured ? Icons.visibility : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscured = !_obscured;
+                                  });
+                                })
                         ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5, left: 40, right: 40),
-                      child:
-                        TextField( // email
-                          controller: _email,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: InputDecoration(
-                            hintText: 'Email address',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const Padding(
-                        padding: EdgeInsets.only(top: 5, right: 350),
-                        child:
-                        // Label for Email
-                        Text('Password',
-                          style: TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-
-                      Padding(padding: const EdgeInsets.only(top: 5, left: 40, right: 40),
-                        child:
-                          TextField( // password
-                            controller: _password,
-                            obscureText: true,
-                            enableSuggestions: false,
-                            autocorrect: false,
-                            decoration: InputDecoration(
-                              hintText: 'Password',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8.0)
-                              ),
-                            ),
-                          ),
-                        ),
-                      Padding(padding: const EdgeInsets.only(top: 20, left: 40, right: 40),
-                      child:
-                        TextButton(
-                        // UI of Login Button
-                        style: TextButton.styleFrom(
-                            textStyle: const TextStyle(fontSize: 20)
-                        ),
-
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          } else {
+                            return null;
+                          }
+                        },
+                      ), // password
+                      ElevatedButton(
                         onPressed: () async {
                           if (kDebugMode) {
-                            print("[PRESS] Balls");
+                            print("[PRESS] Logging in User");
                           }
                           final email = _email.text;
                           final password = _password.text;
                           // login user with email and password and check if email is verified
                           try {
-                            final userCredential = await FirebaseAuth.instance
-                                .signInWithEmailAndPassword(
-                                email: email, password: password
-                            );
-                            // if user has an unverified email address, proceed to verify email view
-                            if (!userCredential.user!.emailVerified){
-                              if (kDebugMode) {
-                                print('[UNVERIFIED] Email not verified!');
+                            if(_formKey.currentState!.validate()){
+                              final userCredential = await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                  email: email, password: password
+                              );
+                              // if user has an unverified email address, proceed to verify email view
+                              if (!userCredential.user!.emailVerified){
+                                if (kDebugMode) {
+                                  print('[UNVERIFIED] Email not verified!');
+                                }
+                                // navigate to verify email view and pass the user's email address through the route
+                                // this is done so that the user does not have to enter their email address again
+                                if(mounted){
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VerifyEmailView()));
+                                }
                               }
-                              // navigate to verify email view and pass the user's email address through the route
-                              // this is done so that the user does not have to enter their email address again
-                              if(mounted){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VerifyEmailView()));
-                              }
-                            }
-                            // if user has a verified email address, proceed to homepage
-                            else {
-                              if (kDebugMode) {
-                                print('[LOGGED IN] as: $userCredential');
-                              }
-                              // navigate to homepage
-                              if (mounted) {
-                                // pushReplacement will remove the login view from the stack, so that the user cannot go back to the login view
-                                // pushAndRemoveUntil will remove all the views from the stack, so that the user cannot go back to any view
-                                // for now, pushReplacement will be used
-                                // preferably, pushReplacement should be used when the user is logging in, and pushAndRemoveUntil should be used when the user is logging out
-                                // this is because the user should not be able to go back to the login view after logging in, and the user should not be able to go back to the homepage after logging out
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(builder: (
-                                        context) => const HomePage()));
+                              // if user has a verified email address, proceed to homepage
+                              else {
+                                if (kDebugMode) {
+                                  print('[LOGGED IN] as: $userCredential');
+                                }
+                                // navigate to homepage
+                                if (mounted) {
+                                  // pushReplacement will remove the login view from the stack, so that the user cannot go back to the login view
+                                  // pushAndRemoveUntil will remove all the views from the stack, so that the user cannot go back to any view
+                                  // for now, pushReplacement will be used
+                                  // preferably, pushReplacement should be used when the user is logging in, and pushAndRemoveUntil should be used when the user is logging out
+                                  // this is because the user should not be able to go back to the login view after logging in, and the user should not be able to go back to the homepage after logging out
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(builder: (
+                                          context) => const HomePage()));
 
-                                // Navigator.of(context).pushAndRemoveUntil(
-                                //     MaterialPageRoute(builder: (context) => const HomePage()),
-                                //     (
-                                //             (route) => false
-                                //     )
-                                // );
+                                  // Navigator.of(context).pushAndRemoveUntil(
+                                  //     MaterialPageRoute(builder: (context) => const HomePage()),
+                                  //     (
+                                  //             (route) => false
+                                  //     )
+                                  // );
+                                }
                               }
+                            } else {
+                              // if the form is not valid, then show the error message
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Please fill up the form correctly')));
                             }
+                            // FirebaseAuthException is the exception thrown by Firebase when there is an error
                           } on FirebaseAuthException catch (e) {
                             if(e.code == 'user-not-found'){
                               if (kDebugMode) {
                                 print('User not found!');
                               }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('User not found!')));
                             } else if(e.code == 'wrong-password'){
                               if(kDebugMode){
                                 print('Wrong Password');
                               }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Wrong password!')));
                             } else if(e.code == 'invalid-email'){
                               if(kDebugMode){
                                 print('Invalid Email Format');
                               }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Invalid Email Format!')));
+                            } else if(e.code == 'user-disabled'){
+                              if(kDebugMode){
+                                print('User has been disabled');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('User account has been disabled')));
+                            } else if(e.code == 'too-many-requests'){
+                              if(kDebugMode){
+                                print('Too many requests, please try again later');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Too many requests, please try again later')));
+                            } else {
+                              if(kDebugMode){
+                                print('Unknown Error');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Oops! Something went wrong')));
                             }
                             if(kDebugMode){
                               var error = e;
@@ -217,7 +233,6 @@ class _LoginViewState extends State<LoginView> {
                           }
                         },
                         child: const Text('Login'),
-                      ),
                       ),
                       TextButton(
                         onPressed: () {

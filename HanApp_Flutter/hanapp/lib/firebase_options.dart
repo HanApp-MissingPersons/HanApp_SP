@@ -52,6 +52,7 @@ class DefaultFirebaseOptions {
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAlb3K_6zL-ouoIFe-qsYGZ4XjiwZiuzFY',
     appId: '1:452290329088:web:2f8fd16fe7a02bc3caf6e5',
+    databaseURL: 'https://hanapp-a32ae-default-rtdb.asia-southeast1.firebasedatabase.app/',
     messagingSenderId: '452290329088',
     projectId: 'hanapp-a32ae',
     authDomain: 'hanapp-a32ae.firebaseapp.com',
@@ -62,6 +63,7 @@ class DefaultFirebaseOptions {
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB8rTxeEQatxKAJptA_Iro8P0uVHXJwUAQ',
     appId: '1:452290329088:android:9064564c4edd8d4ecaf6e5',
+    databaseURL: 'https://hanapp-a32ae-default-rtdb.asia-southeast1.firebasedatabase.app/',
     messagingSenderId: '452290329088',
     projectId: 'hanapp-a32ae',
     storageBucket: 'hanapp-a32ae.appspot.com',
