@@ -25,6 +25,7 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
   late final TextEditingController _password;
   late final Future<FirebaseApp> _firebaseInit;
+  AutovalidateMode _autoValidate = AutovalidateMode.disabled;
 
   // obscured is used to obscure the password
   bool _obscured = true;
@@ -80,6 +81,7 @@ class _LoginViewState extends State<LoginView> {
               case ConnectionState.done:
                 return Form(
                   key: _formKey,
+                  autovalidateMode: _autoValidate,
                   child: Column(
                     children: [
                       TextFormField( // email
@@ -134,6 +136,12 @@ class _LoginViewState extends State<LoginView> {
                         onPressed: () async {
                           if (kDebugMode) {
                             print("[PRESS] Logging in User");
+                          }
+                          // validate the form and if it is not valid, set the autovalidate mode to always
+                          if (!_formKey.currentState!.validate()) {
+                            setState(() => _autoValidate = AutovalidateMode.always);
+                          } else {
+                            setState(() => _autoValidate = AutovalidateMode.disabled);
                           }
                           final email = _email.text;
                           final password = _password.text;

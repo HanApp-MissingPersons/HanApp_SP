@@ -23,6 +23,8 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _fullName;
   late final TextEditingController _phoneNumber;
   late final Future<FirebaseApp> _firebaseInit;
+  AutovalidateMode _autoValidate = AutovalidateMode.disabled;
+
   // _formKey is used to validate the form
   final _formKey = GlobalKey<FormState>();
   // _obscured is used to obscure the password, and is set to true by default
@@ -88,6 +90,7 @@ class _RegisterViewState extends State<RegisterView> {
                 return Center(
                   child: Form(
                     key: _formKey,
+                    autovalidateMode: _autoValidate,
                     child: Column(
                       children: [
                         TextFormField( // email
@@ -104,7 +107,7 @@ class _RegisterViewState extends State<RegisterView> {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your email';
                             }
-                            else if (!value.contains('@')) {
+                            else if (!value.contains('@') || !value.contains('.')) {
                               return 'Please enter a valid email';
                             } else {
                               return null;
@@ -152,6 +155,13 @@ class _RegisterViewState extends State<RegisterView> {
                             hintText: 'Enter Full Name',
                             labelText: 'Full Name',
                           ),
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Full Name is required';
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                         TextFormField(
                           // phone number
@@ -164,11 +174,24 @@ class _RegisterViewState extends State<RegisterView> {
                             hintText: 'Enter Phone Number',
                             labelText: 'Phone Number',
                           ),
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Phone Number is required';
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                         ElevatedButton(
                           // onPressed is an asynchronous function because it will wait for the Firebase to complete the registration
                           // before proceeding to the next step
                           onPressed: () async {
+                            // validate the form and if it is not valid, set the autovalidate mode to always
+                            if (!_formKey.currentState!.validate()) {
+                              setState(() => _autoValidate = AutovalidateMode.always);
+                            } else {
+                              setState(() => _autoValidate = AutovalidateMode.disabled);
+                            }
                             // get the text from the text fields
                             final email = _email.text;
                             final password = _password.text;
