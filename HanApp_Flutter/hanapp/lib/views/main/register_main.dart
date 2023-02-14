@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:hanapp/views/main/login_main.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -60,9 +61,8 @@ class _RegisterViewState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       // appBar to be removed, preferably
-      appBar: AppBar(
-        title: const Center(child: Text('Register')) ,
-      ),
+      //appBar: AppBar(
+      //  title: const Center(child: Text('Register')) ,),
       body: Center(
         // FutureBuilder's purpose is to wait for the Firebase initialization
         // to complete before proceeding the rest of the code
@@ -88,167 +88,223 @@ class _RegisterViewState extends State<RegisterView> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        TextFormField( // email
-                          controller: _email,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.email),
-                            hintText: 'Enter valid Email',
-                            labelText: 'Email',
+                        Image.asset(
+                          'assets/images/register.png',
+                          height: 250,
+                          fit: BoxFit.fitWidth,
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 120, bottom: 20),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Sign Up',
+                              style: GoogleFonts.inter(
+                                fontSize: 29,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                           ),
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            else if (!value.contains('@')) {
-                              return 'Please enter a valid email';
-                            } else {
-                              return null;
-                            }
-                          },
-                        ), // email
-                        TextFormField(
-                          controller: _password,
-                          obscureText: _obscured,
-                          decoration: InputDecoration(
-                              icon: const Icon(Icons.key),
-                              labelText: 'Password',
-                              hintText: 'Enter your password',
-                              // this button is used to toggle the password visibility
-                              suffixIcon: IconButton(
-                                // if the password is obscured, show the visibility icon
-                                // if the password is not obscured, show the visibility_off icon
-                                  icon: Icon(
-                                      _obscured ? Icons.visibility : Icons.visibility_off),
-                                  onPressed: () {
-                                    setState(() {
-                                      _obscured = !_obscured;
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 120, right: 120),
+                          child: TextFormField( // email
+                            controller: _email,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.email),
+                              labelText: 'Email',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                            ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              else if (!value.contains('@')) {
+                                return 'Please enter a valid email';
+                              } else {
+                                return null;
+                              }
+                            },
+                          ), // email)
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                          child: TextFormField(
+                            controller: _password,
+                            obscureText: _obscured,
+                            decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.key),
+                                labelText: 'Password',
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                ),
+                                // this button is used to toggle the password visibility
+                                suffixIcon: IconButton(
+                                  // if the password is obscured, show the visibility icon
+                                  // if the password is not obscured, show the visibility_off icon
+                                    icon: Icon(
+                                        _obscured ? Icons.visibility : Icons.visibility_off),
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscured = !_obscured;
+                                      });
+                                    })
+                            ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              else if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              } else {
+                                return null;
+                              }
+                            },
+                          ), // password),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                          child: TextFormField(
+                            // full name
+                            controller: _fullName,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.name,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.person),
+                              labelText: 'Full Name',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                          child: TextFormField(
+                            // phone number
+                            controller: _phoneNumber,
+                            autocorrect: false,
+                            enableSuggestions: false,
+                            keyboardType: TextInputType.phone,
+                            decoration: const InputDecoration(
+                              prefixIcon: Icon(Icons.phone),
+                              labelText: 'Phone Number',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20),
+                          child: SizedBox(
+                            width: 250.0,
+                            height: 40.0,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      )
+                                  )
+                              ),
+                              // onPressed is an asynchronous function because it will wait for the Firebase to complete the registration
+                              // before proceeding to the next step
+                              onPressed: () async {
+                                // get the text from the text fields
+                                final email = _email.text;
+                                final password = _password.text;
+                                final fullName = _fullName.text;
+                                final phoneNumber = _phoneNumber.text;
+                                // try to register the user
+                                try {
+                                  if(_formKey.currentState!.validate()){
+                                    // if the form is valid, then proceed to the next step:
+                                    // create the user
+                                    final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                        email: email, password: password
+                                    );
+
+                                    // Realtime Database User
+                                    await registrationRef.child(userCredential.user!.uid).set({
+                                      'email': email,
+                                      'fullName': fullName,
+                                      'phoneNumber': phoneNumber,
                                     });
-                                  })
-                          ),
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            else if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            } else {
-                              return null;
-                            }
-                          },
-                        ), // password
-                        TextFormField(
-                          // full name
-                          controller: _fullName,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.person),
-                            hintText: 'Enter Full Name',
-                            labelText: 'Full Name',
-                          ),
-                        ),
-                        TextFormField(
-                          // phone number
-                          controller: _phoneNumber,
-                          autocorrect: false,
-                          enableSuggestions: false,
-                          keyboardType: TextInputType.phone,
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.phone),
-                            hintText: 'Enter Phone Number',
-                            labelText: 'Phone Number',
-                          ),
-                        ),
-                        ElevatedButton(
-                          // onPressed is an asynchronous function because it will wait for the Firebase to complete the registration
-                          // before proceeding to the next step
-                          onPressed: () async {
-                            // get the text from the text fields
-                            final email = _email.text;
-                            final password = _password.text;
-                            final fullName = _fullName.text;
-                            final phoneNumber = _phoneNumber.text;
-                            // try to register the user
-                            try {
-                              if(_formKey.currentState!.validate()){
-                                // if the form is valid, then proceed to the next step:
-                                // create the user
-                                final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                                    email: email, password: password
-                                );
 
-                                // Realtime Database User
-                                await registrationRef.child(userCredential.user!.uid).set({
-                                  'email': email,
-                                  'fullName': fullName,
-                                  'phoneNumber': phoneNumber,
-                                });
+                                    if (kDebugMode) {
+                                      print('[REGISTERED] $userCredential');
+                                    }
 
+                                    // navigate to the login page
+                                    if(mounted){
+                                      Navigator.pop(context);
+                                    }
+
+                                  } else {
+                                    // if the form is not valid, then show the error message
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Please fill up the form correctly')));
+                                  }
+                                  // if the user is not created, then show the error message
+                                } on FirebaseAuthException catch (e) {
+                                  if(e.code == 'email-already-in-use' ){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Email already in use!'),
+                                      ),
+                                    );
+                                  } else if (e.code == 'weak-password'){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Weak Password!'),
+                                      ),
+                                    );
+                                  } else if (e.code == 'invalid-email') {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Invalid email!'),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Something Wrong Happened'),
+                                      ),
+                                    );
+                                    if (kDebugMode) {
+                                      print('[ERROR]: $e');
+                                    }
+                                  }
+                                }
+
+                              },
+                              onLongPress: () {
                                 if (kDebugMode) {
-                                  print('[REGISTERED] $userCredential');
+                                  // this will be removed later
+                                  print('[LONG PRESS] long press done, we can do something here');
                                 }
-
-                                // navigate to the login page
-                                if(mounted){
-                                  Navigator.pop(context);
-                                }
-
-                              } else {
-                                // if the form is not valid, then show the error message
+                                //
+                                // show a snackbar
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Please fill up the form correctly')));
-                              }
-                              // if the user is not created, then show the error message
-                            } on FirebaseAuthException catch (e) {
-                              if(e.code == 'email-already-in-use' ){
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Email already in use!'),
-                                  ),
+                                    const SnackBar(
+                                      content: Text('Long Pressed'),
+                                    )
                                 );
-                              } else if (e.code == 'weak-password'){
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Weak Password!'),
-                                  ),
-                                );
-                              } else if (e.code == 'invalid-email') {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Invalid email!'),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Something Wrong Happened'),
-                                  ),
-                                );
-                                if (kDebugMode) {
-                                  print('[ERROR]: $e');
-                                }
-                              }
-                            }
-
-                          },
-                          onLongPress: () {
-                            if (kDebugMode) {
-                              // this will be removed later
-                              print('[LONG PRESS] long press done, we can do something here');
-                            }
-                            //
-                            // show a snackbar
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Long Pressed'),
-                                )
-                            );
-                          },
-                          child: const Text('Register'),
+                              },
+                              child: const Text('Register'),
+                            ),
+                          ),
                         ),
                       ], // children
                     ),
