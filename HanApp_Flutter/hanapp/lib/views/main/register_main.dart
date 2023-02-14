@@ -6,6 +6,8 @@ import 'package:hanapp/firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:hanapp/views/main/login_main.dart';
 
+import '../verify_email_view.dart';
+
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
 
@@ -193,8 +195,13 @@ class _RegisterViewState extends State<RegisterView> {
                                 }
 
                                 // navigate to the login page
-                                if(mounted){
-                                  Navigator.pop(context);
+                                // if(mounted){
+                                //   Navigator.pop(context);
+                                // }
+
+                                if (mounted) {
+                                  // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const VerifyEmailView()));
+                                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const VerifyEmailView()));
                                 }
 
                               } else {
