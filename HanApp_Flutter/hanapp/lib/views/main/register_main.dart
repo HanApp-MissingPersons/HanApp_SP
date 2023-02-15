@@ -217,6 +217,10 @@ class _RegisterViewState extends State<RegisterView> {
                               validator: (String? value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your phone number';
+                                } else if ( value.length < 10 || value.length > 11) {
+                                  return 'Please enter a valid phone number';
+                                } else if ( isNumeric(value) == false) {
+                                  return 'Please enter a valid phone number';
                                 } else {
                                   return null;
                                 }
@@ -241,11 +245,6 @@ class _RegisterViewState extends State<RegisterView> {
                                 // before proceeding to the next step
                                 onPressed: () async {
                                   // validate the form and if it is not valid, set the autovalidate mode to always
-                                  if (!_formKey.currentState!.validate()) {
-                                    setState(() => _autoValidate = AutovalidateMode.always);
-                                  } else {
-                                    setState(() => _autoValidate = AutovalidateMode.disabled);
-                                  }
                                   // get the text from the text fields
                                   final email = _email.text;
                                   final password = _password.text;
@@ -253,7 +252,10 @@ class _RegisterViewState extends State<RegisterView> {
                                   final phoneNumber = _phoneNumber.text;
                                   // try to register the user
                                   try {
+                                    // set the autovalidate mode to disabled so that the form will not show errors
                                     if(_formKey.currentState!.validate()){
+                                      // if the form is valid, set the autovalidate mode to disabled:
+                                      setState(() => _autoValidate = AutovalidateMode.disabled);
                                       // if the form is valid, then proceed to the next step:
                                       // create the user
                                       final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -280,6 +282,8 @@ class _RegisterViewState extends State<RegisterView> {
                                       }
 
                                     } else {
+                                      // if the form is not valid, set the autovalidate mode to always
+                                      setState(() => _autoValidate = AutovalidateMode.always);
                                       // if the form is not valid, then show the error message
                                       ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(content: Text('Please fill up the form correctly')));
@@ -346,5 +350,9 @@ class _RegisterViewState extends State<RegisterView> {
         ),
       ),
     );
+  }
+
+  bool isNumeric(String s) {
+    return double.tryParse(s) != null;
   }
 }
