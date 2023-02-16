@@ -100,7 +100,7 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.only(left: 120, bottom: 20),
+                            padding: const EdgeInsets.only(left: 120, right: 120, bottom: 20),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -114,7 +114,7 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.only(left: 120, right: 120),
+                            padding: const EdgeInsets.only(left: 30, right: 30),
                             child: TextFormField( // email
                               controller: _email,
                               autocorrect: false,
@@ -140,7 +140,7 @@ class _RegisterViewState extends State<RegisterView> {
                             ), // email)
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                            padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
                             child: TextFormField(
                               controller: _password,
                               obscureText: _obscured,
@@ -175,7 +175,7 @@ class _RegisterViewState extends State<RegisterView> {
                             ), // password),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                            padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
                             child: TextFormField(
                               // full name
                               controller: _fullName,
@@ -200,7 +200,7 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                            padding: const EdgeInsets.only(top: 10, left: 30, right: 30),
                             child: TextFormField(
                               // phone number
                               controller: _phoneNumber,
