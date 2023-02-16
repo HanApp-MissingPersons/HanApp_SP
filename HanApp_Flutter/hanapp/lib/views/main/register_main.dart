@@ -100,7 +100,7 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.only(left: 120, bottom: 20),
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .34, bottom: 20),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
@@ -113,8 +113,8 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
                           ),
 
-                          Padding(
-                            padding: const EdgeInsets.only(left: 120, right: 120),
+                          Container(
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .15, right: MediaQuery.of(context).size.width * .15),
                             child: TextFormField( // email
                               controller: _email,
                               autocorrect: false,
@@ -139,8 +139,8 @@ class _RegisterViewState extends State<RegisterView> {
                               },
                             ), // email)
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                          Container(
+                            padding: EdgeInsets.only(top: 10, left: MediaQuery.of(context).size.width * .15, right: MediaQuery.of(context).size.width * .15),
                             child: TextFormField(
                               controller: _password,
                               obscureText: _obscured,
@@ -174,8 +174,8 @@ class _RegisterViewState extends State<RegisterView> {
                               },
                             ), // password),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                          Container(
+                            padding: EdgeInsets.only(top: 10, left: MediaQuery.of(context).size.width * .15, right: MediaQuery.of(context).size.width * .15),
                             child: TextFormField(
                               // full name
                               controller: _fullName,
@@ -199,8 +199,8 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
                           ),
 
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 120, right: 120),
+                          Container(
+                            padding: EdgeInsets.only(top: 10, left: MediaQuery.of(context).size.width * .15, right: MediaQuery.of(context).size.width * .15),
                             child: TextFormField(
                               // phone number
                               controller: _phoneNumber,
@@ -228,7 +228,7 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
                           ),
 
-                          Padding(
+                          Container(
                             padding: const EdgeInsets.only(top: 20),
                             child: SizedBox(
                               width: 250.0,
