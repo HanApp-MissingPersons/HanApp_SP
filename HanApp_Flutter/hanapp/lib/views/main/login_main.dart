@@ -88,22 +88,24 @@ class _LoginViewState extends State<LoginView> {
                           fit: BoxFit.fitWidth,
                         ),
 
-                        Container(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .4, bottom: 20),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Login',
-                              style: GoogleFonts.inter(
-                                fontSize: 29,
-                                fontWeight: FontWeight.w800,
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 40, bottom: 20),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Login',
+                                style: GoogleFonts.inter(
+                                  fontSize: 29,
+                                  fontWeight: FontWeight.w800,
+                                ),
                               ),
                             ),
                           ),
                         ),
 
-                        Container(
-                          padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * .15, right: MediaQuery.of(context).size.width * .15),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30, right: 30),
                           child: TextFormField( // email
                             controller: _email,
                             autocorrect: false,
@@ -128,9 +130,8 @@ class _LoginViewState extends State<LoginView> {
                             },
                           ), // email
                         ),
-
-                        Container(
-                          padding: EdgeInsets.only(top: 20, left: MediaQuery.of(context).size.width * .15, right: MediaQuery.of(context).size.width * .15),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
                           child: TextFormField(
                             controller: _password,
                             obscureText: _obscured,
@@ -161,8 +162,7 @@ class _LoginViewState extends State<LoginView> {
                             },
                           ), // password
                         ),
-
-                        Container(
+                        Padding(
                           padding: const EdgeInsets.only(top: 20),
                           child: SizedBox(
                             width: 250.0,
