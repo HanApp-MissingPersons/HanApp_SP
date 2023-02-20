@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:hanapp/views/main/homepage_main.dart';
 import 'package:hanapp/views/register_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'companion/homepage_companion.dart';
 import 'verify_email_view.dart';
 // this is the login view
 class LoginView extends StatefulWidget {
@@ -57,6 +59,7 @@ class _LoginViewState extends State<LoginView> {
   // build the view
   @override
   Widget build(BuildContext context) {
+    // return a scaffold
     return Scaffold(
       // body is the main part of the view
       body: Center(
@@ -76,6 +79,9 @@ class _LoginViewState extends State<LoginView> {
               case ConnectionState.active:
                 return const Text('Connection active!');
               case ConnectionState.done:
+                var userIsMain = false;
+                DatabaseReference _mainUserRef = FirebaseDatabase.instance.ref('Main Users');
+
                 return SingleChildScrollView(
                   child: Form(
                     key: _formKey,
@@ -204,6 +210,32 @@ class _LoginViewState extends State<LoginView> {
                                     }
                                     // if user has a verified email address, proceed to homepage
                                     else {
+                                      // Conditional Logging in
+                                      bool isUserMain = false;
+                                      _mainUserRef.onValue.listen((event) {
+                                        var usersData = Map<String, dynamic>.from(event.snapshot.value as Map<dynamic, dynamic>);
+                                        for (var value in usersData.values) {
+                                          if(_email.text.toString() == value['email'].toString()){
+                                            isUserMain = true;
+                                          }
+                                        }
+                                        if(isUserMain){
+                                          print('[FOUND] USER IS MAIN');
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(builder: (
+                                                  context) => const HomePage()
+                                              )
+                                          );
+                                        } else {
+                                          print('[NOT FOUND] USER IS COMPANION');
+                                          Navigator.of(context).pushReplacement(
+                                              MaterialPageRoute(builder: (
+                                                  context) => const HomePageCompanion()
+                                              )
+                                          );
+                                        }
+                                        // end of conditional logging in
+                                      });
                                       if (kDebugMode) {
                                         print('[LOGGED IN] as: $userCredential');
                                       }
@@ -214,9 +246,7 @@ class _LoginViewState extends State<LoginView> {
                                         // for now, pushReplacement will be used
                                         // preferably, pushReplacement should be used when the user is logging in, and pushAndRemoveUntil should be used when the user is logging out
                                         // this is because the user should not be able to go back to the login view after logging in, and the user should not be able to go back to the homepage after logging out
-                                        Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(builder: (
-                                                context) => const HomePage()));
+
 
                                         // Navigator.of(context).pushAndRemoveUntil(
                                         //     MaterialPageRoute(builder: (context) => const HomePage()),
