@@ -308,7 +308,14 @@ class _RegisterViewState extends State<RegisterView> {
                                           content: Text('Invalid email!'),
                                         ),
                                       );
-                                    } else {
+                                    } else if(e.code == 'network-request-failed'){
+                                      if(kDebugMode){
+                                        print('Not Connected to the internet');
+                                      }
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Connection failed, check your internet connection')));
+                                    }
+                                    else {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                           content: Text('Something Wrong Happened'),

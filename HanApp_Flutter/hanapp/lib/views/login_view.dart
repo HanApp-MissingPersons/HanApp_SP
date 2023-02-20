@@ -279,7 +279,14 @@ class _LoginViewState extends State<LoginView> {
                                     }
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(content: Text('Too many requests, please try again later')));
-                                  } else {
+                                  } else if(e.code == 'network-request-failed'){
+                                    if(kDebugMode){
+                                      print('Not Connected to the internet');
+                                    }
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Connection failed, check your internet connection')));
+                                  }
+                                  else {
                                     if(kDebugMode){
                                       print('Unknown Error');
                                     }
