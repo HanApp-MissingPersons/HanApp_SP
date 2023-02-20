@@ -100,7 +100,7 @@ class _RegisterViewState extends State<RegisterView> {
                           ),
 
                           Padding(
-                            padding: const EdgeInsets.only(left: 120, right: 120, bottom: 20),
+                            padding: const EdgeInsets.only(left: 40, bottom: 20),
                             child: Align(
                               alignment: Alignment.centerLeft,
                               child: Text(
