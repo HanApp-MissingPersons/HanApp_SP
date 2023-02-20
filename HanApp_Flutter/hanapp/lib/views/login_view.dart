@@ -239,22 +239,6 @@ class _LoginViewState extends State<LoginView> {
                                       if (kDebugMode) {
                                         print('[LOGGED IN] as: $userCredential');
                                       }
-                                      // navigate to homepage
-                                      if (mounted) {
-                                        // pushReplacement will remove the login view from the stack, so that the user cannot go back to the login view
-                                        // pushAndRemoveUntil will remove all the views from the stack, so that the user cannot go back to any view
-                                        // for now, pushReplacement will be used
-                                        // preferably, pushReplacement should be used when the user is logging in, and pushAndRemoveUntil should be used when the user is logging out
-                                        // this is because the user should not be able to go back to the login view after logging in, and the user should not be able to go back to the homepage after logging out
-
-
-                                        // Navigator.of(context).pushAndRemoveUntil(
-                                        //     MaterialPageRoute(builder: (context) => const HomePage()),
-                                        //     (
-                                        //             (route) => false
-                                        //     )
-                                        // );
-                                      }
                                     }
                                   } else {
                                     // set _autoValidate to always so that the form autovalidates
