@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hanapp/views/main/login_main.dart';
+import 'package:hanapp/views/login_view.dart';
 
 void main() {
   // initialize firebase

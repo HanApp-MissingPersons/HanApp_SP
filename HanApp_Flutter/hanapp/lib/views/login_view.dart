@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
 import 'package:hanapp/views/main/homepage_main.dart';
-import 'package:hanapp/views/main/register_main.dart';
+import 'package:hanapp/views/register_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../verify_email_view.dart';
+import 'verify_email_view.dart';
 // this is the login view
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
