@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
 import 'package:hanapp/views/main/homepage_main.dart';
+import 'package:hanapp/views/main/homepage_test.dart';
 import 'package:hanapp/views/register_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -228,7 +229,7 @@ class _LoginViewState extends State<LoginView> {
                                               print('[FOUND] USER IS MAIN');
                                               Navigator.of(context).pushReplacement(
                                                   MaterialPageRoute(builder: (
-                                                      context) => const HomePage()
+                                                      context) => const MyStatefulWidget()
                                                   )
                                               );
                                             } else {
