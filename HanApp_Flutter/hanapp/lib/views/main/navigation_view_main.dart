@@ -11,22 +11,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: _title,
-      home: MyStatefulWidget(),
+      home: NavigationField(),
     );
   }
 }
 
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({super.key});
+class NavigationField extends StatefulWidget {
+  const NavigationField({super.key});
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
+  State<NavigationField> createState() => _NavigationFieldState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _NavigationFieldState extends State<NavigationField> {
   int _selectedIndex = 0;
+  // optionStyle is for the text, we can remove this when actualy doing menu contents
   static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
   static const List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
@@ -66,30 +67,38 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.teal,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
+            backgroundColor: Colors.teal
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.content_paste_search_rounded),
             label: 'Report',
+              backgroundColor: Colors.teal
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.map_outlined),
             label: 'Nearby',
+              backgroundColor: Colors.teal
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.group_outlined),
               label: 'Companion',
+              backgroundColor: Colors.teal
           ),
           BottomNavigationBarItem(
               icon: Icon(Icons.tips_and_updates_outlined),
-            label: 'Updates'
+            label: 'Updates',
+              backgroundColor: Colors.teal
           ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
+        unselectedItemColor: Colors.black54,
+        showUnselectedLabels: true,
         onTap: _onItemTapped,
       ),
     );
