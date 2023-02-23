@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import '../../firebase_options.dart';
+import '../login_view.dart';
 import 'pages/home_main.dart';
 import 'pages/report_main.dart';
 import 'pages/nearby_main.dart';
@@ -44,14 +48,74 @@ class _NavigationFieldState extends State<NavigationField> {
     });
   }
 
+  late final Future<FirebaseApp> _firebaseInit;
+  @override
+  void initState() {
+    _firebaseInit = Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('BottomNavigationBar Sample'),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: FutureBuilder(
+        future: _firebaseInit,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else {
+            switch (snapshot.connectionState) {
+              // if there is no connection, return a text widget
+              case ConnectionState.none:
+                return const Center(child: Text('None oh no'));
+              // if there is a connection, return a text widget
+              case ConnectionState.waiting:
+                return Center(
+                  child: Column(
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: [
+                      const Text('Loading . . .'),
+                      const Center(child: CircularProgressIndicator()),
+                    ],
+                  ),
+                );
+              // if the connection is active, return a text widget
+              case ConnectionState.active:
+                return const Center(child: Text('App loading in...'));
+              // if the connection is done, return a text widget
+              case ConnectionState.done:
+                final user = FirebaseAuth.instance.currentUser;
+                return Center(
+                    child: Column(
+                  children: [
+                    Text('User: ${user?.email}'),
+                    _widgetOptions.elementAt(_selectedIndex),
+                    ElevatedButton(
+                      onPressed: () {
+                        // sign out the user
+                        FirebaseAuth.instance.signOut();
+                        // navigate to the login page
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginView(),
+                          ),
+                        );
+                      },
+                      child: const Text('Sign Out'),
+                    ),
+                  ],
+                ));
+            }
+          }
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.teal,
