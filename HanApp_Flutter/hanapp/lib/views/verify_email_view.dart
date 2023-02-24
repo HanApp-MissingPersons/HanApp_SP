@@ -52,7 +52,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 child: Container(
                   padding: const EdgeInsets.only(bottom: 30.0),
                   child: Image.asset(
-                    'images/verify-email_2.png',
+                    "assets/images/verify-email_2.png",
                     height: 304,
                     fit: BoxFit.fitWidth,
                   ),
