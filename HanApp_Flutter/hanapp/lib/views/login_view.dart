@@ -248,17 +248,21 @@ class _LoginViewState extends State<LoginView> {
                                             }
                                             if (isUserMain) {
                                               print('[FOUND] USER IS MAIN');
-                                              Navigator.of(context).pushReplacement(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const NavigationField()));
+                                              Navigator.of(context)
+                                                  .pushAndRemoveUntil(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const NavigationField()),
+                                                      (route) => false);
                                             } else {
                                               print(
                                                   '[NOT FOUND] USER IS COMPANION');
-                                              Navigator.of(context).pushReplacement(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const HomePageCompanion()));
+                                              Navigator.of(context)
+                                                  .pushAndRemoveUntil(
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const NavigationField()),
+                                                      (route) => false);
                                             }
                                             // end of conditional logging in
                                           });
