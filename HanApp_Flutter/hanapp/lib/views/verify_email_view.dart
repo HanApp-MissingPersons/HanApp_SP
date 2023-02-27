@@ -26,6 +26,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
               // simple text
               Container(
                 padding: const EdgeInsets.only(bottom: 20.0),
+                // added margin to top of text to prevent it from being too close to the top of the screen
+                margin: const EdgeInsets.only(top: 60.0),
                 child: Center(
                     child: Text(
                   'Send Email Verification',
