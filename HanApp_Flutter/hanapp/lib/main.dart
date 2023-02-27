@@ -43,7 +43,7 @@ bool isUserSignedIn = false;
 Future<void> loadUser() async {
   isUserSignedIn = false;
   var tempuser = FirebaseAuth.instance.currentUser;
-  if (tempuser != null) {
+  if (tempuser != null && tempuser.emailVerified) {
     isUserSignedIn = true;
   }
   if (kDebugMode) {
