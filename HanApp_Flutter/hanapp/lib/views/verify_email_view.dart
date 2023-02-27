@@ -20,7 +20,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       // simple body will contain text and text button
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.only(top: 40.0),
+          padding: const EdgeInsets.only(top: 80.0),
           child: Column(
             children: [
               // simple text
