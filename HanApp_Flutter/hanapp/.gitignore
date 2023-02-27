@@ -45,3 +45,4 @@ app.*.map.json
 .idea/
 pubspec.yaml
 pubspec.lock
+*.lock

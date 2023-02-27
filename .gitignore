@@ -284,3 +284,4 @@ HanApp_Flutter/hanapp/.vscode/settings.json
 HanApp_Flutter/hanapp/pubspec.lock
 *.lock
 HanApp_Flutter/hanapp/pubspec.lock
+*.lock
