@@ -63,43 +63,50 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
 
               Center(
                 // text button
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:
-                            const MaterialStatePropertyAll<Color>(Colors.amber),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ))),
-                    // on pressed will send email verification, should be async since FirebaseAuth is async
-                    onPressed: () async {
-                      // get current logged in user
-                      final user = FirebaseAuth.instance.currentUser;
-                      // gatekeeper, make sure user is valid and email is unverified before sending verification email
-                      if (user != null && !user.emailVerified) {
-                        // send verification email
-                        await user.sendEmailVerification();
-                        // show snackbar to notify user that verification email has been sent
-                        // mounted is a bool that checks if the widget is mounted or live,
-                        // since this is a stateful widget, it is necessary to check if the widget is mounted before showing a snackbar
-                        if (mounted) {
-                          // show snackbar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Verification email sent'),
-                            ),
-                          );
-                          // navigate to login page
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.width*0.1,
+                  child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor:
+                              const MaterialStatePropertyAll<Color>(Color(0xFF6B53FD)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ))),
+                      // on pressed will send email verification, should be async since FirebaseAuth is async
+                      onPressed: () async {
+                        // get current logged in user
+                        final user = FirebaseAuth.instance.currentUser;
+                        // gatekeeper, make sure user is valid and email is unverified before sending verification email
+                        if (user != null && !user.emailVerified) {
+                          // send verification email
+                          await user.sendEmailVerification();
+                          // show snackbar to notify user that verification email has been sent
+                          // mounted is a bool that checks if the widget is mounted or live,
+                          // since this is a stateful widget, it is necessary to check if the widget is mounted before showing a snackbar
+                          if (mounted) {
+                            // show snackbar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Verification email sent'),
+                              ),
+                            );
+                            // navigate to login page
 
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginView()));
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginView()));
+                          }
                         }
-                      }
-                    },
-                    // text for text button
-                    child: const Text('Send Verification Email')),
+                      },
+                      // text for text button
+                      child: Text('Send Verification Email',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                      ),)),
+                ),
               ),
               Center(
                 child: Container(

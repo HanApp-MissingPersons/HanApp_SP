@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/views/login_view.dart';
 
 void main() {
@@ -19,7 +20,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HanApp Initial Set Up',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: GoogleFonts.inter().fontFamily,
+        primaryColor: Color(0xFF6B53FD),
+        primarySwatch: Colors.indigo,
       ),
       // proceed to login
       home: const LoginView(),

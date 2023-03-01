@@ -91,7 +91,7 @@ class _LoginViewState extends State<LoginView> {
                     FirebaseDatabase.instance.ref('Main Users');
 
                 return Container(
-                  padding: const EdgeInsets.only(left: 60, right: 60),
+                  padding: const EdgeInsets.only(left: 30, right: 30),
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
@@ -128,11 +128,13 @@ class _LoginViewState extends State<LoginView> {
                             enableSuggestions: false,
                             keyboardType: TextInputType.emailAddress,
                             decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.email),
-                              labelText: 'Email',
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                              ),
+                              labelText: 'Email address',
                               border: OutlineInputBorder(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                    BorderRadius.all(Radius.circular(15)),
                               ),
                             ),
                             validator: (String? value) {
@@ -152,19 +154,19 @@ class _LoginViewState extends State<LoginView> {
                               controller: _password,
                               obscureText: _obscured,
                               decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.key),
+                                  prefixIcon: const Icon(Icons.lock_outlined),
                                   labelText: 'Password',
                                   border: const OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
+                                        BorderRadius.all(Radius.circular(15)),
                                   ),
                                   // this button is used to toggle the password visibility
                                   suffixIcon: IconButton(
                                       // if the password is obscured, show the visibility icon
                                       // if the password is not obscured, show the visibility_off icon
                                       icon: Icon(_obscured
-                                          ? Icons.visibility
-                                          : Icons.visibility_off),
+                                          ? Icons.visibility_outlined
+                                          : Icons.visibility_off_outlined),
                                       onPressed: () {
                                         setState(() {
                                           _obscured = !_obscured;
@@ -191,7 +193,7 @@ class _LoginViewState extends State<LoginView> {
                                   style: ButtonStyle(
                                       backgroundColor:
                                           const MaterialStatePropertyAll<Color>(
-                                              Colors.amber),
+                                              Color(0xFF6B53FD)),
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
@@ -359,7 +361,11 @@ class _LoginViewState extends State<LoginView> {
                                           '[LONG PRESS] Button has been long pressed');
                                     }
                                   },
-                                  child: const Text('Login'),
+                                  child: Text('Login',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
+                                    ),),
                                 ),
                               ),
                             ),
@@ -373,7 +379,11 @@ class _LoginViewState extends State<LoginView> {
                                 print('[PRESS] Navigating to Register');
                               }
                             },
-                            child: const Text('Register Instead'),
+                            child: Text('New to Hanapp? Register',
+                              style: GoogleFonts.inter(
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
                         ], // children
                       ),
