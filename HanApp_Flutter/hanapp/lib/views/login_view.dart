@@ -91,7 +91,7 @@ class _LoginViewState extends State<LoginView> {
                     FirebaseDatabase.instance.ref('Main Users');
 
                 return Container(
-                  padding: const EdgeInsets.only(left: 60, right: 60),
+                  padding: const EdgeInsets.only(left: 30, right: 30),
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
