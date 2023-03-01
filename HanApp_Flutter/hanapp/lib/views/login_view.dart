@@ -9,6 +9,7 @@ import 'package:hanapp/views/main/navigation_view_main.dart';
 import 'package:hanapp/views/register_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'GmapsTest.dart';
 import 'companion/homepage_companion.dart';
 import 'verify_email_view.dart';
 
@@ -102,7 +103,7 @@ class _LoginViewState extends State<LoginView> {
                             padding: const EdgeInsets.only(bottom: 40),
                             child: Image.asset(
                               'assets/images/login.png',
-                              height: MediaQuery.of(context).size.width*0.8,
+                              height: MediaQuery.of(context).size.height * .4,
                             ),
                           ),
                           Center(
@@ -361,11 +362,13 @@ class _LoginViewState extends State<LoginView> {
                                           '[LONG PRESS] Button has been long pressed');
                                     }
                                   },
-                                  child: Text('Login',
+                                  child: Text(
+                                    'Login',
                                     style: GoogleFonts.inter(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
-                                    ),),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -379,12 +382,19 @@ class _LoginViewState extends State<LoginView> {
                                 print('[PRESS] Navigating to Register');
                               }
                             },
-                            child: Text('New to Hanapp? Register',
+                            child: Text(
+                              'New to Hanapp? Register',
                               style: GoogleFonts.inter(
                                 fontSize: 12,
                               ),
                             ),
                           ),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => const GmapsTest()));
+                              },
+                              child: const Text('Google Maps Test'))
                         ], // children
                       ),
                     ),

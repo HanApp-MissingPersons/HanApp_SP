@@ -43,6 +43,7 @@ dependencies:
   google_fonts: ^4.0.3
   google_maps_flutter: ^2.2.4
   google_maps_flutter_web: ^0.4.0+6
+  location: ^4.4.0
 
 dev_dependencies:
   flutter_test:
