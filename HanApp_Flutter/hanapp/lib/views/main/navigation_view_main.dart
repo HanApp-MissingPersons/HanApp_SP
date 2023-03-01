@@ -60,9 +60,6 @@ class _NavigationFieldState extends State<NavigationField> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BottomNavigationBar Sample'),
-      ),
       body: FutureBuilder(
         future: _firebaseInit,
         builder: (context, snapshot) {
