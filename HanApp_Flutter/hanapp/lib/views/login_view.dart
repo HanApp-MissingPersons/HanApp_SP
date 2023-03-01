@@ -91,22 +91,24 @@ class _LoginViewState extends State<LoginView> {
                     FirebaseDatabase.instance.ref('Main Users');
 
                 return Container(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  padding: const EdgeInsets.only(left: 60, right: 60),
                   child: SingleChildScrollView(
                     child: Form(
                       key: _formKey,
                       autovalidateMode: _autoValidate,
                       child: Column(
                         children: [
-                          Image.asset(
-                            'assets/images/login.png',
-                            height: 350,
-                            fit: BoxFit.fitWidth,
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 40),
+                            child: Image.asset(
+                              'assets/images/login.png',
+                              height: MediaQuery.of(context).size.width*0.8,
+                            ),
                           ),
                           Center(
                             child: Padding(
                               padding:
-                                  const EdgeInsets.only(left: 10, bottom: 20),
+                                  const EdgeInsets.only(left: 10, bottom: 10),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
