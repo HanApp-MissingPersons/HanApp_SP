@@ -30,15 +30,9 @@ class _GmapsTestState extends State<GmapsTest> {
           elevation: 2,
         ),
         body: GoogleMap(
+          onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(target: _center, zoom: 14.5),
         ),
-        // body: GoogleMap(
-        //   onMapCreated: _onMapCreated,
-        //   initialCameraPosition: CameraPosition(
-        //     target: _center,
-        //     zoom: 11.0,
-        //   ),
-        // ),
       ),
     );
   }
