@@ -285,3 +285,4 @@ HanApp_Flutter/hanapp/pubspec.lock
 *.lock
 HanApp_Flutter/hanapp/pubspec.lock
 *.lock
+*.yaml

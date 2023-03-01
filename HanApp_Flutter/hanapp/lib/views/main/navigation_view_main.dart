@@ -8,6 +8,7 @@ import 'pages/report_main.dart';
 import 'pages/nearby_main.dart';
 import 'pages/companion_main.dart';
 import 'pages/update_main.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() => runApp(const MyApp());
 
@@ -112,7 +113,8 @@ class _NavigationFieldState extends State<NavigationField> {
                       ),
                   ],
                 ),
-                    ));
+                    )
+                );
             }
           }
         },

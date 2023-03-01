@@ -41,6 +41,8 @@ dependencies:
   firebase_storage: ^11.0.10
   firebase_database: ^10.0.9
   google_fonts: ^4.0.3
+  google_maps_flutter: ^2.2.4
+  google_maps_flutter_web: ^0.4.0+6
 
 dev_dependencies:
   flutter_test:

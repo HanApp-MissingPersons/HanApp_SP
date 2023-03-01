@@ -4,7 +4,8 @@
         android:label="hanapp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <activity
+
+       <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
@@ -30,5 +31,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+       <meta-data android:name="com.google.android.geo.AIzaSyB6WcpEZvWnvfQxA0HK_tV0FB9jSL9fj7Y"
+           android:value="AIzaSyB6WcpEZvWnvfQxA0HK_tV0FB9jSL9fj7Y"/>
     </application>
 </manifest>
