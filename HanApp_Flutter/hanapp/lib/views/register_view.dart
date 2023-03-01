@@ -95,10 +95,13 @@ class _RegisterViewState extends State<RegisterView> {
                         autovalidateMode: _autoValidate,
                         child: Column(
                           children: [
-                            Image.asset(
-                              'assets/images/register.png',
-                              height: 250,
-                              fit: BoxFit.fitWidth,
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 40),
+                              child: Image.asset(
+                                'assets/images/register.png',
+                                height: MediaQuery.of(context).size.width*0.7,
+                                fit: BoxFit.fitWidth,
+                              ),
                             ),
 
                             Padding(
@@ -123,11 +126,11 @@ class _RegisterViewState extends State<RegisterView> {
                               enableSuggestions: false,
                               keyboardType: TextInputType.emailAddress,
                               decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.email),
-                                labelText: 'Email',
+                                prefixIcon: Icon(Icons.email_outlined),
+                                labelText: 'Email Address',
                                 border: OutlineInputBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
+                                      BorderRadius.all(Radius.circular(15)),
                                 ),
                               ),
                               validator: (String? value) {
@@ -147,19 +150,19 @@ class _RegisterViewState extends State<RegisterView> {
                                 controller: _password,
                                 obscureText: _obscured,
                                 decoration: InputDecoration(
-                                    prefixIcon: const Icon(Icons.key),
+                                    prefixIcon: const Icon(Icons.lock_outlined),
                                     labelText: 'Password',
                                     border: const OutlineInputBorder(
                                       borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
+                                          BorderRadius.all(Radius.circular(15)),
                                     ),
                                     // this button is used to toggle the password visibility
                                     suffixIcon: IconButton(
                                         // if the password is obscured, show the visibility icon
                                         // if the password is not obscured, show the visibility_off icon
                                         icon: Icon(_obscured
-                                            ? Icons.visibility
-                                            : Icons.visibility_off),
+                                            ? Icons.visibility_outlined
+                                            : Icons.visibility_off_outlined),
                                         onPressed: () {
                                           setState(() {
                                             _obscured = !_obscured;
@@ -185,11 +188,11 @@ class _RegisterViewState extends State<RegisterView> {
                                 enableSuggestions: false,
                                 keyboardType: TextInputType.name,
                                 decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.person),
+                                  prefixIcon: Icon(Icons.person_outlined),
                                   labelText: 'Full Name',
                                   border: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
+                                        BorderRadius.all(Radius.circular(15)),
                                   ),
                                 ),
                                 validator: (String? value) {
@@ -211,11 +214,11 @@ class _RegisterViewState extends State<RegisterView> {
                                 enableSuggestions: false,
                                 keyboardType: TextInputType.phone,
                                 decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.phone),
+                                  prefixIcon: Icon(Icons.phone_outlined),
                                   labelText: 'Phone Number',
                                   border: OutlineInputBorder(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
+                                        BorderRadius.all(Radius.circular(15)),
                                   ),
                                 ),
                                 validator: (String? value) {
@@ -243,7 +246,7 @@ class _RegisterViewState extends State<RegisterView> {
                                     style: ButtonStyle(
                                         backgroundColor:
                                             const MaterialStatePropertyAll<
-                                                Color>(Colors.amber),
+                                                Color>(Color(0xFF6B53FD)),
                                         shape: MaterialStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
@@ -369,12 +372,36 @@ class _RegisterViewState extends State<RegisterView> {
                                 ),
                               ),
                             ),
+
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(top: 20),
+                                child: RichText(
+                                  textAlign: TextAlign.left,
+                                  text: const TextSpan(
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.black
+                                  ),
+                                    children: <TextSpan> [
+                                      TextSpan(text: 'By signing up, you’re agreeing to our'),
+                                      TextSpan(text: ' Terms & Conditions', style: TextStyle(fontWeight: FontWeight.w700)),
+                                      TextSpan(text: ' or '),
+                                      TextSpan(text: 'Privacy Policy', style: TextStyle(fontWeight: FontWeight.w700)),
+                                    ],
+                                ),
+                              ),
+                            ),
+
                             Center(
                               child: Container(
-                                padding: const EdgeInsets.only(top: 5),
+                                padding: const EdgeInsets.only(top: 10),
                                 child: TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: const Text('Go back to Login'),
+                                  child: Text('Joined us before? Login',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                  ),),
                                 ),
                               ),
                             )

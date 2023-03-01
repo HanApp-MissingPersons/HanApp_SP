@@ -120,32 +120,33 @@ class _NavigationFieldState extends State<NavigationField> {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.teal,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: const Color(0xFF6B53FD),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.home_outlined),
               label: 'Home',
-              backgroundColor: Colors.teal),
+              backgroundColor: Color(0xFF6B53FD)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.content_paste_search_rounded),
+              icon: Icon(Icons.content_paste_search_outlined),
               label: 'Report',
-              backgroundColor: Colors.teal),
+              backgroundColor: Color(0xFF6B53FD)),
           BottomNavigationBarItem(
               icon: Icon(Icons.map_outlined),
               label: 'Nearby',
-              backgroundColor: Colors.teal),
+              backgroundColor: Color(0xFF6B53FD)),
           BottomNavigationBarItem(
               icon: Icon(Icons.group_outlined),
               label: 'Companion',
-              backgroundColor: Colors.teal),
+              backgroundColor: Color(0xFF6B53FD)),
           BottomNavigationBarItem(
               icon: Icon(Icons.tips_and_updates_outlined),
               label: 'Updates',
-              backgroundColor: Colors.teal),
+              backgroundColor: Color(0xFF6B53FD)),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.black54,
+        unselectedItemColor: Colors.white,
         showUnselectedLabels: true,
         onTap: _onItemTapped,
       ),
