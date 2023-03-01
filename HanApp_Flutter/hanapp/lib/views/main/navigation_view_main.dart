@@ -90,26 +90,29 @@ class _NavigationFieldState extends State<NavigationField> {
               case ConnectionState.done:
                 final user = FirebaseAuth.instance.currentUser;
                 return Center(
-                    child: Column(
+                    child: Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
+                      child: Column(
                   children: [
-                    Text('User: ${user?.email}'),
-                    _widgetOptions.elementAt(_selectedIndex),
-                    ElevatedButton(
-                      onPressed: () {
-                        // sign out the user
-                        FirebaseAuth.instance.signOut();
-                        // navigate to the login page
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginView(),
-                          ),
-                        );
-                      },
-                      child: const Text('Sign Out'),
-                    ),
+                      Text('User: ${user?.email}'),
+                      _widgetOptions.elementAt(_selectedIndex),
+                      ElevatedButton(
+                        onPressed: () {
+                          // sign out the user
+                          FirebaseAuth.instance.signOut();
+                          // navigate to the login page
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginView(),
+                            ),
+                          );
+                        },
+                        child: const Text('Sign Out'),
+                      ),
                   ],
-                ));
+                ),
+                    ));
             }
           }
         },
