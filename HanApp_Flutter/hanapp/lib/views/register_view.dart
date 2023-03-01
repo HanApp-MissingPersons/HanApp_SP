@@ -96,7 +96,7 @@ class _RegisterViewState extends State<RegisterView> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 40),
+                              padding: const EdgeInsets.only(bottom: 40, top: 60),
                               child: Image.asset(
                                 'assets/images/register.png',
                                 height: MediaQuery.of(context).size.width*0.7,
