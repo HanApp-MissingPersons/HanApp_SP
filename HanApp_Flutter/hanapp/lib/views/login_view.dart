@@ -129,7 +129,7 @@ class _LoginViewState extends State<LoginView> {
                             keyboardType: TextInputType.emailAddress,
                             decoration: const InputDecoration(
                               prefixIcon: Icon(
-                                Icons.email_outlined,
+                                Icons.mail_outline_rounded,
                               ),
                               labelText: 'Email address',
                               border: OutlineInputBorder(
@@ -154,7 +154,7 @@ class _LoginViewState extends State<LoginView> {
                               controller: _password,
                               obscureText: _obscured,
                               decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.lock_outlined),
+                                  prefixIcon: const Icon(Icons.lock_outline_rounded),
                                   labelText: 'Password',
                                   border: const OutlineInputBorder(
                                     borderRadius:

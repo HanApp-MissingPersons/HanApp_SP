@@ -126,7 +126,7 @@ class _RegisterViewState extends State<RegisterView> {
                               enableSuggestions: false,
                               keyboardType: TextInputType.emailAddress,
                               decoration: const InputDecoration(
-                                prefixIcon: Icon(Icons.email_outlined),
+                                prefixIcon: Icon(Icons.mail_outline_rounded),
                                 labelText: 'Email Address',
                                 border: OutlineInputBorder(
                                   borderRadius:
@@ -150,7 +150,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 controller: _password,
                                 obscureText: _obscured,
                                 decoration: InputDecoration(
-                                    prefixIcon: const Icon(Icons.lock_outlined),
+                                    prefixIcon: const Icon(Icons.lock_outline_rounded),
                                     labelText: 'Password',
                                     border: const OutlineInputBorder(
                                       borderRadius:
@@ -188,7 +188,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 enableSuggestions: false,
                                 keyboardType: TextInputType.name,
                                 decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.person_outlined),
+                                  prefixIcon: Icon(Icons.person_outline_rounded),
                                   labelText: 'Full Name',
                                   border: OutlineInputBorder(
                                     borderRadius:
