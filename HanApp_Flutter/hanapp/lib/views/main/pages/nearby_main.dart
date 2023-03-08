@@ -12,18 +12,26 @@ class NearbyMain extends StatefulWidget {
 class _NearbyMain extends State<NearbyMain> {
   late GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
-  LatLng userLoc = LatLng(45.521563, -122.677433);
-  late String lat;
-  late String long;
+  late LatLng currentPostion;
+
+  void _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance.getCurrentPosition();
+
+    setState(() {
+      currentPostion = LatLng(position.latitude, position.longitude);
+    });
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _getCurrentLocation().then((value) {
-      lat = '${value.latitude}';
-      long = '${value.longitude}';
-    });
-    _liveLocation();
+    _getUserLocation();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+    _getUserLocation();
   }
 
   Future<Position> _getCurrentLocation() async {
@@ -47,21 +55,6 @@ class _NearbyMain extends State<NearbyMain> {
     return await Geolocator.getCurrentPosition();
   }
 
-  void _liveLocation() {
-    LocationSettings locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 100,
-    );
-
-    Geolocator.getPositionStream(locationSettings: locationSettings)
-        .listen((Position position) {
-      lat = position.latitude.toString();
-      long = position.longitude.toString();
-    });
-
-    userLoc = LatLng(double.parse(lat), double.parse(long));
-  }
-
   // optionStyle is for the text, we can remove this when actualy doing menu contents
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
@@ -74,7 +67,8 @@ class _NearbyMain extends State<NearbyMain> {
       ),
       body: GoogleMap(
         onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(target: userLoc, zoom: 14.5),
+        initialCameraPosition:
+            CameraPosition(target: currentPostion, zoom: 14.5),
       ),
     );
   }
