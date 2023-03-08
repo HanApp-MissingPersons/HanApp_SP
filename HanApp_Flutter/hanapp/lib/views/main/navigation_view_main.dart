@@ -10,22 +10,6 @@ import 'pages/companion_main.dart';
 import 'pages/update_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  static const String _title = 'Flutter Code Sample';
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: NavigationField(),
-    );
-  }
-}
-
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
 
