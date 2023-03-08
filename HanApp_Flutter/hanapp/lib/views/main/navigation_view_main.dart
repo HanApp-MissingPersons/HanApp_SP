@@ -82,6 +82,7 @@ class _NavigationFieldState extends State<NavigationField> {
                         child: Column(
                           children: [
                             Text('User: ${user?.email}'),
+                            // IMPORTANT: WHERE THE NAVIGATION BAR IS
                             _widgetOptions.elementAt(_selectedIndex),
                             ElevatedButton(
                               onPressed: () {
