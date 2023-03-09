@@ -27,6 +27,14 @@ class _NearbyMain extends State<NearbyMain> {
     _getUserLocation();
   }
 
+  final List<Marker> _markers = <Marker>[
+    const Marker(
+      markerId: MarkerId('1'), // initial position
+      // position: LatLng(10.645429951059262, 122.24244498334156),
+      // infoWindow: InfoWindow(title: 'ISAT-U Miagao')
+    )
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -61,15 +69,46 @@ class _NearbyMain extends State<NearbyMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Maps Sample App'),
-        elevation: 2,
-      ),
-      body: GoogleMap(
-        onMapCreated: _onMapCreated,
-        initialCameraPosition:
-            CameraPosition(target: currentPostion, zoom: 14.5),
-      ),
-    );
+        appBar: AppBar(
+          title: const Text('Maps Sample App'),
+          elevation: 2,
+        ),
+        body: GoogleMap(
+          markers: Set<Marker>.of(_markers),
+          onMapCreated: _onMapCreated,
+          // ignore: prefer_const_constructors
+          initialCameraPosition:
+              // original code (uncomment this, and comment out the cameraPosition below)
+              // CameraPosition(target: currentPostion, zoom: 14.5),
+              CameraPosition(
+                  // setting up initial position (ISAT-U Miagao), to prevent error while waiting to fetch current location
+                  target: LatLng(10.645429951059262, 122.24244498334156),
+                  zoom: 14.5),
+        ),
+        floatingActionButton: FloatingActionButton(
+          // put botton on upper right corner
+          child: const Icon(Icons.add_location),
+          // position the button on the upper right corner:
+          onPressed: () {
+            _getCurrentLocation().then((value) async {
+              _markers.add(Marker(
+                markerId: const MarkerId('2'),
+                position: LatLng(value.latitude, value.longitude),
+                infoWindow: const InfoWindow(title: 'My current location'),
+              ));
+              CameraPosition cameraPosition = CameraPosition(
+                target:
+                    LatLng(currentPostion.latitude, currentPostion.longitude),
+                zoom: 16,
+              );
+              final GoogleMapController controller = await mapController;
+              controller.animateCamera(
+                  CameraUpdate.newCameraPosition(cameraPosition));
+              setState(() {});
+            });
+          },
+        ),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.centerDocked);
   }
 }
