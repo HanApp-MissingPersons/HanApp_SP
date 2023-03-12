@@ -87,11 +87,14 @@ class _NearbyMainState extends State<NearbyMain> {
               children: const <Widget>[
                 Center(child: Text('Google maps is loading...')),
                 Center(
-                  child: Text(
-                    'Loading times may vary depending on your '
-                    'internet connection',
-                    textAlign: TextAlign.center,
-                    textScaleFactor: 0.67,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 8.0),
+                    child: Text(
+                      'Loading times may vary depending on your '
+                      'internet connection',
+                      textAlign: TextAlign.center,
+                      textScaleFactor: 0.67,
+                    ),
                   ),
                 ),
                 Center(
