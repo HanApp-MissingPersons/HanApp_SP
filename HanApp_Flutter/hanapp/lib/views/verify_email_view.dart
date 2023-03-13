@@ -27,7 +27,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
               Container(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 // added margin to top of text to prevent it from being too close to the top of the screen
-                margin: const EdgeInsets.only(top: 60.0),
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 5),
                 child: Center(
                     child: Text(
                   'Send Email Verification',
@@ -64,11 +65,12 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
               Center(
                 // text button
                 child: SizedBox(
-                  height: MediaQuery.of(context).size.width*0.1,
+                  height: MediaQuery.of(context).size.width * 0.1,
                   child: ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor:
-                              const MaterialStatePropertyAll<Color>(Color(0xFF6B53FD)),
+                              const MaterialStatePropertyAll<Color>(
+                                  Color(0xFF6B53FD)),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -101,11 +103,13 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         }
                       },
                       // text for text button
-                      child: Text('Send Verification Email',
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                      ),)),
+                      child: Text(
+                        'Send Verification Email',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )),
                 ),
               ),
               Center(
