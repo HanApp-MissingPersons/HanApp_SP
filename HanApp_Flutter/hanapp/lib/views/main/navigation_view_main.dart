@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hanapp/views/main/pages/profile_main.dart';
 import '../../firebase_options.dart';
 import '../login_view.dart';
 import 'pages/home_main.dart';
@@ -95,12 +96,12 @@ class _NavigationFieldState extends State<NavigationField> {
                       child: FloatingActionButton(
                         onPressed: () {
                           // sign out the user
-                          FirebaseAuth.instance.signOut();
+                          // FirebaseAuth.instance.signOut();
                           // navigate to the login page
-                          Navigator.pushReplacement(
+                          Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const LoginView(),
+                              builder: (context) => const ProfileMain(),
                             ),
                           );
                         },
