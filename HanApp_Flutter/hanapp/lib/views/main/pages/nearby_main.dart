@@ -52,7 +52,7 @@ class _NearbyMainState extends State<NearbyMain> {
         CameraPosition(
           target:
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          zoom: 14.4746,
+          zoom: 20,
         ),
       ),
     );
@@ -90,9 +90,6 @@ class _NearbyMainState extends State<NearbyMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Nearby'),
-      ),
       body: currentLocation == null
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -122,7 +119,7 @@ class _NearbyMainState extends State<NearbyMain> {
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                     currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 14.4746,
+                zoom: 20,
               ),
               markers: {
                 Marker(
