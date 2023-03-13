@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,6 +15,7 @@ class NearbyMain extends StatefulWidget {
 
 class _NearbyMainState extends State<NearbyMain> {
   final Completer<GoogleMapController> _controller = Completer();
+  late StreamSubscription<LocationData> _locationSubscription;
 
   LatLng sourceLocation = const LatLng(37.33500926, -122.03272188);
   LocationData? currentLocation;
@@ -34,21 +36,26 @@ class _NearbyMainState extends State<NearbyMain> {
     });
 
     GoogleMapController mapController = await _controller.future;
-    location.onLocationChanged.listen((newLocation) {
+    _locationSubscription = location.onLocationChanged.listen((newLocation) {
       setState(() {
         currentLocation = newLocation;
         sourceLocation =
             LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
       });
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: LatLng(newLocation.latitude!, newLocation.longitude!),
-            zoom: 14.4746,
-          ),
-        ),
-      );
     });
+  }
+
+  void recenterToUser() async {
+    GoogleMapController mapController = await _controller.future;
+    mapController.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target:
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+          zoom: 14.4746,
+        ),
+      ),
+    );
   }
 
   void setCustomMarkerIcon() {
@@ -72,6 +79,12 @@ class _NearbyMainState extends State<NearbyMain> {
     super.initState();
     getCurrentLocation();
     setCustomMarkerIcon();
+  }
+
+  @override
+  void dispose() {
+    _locationSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -113,11 +126,6 @@ class _NearbyMainState extends State<NearbyMain> {
               ),
               markers: {
                 Marker(
-                  markerId: const MarkerId('sourcePin'),
-                  position: sourceLocation,
-                  // icon: sourceIcon,
-                ),
-                Marker(
                   markerId: const MarkerId('currentLocation'),
                   position: LatLng(
                       currentLocation!.latitude!, currentLocation!.longitude!),
@@ -125,13 +133,13 @@ class _NearbyMainState extends State<NearbyMain> {
                 )
               },
             ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     getCurrentLocation();
-      //   },
-      //   child: const Icon(Icons.my_location),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          recenterToUser();
+        },
+        child: const Icon(Icons.my_location),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }
