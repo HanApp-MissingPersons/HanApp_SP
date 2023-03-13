@@ -10,22 +10,6 @@ import 'pages/companion_main.dart';
 import 'pages/update_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void main() => runApp(const MyApp());
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  static const String _title = 'Flutter Code Sample';
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: NavigationField(),
-    );
-  }
-}
-
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
 
@@ -90,31 +74,34 @@ class _NavigationFieldState extends State<NavigationField> {
               // if the connection is done, return a text widget
               case ConnectionState.done:
                 final user = FirebaseAuth.instance.currentUser;
-                return Center(
-                    child: Container(
-                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
-                      child: Column(
-                  children: [
-                      Text('User: ${user?.email}'),
-                      _widgetOptions.elementAt(_selectedIndex),
-                      ElevatedButton(
-                        onPressed: () {
-                          // sign out the user
-                          FirebaseAuth.instance.signOut();
-                          // navigate to the login page
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginView(),
+                return _selectedIndex != 2
+                    ? Center(
+                        child: Container(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 4),
+                        child: Column(
+                          children: [
+                            Text('User: ${user?.email}'),
+                            // IMPORTANT: WHERE THE NAVIGATION BAR IS
+                            _widgetOptions.elementAt(_selectedIndex),
+                            ElevatedButton(
+                              onPressed: () {
+                                // sign out the user
+                                FirebaseAuth.instance.signOut();
+                                // navigate to the login page
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginView(),
+                                  ),
+                                );
+                              },
+                              child: const Text('Sign Out'),
                             ),
-                          );
-                        },
-                        child: const Text('Sign Out'),
-                      ),
-                  ],
-                ),
-                    )
-                );
+                          ],
+                        ),
+                      ))
+                    : const NearbyMain();
             }
           }
         },
