@@ -39,16 +39,15 @@ class _NearbyMainState extends State<NearbyMain> {
         currentLocation = newLocation;
         sourceLocation =
             LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-        mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              target: LatLng(
-                  currentLocation!.latitude!, currentLocation!.longitude!),
-              zoom: 14.4746,
-            ),
-          ),
-        );
       });
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: LatLng(newLocation.latitude!, newLocation.longitude!),
+            zoom: 14.4746,
+          ),
+        ),
+      );
     });
   }
 
@@ -88,7 +87,7 @@ class _NearbyMainState extends State<NearbyMain> {
                 Center(child: Text('Google maps is loading...')),
                 Center(
                   child: Padding(
-                    padding: EdgeInsets.only(bottom: 8.0),
+                    padding: EdgeInsets.only(bottom: 15.0),
                     child: Text(
                       'Loading times may vary depending on your '
                       'internet connection',
@@ -116,23 +115,23 @@ class _NearbyMainState extends State<NearbyMain> {
                 Marker(
                   markerId: const MarkerId('sourcePin'),
                   position: sourceLocation,
-                  icon: sourceIcon,
+                  // icon: sourceIcon,
                 ),
                 Marker(
                   markerId: const MarkerId('currentLocation'),
                   position: LatLng(
                       currentLocation!.latitude!, currentLocation!.longitude!),
-                  icon: currentLocationIcon,
+                  // icon: currentLocationIcon,
                 )
               },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          getCurrentLocation();
-        },
-        child: const Icon(Icons.my_location),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     getCurrentLocation();
+      //   },
+      //   child: const Icon(Icons.my_location),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }
