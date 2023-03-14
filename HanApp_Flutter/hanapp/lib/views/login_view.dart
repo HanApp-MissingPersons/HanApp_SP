@@ -176,8 +176,6 @@ class _LoginViewState extends State<LoginView> {
                               validator: (String? value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your password';
-                                } else if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
                                 } else {
                                   return null;
                                 }
@@ -389,12 +387,30 @@ class _LoginViewState extends State<LoginView> {
                               ),
                             ),
                           ),
+                          // for testing only
                           TextButton(
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => const GmapsTest()));
                               },
-                              child: const Text('Google Maps Test'))
+                              child: const Text('Google Maps Test')),
+                          // for testing only
+                          TextButton(
+                              onPressed: () async {
+                                await FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(
+                                        email: 'hanapp.sp@gmail.com',
+                                        password: 'abc123');
+                                if (mounted) {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const NavigationField()),
+                                      (route) => false);
+                                }
+                              },
+                              child: const Text(
+                                  'Login as hanapp.sp@gmail.com (for easier testing)'))
                         ], // children
                       ),
                     ),

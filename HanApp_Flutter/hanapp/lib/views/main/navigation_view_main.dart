@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hanapp/views/main/pages/profile_main.dart';
 import '../../firebase_options.dart';
 import '../login_view.dart';
 import 'pages/home_main.dart';
@@ -74,34 +75,45 @@ class _NavigationFieldState extends State<NavigationField> {
               // if the connection is done, return a text widget
               case ConnectionState.done:
                 final user = FirebaseAuth.instance.currentUser;
-                return _selectedIndex != 2
-                    ? Center(
-                        child: Container(
-                        padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 4),
-                        child: Column(
-                          children: [
-                            Text('User: ${user?.email}'),
-                            // IMPORTANT: WHERE THE NAVIGATION BAR IS
-                            _widgetOptions.elementAt(_selectedIndex),
-                            ElevatedButton(
-                              onPressed: () {
-                                // sign out the user
-                                FirebaseAuth.instance.signOut();
-                                // navigate to the login page
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginView(),
-                                  ),
-                                );
-                              },
-                              child: const Text('Sign Out'),
+                return Stack(
+                  children: [
+                    Positioned(
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child: _selectedIndex != 2
+                              ? Center(
+                                  child: SingleChildScrollView(
+                                      child: _widgetOptions
+                                          .elementAt(_selectedIndex)))
+                              // else if maps, do not place in singlechildscroll view
+                              : _widgetOptions.elementAt(_selectedIndex)),
+                    ),
+                    Positioned(
+                      // position the user profile button
+                      top: MediaQuery.of(context).size.height * .035,
+                      right: MediaQuery.of(context).size.width * .035,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          // sign out the user
+                          // FirebaseAuth.instance.signOut();
+                          // navigate to the login page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProfileMain(),
                             ),
-                          ],
-                        ),
-                      ))
-                    : const NearbyMain();
+                          );
+                        },
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.antiAlias,
+                        child: const Icon(Icons.person_outlined),
+                      ),
+                    ),
+                    // _widgetOptions.elementAt(_selectedIndex)
+                  ],
+                );
+              // : const NearbyMain();
             }
           }
         },

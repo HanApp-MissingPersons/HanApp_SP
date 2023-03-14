@@ -96,10 +96,11 @@ class _RegisterViewState extends State<RegisterView> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 40, top: 60),
+                              padding:
+                                  const EdgeInsets.only(bottom: 40, top: 60),
                               child: Image.asset(
                                 'assets/images/register.png',
-                                height: MediaQuery.of(context).size.width*0.7,
+                                height: MediaQuery.of(context).size.width * 0.7,
                                 fit: BoxFit.fitWidth,
                               ),
                             ),
@@ -276,6 +277,8 @@ class _RegisterViewState extends State<RegisterView> {
                                                   .createUserWithEmailAndPassword(
                                                       email: email,
                                                       password: password);
+                                          User user = userCredential.user!;
+                                          user.updateDisplayName(fullName);
 
                                           // Realtime Database User
                                           await registrationRef
@@ -374,21 +377,26 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
 
                             Padding(
-                              padding:
-                              const EdgeInsets.only(top: 20),
-                                child: RichText(
-                                  textAlign: TextAlign.left,
-                                  text: const TextSpan(
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                        color: Colors.black
-                                  ),
-                                    children: <TextSpan> [
-                                      TextSpan(text: 'By signing up, you’re agreeing to our'),
-                                      TextSpan(text: ' Terms & Conditions', style: TextStyle(fontWeight: FontWeight.w700)),
-                                      TextSpan(text: ' or '),
-                                      TextSpan(text: 'Privacy Policy', style: TextStyle(fontWeight: FontWeight.w700)),
-                                    ],
+                              padding: const EdgeInsets.only(top: 20),
+                              child: RichText(
+                                textAlign: TextAlign.left,
+                                text: const TextSpan(
+                                  style: TextStyle(
+                                      fontSize: 12.0, color: Colors.black),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text:
+                                            'By signing up, you’re agreeing to our'),
+                                    TextSpan(
+                                        text: ' Terms & Conditions',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700)),
+                                    TextSpan(text: ' or '),
+                                    TextSpan(
+                                        text: 'Privacy Policy',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700)),
+                                  ],
                                 ),
                               ),
                             ),
@@ -398,10 +406,12 @@ class _RegisterViewState extends State<RegisterView> {
                                 padding: const EdgeInsets.only(top: 10),
                                 child: TextButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: Text('Joined us before? Login',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 12,
-                                  ),),
+                                  child: Text(
+                                    'Joined us before? Login',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 12,
+                                    ),
+                                  ),
                                 ),
                               ),
                             )
