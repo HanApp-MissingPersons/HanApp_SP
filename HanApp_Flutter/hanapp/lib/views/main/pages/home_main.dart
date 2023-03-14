@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class HomeMain extends StatefulWidget {
   const HomeMain({super.key});
@@ -16,7 +17,14 @@ class _HomeMainState extends State<HomeMain> {
   Widget build(BuildContext context) {
     return const Text(
       'Index 0: Home',
-      style: optionStyle,
     );
+    //return const Scaffold(
+    //  body: Center(
+    //    child: SpinKitCubeGrid(
+    //      color: Color(0xFF6B53FD),
+    //      size: 50,
+    //    ),
+    //  )
+    //);
   }
 }

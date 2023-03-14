@@ -109,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
                           Center(
                             child: Padding(
                               padding:
-                                  const EdgeInsets.only(left: 10, bottom: 10),
+                                  const EdgeInsets.only(left: 10, bottom: 20),
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
@@ -150,7 +150,7 @@ class _LoginViewState extends State<LoginView> {
                             },
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 10),
+                            padding: const EdgeInsets.only(top: 20),
                             child: TextFormField(
                               controller: _password,
                               obscureText: _obscured,
