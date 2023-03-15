@@ -4,7 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hanapp/main.dart';
 import 'package:location/location.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class NearbyMain extends StatefulWidget {
   const NearbyMain({super.key});
@@ -106,11 +108,17 @@ class _NearbyMainState extends State<NearbyMain> {
                     ),
                   ),
                 ),
+                //Center(
+                //  child: CircularProgressIndicator(
+                //    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                //  ),
+                //),
                 Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  child: SpinKitCubeGrid(
+                    color: Palette.indigo,
+                    size: 25.0,
                   ),
-                ),
+                )
               ],
             )
           : GoogleMap(

@@ -245,9 +245,9 @@ class _RegisterViewState extends State<RegisterView> {
                                   height: 40.0,
                                   child: ElevatedButton(
                                     style: ButtonStyle(
-                                        backgroundColor:
-                                            const MaterialStatePropertyAll<
-                                                Color>(Color(0xFF6B53FD)),
+                                        //backgroundColor:
+                                        //    const MaterialStatePropertyAll<
+                                        //        Color>(Color(0xFF6B53FD)),
                                         shape: MaterialStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(

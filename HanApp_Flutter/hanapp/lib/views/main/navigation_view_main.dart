@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import '../../firebase_options.dart';
 import '../login_view.dart';
@@ -91,8 +92,8 @@ class _NavigationFieldState extends State<NavigationField> {
                     ),
                     Positioned(
                       // position the user profile button
-                      top: MediaQuery.of(context).size.height * .035,
-                      right: MediaQuery.of(context).size.width * .035,
+                      top: MediaQuery.of(context).size.height * .090,
+                      right: MediaQuery.of(context).size.width * .080,
                       child: FloatingActionButton(
                         onPressed: () {
                           // sign out the user
@@ -107,7 +108,7 @@ class _NavigationFieldState extends State<NavigationField> {
                         },
                         shape: const CircleBorder(),
                         clipBehavior: Clip.antiAlias,
-                        child: const Icon(Icons.person_outlined),
+                        child: const Icon(Icons.person_outline_rounded),
                       ),
                     ),
                     // _widgetOptions.elementAt(_selectedIndex)
@@ -145,7 +146,7 @@ class _NavigationFieldState extends State<NavigationField> {
               label: 'Updates'),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Color(0xFF6B53FD),
+        selectedItemColor: Palette.indigo,
         unselectedItemColor: Colors.black26,
         showUnselectedLabels: false,
         onTap: _onItemTapped,
