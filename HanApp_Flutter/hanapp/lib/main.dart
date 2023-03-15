@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/firebase_options.dart';
 import 'package:hanapp/views/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,6 +32,9 @@ class MyApp extends StatelessWidget {
       title: 'HanApp Initial Set Up',
       theme: ThemeData(
         primarySwatch: Palette.indigo,
+        textTheme: GoogleFonts.interTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
       // proceed to login page if user is not signed in, otherwise proceed to home page
       home: isUserSignedIn ? const NavigationField() : const LoginView(),

@@ -108,11 +108,6 @@ class _NearbyMainState extends State<NearbyMain> {
                     ),
                   ),
                 ),
-                //Center(
-                //  child: CircularProgressIndicator(
-                //    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                //  ),
-                //),
                 Center(
                   child: SpinKitCubeGrid(
                     color: Palette.indigo,

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import '../../firebase_options.dart';
@@ -65,8 +66,13 @@ class _NavigationFieldState extends State<NavigationField> {
                   child: Column(
                     // ignore: prefer_const_literals_to_create_immutables
                     children: [
-                      const Text('Loading . . .'),
-                      const Center(child: CircularProgressIndicator()),
+                      //const Text('Loading . . .'),
+                    const Center(
+                      child: SpinKitCubeGrid(
+                        color: Palette.indigo,
+                        size: 50.0,
+                        ),
+                      ),
                     ],
                   ),
                 );
@@ -146,6 +152,7 @@ class _NavigationFieldState extends State<NavigationField> {
               label: 'Updates'),
         ],
         currentIndex: _selectedIndex,
+        selectedFontSize: 9,
         selectedItemColor: Palette.indigo,
         unselectedItemColor: Colors.black26,
         showUnselectedLabels: false,
