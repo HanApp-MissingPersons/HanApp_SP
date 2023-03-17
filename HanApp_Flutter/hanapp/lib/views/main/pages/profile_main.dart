@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hanapp/views/login_view.dart';
-
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import '../../../firebase_options.dart';
 import '../../../main.dart';
 
@@ -85,6 +85,18 @@ class _ProfileMain extends State<ProfileMain> {
                   },
                   child: const Text('Sign Out')),
             ),
+            TextButton(
+                onPressed: () async {
+                  var results = await showCalendarDatePicker2Dialog(
+                    context: context,
+                    config: CalendarDatePicker2WithActionButtonsConfig(),
+                    dialogSize: const Size(325, 400),
+                    initialValue: [],
+                    borderRadius: BorderRadius.circular(15),
+                  );
+                  print('[HUMU HUMU CALENDAR] $results');
+                },
+                child: Text('Test Calendar')),
           ],
         ),
       ),
