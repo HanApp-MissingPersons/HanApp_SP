@@ -17,7 +17,7 @@ class ProfileMain extends StatefulWidget {
 }
 
 class _ProfileMain extends State<ProfileMain> {
-  String _usrFullName = ' ';
+  String _usrFullName = 'Data Loading';
   String _usrEmail = ' ';
   String _usrNumber = ' ';
   DatabaseReference mainUsersRef = FirebaseDatabase.instance.ref('Main Users');
@@ -62,44 +62,65 @@ class _ProfileMain extends State<ProfileMain> {
     //   final usersData = Map<String, dynamic>.from(
     //       event.snapshot.value as Map<dynamic, dynamic>);
     // });
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('profile'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(_usrFullName),
-            Text(_usrEmail),
-            Text(_usrNumber),
-            Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginView()));
-                  },
-                  child: const Text('Sign Out')),
+    return _usrFullName != 'Data Loading'
+        ? Scaffold(
+            appBar: AppBar(
+              title: const Text('profile'),
             ),
-            TextButton(
-                onPressed: () async {
-                  var results = await showCalendarDatePicker2Dialog(
-                    context: context,
-                    config: CalendarDatePicker2WithActionButtonsConfig(),
-                    dialogSize: const Size(325, 400),
-                    initialValue: [],
-                    borderRadius: BorderRadius.circular(15),
-                  );
-                  print('[HUMU HUMU CALENDAR] $results');
-                },
-                child: Text('Test Calendar')),
-          ],
-        ),
-      ),
-    );
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(_usrFullName),
+                  Text(_usrEmail),
+                  Text(_usrNumber),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          FirebaseAuth.instance.signOut();
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginView()));
+                        },
+                        child: const Text('Sign Out')),
+                  ),
+                  TextButton(
+                      onPressed: () async {
+                        var results = await showCalendarDatePicker2Dialog(
+                          context: context,
+                          config: CalendarDatePicker2WithActionButtonsConfig(
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now(),
+                          ),
+                          dialogSize: const Size(325, 400),
+                          initialValue: [],
+                          borderRadius: BorderRadius.circular(15),
+                        );
+                        // get variable results type
+
+                        var resultType = results![0].runtimeType;
+                        var ressu = results[0];
+                        print('[HUMU HUMU CALENDAR] \n$ressu\n$resultType');
+                        print(DateTime.now());
+                        var age =
+                            (DateTime.now().difference(ressu!).inDays / 365)
+                                .floor();
+                        print('[AGE?] $age');
+                      },
+                      child: Text('Test Calendar')),
+                ],
+              ),
+            ),
+          )
+        : const Scaffold(
+            body: Center(
+              child: SpinKitCubeGrid(
+                color: Colors.blue,
+                size: 50.0,
+              ),
+            ),
+          );
   }
 }

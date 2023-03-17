@@ -47,6 +47,7 @@ dependencies:
   location: ^4.4.0
   geolocator: ^9.0.2
   calendar_date_picker2: ^0.4.5
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

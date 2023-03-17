@@ -1,3 +1,4 @@
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:hanapp/firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:hanapp/views/login_view.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import 'verify_email_view.dart';
 
@@ -16,6 +18,60 @@ class RegisterView extends StatefulWidget {
   State<RegisterView> createState() => _RegisterViewState();
 }
 
+String reformatDate(String dateTime, DateTime dateTimeBday) {
+  var dateParts = dateTime.split('-');
+  var month = dateParts[1];
+  month = month.replaceAll('0', '');
+  // switch case of shame
+  switch (month) {
+    case '1':
+      month = 'January';
+      break;
+    case '2':
+      month = 'February';
+      break;
+    case '3':
+      month = 'March';
+      break;
+    case '4':
+      month = 'April';
+      break;
+    case '5':
+      month = 'May';
+      break;
+    case '6':
+      month = 'June';
+      break;
+    case '7':
+      month = 'July';
+      break;
+    case '8':
+      month = 'August';
+      break;
+    case '9':
+      month = 'September';
+      break;
+    case '10':
+      month = 'October';
+      break;
+    case '11':
+      month = 'November';
+      break;
+    case '12':
+      month = 'December';
+      break;
+  }
+
+  var day = dateParts[2];
+  day = day.substring(0, day.indexOf(' '));
+  day = day.replaceAll('0', '');
+
+  var year = dateParts[0];
+
+  var age = (DateTime.now().difference(dateTimeBday).inDays / 365).floor();
+  return '$month $day, $year\t\t$age years old';
+}
+
 class _RegisterViewState extends State<RegisterView> {
   // variables
   // Controllers to contain the text in the text fields
@@ -23,7 +79,11 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _password;
   late final TextEditingController _fullName;
   late final TextEditingController _phoneNumber;
+  late final TextEditingController _birthDate;
   late final Future<FirebaseApp> _firebaseInit;
+  // ignore: prefer_typing_uninitialized_variables
+  var age;
+  DateTime? dateTimeBday;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   // _formKey is used to validate the form
   final _formKey = GlobalKey<FormState>();
@@ -42,6 +102,7 @@ class _RegisterViewState extends State<RegisterView> {
     _password = TextEditingController();
     _fullName = TextEditingController();
     _phoneNumber = TextEditingController();
+    _birthDate = TextEditingController();
     _firebaseInit = Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -151,7 +212,8 @@ class _RegisterViewState extends State<RegisterView> {
                                 controller: _password,
                                 obscureText: _obscured,
                                 decoration: InputDecoration(
-                                    prefixIcon: const Icon(Icons.lock_outline_rounded),
+                                    prefixIcon:
+                                        const Icon(Icons.lock_outline_rounded),
                                     labelText: 'Password',
                                     border: const OutlineInputBorder(
                                       borderRadius:
@@ -180,6 +242,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 },
                               ), // password),
                             ),
+
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
@@ -189,7 +252,8 @@ class _RegisterViewState extends State<RegisterView> {
                                 enableSuggestions: false,
                                 keyboardType: TextInputType.name,
                                 decoration: const InputDecoration(
-                                  prefixIcon: Icon(Icons.person_outline_rounded),
+                                  prefixIcon:
+                                      Icon(Icons.person_outline_rounded),
                                   labelText: 'Full Name',
                                   border: OutlineInputBorder(
                                     borderRadius:
@@ -238,6 +302,58 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
 
                             Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
+                                // birth day
+                                controller: _birthDate,
+                                showCursor: false,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                keyboardType: TextInputType.datetime,
+                                decoration: const InputDecoration(
+                                  prefixIcon:
+                                      Icon(Icons.calendar_today_outlined),
+                                  labelText: 'Birth Date',
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
+                                  ),
+                                ),
+                                onTap: () async {
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                  var results =
+                                      await showCalendarDatePicker2Dialog(
+                                    context: context,
+                                    config:
+                                        CalendarDatePicker2WithActionButtonsConfig(
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now(),
+                                    ),
+                                    dialogSize: const Size(325, 400),
+                                    initialValue: [DateTime.now()],
+                                    borderRadius: BorderRadius.circular(15),
+                                  );
+                                  // get variable results type
+
+                                  dateTimeBday = results![0];
+                                  var stringBday = dateTimeBday.toString();
+                                  var reformattedBday =
+                                      reformatDate(stringBday, dateTimeBday!);
+                                  _birthDate.text = reformattedBday;
+                                },
+
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your birth date';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                            ),
+
+                            Padding(
                               padding: const EdgeInsets.only(top: 20),
                               child: FractionallySizedBox(
                                 widthFactor: 1,
@@ -251,9 +367,8 @@ class _RegisterViewState extends State<RegisterView> {
                                         shape: MaterialStateProperty.all<
                                                 RoundedRectangleBorder>(
                                             RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ))),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ))),
                                     // onPressed is an asynchronous function because it will wait for the Firebase to complete the registration
                                     // before proceeding to the next step
                                     onPressed: () async {
@@ -263,6 +378,7 @@ class _RegisterViewState extends State<RegisterView> {
                                       final password = _password.text;
                                       final fullName = _fullName.text;
                                       final phoneNumber = _phoneNumber.text;
+                                      final birthDate = dateTimeBday.toString();
                                       // try to register the user
                                       try {
                                         // set the autovalidate mode to disabled so that the form will not show errors
@@ -287,6 +403,7 @@ class _RegisterViewState extends State<RegisterView> {
                                             'email': email,
                                             'fullName': fullName,
                                             'phoneNumber': phoneNumber,
+                                            'birthDate': birthDate,
                                           });
 
                                           if (kDebugMode) {
