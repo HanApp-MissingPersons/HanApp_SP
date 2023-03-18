@@ -8,6 +8,7 @@ import 'package:hanapp/views/login_view.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import '../../../firebase_options.dart';
 import '../../../main.dart';
+import '../../register_view.dart';
 
 class ProfileMain extends StatefulWidget {
   const ProfileMain({super.key});
@@ -20,6 +21,9 @@ class _ProfileMain extends State<ProfileMain> {
   String _usrFullName = 'Data Loading';
   String _usrEmail = ' ';
   String _usrNumber = ' ';
+  String _usrBirthDate = ' ';
+  String _usrAge = ' ';
+  String _birthDateFormatted = ' ';
   DatabaseReference mainUsersRef = FirebaseDatabase.instance.ref('Main Users');
   final user = FirebaseAuth.instance.currentUser;
 
@@ -37,31 +41,30 @@ class _ProfileMain extends State<ProfileMain> {
       String nameFromDB = usrProfileDict['fullName'];
       String numberFromDB = usrProfileDict['phoneNumber'];
       String emailFromDB = usrProfileDict['email'];
+
+      String birthDate = usrProfileDict['birthDate'];
+      List birthDateList = reformatDate(birthDate, DateTime.parse(birthDate));
+      String birthDateFormatted = birthDateList[0];
+      String age = birthDateList[1];
+
       if (kDebugMode) {
         print('[RETRIEVED] $usrProfileDict');
+        print('$birthDateList');
       }
 
       setState(() {
         _usrFullName = nameFromDB;
         _usrNumber = numberFromDB;
         _usrEmail = emailFromDB;
+        _usrBirthDate = birthDate;
+        _usrAge = age;
+        _birthDateFormatted = birthDateFormatted;
       });
     });
   }
 
-  // void setUserDetails(data) {
-  //   setState(() {
-  //     usersData = data;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // // var usersData;
-    // mainUserRef.onValue.listen((event) {
-    //   final usersData = Map<String, dynamic>.from(
-    //       event.snapshot.value as Map<dynamic, dynamic>);
-    // });
     return _usrFullName != 'Data Loading'
         ? Scaffold(
             appBar: AppBar(
@@ -74,6 +77,8 @@ class _ProfileMain extends State<ProfileMain> {
                   Text(_usrFullName),
                   Text(_usrEmail),
                   Text(_usrNumber),
+                  Text(_birthDateFormatted),
+                  Text(_usrAge),
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ElevatedButton(
