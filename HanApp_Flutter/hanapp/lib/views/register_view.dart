@@ -18,7 +18,7 @@ class RegisterView extends StatefulWidget {
   State<RegisterView> createState() => _RegisterViewState();
 }
 
-String reformatDate(String dateTime, DateTime dateTimeBday) {
+List reformatDate(String dateTime, DateTime dateTimeBday) {
   var dateParts = dateTime.split('-');
   var month = dateParts[1];
   month = month.replaceAll('0', '');
@@ -68,8 +68,10 @@ String reformatDate(String dateTime, DateTime dateTimeBday) {
 
   var year = dateParts[0];
 
-  var age = (DateTime.now().difference(dateTimeBday).inDays / 365).floor();
-  return '$month $day, $year\t\t$age years old';
+  var age =
+      (DateTime.now().difference(dateTimeBday).inDays / 365).floor().toString();
+  var returnVal = '$month $day, $year';
+  return [returnVal, age];
 }
 
 class _RegisterViewState extends State<RegisterView> {
@@ -81,8 +83,8 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _phoneNumber;
   late final TextEditingController _birthDate;
   late final Future<FirebaseApp> _firebaseInit;
+  String? ageFromBday;
   // ignore: prefer_typing_uninitialized_variables
-  var age;
   DateTime? dateTimeBday;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
   // _formKey is used to validate the form
@@ -338,8 +340,10 @@ class _RegisterViewState extends State<RegisterView> {
 
                                   dateTimeBday = results![0];
                                   var stringBday = dateTimeBday.toString();
-                                  var reformattedBday =
+                                  List returnVals =
                                       reformatDate(stringBday, dateTimeBday!);
+                                  String reformattedBday = returnVals[0];
+                                  ageFromBday = returnVals[1];
                                   _birthDate.text = reformattedBday;
                                 },
 
@@ -351,6 +355,17 @@ class _RegisterViewState extends State<RegisterView> {
                                   }
                                 },
                               ),
+                            ),
+
+                            Container(
+                              child: ageFromBday != null
+                                  ? Text(
+                                      'You are currently a $ageFromBday year old',
+                                      style: TextStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: 12),
+                                    )
+                                  : const Text(''),
                             ),
 
                             Padding(
