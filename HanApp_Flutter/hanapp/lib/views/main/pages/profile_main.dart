@@ -72,29 +72,62 @@ class _ProfileMain extends State<ProfileMain> {
     return _usrFullName != 'Data Loading'
         ? Scaffold(
             appBar: AppBar(
-              title: const Text('profile'),
+              title: const Text('Profile'),
             ),
-            body: Center(
+            body: Padding(
+              padding:
+                  const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_usrFullName),
-                  Text(_usrEmail),
-                  Text(_usrNumber),
-                  Text(_birthDateFormatted),
-                  Text(_usrAge),
-                  Text(_usrSex),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          FirebaseAuth.instance.signOut();
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginView()));
-                        },
-                        child: const Text('Sign Out')),
+                  SizedBox(height: 20.0),
+                  CircleAvatar(
+                    radius: 60.0,
+                    backgroundImage: NetworkImage(
+                        'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'),
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    _usrFullName,
+                    style:
+                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    _usrEmail,
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    _usrNumber,
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    'Birth Date: $_birthDateFormatted',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    'Age: $_usrAge',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 10.0),
+                  Text(
+                    'Sex: $_usrSex',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  SizedBox(height: 20.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginView()),
+                      );
+                    },
+                    child: const Text('Sign Out'),
                   ),
                 ],
               ),
