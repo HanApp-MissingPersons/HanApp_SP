@@ -21,7 +21,9 @@ class RegisterView extends StatefulWidget {
 List reformatDate(String dateTime, DateTime dateTimeBday) {
   var dateParts = dateTime.split('-');
   var month = dateParts[1];
-  month = month.replaceAll('0', '');
+  if (int.parse(month) % 10 != 0) {
+    month = month.replaceAll('0', '');
+  }
   // switch case of shame
   switch (month) {
     case '1':
@@ -64,7 +66,9 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
 
   var day = dateParts[2];
   day = day.substring(0, day.indexOf(' '));
-  day = day.replaceAll('0', '');
+  if (int.parse(day) % 10 != 0) {
+    day = day.replaceAll('0', '');
+  }
 
   var year = dateParts[0];
 
