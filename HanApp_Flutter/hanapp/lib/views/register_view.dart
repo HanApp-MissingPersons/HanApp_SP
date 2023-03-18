@@ -88,6 +88,7 @@ class _RegisterViewState extends State<RegisterView> {
   late final TextEditingController _birthDate;
   late final Future<FirebaseApp> _firebaseInit;
   String? ageFromBday;
+  String? _selectedSex;
   // ignore: prefer_typing_uninitialized_variables
   DateTime? dateTimeBday;
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
@@ -308,6 +309,43 @@ class _RegisterViewState extends State<RegisterView> {
                             ),
 
                             Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: DropdownButtonFormField<String>(
+                                value: _selectedSex,
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    _selectedSex = newValue;
+                                    print(newValue);
+                                  });
+                                },
+                                items: <String>[
+                                  'Male',
+                                  'Female'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                decoration: const InputDecoration(
+                                  prefixIcon: Icon(Icons.wc_outlined),
+                                  labelText: 'Sex',
+                                  hintText: 'Select Sex',
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Please select a value';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+
+                            Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
                                 // birth day
@@ -423,6 +461,7 @@ class _RegisterViewState extends State<RegisterView> {
                                             'fullName': fullName,
                                             'phoneNumber': phoneNumber,
                                             'birthDate': birthDate,
+                                            'sex': _selectedSex,
                                           });
 
                                           if (kDebugMode) {

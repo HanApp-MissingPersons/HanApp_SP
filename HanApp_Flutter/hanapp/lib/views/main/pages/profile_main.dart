@@ -21,9 +21,11 @@ class _ProfileMain extends State<ProfileMain> {
   String _usrFullName = 'Data Loading';
   String _usrEmail = ' ';
   String _usrNumber = ' ';
+  // ignore: unused_field
   String _usrBirthDate = ' ';
   String _usrAge = ' ';
   String _birthDateFormatted = ' ';
+  String _usrSex = ' ';
   DatabaseReference mainUsersRef = FirebaseDatabase.instance.ref('Main Users');
   final user = FirebaseAuth.instance.currentUser;
 
@@ -41,6 +43,7 @@ class _ProfileMain extends State<ProfileMain> {
       String nameFromDB = usrProfileDict['fullName'];
       String numberFromDB = usrProfileDict['phoneNumber'];
       String emailFromDB = usrProfileDict['email'];
+      String sexFromDB = usrProfileDict['sex'];
 
       String birthDate = usrProfileDict['birthDate'];
       List birthDateList = reformatDate(birthDate, DateTime.parse(birthDate));
@@ -56,6 +59,7 @@ class _ProfileMain extends State<ProfileMain> {
         _usrFullName = nameFromDB;
         _usrNumber = numberFromDB;
         _usrEmail = emailFromDB;
+        _usrSex = sexFromDB;
         _usrBirthDate = birthDate;
         _usrAge = age;
         _birthDateFormatted = birthDateFormatted;
@@ -79,6 +83,7 @@ class _ProfileMain extends State<ProfileMain> {
                   Text(_usrNumber),
                   Text(_birthDateFormatted),
                   Text(_usrAge),
+                  Text(_usrSex),
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: ElevatedButton(
@@ -91,30 +96,6 @@ class _ProfileMain extends State<ProfileMain> {
                         },
                         child: const Text('Sign Out')),
                   ),
-                  TextButton(
-                      onPressed: () async {
-                        var results = await showCalendarDatePicker2Dialog(
-                          context: context,
-                          config: CalendarDatePicker2WithActionButtonsConfig(
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now(),
-                          ),
-                          dialogSize: const Size(325, 400),
-                          initialValue: [],
-                          borderRadius: BorderRadius.circular(15),
-                        );
-                        // get variable results type
-
-                        var resultType = results![0].runtimeType;
-                        var ressu = results[0];
-                        print('[HUMU HUMU CALENDAR] \n$ressu\n$resultType');
-                        print(DateTime.now());
-                        var age =
-                            (DateTime.now().difference(ressu!).inDays / 365)
-                                .floor();
-                        print('[AGE?] $age');
-                      },
-                      child: Text('Test Calendar')),
                 ],
               ),
             ),
