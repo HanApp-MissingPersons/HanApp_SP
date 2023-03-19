@@ -101,33 +101,117 @@ class _ReportMainState extends State<ReportMain> {
   @override
   Widget build(BuildContext context) {
     //use stack and sizedbox to make the pageview full screen
-    return Stack(children: [
-      Center(
-        child: SingleChildScrollView(
-          child: Container(
-              // margin 1/8th of the screen height
-              margin:
-                  EdgeInsets.only(top: MediaQuery.of(context).size.height / 8),
-              // avoid RenderBox was not laid out: RenderConstrainedBox#f2f9d NEEDS-LAYOUT NEEDS-PAINT using Expanded
+    return Stack(
+      children: [
+        // Stack for PageView
+        Center(
+          child: SingleChildScrollView(
+            child: Container(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 8),
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (int index) {
+                      setState(() {
+                        _activePage = index;
+                      });
+                    }, // onPageChanged
+                    itemCount: _ReportPages.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _ReportPages[index];
+                    } // itemBuilder
+                    ) // Container
+                ),
+          ), // SizedBox
+        ), // Center for Pageview
 
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: PageView.builder(
-                  // define height of the pageview
-                  controller: _pageController,
-                  onPageChanged: (int index) {
-                    setState(() {
-                      _activePage = index;
-                    });
-                  }, // onPageChanged
-                  itemCount: _ReportPages.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _ReportPages[index];
-                  } // itemBuilder
-                  ) // Expanded
-              ),
-        ), // SizedBox
-      ) // Positioned
-    ]); // Stack
+        // Bottom Indicator
+        Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 40,
+            child: Container(
+              color: Colors.black12,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                    _ReportPages.length,
+                    (index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          child: InkWell(
+                            onTap: () {
+                              _pageController.animateToPage(index,
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeIn);
+                            },
+                            child: CircleAvatar(
+                              radius: 5,
+                              // check if a dot is connected to the current page
+                              // if true, give it a different color
+                              backgroundColor: _activePage == index
+                                  ? Colors.indigo
+                                  : Colors.white30,
+                            ), // CircleAvatar
+                          ), // InkWell
+                        )), // Padding
+              ), // Row
+            ) // Container
+            ), // Positioned
+
+        // Next Page Button
+        Positioned(
+          bottom: 0,
+          right: 0,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 0, right: 20),
+            child: FloatingActionButton(
+              onPressed: () {
+                _pageController.nextPage(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeIn);
+              },
+              // removes Icon circle if on first page
+              backgroundColor: _activePage == _ReportPages.length - 1
+                  ? Colors.transparent
+                  : Colors.indigo,
+              // removes icon shadow if on first page
+              elevation: _activePage == _ReportPages.length - 1 ? 0 : 6,
+              // removes button if on first page
+              child: _activePage == _ReportPages.length - 1
+                  ? null
+                  : const Icon(Icons.arrow_forward),
+            ), // FloatingActionButton
+          ), // Container
+        ), // Positioned for Next Page Button
+
+        // Previous Page Button
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 0, left: 20),
+            child: FloatingActionButton(
+              onPressed: () {
+                _pageController.previousPage(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeIn);
+              },
+              // removes Icon circle if on first page
+              backgroundColor:
+                  _activePage == 0 ? Colors.transparent : Colors.indigo,
+              // removes icon shadow if on first page
+              elevation: _activePage == 0 ? 0 : 6,
+              // removes button if on first page
+              child: _activePage == 0 ? null : const Icon(Icons.arrow_back),
+
+              // removes shadow if on first page
+            ), // FloatingActionButton
+          ), // Container
+        ), // Positioned for Previous Page Button
+      ], // children for Stack
+    ); // Stack
   }
 }
