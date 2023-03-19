@@ -59,15 +59,20 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                     });
                   },
                 ), // Checkbox for Natural Calamity
-                // container for text (to force a word wrap)
-                Container(
-                  padding: const EdgeInsets.only(right: 10),
-                  width: MediaQuery.of(context).size.width - 100,
-                  child: const Text(
-                    _naturalCalamityText,
-                    // style: optionStyle,
+                // GestureDetector that checks the checkbox when the text is tapped
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isVictimNaturalCalamity = !_isVictimNaturalCalamity;
+                    });
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: const Text(
+                      _naturalCalamityText,
+                    ),
                   ),
-                ), // end of text container
+                ), // end of GestureDetector, // end of text container
               ],
             ),
             // add padding between rows
@@ -83,14 +88,20 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                     });
                   },
                 ),
-                // container for text (to force a word wrap)
-                Container(
-                  padding: const EdgeInsets.only(right: 10),
-                  width: MediaQuery.of(context).size.width - 100,
-                  child: const Text(
-                    _minorText,
+                // GestureDetector that checks the checkbox when the text is tapped
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isMinor = !_isMinor;
+                    });
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: const Text(
+                      _minorText,
+                    ),
                   ),
-                ), // end of text container
+                ), // end of GestureDetector
               ],
             ),
             // add padding between rows
@@ -105,14 +116,19 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                     });
                   },
                 ),
-                // container for text (to force a word wrap)
-                Container(
-                  padding: const EdgeInsets.only(right: 10),
-                  width: MediaQuery.of(context).size.width - 100,
-                  child: const Text(
-                    _missing24HoursText,
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isMissing24Hours = !_isMissing24Hours;
+                    });
+                  },
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: const Text(
+                      _missing24HoursText,
+                    ),
                   ),
-                ), // end of text container
+                ), // end of GestureDetector, // end of text container
               ],
             ), // add padding between rows
             const SizedBox(height: _rowPadding),
@@ -126,19 +142,25 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                     });
                   },
                 ),
-                // container for text (to force a word wrap)
-                Container(
-                  padding: const EdgeInsets.only(right: 10),
-                  width: MediaQuery.of(context).size.width - 100,
-                  child: const Text(
-                    _victimCrimeText,
+                // GestureDetector that checks the checkbox when the text is tapped
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isVictimCrime = !_isVictimCrime;
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 100,
+                    child: const Text(
+                      _victimCrimeText,
+                    ),
                   ),
-                ), // end of text container
+                ), // end of GestureDetector
               ],
             ), // end of Row for Victim of Crime
             // add padding between rows
             const SizedBox(height: _rowPadding),
-            // info/instruction text
+            // info/instruction
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
