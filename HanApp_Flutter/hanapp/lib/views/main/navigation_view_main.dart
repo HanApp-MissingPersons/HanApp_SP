@@ -12,6 +12,7 @@ import 'pages/nearby_main.dart';
 import 'pages/companion_main.dart';
 import 'pages/update_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'pages/report_pages/p1_classifier.dart';
 
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
@@ -34,7 +35,10 @@ class _NavigationFieldState extends State<NavigationField> {
     setState(() {
       _selectedIndex = index;
     });
-  }
+
+    // CLEAR p1_classifier prefs
+    clearPrefs();
+  } // end onItemTapped
 
   late final Future<FirebaseApp> _firebaseInit;
   @override

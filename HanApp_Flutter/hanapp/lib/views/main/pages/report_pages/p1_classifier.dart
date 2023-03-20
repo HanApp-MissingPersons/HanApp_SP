@@ -8,14 +8,17 @@ class Page1Classifier extends StatefulWidget {
   State<Page1Classifier> createState() => _Page1ClassifierState();
 }
 
+late SharedPreferences _prefs;
+void clearPrefs() {
+  _prefs.clear();
+}
+
 class _Page1ClassifierState extends State<Page1Classifier> {
   // boolean variables for checkboxes
   bool? _isVictimNaturalCalamity;
   bool? _isMinor;
   bool? _isMissing24Hours;
   bool? _isVictimCrime;
-
-  late SharedPreferences _prefs;
 
   Future<void> getUserChoices() async {
     // state management using shared preferences
