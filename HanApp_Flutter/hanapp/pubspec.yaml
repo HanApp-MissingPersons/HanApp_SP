@@ -46,7 +46,8 @@ dependencies:
   flutter_spinkit: ^5.1.0
   location: ^4.4.0
   geolocator: ^9.0.2
-  shared_preferences: ^2.0.8 # shared preferences for state management
+  shared_preferences: ^2.0.18 # shared preferences for state management
+  calendar_date_picker2: ^0.4.5
 
 dev_dependencies:
   flutter_test:

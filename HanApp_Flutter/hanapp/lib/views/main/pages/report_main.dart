@@ -7,6 +7,11 @@ import 'package:hanapp/views/main/pages/report_pages/p4_mp_description.dart';
 import 'package:hanapp/views/main/pages/report_pages/p5_incident_details.dart';
 import 'package:hanapp/views/main/pages/report_pages/p6_auth_confirm.dart';
 
+/* REQUIREMENTS:
+1. Need to have adaptive height to content for scrolling (currently hardcoded mediquery height)
+
+ */
+
 class ReportMain extends StatefulWidget {
   const ReportMain({super.key});
 
@@ -105,13 +110,14 @@ class _ReportMainState extends State<ReportMain> {
     return Stack(
       children: [
         // Stack for PageView
-        Center(
+        Positioned(
           child: SingleChildScrollView(
             child: Container(
                 margin: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height / 8),
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height *
+                    3, // NEED TO CHANGE THIS
                 child: PageView.builder(
                     controller: _pageController,
                     onPageChanged: (int index) {

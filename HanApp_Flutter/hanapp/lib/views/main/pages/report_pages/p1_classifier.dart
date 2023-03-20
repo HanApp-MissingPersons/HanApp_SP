@@ -42,6 +42,22 @@ class _Page1ClassifierState extends State<Page1Classifier> {
   static const String _victimCrimeText =
       'Is the absent/missing person believed to be a victim of violence and crimes (including but not limited to: kidnapping, abduction, enforced disappearance, human trafficking)';
 
+  // initialize controller for the form
+  @override
+  void initState() {
+    super.initState();
+    // load the values of the checkboxes
+    _prefs.then((prefs) {
+      setState(() {
+        _isVictimNaturalCalamity =
+            prefs.getBool('isVictimNaturalCalamity') ?? false;
+        _isMinor = prefs.getBool('isMinor') ?? false;
+        _isMissing24Hours = prefs.getBool('isMissing24Hours') ?? false;
+        _isVictimCrime = prefs.getBool('isVictimCrime') ?? false;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -62,7 +78,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
             Row(
               children: [
                 Checkbox(
+                  // value: _isVictimNaturalCalamity,
+                  // retrieve value of the checkbox from shared preferences
                   value: _isVictimNaturalCalamity,
+
                   onChanged: (bool? value) {
                     setState(() {
                       _isVictimNaturalCalamity = value!;
