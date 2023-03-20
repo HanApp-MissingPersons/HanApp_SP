@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+/* LACKING:
+1. Need to add padding between rows (instead of hardcoding the padding in between rows)
+2. Need backend to store the values of the checkboxes
+3. Need state management to store the values of the checkboxes
+
+*/
 
 class Page1Classifier extends StatefulWidget {
   const Page1Classifier({super.key});
@@ -21,6 +29,9 @@ class _Page1ClassifierState extends State<Page1Classifier> {
   // row padding
   static const double _rowPadding = 20;
 
+  // state management using shared preferences
+  final _prefs = SharedPreferences.getInstance();
+
   // classifier texts
   static const String _naturalCalamityText =
       'Is the absent/missing person a victim of a natural calamity (typhoons, earthquakes, landslides), or human-induced disasters or accidents?';
@@ -39,12 +50,11 @@ class _Page1ClassifierState extends State<Page1Classifier> {
         top: 100,
         left: 20,
         child: Column(
-          // // set all the checkboxes to be on the left side of the screen
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
-            // text
             const Text(
-              'Page 1: Classifiers',
+              'Page 1 of 6: Classifiers',
               style: optionStyle,
             ), // Page 1 Text
             // add padding between rows
@@ -57,6 +67,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                     setState(() {
                       _isVictimNaturalCalamity = value!;
                     });
+                    // save the value of the checkbox
+                    _prefs.then((prefs) {
+                      prefs.setBool('isVictimNaturalCalamity', value!);
+                    });
                   },
                 ), // Checkbox for Natural Calamity
                 // GestureDetector that checks the checkbox when the text is tapped
@@ -64,6 +78,11 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   onTap: () {
                     setState(() {
                       _isVictimNaturalCalamity = !_isVictimNaturalCalamity;
+                    });
+                    // save the value of the checkbox
+                    _prefs.then((prefs) {
+                      prefs.setBool(
+                          'isVictimNaturalCalamity', !_isVictimNaturalCalamity);
                     });
                   },
                   child: SizedBox(
@@ -85,6 +104,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   onChanged: (bool? value) {
                     setState(() {
                       _isMinor = value!;
+                    });
+                    // save the value of the checkbox
+                    _prefs.then((prefs) {
+                      prefs.setBool('isMinor', value!);
                     });
                   },
                 ),
@@ -114,6 +137,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                     setState(() {
                       _isMissing24Hours = value!;
                     });
+                    // save the value of the checkbox
+                    _prefs.then((prefs) {
+                      prefs.setBool('isMissing24Hours', value!);
+                    });
                   },
                 ),
                 GestureDetector(
@@ -139,6 +166,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   onChanged: (bool? value) {
                     setState(() {
                       _isVictimCrime = value!;
+                    });
+                    // save the value of the checkbox
+                    _prefs.then((prefs) {
+                      prefs.setBool('isVictimCrime', value!);
                     });
                   },
                 ),

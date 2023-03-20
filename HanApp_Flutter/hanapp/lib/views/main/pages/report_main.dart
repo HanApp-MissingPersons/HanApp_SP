@@ -81,13 +81,14 @@ class _ReportMainState extends State<ReportMain> {
   int _activePage = 0;
 
   //Create list holding all the pages
+  // ignore: non_constant_identifier_names
   final List<Widget> _ReportPages = [
-    Page1Classifier(),
-    Page2ReporteeDetails(),
-    Page3MPDetails(),
-    Page4MPDesc(),
-    Page5IncidentDetails(),
-    Page6AuthConfirm()
+    const Page1Classifier(),
+    const Page2ReporteeDetails(),
+    const Page3MPDetails(),
+    const Page4MPDesc(),
+    const Page5IncidentDetails(),
+    const Page6AuthConfirm()
   ];
 
   // dispose the controller, this is needed to avoid memory leak
