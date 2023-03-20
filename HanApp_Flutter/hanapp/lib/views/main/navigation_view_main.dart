@@ -67,10 +67,10 @@ class _NavigationFieldState extends State<NavigationField> {
                     // ignore: prefer_const_literals_to_create_immutables
                     children: [
                       //const Text('Loading . . .'),
-                    const Center(
-                      child: SpinKitCubeGrid(
-                        color: Palette.indigo,
-                        size: 50.0,
+                      const Center(
+                        child: SpinKitCubeGrid(
+                          color: Palette.indigo,
+                          size: 50.0,
                         ),
                       ),
                     ],
@@ -133,7 +133,7 @@ class _NavigationFieldState extends State<NavigationField> {
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home_rounded),
               label: 'Home'),
-              //backgroundColor: Colors.white),
+          //backgroundColor: Colors.white),
           BottomNavigationBarItem(
               icon: Icon(Icons.summarize_outlined),
               activeIcon: Icon(Icons.summarize_rounded),
