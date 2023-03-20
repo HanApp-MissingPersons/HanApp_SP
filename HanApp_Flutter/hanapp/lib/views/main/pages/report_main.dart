@@ -169,6 +169,7 @@ class _ReportMainState extends State<ReportMain> {
           child: Container(
             margin: const EdgeInsets.only(bottom: 0, right: 20),
             child: FloatingActionButton(
+              heroTag: 'btn1',
               onPressed: () {
                 _pageController.nextPage(
                     duration: const Duration(milliseconds: 200),
@@ -195,6 +196,7 @@ class _ReportMainState extends State<ReportMain> {
           child: Container(
             margin: const EdgeInsets.only(bottom: 0, left: 20),
             child: FloatingActionButton(
+              heroTag: 'btn2',
               onPressed: () {
                 _pageController.previousPage(
                     duration: const Duration(milliseconds: 200),
