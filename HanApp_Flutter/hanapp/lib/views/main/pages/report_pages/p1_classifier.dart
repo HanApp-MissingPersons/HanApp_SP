@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/* LACKING:
-1. Need to add padding between rows (instead of hardcoding the padding in between rows)
-2. Need backend to store the values of the checkboxes
-3. Need state management to store the values of the checkboxes
-
-*/
-
 class Page1Classifier extends StatefulWidget {
   const Page1Classifier({super.key});
 
@@ -16,21 +9,45 @@ class Page1Classifier extends StatefulWidget {
 }
 
 class _Page1ClassifierState extends State<Page1Classifier> {
+  // boolean variables for checkboxes
+  bool? _isVictimNaturalCalamity;
+  bool? _isMinor;
+  bool? _isMissing24Hours;
+  bool? _isVictimCrime;
+
+  late SharedPreferences _prefs;
+
+  Future<void> getUserChoices() async {
+    // state management using shared preferences
+    _prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      _isVictimNaturalCalamity =
+          _prefs.getBool('isVictimNaturalCalamity') ?? false;
+      _isMinor = _prefs.getBool('isMinor') ?? false;
+      _isMissing24Hours = _prefs.getBool('isMissing24Hours') ?? false;
+      _isVictimCrime = _prefs.getBool('isVictimCrime') ?? false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserChoices();
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   getUserChoices();
+  // }
+
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
 
-  // boolean variables for checkboxes
-  bool _isVictimNaturalCalamity = false;
-  bool _isMinor = false;
-  bool _isMissing24Hours = false;
-  bool _isVictimCrime = false;
-
   // row padding
   static const double _rowPadding = 20;
-
-  // state management using shared preferences
-  final _prefs = SharedPreferences.getInstance();
 
   // classifier texts
   static const String _naturalCalamityText =
@@ -65,25 +82,23 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   value: _isVictimNaturalCalamity,
                   onChanged: (bool? value) {
                     setState(() {
-                      _isVictimNaturalCalamity = value!;
+                      _isVictimNaturalCalamity = value;
                     });
                     // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isVictimNaturalCalamity', value!);
-                    });
+
+                    _prefs.setBool('isVictimNaturalCalamity', value!);
                   },
                 ), // Checkbox for Natural Calamity
                 // GestureDetector that checks the checkbox when the text is tapped
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      _isVictimNaturalCalamity = !_isVictimNaturalCalamity;
+                      _isVictimNaturalCalamity = !_isVictimNaturalCalamity!;
                     });
                     // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool(
-                          'isVictimNaturalCalamity', !_isVictimNaturalCalamity);
-                    });
+
+                    _prefs.setBool(
+                        'isVictimNaturalCalamity', _isVictimNaturalCalamity!);
                   },
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 100,
@@ -97,26 +112,27 @@ class _Page1ClassifierState extends State<Page1Classifier> {
             // add padding between rows
             const SizedBox(height: _rowPadding),
             Row(
-              // add space between checkbox rows
               children: [
                 Checkbox(
                   value: _isMinor,
                   onChanged: (bool? value) {
                     setState(() {
-                      _isMinor = value!;
+                      _isMinor = value;
                     });
                     // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isMinor', value!);
-                    });
+
+                    _prefs.setBool('isMinor', value!);
                   },
-                ),
+                ), // Checkbox for Natural Calamity
                 // GestureDetector that checks the checkbox when the text is tapped
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      _isMinor = !_isMinor;
+                      _isMinor = !_isMinor!;
                     });
+                    // save the value of the checkbox
+
+                    _prefs.setBool('isMinor', _isMinor!);
                   },
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 100,
@@ -124,7 +140,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                       _minorText,
                     ),
                   ),
-                ), // end of GestureDetector
+                ), // end of GestureDetector, // end of text container
               ],
             ),
             // add padding between rows
@@ -135,19 +151,22 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   value: _isMissing24Hours,
                   onChanged: (bool? value) {
                     setState(() {
-                      _isMissing24Hours = value!;
+                      _isMissing24Hours = value;
                     });
                     // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isMissing24Hours', value!);
-                    });
+
+                    _prefs.setBool('isMissing24Hours', value!);
                   },
-                ),
+                ), // Checkbox for Natural Calamity
+                // GestureDetector that checks the checkbox when the text is tapped
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      _isMissing24Hours = !_isMissing24Hours;
+                      _isMissing24Hours = !_isMissing24Hours!;
                     });
+                    // save the value of the checkbox
+
+                    _prefs.setBool('isMissing24Hours', _isMissing24Hours!);
                   },
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 100,
@@ -157,7 +176,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   ),
                 ), // end of GestureDetector, // end of text container
               ],
-            ), // add padding between rows
+            ),
             const SizedBox(height: _rowPadding),
             Row(
               children: [
@@ -165,30 +184,32 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   value: _isVictimCrime,
                   onChanged: (bool? value) {
                     setState(() {
-                      _isVictimCrime = value!;
+                      _isVictimCrime = value;
                     });
                     // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isVictimCrime', value!);
-                    });
+
+                    _prefs.setBool('isVictimCrime', value!);
                   },
-                ),
+                ), // Checkbox for Natural Calamity
                 // GestureDetector that checks the checkbox when the text is tapped
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      _isVictimCrime = !_isVictimCrime;
+                      _isVictimCrime = !_isVictimCrime!;
                     });
+                    // save the value of the checkbox
+
+                    _prefs.setBool('isVictimCrime', _isVictimCrime!);
                   },
-                  child: Container(
+                  child: SizedBox(
                     width: MediaQuery.of(context).size.width - 100,
                     child: const Text(
                       _victimCrimeText,
                     ),
                   ),
-                ), // end of GestureDetector
+                ), // end of GestureDetector, // end of text container
               ],
-            ), // end of Row for Victim of Crime
+            ),
             // add padding between rows
             const SizedBox(height: _rowPadding),
             // info/instruction

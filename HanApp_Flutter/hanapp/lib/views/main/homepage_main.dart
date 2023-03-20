@@ -1,74 +1,90 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
+// Copyright 2013 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// ignore_for_file: public_member_api_docs
+
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:hanapp/views/login_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../firebase_options.dart';
-import '../verify_email_view.dart';
+void main() {
+  runApp(const MyApp());
+}
 
-// <!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>
-// TODO: DO NOT REMOVE USING AS REFERENCE
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // returns simple scaffold with appbar and body
+    return const MaterialApp(
+      title: 'SharedPreferences Demo',
+      home: SharedPreferencesDemo(),
+    );
+  }
+}
+
+class SharedPreferencesDemo extends StatefulWidget {
+  const SharedPreferencesDemo({Key? key}) : super(key: key);
+
+  @override
+  SharedPreferencesDemoState createState() => SharedPreferencesDemoState();
+}
+
+class SharedPreferencesDemoState extends State<SharedPreferencesDemo> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late Future<int> _counter;
+
+  Future<void> _incrementCounter() async {
+    final SharedPreferences prefs = await _prefs;
+    final int counter = (prefs.getInt('counter') ?? 0) + 1;
+
+    setState(() {
+      _counter = prefs.setInt('counter', counter).then((bool success) {
+        return counter;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _counter = _prefs.then((SharedPreferences prefs) {
+      return prefs.getInt('counter') ?? 0;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-            heightFactor: 240, widthFactor: 240, child: Text('Home Page')),
+        title: const Text('SharedPreferences Demo'),
       ),
-      body: FutureBuilder(
-        // initialize firebase
-        // FutureBuilder is used to handle the async nature of the firebase initialization
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        // build a switch statement to handle the different connection states
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            // if there is no connection, return a text widget
-            case ConnectionState.none:
-              return const Center(child: Text('None oh no'));
-            // if there is a connection, return a text widget
-            case ConnectionState.waiting:
-              return const Center(child: Text('Loading . . .'));
-            // if the connection is active, return a text widget
-            case ConnectionState.active:
-              return const Center(child: Text('App loading in...'));
-            // if the connection is done, return a text widget
-            case ConnectionState.done:
-              // get the current user
-              final user = FirebaseAuth.instance.currentUser;
-              return Center(
-                child: Column(
-                  children: [
-                    const Text('This will be the Homepage'),
-                    Text('Current User: ${user!.email}'),
-                    ElevatedButton(
-                      onPressed: () {
-                        // sign out the user
-                        FirebaseAuth.instance.signOut();
-                        // navigate to the login page
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginView(),
-                          ),
-                        );
-                      },
-                      child: const Text('Sign Out'),
-                    ),
-                  ],
-                ),
-              );
-            // if none of the above, return a text widget
-            default:
-              return const Center(child: Text('Loading . . . '));
-          }
-        },
+      body: Center(
+          child: FutureBuilder<int>(
+              future: _counter,
+              builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const CircularProgressIndicator();
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return Text(
+                        'Button tapped ${snapshot.data} time${snapshot.data == 1 ? '' : 's'}.\n\n'
+                        'This should persist across restarts.',
+                      );
+                    }
+                }
+              })),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
       ),
     );
   }
