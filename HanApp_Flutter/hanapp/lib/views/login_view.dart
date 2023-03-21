@@ -155,7 +155,8 @@ class _LoginViewState extends State<LoginView> {
                               controller: _password,
                               obscureText: _obscured,
                               decoration: InputDecoration(
-                                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                                  prefixIcon:
+                                      const Icon(Icons.lock_outline_rounded),
                                   labelText: 'Password',
                                   border: const OutlineInputBorder(
                                     borderRadius:
@@ -196,9 +197,8 @@ class _LoginViewState extends State<LoginView> {
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ))),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ))),
                                   onPressed: () async {
                                     if (kDebugMode) {
                                       print("[PRESS] Logging in User");
@@ -396,21 +396,30 @@ class _LoginViewState extends State<LoginView> {
                               child: const Text('Google Maps Test')),
                           // for testing only
                           TextButton(
-                              onPressed: () async {
-                                await FirebaseAuth.instance
-                                    .signInWithEmailAndPassword(
-                                        email: 'hanapp.sp@gmail.com',
-                                        password: 'abc123');
-                                if (mounted) {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const NavigationField()),
-                                      (route) => false);
-                                }
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: 'hanapp.sp@gmail.com',
+                                      password: 'abc123');
+                              if (mounted) {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const NavigationField()),
+                                    (route) => false);
+                              }
+                            },
+                            child: const Text(
+                                'Login as hanapp.sp@gmail.com (for easier testing)'),
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                // Navigate to homepage_main.dart
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SharedPreferencesDemo()));
                               },
-                              child: const Text(
-                                  'Login as hanapp.sp@gmail.com (for easier testing)'))
+                              child: Text('Go test preferences'))
                         ], // children
                       ),
                     ),

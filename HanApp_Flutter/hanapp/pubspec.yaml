@@ -48,6 +48,7 @@ dependencies:
   geolocator: ^9.0.2
   calendar_date_picker2: ^0.4.5
   intl: ^0.17.0
+  shared_preferences: ^2.0.18
 
 dev_dependencies:
   flutter_test:

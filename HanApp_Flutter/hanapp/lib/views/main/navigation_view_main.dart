@@ -12,6 +12,7 @@ import 'pages/nearby_main.dart';
 import 'pages/companion_main.dart';
 import 'pages/update_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'pages/report_pages/p1_classifier.dart';
 
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
@@ -31,10 +32,40 @@ class _NavigationFieldState extends State<NavigationField> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+    if (_selectedIndex == 1 && index != 1) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Cancel Report'),
+          content: const Text('Are you sure you want to cancel your report?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  _selectedIndex = index;
+                });
+                // if user is on report page and wants to navigate away
+                // clear the prefs
+                clearPrefs();
+              },
+              child: const Text('Cancel the report'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Continue instead'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  } // end onItemTapped
 
   late final Future<FirebaseApp> _firebaseInit;
   @override
