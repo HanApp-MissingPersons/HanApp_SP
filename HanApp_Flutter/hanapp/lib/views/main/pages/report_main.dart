@@ -19,62 +19,6 @@ class ReportMain extends StatefulWidget {
   State<ReportMain> createState() => _ReportMainState();
 }
 
-// ////////// PageView WITHOUT Indicator
-// class _ReportMainState extends State<ReportMain> {
-//   // optionStyle is for the text, we can remove this when actualy doing menu contents
-//   static const TextStyle optionStyle = TextStyle(
-//       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
-
-//   // initialize controller for PageView
-//   final PageController _pageController = PageController(initialPage: 0);
-
-//   // int _activePage = 0;
-
-//   // //Create list holding all the pages
-//   // final List<Widget> _ReportPages = [Page1Classifier()];
-
-//   // dispose the controller, this is needed to avoid memory leak
-//   @override
-//   void dispose() {
-//     _pageController.dispose();
-//     super.dispose();
-//   }
-
-//   // build the page view
-//   @override
-//   Widget build(BuildContext context) {
-//     //use stack and sizedbox to make the pageview full screen
-//     return Stack(children: [
-//       Positioned(
-//         child: SizedBox(
-//           width: MediaQuery.of(context).size.width,
-//           height: MediaQuery.of(context).size.height,
-//           child: PageView(
-//             controller: _pageController,
-//             onPageChanged: (int page) {
-//               setState(() {
-//                 // _activePage = page;
-//               });
-//             },
-//             // ignore: prefer_const_literals_to_create_immutables
-//             children: [
-//               // set children to be centered
-//               const Center(child: Page1Classifier()),
-//               const Center(child: Page2ReporteeDetails()),
-//               const Center(child: Page3MPDetails()),
-//               const Center(child: Page4MPDesc()),
-//               const Center(child: Page5IncidentDetails()),
-//               const Center(child: Page6AuthConfirm()),
-//             ],
-//           ),
-//         ),
-//       )
-//     ]);
-//   }
-// }
-// ///////// END PageView WITHOUT Indicator
-
-////// PageView with Bottom Incidator
 class _ReportMainState extends State<ReportMain> {
   // optionStyle is for the text, we can remove this when actualy doing menu contents
   static const TextStyle optionStyle = TextStyle(
@@ -117,7 +61,7 @@ class _ReportMainState extends State<ReportMain> {
                     top: MediaQuery.of(context).size.height / 8),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height *
-                    3, // NEED TO CHANGE THIS
+                    3.7, // NEED TO CHANGE THIS
                 child: PageView.builder(
                     controller: _pageController,
                     onPageChanged: (int index) {

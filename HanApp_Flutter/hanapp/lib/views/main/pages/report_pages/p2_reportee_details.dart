@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 /*
 LACKING:
@@ -98,6 +100,11 @@ DateTime? _dateOfBirth;
 int? _age;
 // store highest educational attainment value
 String? _highestEduc;
+// store reportee ID picture
+File? _reportee_ID;
+
+// initialize ImagePicker
+final ImagePicker _picker = ImagePicker();
 
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   // font style for the text
@@ -126,9 +133,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Page 2 of 6: Reportee Details',
-              style: optionStyle,
+            Container(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Page 2 of 6: Reportee Details',
+                style: optionStyle,
+              ),
             ), // Page 1 Text
             // add padding between rows
             Row(
@@ -671,13 +681,98 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
+            _padding,
             // SECTION: Proof of Identity
             const Text(
-              "Proof of Identity",
+              "Proof of Identity: Upload ID",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
+            ),
+            _padding,
+            // use image picker to upload ID
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Upload from Gallery
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final XFile? _reportee_ID = _picker.pickImage(
+                          source: ImageSource.gallery,
+                          imageQuality: 50,
+                          maxWidth: 1800) as XFile?;
+                    },
+                    child: const Text("Upload From Gallery"),
+                  ),
+                ),
+                // Upload from Camera
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final XFile? _reportee_ID = _picker.pickImage(
+                          source: ImageSource.camera,
+                          imageQuality: 50,
+                          maxWidth: 1800) as XFile?;
+                    },
+                    child: const Text("Upload From Camera"),
+                  ),
+                ),
+              ],
+            ),
+            _padding,
+            // SECTION: Photograph of Reportee
+            const Text(
+              "Photograph of Reportee",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54),
+            ),
+            _padding,
+            // use image picker to upload photo of reportee
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Upload from Gallery
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final XFile? _reportee_photo = _picker.pickImage(
+                          source: ImageSource.gallery,
+                          imageQuality: 50,
+                          maxWidth: 1800) as XFile?;
+                    },
+                    child: const Text("Upload From Gallery"),
+                  ),
+                ),
+                // Upload from Camera
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final XFile? _reportee_photo = _picker.pickImage(
+                          source: ImageSource.camera,
+                          imageQuality: 50,
+                          maxWidth: 1800) as XFile?;
+                    },
+                    child: const Text("Upload From Camera"),
+                  ),
+                ),
+              ],
+            ),
+            _padding,
+            // "Swipe Right to Move to Next Page"
+            Container(
+              width: MediaQuery.of(context).size.width - 50,
+              child: const Text(
+                "End of Reportee Details Form. Swipe left to move to next page",
+                style: TextStyle(fontSize: 12, color: Colors.black54),
+              ),
             ),
           ],
         ),
