@@ -8,7 +8,7 @@ import 'package:hanapp/views/main/pages/report_pages/p5_incident_details.dart';
 import 'package:hanapp/views/main/pages/report_pages/p6_auth_confirm.dart';
 
 /* REQUIREMENTS:
-1. Need to have adaptive height to content for scrolling (currently hardcoded mediquery height)
+1. Need to have adaptive height to content for scrolling (currently hardcoded mediquery height) (find: NOTE1)
 
  */
 
@@ -61,7 +61,7 @@ class _ReportMainState extends State<ReportMain> {
                     top: MediaQuery.of(context).size.height / 8),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height *
-                    3.7, // NEED TO CHANGE THIS
+                    3.7, // NOTE1: NEED TO CHANGE THIS to be adaptive instead of hardcoded
                 child: PageView.builder(
                     controller: _pageController,
                     onPageChanged: (int index) {

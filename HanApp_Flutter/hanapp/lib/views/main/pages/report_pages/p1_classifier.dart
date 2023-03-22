@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /* LACKING:
-1. Need to add padding between rows (instead of hardcoding the padding in between rows)
+1. Need to automatically add padding between rows (instead of hardcoding the padding in between rows)
 2. Need backend to store the values of the checkboxes
 3. Need state management to store the values of the checkboxes
 
@@ -15,219 +15,223 @@ class Page1Classifier extends StatefulWidget {
   State<Page1Classifier> createState() => _Page1ClassifierState();
 }
 
+// shared preferences for state management
+late SharedPreferences _prefs;
+void clearPrefs() {
+  _prefs.clear();
+}
+
 class _Page1ClassifierState extends State<Page1Classifier> {
+  // local boolean variables for checkboxes
+  bool? isVictimNaturalCalamity;
+  bool? isMinor;
+  bool? isMissing24Hours;
+  bool? isVictimCrime;
+
+  /* FORMATTING STUFF */
+  // row padding
+  static const _verticalPadding = SizedBox(height: 10);
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+  /* END OF FORMATTING STUFF */
 
-  // boolean variables for checkboxes
-  bool _isVictimNaturalCalamity = false;
-  bool _isMinor = false;
-  bool _isMissing24Hours = false;
-  bool _isVictimCrime = false;
-
-  // row padding
-  static const double _rowPadding = 20;
-
-  // state management using shared preferences
-  final _prefs = SharedPreferences.getInstance();
-
-  // classifier texts
-  static const String _naturalCalamityText =
-      'Is the absent/missing person a victim of a natural calamity (typhoons, earthquakes, landslides), or human-induced disasters or accidents?';
-  static const String _minorText =
-      'Is the absent/missing person a minor (under the age of 18)?';
-  static const String _missing24HoursText =
-      'Has the absent/missing person not been located for more than 24 hours since their perceived disappearance?';
-  static const String _victimCrimeText =
-      'Is the absent/missing person believed to be a victim of violence and crimes (including but not limited to: kidnapping, abduction, enforced disappearance, human trafficking)';
-
-  // initialize controller for the form
-  @override
-  void initState() {
-    super.initState();
-    // load the values of the checkboxes
-    _prefs.then((prefs) {
-      setState(() {
-        _isVictimNaturalCalamity =
-            prefs.getBool('isVictimNaturalCalamity') ?? false;
-        _isMinor = prefs.getBool('isMinor') ?? false;
-        _isMissing24Hours = prefs.getBool('isMissing24Hours') ?? false;
-        _isVictimCrime = prefs.getBool('isVictimCrime') ?? false;
-      });
+  /* SHARED PREFERENCE STUFF */
+  // Future builder for shared preferences, initialize as false
+  Future<void> getUserChoices() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // set the state of the checkboxes
+      isVictimNaturalCalamity =
+          _prefs.getBool('isVictimNaturalCalamity') ?? false;
+      isMinor = _prefs.getBool('isMinor') ?? false;
+      isMissing24Hours = _prefs.getBool('isMissing24Hours') ?? false;
+      isVictimCrime = _prefs.getBool('isVictimCrime') ?? false;
     });
   }
 
+  // initstate for shared preferences
+  @override
+  void initState() {
+    super.initState();
+    getUserChoices();
+  }
+  /* END OF SHARED PREFERENCE STUFF */
+
+  // classifier texts
+  static const String naturalCalamityText =
+      'Is the absent/missing person a victim of a natural calamity (typhoons, earthquakes, landslides), or human-induced disasters or accidents?';
+  static const String minorText =
+      'Is the absent/missing person a minor (under the age of 18)?';
+  static const String missing24HoursText =
+      'Has the absent/missing person not been located for more than 24 hours since their perceived disappearance?';
+  static const String victimCrimeText =
+      'Is the absent/missing person believed to be a victim of violence and crimes (including but not limited to: kidnapping, abduction, enforced disappearance, human trafficking)';
+
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      // Checkboxes for classifiers
-      Positioned(
-        top: 100,
-        left: 20,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return isVictimNaturalCalamity != null
+        ? Stack(children: [
+            // Checkboxes for classifiers
+            Positioned(
+              top: 100,
+              left: 20,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Page 1 of 6: Classifiers',
+                    style: optionStyle,
+                  ), // Page 1 Text
+                  // add padding between rows
+                  _verticalPadding,
+                  Row(
+                    children: [
+                      Checkbox(
+                        // value: _isVictimNaturalCalamity,
+                        // retrieve value of the checkbox from shared preferences
+                        value: isVictimNaturalCalamity,
 
-          children: [
-            const Text(
-              'Page 1 of 6: Classifiers',
-              style: optionStyle,
-            ), // Page 1 Text
-            // add padding between rows
-            const SizedBox(height: _rowPadding),
-            Row(
-              children: [
-                Checkbox(
-                  // value: _isVictimNaturalCalamity,
-                  // retrieve value of the checkbox from shared preferences
-                  value: _isVictimNaturalCalamity,
-
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isVictimNaturalCalamity = value!;
-                    });
-                    // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isVictimNaturalCalamity', value!);
-                    });
-                  },
-                ), // Checkbox for Natural Calamity
-                // GestureDetector that checks the checkbox when the text is tapped
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isVictimNaturalCalamity = !_isVictimNaturalCalamity;
-                    });
-                    // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool(
-                          'isVictimNaturalCalamity', !_isVictimNaturalCalamity);
-                    });
-                  },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 100,
-                    child: const Text(
-                      _naturalCalamityText,
-                    ),
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isVictimNaturalCalamity = value;
+                          });
+                          // save the value of the checkbox
+                          _prefs.setBool('isVictimNaturalCalamity', value!);
+                        },
+                      ), // Checkbox for Natural Calamity
+                      // GestureDetector that checks the checkbox when the text is tapped
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isVictimNaturalCalamity = !isVictimNaturalCalamity!;
+                          });
+                        },
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width - 100,
+                          child: const Text(
+                            naturalCalamityText,
+                          ),
+                        ),
+                      ), // end of GestureDetector, // end of text container
+                    ],
                   ),
-                ), // end of GestureDetector, // end of text container
-              ],
+                  // add padding between rows
+                  _verticalPadding,
+                  Row(
+                    // add space between checkbox rows
+                    children: [
+                      Checkbox(
+                        value: isMinor,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isMinor = value;
+                          });
+                          // save the value of the checkbox
+                          _prefs.setBool('isMinor', value!);
+                          ;
+                        },
+                      ),
+                      // GestureDetector that checks the checkbox when the text is tapped
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isMinor = !isMinor!;
+                          });
+                        },
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width - 100,
+                          child: const Text(
+                            minorText,
+                          ),
+                        ),
+                      ), // end of GestureDetector
+                    ],
+                  ),
+                  // add padding between rows
+                  _verticalPadding,
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: isMissing24Hours,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isMissing24Hours = value;
+                          });
+                          // save the value of the checkbox
+                          _prefs.setBool('isMissing24Hours', value!);
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isMissing24Hours = !isMissing24Hours!;
+                          });
+                        },
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width - 100,
+                          child: const Text(
+                            missing24HoursText,
+                          ),
+                        ),
+                      ), // end of GestureDetector, // end of text container
+                    ],
+                  ), // add padding between rows
+                  _verticalPadding,
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: isVictimCrime,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            isVictimCrime = value;
+                          });
+                          // save the value of the checkbox
+                          _prefs.setBool('isVictimCrime', value!);
+                        },
+                      ),
+                      // GestureDetector that checks the checkbox when the text is tapped
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isVictimCrime = !isVictimCrime!;
+                          });
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 100,
+                          child: const Text(
+                            victimCrimeText,
+                          ),
+                        ),
+                      ), // end of GestureDetector
+                    ],
+                  ), // end of Row for Victim of Crime
+                  // add padding between rows
+                  _verticalPadding,
+                  // info/instruction
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.info),
+                      SizedBox(width: 5),
+                      Text(
+                        '''Please check all that apply. Swipe left to continue.''',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-            // add padding between rows
-            const SizedBox(height: _rowPadding),
-            Row(
-              // add space between checkbox rows
-              children: [
-                Checkbox(
-                  value: _isMinor,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isMinor = value!;
-                    });
-                    // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isMinor', value!);
-                    });
-                  },
-                ),
-                // GestureDetector that checks the checkbox when the text is tapped
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isMinor = !_isMinor;
-                    });
-                  },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 100,
-                    child: const Text(
-                      _minorText,
-                    ),
-                  ),
-                ), // end of GestureDetector
-              ],
-            ),
-            // add padding between rows
-            const SizedBox(height: _rowPadding),
-            Row(
-              children: [
-                Checkbox(
-                  value: _isMissing24Hours,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isMissing24Hours = value!;
-                    });
-                    // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isMissing24Hours', value!);
-                    });
-                  },
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isMissing24Hours = !_isMissing24Hours;
-                    });
-                  },
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 100,
-                    child: const Text(
-                      _missing24HoursText,
-                    ),
-                  ),
-                ), // end of GestureDetector, // end of text container
-              ],
-            ), // add padding between rows
-            const SizedBox(height: _rowPadding),
-            Row(
-              children: [
-                Checkbox(
-                  value: _isVictimCrime,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isVictimCrime = value!;
-                    });
-                    // save the value of the checkbox
-                    _prefs.then((prefs) {
-                      prefs.setBool('isVictimCrime', value!);
-                    });
-                  },
-                ),
-                // GestureDetector that checks the checkbox when the text is tapped
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _isVictimCrime = !_isVictimCrime;
-                    });
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 100,
-                    child: const Text(
-                      _victimCrimeText,
-                    ),
-                  ),
-                ), // end of GestureDetector
-              ],
-            ), // end of Row for Victim of Crime
-            // add padding between rows
-            const SizedBox(height: _rowPadding),
-            // info/instruction
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.info),
-                SizedBox(width: 5),
-                Text(
-                  '''Please check all that apply. Swipe left to continue.''',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
-                ),
-              ],
-            ), // end of Row for info text
-          ], // end of children for Column
-        ), // end of Column
-      ), // end of Positioned
-    ]); // end of Stack;
-  } // end of build
+          ])
+        :
+        // Circular loading icon
+        const Center(
+            child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          ));
+  }
 }

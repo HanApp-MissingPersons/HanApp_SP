@@ -3,6 +3,8 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 /*
 LACKING:
@@ -15,7 +17,7 @@ LACKING:
  
 */
 
-// datepicker stuff
+/* DATE PICKER SETUP */
 List reformatDate(String dateTime, DateTime dateTimeBday) {
   var dateParts = dateTime.split('-');
   var month = dateParts[1];
@@ -72,56 +74,157 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
 
   var age =
       (DateTime.now().difference(dateTimeBday).inDays / 365).floor().toString();
-  var returnVal = '$month $day, $year';
+  var returnVal = '$month $day, $year'; // format sample: January 1, 2021
   return [returnVal, age];
 }
 
-// end of datepicker stuff
+/* END OF DATE PICKER SETUP */
 
+/* Stateful Widget Class */
 class Page2ReporteeDetails extends StatefulWidget {
-  const Page2ReporteeDetails({super.key});
+  const Page2ReporteeDetails({Key? key}) : super(key: key);
 
   @override
   State<Page2ReporteeDetails> createState() => _Page2ReporteeDetailsState();
 }
 
-// initialize controller for the form
-
-// padding variable for the rows
-const _padding = SizedBox(height: 10);
-
-// store sex value
-String? _sexValue;
-// store civil status value
-String? _civilStatusValue;
-// store date of birth value
-DateTime? _dateOfBirth;
-// int age
-int? _age;
-// store highest educational attainment value
-String? _highestEduc;
-// store reportee ID picture
-File? _reportee_ID;
-
-// initialize ImagePicker
-final ImagePicker _picker = ImagePicker();
-
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
-  // font style for the text
+  /* FORMATTING STUFF */
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+  static const _verticalPadding = SizedBox(height: 10);
+  /* END OF FORMATTING STUFF */
 
-// error message: empty field
+/* VARIABLES AND CONTROLLERS */
+// controllers for the form
+// REPORTEE NAME
+  late final TextEditingController _reporteeLastName;
+  late final TextEditingController _reporteeFirstName;
+  late final TextEditingController _reporteeMiddleName;
+  late final TextEditingController _reporteeQualifier;
+  late final TextEditingController _reporteeNickName;
+// REPORTEE SEX, CITIZENSHIP, CIVIL STATUS
+  late final TextEditingController _reporteeSex;
+  late final TextEditingController _reporteeCitizenship;
+  late final TextEditingController _reporteeCivilStatus;
+// REPORTEE BIRTHDAY
+  late final TextEditingController _reporteeBirthdayController;
+// REPORTEE AGE (not a controller, should be calculated from birthday)
+  String? ageFromBday;
+// REPORTEE CONTACT DETAILS
+  late final TextEditingController _reporteeHomePhone;
+  late final TextEditingController _reporteeMobilePhone;
+  late final TextEditingController _reporteeAlternateMobilePhone;
+  late final TextEditingController _reporteeEmail;
+// REPORTEE ADDRESS
+  late final TextEditingController _reporteeRegion;
+  late final TextEditingController _reporteeProvince;
+  late final TextEditingController _reporteeCity;
+  late final TextEditingController _reporteeBarangay;
+  late final TextEditingController _reporteeVillageSitio;
+  late final TextEditingController _reporteeStreetHouseNum;
+// REPORTEE ALTERNATE ADDRESS
+  late final TextEditingController _reporteeAltRegion;
+  late final TextEditingController _reporteeAltProvince;
+  late final TextEditingController _reporteeAltCityTown;
+  late final TextEditingController _reporteeAltBarangay;
+  late final TextEditingController _reporteeAltVillageSitio;
+  late final TextEditingController _reporteeAltStreetHouseNum;
+// REPORTEE EDUC AND OCCUPATION
+  late final TextEditingController _reporteeHighestEduc;
+  late final TextEditingController _reporteeOccupation;
+// REPORTEE ID
+  late final TextEditingController _reporteeID;
+// REPORTEE PHOTO
+  late final TextEditingController _reporteePhoto;
+
+  String? _sexValue;
+  String? _civilStatusValue;
+  DateTime? _dateOfBirth;
+  DateTime? dateTimeBday;
+
+  String? _highestEduc;
+  File? _reporteeIDphoto;
+
+// initialize controllers
+  @override
+  void initState() {
+    _reporteeLastName = TextEditingController();
+    _reporteeFirstName = TextEditingController();
+    _reporteeMiddleName = TextEditingController();
+    _reporteeQualifier = TextEditingController();
+    _reporteeNickName = TextEditingController();
+    _reporteeSex = TextEditingController();
+    _reporteeCitizenship = TextEditingController();
+    _reporteeCivilStatus = TextEditingController();
+    _reporteeBirthdayController = TextEditingController();
+    _reporteeHomePhone = TextEditingController();
+    _reporteeMobilePhone = TextEditingController();
+    _reporteeAlternateMobilePhone = TextEditingController();
+    _reporteeEmail = TextEditingController();
+    _reporteeRegion = TextEditingController();
+    _reporteeProvince = TextEditingController();
+    _reporteeCity = TextEditingController();
+    _reporteeBarangay = TextEditingController();
+    _reporteeVillageSitio = TextEditingController();
+    _reporteeStreetHouseNum = TextEditingController();
+    _reporteeAltRegion = TextEditingController();
+    _reporteeAltProvince = TextEditingController();
+    _reporteeAltCityTown = TextEditingController();
+    _reporteeAltBarangay = TextEditingController();
+    _reporteeAltVillageSitio = TextEditingController();
+    _reporteeAltStreetHouseNum = TextEditingController();
+    _reporteeHighestEduc = TextEditingController();
+    _reporteeOccupation = TextEditingController();
+    _reporteeID = TextEditingController();
+    _reporteePhoto = TextEditingController();
+    super.initState();
+  }
+
+  // dispose controllers
+  @override
+  void dispose() {
+    _reporteeLastName.dispose();
+    _reporteeFirstName.dispose();
+    _reporteeMiddleName.dispose();
+    _reporteeQualifier.dispose();
+    _reporteeNickName.dispose();
+    _reporteeSex.dispose();
+    _reporteeCitizenship.dispose();
+    _reporteeCivilStatus.dispose();
+    _reporteeBirthdayController.dispose();
+    _reporteeHomePhone.dispose();
+    _reporteeMobilePhone.dispose();
+    _reporteeAlternateMobilePhone.dispose();
+    _reporteeEmail.dispose();
+    _reporteeRegion.dispose();
+    _reporteeProvince.dispose();
+    _reporteeCity.dispose();
+    _reporteeBarangay.dispose();
+    _reporteeVillageSitio.dispose();
+    _reporteeStreetHouseNum.dispose();
+    _reporteeAltRegion.dispose();
+    _reporteeAltProvince.dispose();
+    _reporteeAltCityTown.dispose();
+    _reporteeAltBarangay.dispose();
+    _reporteeAltVillageSitio.dispose();
+    _reporteeAltStreetHouseNum.dispose();
+    _reporteeHighestEduc.dispose();
+    _reporteeOccupation.dispose();
+    _reporteeID.dispose();
+    _reporteePhoto.dispose();
+    super.dispose();
+  }
+  /* END OF VARIABLES AND CONTROLLERS */
+
+  // initialize ImagePicker
+  final ImagePicker _picker = ImagePicker();
+
+  // error message: empty field
   static const String _emptyFieldError = 'Field cannot be empty';
 
   // controllers to contain the text in the form
   late final TextEditingController _dateOfBirthController;
-
-  // // @override
-  // // void initState() {
-  // //   _dateOfBirth = TextEditingController();
-  // //   super.initState();
-  // // }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +258,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Reportee Name
             const Text(
               "Reportee Name",
@@ -164,7 +267,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             Column(
               // center the row
               mainAxisAlignment: MainAxisAlignment.center,
@@ -186,7 +289,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // first name
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -204,7 +307,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // middle name
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -215,7 +318,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // qualifier (Jr, Sr, III, etc)
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -226,7 +329,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Nickname / Known Aliases
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -239,7 +342,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
 
             // Section: Reportee Citizenship
             const Text(
@@ -249,7 +352,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -271,7 +374,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 )
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Sex
             const Text(
               "Sex",
@@ -280,7 +383,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
             Column(
               // center the row
               mainAxisAlignment: MainAxisAlignment.center,
@@ -315,7 +417,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Civil Status
             const Text(
               "Civil Status",
@@ -324,7 +426,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // dropdown for civil status and update _civilStatusValue
             SizedBox(
               width: MediaQuery.of(context).size.width - 50,
@@ -360,7 +462,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 }).toList(),
               ),
             ),
-            _padding,
+            _verticalPadding,
             // Section: Date of Birth
             const Text(
               "Date of Birth",
@@ -369,7 +471,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // date picker for date of birth --- THIS IS NOT WORKING YET
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -407,7 +509,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 //
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Age
             const Text(
               "Age",
@@ -416,7 +518,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // age text field --- !!! this should be auto-calculated and filled out with DOB
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -439,7 +541,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 )
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Contact Information
             const Text(
               "Contact Information",
@@ -448,7 +550,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // text fields for Home Phone, Mobile Phone, Alternate Mobile Phone, Email Address
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -463,7 +565,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Mobile Phone
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -474,7 +576,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Alternate Mobile Phone
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -485,7 +587,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Email Address
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -498,7 +600,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // SECTION: Address
             const Text(
               "Address",
@@ -507,7 +609,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // text fiels for Region, Province, Town/City, Barangay, Village/Sitio, House Number/Street
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -522,7 +624,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Province
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -533,7 +635,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Town/City
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -544,7 +646,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Barangay
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -555,7 +657,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Village/Sitio
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -566,7 +668,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // House Number/Street
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -579,7 +681,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // ask if user has alternate address if yes, add another section for alternate address
             // this should be radio button
             const Text(
@@ -604,7 +706,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // SECTION: Highest Educational Attainment
             const Text(
               "Highest Educational Attainment",
@@ -613,7 +715,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // dropdown for highest educational attainment (elementary, high school, college, etc.)
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -665,7 +767,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // textfield for occupation
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -681,7 +783,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // SECTION: Proof of Identity
             const Text(
               "Proof of Identity: Upload ID",
@@ -690,7 +792,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // use image picker to upload ID
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -723,7 +825,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // SECTION: Photograph of Reportee
             const Text(
               "Photograph of Reportee",
@@ -732,7 +834,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // use image picker to upload photo of reportee
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -765,7 +867,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // "Swipe Right to Move to Next Page"
             Container(
               width: MediaQuery.of(context).size.width - 50,
