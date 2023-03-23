@@ -36,26 +36,47 @@ class _NavigationFieldState extends State<NavigationField> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Cancel Report'),
-          content: const Text('Are you sure you want to cancel your report?'),
+          title: const Text('Discard Report', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),),
+          content: const Text('Are you sure? You will lose all the progress of your report', style: TextStyle(fontSize: 15.0,),),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {
-                  _selectedIndex = index;
-                });
-                // if user is on report page and wants to navigate away
-                // clear the prefs
-                clearPrefs();
-              },
-              child: const Text('Cancel the report'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Continue instead'),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10, right: 20),
+                    child: Container(
+                      height: 35,
+                      decoration: BoxDecoration(
+                          color: Palette.indigo,
+                          border: Border.all(width: 0.5),
+                          borderRadius: const BorderRadius.all(Radius.circular(5))
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          setState(() {
+                            _selectedIndex = index;
+                          });
+                          // if user is on report page and wants to navigate away
+                          // clear the prefs
+                          clearPrefs();
+                        },
+                        child: const Text('Discard', style: TextStyle(color: Colors.white),),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
