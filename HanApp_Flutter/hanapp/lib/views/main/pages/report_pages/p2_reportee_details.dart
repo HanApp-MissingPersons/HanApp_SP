@@ -137,6 +137,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   late final TextEditingController _reporteeID;
 // REPORTEE PHOTO
   late final TextEditingController _reporteePhoto;
+// REPORTEE RELATIONSHIP TO MISSING PERSON
+  late final TextEditingController _reporteeRelationshipToMissingPerson;
 
   String? _sexValue;
   String? _civilStatusValue;
@@ -178,6 +180,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteeOccupation = TextEditingController();
     _reporteeID = TextEditingController();
     _reporteePhoto = TextEditingController();
+    _reporteeRelationshipToMissingPerson = TextEditingController();
     super.initState();
   }
 
@@ -242,7 +245,32 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 'Page 2 of 6: Reportee Details',
                 style: optionStyle,
               ),
-            ), // Page 1 Text
+            ),
+            // SECTION: Relationship to Missing Person
+            _verticalPadding,
+            const Text(
+              "Relationship to Missing Person",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54),
+            ),
+            _verticalPadding,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 50,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Relationship to Missing Person',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            _verticalPadding, // Page 1 Text
             // add padding between rows
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -868,6 +896,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
+
             // "Swipe Right to Move to Next Page"
             Container(
               width: MediaQuery.of(context).size.width - 50,
