@@ -84,7 +84,7 @@ class _ProfileMain extends State<ProfileMain> {
   @override
   Widget build(BuildContext context) {
     _usrFullName =
-        '$_usrFirstName ${_usrMiddleName == '' ? _usrMiddleName : null} $_usrLastName ${_usrQualifiers == '' ? _usrQualifiers : null}';
+        '$_usrFirstName $_usrMiddleName $_usrLastName $_usrQualifiers';
     return _usrFirstName != 'Data Loading'
         ? Scaffold(
             body: SingleChildScrollView(
