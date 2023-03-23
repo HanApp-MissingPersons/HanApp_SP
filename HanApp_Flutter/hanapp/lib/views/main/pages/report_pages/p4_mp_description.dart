@@ -53,7 +53,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         left: 20,
         child: Column(
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Page 4: Absent/Missing Person Description',
@@ -61,7 +61,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
               ),
             ),
             _verticalPadding,
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Scars, Marks, and Tattoos',
@@ -73,7 +73,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Scars
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -87,7 +87,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Marks
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -101,7 +101,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Tattoos
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -114,7 +114,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
               ),
             ),
             _verticalPadding,
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Hair Color',
@@ -126,7 +126,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Hair Color
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -140,7 +140,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // NOTE! Insert checkbox for Hair Color Natural
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Eye Color',
@@ -152,7 +152,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Eye Color
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -166,7 +166,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // NOTE! Insert checkbox for Eye Color Natural
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Prosthetics',
@@ -178,7 +178,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Prosthetics
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -191,7 +191,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
               ),
             ),
             _verticalPadding,
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Birth Defects',
@@ -203,7 +203,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Birth Defects
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -216,7 +216,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
               ),
             ),
             _verticalPadding,
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Last Known Clothing and Accessories',
@@ -228,7 +228,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // big text field for Last Known Clothing and Accessories
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -241,7 +241,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
               ),
             ),
             _verticalPadding,
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Medical Details',
@@ -253,7 +253,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Height
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -267,7 +267,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // text fields for Weight
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextField(
                 onChanged: (value) {
@@ -281,32 +281,22 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             ),
             _verticalPadding,
             // dropdown for Blood Type
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Blood Type',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            Container(
-              width: MediaQuery.of(context).size.width - 40,
-              child: DropdownButton<String>(
+              child: DropdownButtonFormField<String>(
+                // text to display when no value is selected
+                hint: const Text("Blood Type"),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
                 value: mp_blood_type,
-                icon: const Icon(Icons.arrow_downward),
+                icon: const Icon(Icons.arrow_drop_down),
                 iconSize: 24,
                 elevation: 16,
-                style: const TextStyle(color: Colors.deepPurple),
-                underline: Container(
-                  height: 2,
-                  color: Colors.deepPurpleAccent,
-                ),
+                style: const TextStyle(color: Colors.black54),
                 onChanged: (String? newValue) {
                   setState(() {
-                    mp_blood_type = newValue!;
+                    mp_blood_type = newValue;
                   });
                 },
                 items: <String>[
@@ -317,7 +307,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                   'AB+',
                   'AB-',
                   'O+',
-                  'O-'
+                  'O-',
+                  'Unknown',
                 ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
