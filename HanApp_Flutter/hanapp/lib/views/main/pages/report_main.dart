@@ -61,7 +61,7 @@ class _ReportMainState extends State<ReportMain> {
                     top: MediaQuery.of(context).size.height / 8),
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height *
-                    3.7, // NOTE1: NEED TO CHANGE THIS to be adaptive instead of hardcoded
+                    4, // NOTE1: NEED TO CHANGE THIS to be adaptive instead of hardcoded
                 child: PageView.builder(
                     controller: _pageController,
                     onPageChanged: (int index) {

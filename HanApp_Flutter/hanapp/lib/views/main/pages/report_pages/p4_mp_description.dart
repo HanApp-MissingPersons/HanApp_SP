@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:image_picker/image_picker.dart';
 
 // shared preferences for state management
 late SharedPreferences _prefs;
@@ -35,7 +37,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   String? mp_birth_defects;
   String? last_clothing;
   // MP medical details
-  String? mp_height;
+  String? mp_height_feet;
+  String? mp_height_inches;
   String? mp_weight;
   String? mp_blood_type;
   String? mp_medications;
@@ -43,7 +46,28 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   String? mp_facebook;
   String? mp_twitter;
   String? mp_instagram;
-  String? mp_socmed_other;
+  String? mp_socmed_other_platform;
+  String? mp_socmed_other_username;
+  // MP recent photo
+  File? mp_recent_photo;
+  // MP other photos (multiple)
+  List<File> mp_other_photos = [];
+  // MP dental records (multiple)
+  bool? mp_dental_records_available = false;
+  List<File> mp_dental_records = [];
+  // MP fingerprints (multiple)
+  bool? mp_fingerprints_available = false;
+  List<File> mp_fingerprints = [];
+
+  // initialize ImagePicker
+  final ImagePicker _picker = ImagePicker();
+
+  Future<File?> _pickImage(ImageSource source) async {
+    final XFile? image = await _picker.pickImage(source: source);
+
+    final File? file = File(image!.path);
+    return file;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +76,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         top: 100,
         left: 20,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
@@ -61,6 +86,20 @@ class _Page4MPDescState extends State<Page4MPDesc> {
               ),
             ),
             _verticalPadding,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.info),
+                SizedBox(width: 5),
+                Text(
+                  '''Fields with (*) are required.''',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
@@ -255,15 +294,40 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             // text fields for Height
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                onChanged: (value) {
-                  mp_height = value;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Height (feet and inches)',
-                ),
+              child: const Text(
+                'Height',
+                style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
+            ),
+            _verticalPadding,
+            // two separate text fields (Height: feet and Height: inches)
+            Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2 - 40,
+                  child: TextField(
+                    onChanged: (value) {
+                      mp_height_feet = value;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Feet',
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2 - 40,
+                  child: TextField(
+                    onChanged: (value) {
+                      mp_height_inches = value;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Inches',
+                    ),
+                  ),
+                ),
+              ],
             ),
             _verticalPadding,
             // text fields for Weight
@@ -315,6 +379,268 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     child: Text(value),
                   );
                 }).toList(),
+              ),
+            ),
+            _verticalPadding,
+            // text fields for medications
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextField(
+                onChanged: (value) {
+                  mp_medications = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Medications (separate by comma)',
+                ),
+              ),
+            ),
+            _verticalPadding,
+            // Social Media Accounts
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Social Media Accounts',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            _verticalPadding,
+            // text fields for facebook
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextField(
+                onChanged: (value) {
+                  mp_facebook = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Facebook',
+                ),
+              ),
+            ),
+            // text fields for twitter
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextField(
+                onChanged: (value) {
+                  mp_twitter = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Twitter',
+                ),
+              ),
+            ),
+            // text fields for instagram
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextField(
+                onChanged: (value) {
+                  mp_instagram = value;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Instagram',
+                ),
+              ),
+            ),
+            // text fields for other social media
+            _verticalPadding,
+            // should be two text fields in one row for other social media platform and username
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Other Socmed Platform',
+                style: TextStyle(fontSize: 16, color: Colors.black54),
+              ),
+            ),
+            _verticalPadding,
+            Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2 - 20,
+                  child: TextField(
+                    onChanged: (value) {
+                      mp_socmed_other_platform = value;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Other Social Media',
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 2 - 20,
+                  child: TextField(
+                    onChanged: (value) {
+                      mp_socmed_other_username = value;
+                    },
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Username',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            _verticalPadding,
+            // ask to upload most recent photo
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Most recent photo of the absent/missing person',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            _verticalPadding,
+            // upload photo button
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: ElevatedButton(
+                onPressed: () {
+                  final XFile? mp_recent_photo = _picker.pickImage(
+                      source: ImageSource.gallery,
+                      imageQuality: 50,
+                      maxWidth: 1800) as XFile?;
+                },
+                child: const Text('Upload Photo'),
+              ),
+            ),
+            // ask to upload other photos
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Upload other photos of the absent/missing person',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            _verticalPadding,
+            // upload multiple photos button
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: ElevatedButton(
+                onPressed: () {
+                  final List<XFile>? mp_other_photos = _picker.pickMultiImage(
+                      imageQuality: 50, maxWidth: 1800) as List<XFile>?;
+                },
+                child: const Text('Upload Photos'),
+              ),
+            ),
+            _verticalPadding,
+            // Checkbox to ask if the person has dental and/or finger print records
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Does the person have dental and/or finger print records?',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            _verticalPadding,
+            Row(
+              children: [
+                const Text('Dental Records'),
+                Checkbox(
+                  value: mp_dental_records_available,
+                  onChanged: (value) {
+                    setState(() {
+                      mp_dental_records_available = value!;
+                    });
+                  },
+                ),
+                const Text('Finger Print Records'),
+                Checkbox(
+                  value: mp_fingerprints_available,
+                  onChanged: (value) {
+                    setState(() {
+                      mp_fingerprints_available = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+            // if mp_dental_records_available is true, ask to upload dental records
+            if (mp_dental_records_available == true)
+              Column(
+                children: [
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: const Text(
+                      'Upload dental records',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54),
+                    ),
+                  ),
+                  _verticalPadding,
+                  // upload dental records button
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final XFile? mp_dental_records = _picker.pickImage(
+                            source: ImageSource.gallery,
+                            imageQuality: 50,
+                            maxWidth: 1800) as XFile?;
+                      },
+                      child: const Text('Upload Dental Records'),
+                    ),
+                  ),
+                ],
+              ),
+            // if mp_fingerprints_available is true, ask to upload finger print records
+            if (mp_fingerprints_available == true)
+              Column(
+                children: [
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: const Text(
+                      'Upload finger print records',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54),
+                    ),
+                  ),
+                  _verticalPadding,
+                  // upload finger print records button
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        final XFile? mp_fingerprints = _picker.pickImage(
+                            source: ImageSource.gallery,
+                            imageQuality: 50,
+                            maxWidth: 1800) as XFile?;
+                      },
+                      child: const Text('Upload Finger Print Records'),
+                    ),
+                  ),
+                ],
+              ),
+            // "Swipe Right to Move to Next Page"
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 50,
+              child: const Text(
+                "End of Absent/Missing Person Details Form. Swipe left to move to next page",
+                style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
             ),
           ],

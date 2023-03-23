@@ -76,9 +76,6 @@ class Page3MPDetails extends StatefulWidget {
 
 // initialize controller for the form
 
-// padding variable for the rows
-const _padding = SizedBox(height: 10);
-
 // store sex value
 String? _sexValue;
 // store civil status value
@@ -99,6 +96,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+  static const _verticalPadding = SizedBox(height: 10);
 
 // error message: empty field
   static const String _emptyFieldError = 'Field cannot be empty';
@@ -129,7 +127,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 style: optionStyle,
               ),
             ), // Page 1 Text
-            // add padding between rows
+            _verticalPadding,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
@@ -144,7 +142,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Reportee Name
             const Text(
               "Absent/Missing Person Name",
@@ -153,7 +151,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             Column(
               // center the row
               mainAxisAlignment: MainAxisAlignment.center,
@@ -175,7 +173,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     },
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // first name
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -193,7 +191,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     },
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // middle name
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -204,7 +202,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // qualifier (Jr, Sr, III, etc)
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -215,7 +213,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Nickname / Known Aliases
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -228,7 +226,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
 
             // Section: Citizenship
             const Text(
@@ -238,7 +236,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -260,7 +258,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 )
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Sex
             const Text(
               "Sex",
@@ -269,7 +267,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             Column(
               // center the row
               mainAxisAlignment: MainAxisAlignment.center,
@@ -304,7 +302,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Civil Status
             const Text(
               "Civil Status",
@@ -313,7 +311,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // dropdown for civil status and update _civilStatusValue
             SizedBox(
               width: MediaQuery.of(context).size.width - 50,
@@ -349,7 +347,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 }).toList(),
               ),
             ),
-            _padding,
+            _verticalPadding,
             // Section: Date of Birth
             const Text(
               "Date of Birth",
@@ -358,7 +356,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // date picker for date of birth --- THIS IS NOT WORKING YET
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -396,7 +394,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 //
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Age
             const Text(
               "Age",
@@ -405,7 +403,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // age text field --- !!! this should be auto-calculated and filled out with DOB
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -428,7 +426,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 )
               ],
             ),
-            _padding,
+            _verticalPadding,
             // Section: Contact Information
             const Text(
               "Contact Information",
@@ -437,7 +435,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // text fields for Home Phone, Mobile Phone, Alternate Mobile Phone, Email Address
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -452,7 +450,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Mobile Phone
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -463,7 +461,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Alternate Mobile Phone
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -474,7 +472,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Email Address
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -487,7 +485,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // SECTION: Address
             const Text(
               "Address",
@@ -496,7 +494,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // text fiels for Region, Province, Town/City, Barangay, Village/Sitio, House Number/Street
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -511,7 +509,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Province
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -522,7 +520,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Town/City
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -533,7 +531,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Barangay
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -544,7 +542,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Village/Sitio
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -555,7 +553,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // House Number/Street
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -568,7 +566,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // ask if user has alternate address if yes, add another section for alternate address
             // this should be radio button
             Container(
@@ -596,7 +594,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // SECTION: Highest Educational Attainment
             const Text(
               "Highest Educational Attainment",
@@ -605,7 +603,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // dropdown for highest educational attainment (elementary, high school, college, etc.)
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -657,7 +655,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // textfield for occupation
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -673,7 +671,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            _padding,
+            _verticalPadding,
             // SECTION: Work/School Address
             // !NOTE: Radio button to show if work or  school address
             const Text(
@@ -683,7 +681,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
-            _padding,
+            _verticalPadding,
             // text fields for Region, Province, Town/City, Barangay, Village/Sitio, House Number/Street
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -698,7 +696,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Province
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -709,7 +707,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Town/City
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -720,7 +718,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Barangay
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -731,7 +729,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // Village/Sitio
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -742,7 +740,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     ),
                   ),
                 ),
-                _padding,
+                _verticalPadding,
                 // House Number/Street
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
@@ -766,12 +764,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               ],
             ),
 
-            _padding,
+            _verticalPadding,
             // "Swipe Right to Move to Next Page"
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 50,
               child: const Text(
-                "End of Absent/Missing Person Details Form. Swipe left to move to next page",
+                "End of Absent/Missing Person Description Form. Swipe left to move to next page",
                 style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
             ),

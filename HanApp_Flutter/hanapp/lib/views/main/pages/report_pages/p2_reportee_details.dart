@@ -148,6 +148,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   String? _highestEduc;
   File? _reporteeIDphoto;
 
+  bool? reportee_AltAddress_available = false;
+
 // initialize controllers
   @override
   void initState() {
@@ -222,6 +224,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
   // initialize ImagePicker
   final ImagePicker _picker = ImagePicker();
+
+  Future<File?> _pickImage(ImageSource source) async {
+    final XFile? image = await _picker.pickImage(source: source);
+
+    final File? file = File(image!.path);
+    return file;
+  }
 
   // error message: empty field
   static const String _emptyFieldError = 'Field cannot be empty';
@@ -710,30 +719,159 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
-            // ask if user has alternate address if yes, add another section for alternate address
-            // this should be radio button
-            const Text(
-              "Do you have an alternate address? ",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+            // ask if user has alternate address if yes, show another section for alternate address
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Do you have an alternate address?',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
             ),
-            Column(
+            _verticalPadding,
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Alternate Address
+                // Yes
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Alternate Address (Enter NA if none)',
-                    ),
+                  width: 100,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        reportee_AltAddress_available = true;
+                      });
+                    },
+                    child: const Text('Yes'),
+                  ),
+                ),
+
+                // No
+                SizedBox(
+                  width: 100,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        reportee_AltAddress_available = false;
+                      });
+                    },
+                    child: const Text('No'),
                   ),
                 ),
               ],
             ),
+            _verticalPadding,
+            if (reportee_AltAddress_available == true)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Alternate Address, ask for Region, Province, Town/City, Barangay, Village/Sitio, House Number/Street
+                  const Text(
+                    "Alternate Address",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54),
+                  ),
+                  _verticalPadding,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Region
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Region*',
+                          ),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // Province
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Province*',
+                          ),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // Town/City
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Town/City*',
+                          ),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // Barangay
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Barangay*',
+                          ),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // Village/Sitio
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Village/Sitio',
+                          ),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // House Number/Street
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'House Number/Street',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+            // // ask if user has alternate address if yes, add another section for alternate address
+            // // this should be radio button
+            // const Text(
+            //   "Do you have an alternate address? ",
+            //   style: TextStyle(
+            //       fontSize: 18,
+            //       fontWeight: FontWeight.bold,
+            //       color: Colors.black54),
+            // ),
+            // Column(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: [
+            //     // Alternate Address
+            //     SizedBox(
+            //       width: MediaQuery.of(context).size.width - 50,
+            //       child: TextFormField(
+            //         decoration: const InputDecoration(
+            //           border: OutlineInputBorder(),
+            //           labelText: 'Alternate Address (Enter NA if none)',
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             _verticalPadding,
             // SECTION: Highest Educational Attainment
             const Text(
@@ -898,7 +1036,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             _verticalPadding,
 
             // "Swipe Right to Move to Next Page"
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 50,
               child: const Text(
                 "End of Reportee Details Form. Swipe left to move to next page",
