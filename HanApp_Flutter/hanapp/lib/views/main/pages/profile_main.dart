@@ -105,7 +105,7 @@ class _ProfileMain extends State<ProfileMain> {
                               'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 20, left: 20),
+                          padding: const EdgeInsets.only(top: 20),
                           child: Column(
                             children: [
                               Text(
