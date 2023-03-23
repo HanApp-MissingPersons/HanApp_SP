@@ -18,7 +18,11 @@ class ProfileMain extends StatefulWidget {
 }
 
 class _ProfileMain extends State<ProfileMain> {
-  String _usrFullName = 'Data Loading';
+  String _usrFullName = '';
+  String _usrFirstName = 'Data Loading';
+  String _usrLastName = '';
+  String _usrMiddleName = '';
+  String _usrQualifiers = '';
   String _usrEmail = ' ';
   String _usrNumber = ' ';
   // ignore: unused_field
@@ -40,7 +44,14 @@ class _ProfileMain extends State<ProfileMain> {
     mainUsersRef.child(user!.uid).onValue.listen((event) {
       var usrProfileDict = Map<String, dynamic>.from(
           event.snapshot.value as Map<dynamic, dynamic>);
-      String nameFromDB = usrProfileDict['fullName'];
+      String firstNameFromDB = usrProfileDict['firstName'];
+      String lastNameFromDB = usrProfileDict['lastName'];
+      String middleNameFromDB = usrProfileDict['middleName'] == 'N/A'
+          ? ''
+          : usrProfileDict['middleName'];
+      String qualifiersFromDB = usrProfileDict['qualifiers'] == 'N/A'
+          ? ''
+          : usrProfileDict['qualifiers'];
       String numberFromDB = usrProfileDict['phoneNumber'];
       String emailFromDB = usrProfileDict['email'];
       String sexFromDB = usrProfileDict['sex'];
@@ -56,7 +67,10 @@ class _ProfileMain extends State<ProfileMain> {
       }
 
       setState(() {
-        _usrFullName = nameFromDB;
+        _usrFirstName = firstNameFromDB;
+        _usrLastName = lastNameFromDB;
+        _usrMiddleName = middleNameFromDB;
+        _usrQualifiers = qualifiersFromDB;
         _usrNumber = numberFromDB;
         _usrEmail = emailFromDB;
         _usrSex = sexFromDB;
@@ -69,7 +83,9 @@ class _ProfileMain extends State<ProfileMain> {
 
   @override
   Widget build(BuildContext context) {
-    return _usrFullName != 'Data Loading'
+    _usrFullName =
+        '$_usrFirstName ${_usrMiddleName == '' ? _usrMiddleName : null} $_usrLastName ${_usrQualifiers == '' ? _usrQualifiers : null}';
+    return _usrFirstName != 'Data Loading'
         ? Scaffold(
             body: SingleChildScrollView(
               child: Padding(
