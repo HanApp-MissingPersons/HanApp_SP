@@ -260,7 +260,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             // SECTION: Relationship to Missing Person
             _verticalPadding,
             const Text(
-              "Relationship to Missing Person",
+              "Your relationship to Missing Person",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -298,91 +298,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
-            // Section: Reportee Name
-            const Text(
-              "Reportee Name",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            _verticalPadding,
-            Column(
-              // center the row
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // last name
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Last Name*',
-                    ),
-                    // add validator:
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _emptyFieldError;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                _verticalPadding,
-                // first name
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'First Name*',
-                    ),
-                    // add validator:
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _emptyFieldError;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                _verticalPadding,
-                // middle name
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Middle Name',
-                    ),
-                  ),
-                ),
-                _verticalPadding,
-                // qualifier (Jr, Sr, III, etc)
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Qualifier',
-                    ),
-                  ),
-                ),
-                _verticalPadding,
-                // Nickname / Known Aliases
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Nickname / Known Aliases',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            _verticalPadding,
-
+            // Section: Reportee Name [REMOVED]
             // Section: Reportee Citizenship
             const Text(
               "Citizenship",
@@ -414,49 +330,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
-            // Section: Sex
-            const Text(
-              "Sex",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            Column(
-              // center the row
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // sizedbox-radio for Male
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: RadioListTile(
-                    title: const Text("Male"),
-                    value: "male",
-                    groupValue: _sexValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _sexValue = value.toString();
-                      });
-                    },
-                  ),
-                ),
-                // sizedbox-radio for female
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: RadioListTile(
-                    title: const Text("Female"),
-                    value: "female",
-                    groupValue: _sexValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _sexValue = value.toString();
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            _verticalPadding,
+            // Section: Sex [REMOVED]
             // Section: Civil Status
             const Text(
               "Civil Status",
@@ -502,93 +376,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ),
             ),
             _verticalPadding,
-            // Section: Date of Birth
-            const Text(
-              "Date of Birth",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            _verticalPadding,
-            // date picker for date of birth --- THIS IS NOT WORKING YET
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    // set controller to _dateOfBirthController
-                    controller: _dateOfBirthController,
-                    showCursor: false,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                    keyboardType: TextInputType.datetime,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Date of Birth*',
-                    ),
-                    // on tap, show date picker:
-                    onTap: () async {
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      var result = await showCalendarDatePicker2Dialog(
-                        dialogSize: const Size(325, 400),
-                        context: context,
-                        config: CalendarDatePicker2WithActionButtonsConfig(
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now()),
-                        initialValue: [DateTime.now()],
-                        borderRadius: BorderRadius.circular(15),
-                      );
-                      _dateOfBirth = result![0];
-                      // return date of birth as string
-                      var dateOfBirthString = DateFormat('MM/dd/yyyy')
-                          .format(_dateOfBirth!)
-                          .toString();
-                      print('[TESSSSSTOTOTO] $dateOfBirthString');
-                      // set text field to date of birth
-                      setState(() {
-                        _dateOfBirthController.text = dateOfBirthString;
-                      });
-                    },
-                  ),
-                ),
-                //
-              ],
-            ),
-            _verticalPadding,
-            // Age
-            const Text(
-              "Age",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            _verticalPadding,
-            // age text field --- !!! this should be auto-calculated and filled out with DOB
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Age*',
-                    ),
-                    // add validator:
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _emptyFieldError;
-                      }
-                      return null;
-                    },
-                  ),
-                )
-              ],
-            ),
-            _verticalPadding,
+            // Section: Date of Birth [REMOVED]
             // Section: Contact Information
             const Text(
               "Contact Information",
@@ -635,16 +423,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   ),
                 ),
                 _verticalPadding,
-                // Email Address
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email Address',
-                    ),
-                  ),
-                ),
+                // Email Address [REMOVED]
               ],
             ),
             _verticalPadding,
@@ -903,26 +682,26 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(),
                       labelText: 'Highest Educational Attainment*',
                     ),
-                    items: [
+                    items: const [
                       DropdownMenuItem(
-                        child: const Text("Elementary"),
                         value: "Elementary",
+                        child: Text("Elementary"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("High School"),
                         value: "High School",
+                        child: Text("High School"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("College"),
                         value: "College",
+                        child: Text("College"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("Vocational"),
                         value: "Vocational",
+                        child: Text("Vocational"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("Graduate Studies"),
                         value: "Graduate Studies",
+                        child: Text("Graduate Studies"),
                       ),
                     ],
                     onChanged: (value) {
