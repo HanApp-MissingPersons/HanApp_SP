@@ -104,11 +104,11 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   // controllers to contain the text in the form
   late final TextEditingController _dateOfBirthController;
 
-  // // @override
-  // // void initState() {
-  // //   _dateOfBirth = TextEditingController();
-  // //   super.initState();
-  // // }
+  @override
+  void initState() {
+    _dateOfBirthController = TextEditingController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -364,6 +364,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    // set controller to _dateOfBirthController
+                    controller: _dateOfBirthController,
+                    showCursor: false,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    keyboardType: TextInputType.datetime,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Date of Birth*',
