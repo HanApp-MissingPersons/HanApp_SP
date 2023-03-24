@@ -150,6 +150,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
   bool? reportee_AltAddress_available = false;
 
+  // controllers to contain the text in the form
+  late final TextEditingController _dateOfBirthController;
+
 // initialize controllers
   @override
   void initState() {
@@ -183,6 +186,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteeID = TextEditingController();
     _reporteePhoto = TextEditingController();
     _reporteeRelationshipToMissingPerson = TextEditingController();
+    _dateOfBirthController = TextEditingController();
     super.initState();
   }
 
@@ -218,6 +222,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteeOccupation.dispose();
     _reporteeID.dispose();
     _reporteePhoto.dispose();
+    _dateOfBirthController.dispose();
     super.dispose();
   }
   /* END OF VARIABLES AND CONTROLLERS */
@@ -234,9 +239,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
   // error message: empty field
   static const String _emptyFieldError = 'Field cannot be empty';
-
-  // controllers to contain the text in the form
-  late final TextEditingController _dateOfBirthController;
 
   @override
   Widget build(BuildContext context) {
@@ -516,12 +518,19 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    // set controller to _dateOfBirthController
+                    controller: _dateOfBirthController,
+                    showCursor: false,
+                    autocorrect: false,
+                    enableSuggestions: false,
+                    keyboardType: TextInputType.datetime,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Date of Birth*',
                     ),
                     // on tap, show date picker:
                     onTap: () async {
+                      FocusScope.of(context).requestFocus(FocusNode());
                       var result = await showCalendarDatePicker2Dialog(
                         dialogSize: const Size(325, 400),
                         context: context,
@@ -536,6 +545,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       var dateOfBirthString = DateFormat('MM/dd/yyyy')
                           .format(_dateOfBirth!)
                           .toString();
+                      print('[TESSSSSTOTOTO] $dateOfBirthString');
                       // set text field to date of birth
                       setState(() {
                         _dateOfBirthController.text = dateOfBirthString;
