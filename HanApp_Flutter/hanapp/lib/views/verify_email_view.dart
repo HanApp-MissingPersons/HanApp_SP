@@ -20,7 +20,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       // simple body will contain text and text button
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 13),
+          padding:
+              EdgeInsets.only(top: MediaQuery.of(context).size.height / 15),
           child: Column(
             children: [
               // simple text
@@ -28,7 +29,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                 padding: const EdgeInsets.only(bottom: 20.0),
                 // added margin to top of text to prevent it from being too close to the top of the screen
                 margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 5),
+                    top: MediaQuery.of(context).size.height / 15),
                 child: Center(
                     child: Text(
                   'Send Email Verification',
