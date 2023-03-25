@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
@@ -89,6 +90,20 @@ class Page2ReporteeDetails extends StatefulWidget {
 }
 
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
+  PlatformFile? pickedFile;
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'jpeg'],
+    );
+    if (result == null) return;
+
+    setState(() {
+      pickedFile = result.files.first;
+    });
+  }
+
   /* FORMATTING STUFF */
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
@@ -752,16 +767,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                if (pickedFile != null)
+                  Container(
+                      color: Colors.blue[100],
+                      child: Center(
+                        child: Text(pickedFile!.name),
+                      )),
                 // Upload from Gallery
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: ElevatedButton(
-                    onPressed: () {
-                      final XFile? _reportee_ID = _picker.pickImage(
-                          source: ImageSource.gallery,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
-                    },
+                    onPressed: selectFile,
                     child: const Text("Upload From Gallery"),
                   ),
                 ),
