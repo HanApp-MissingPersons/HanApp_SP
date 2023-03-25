@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
@@ -91,6 +94,7 @@ class Page2ReporteeDetails extends StatefulWidget {
 
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   PlatformFile? pickedFile;
+  Uint8List? pickedFileBytes;
 
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles(
@@ -101,6 +105,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
     setState(() {
       pickedFile = result.files.first;
+      pickedFileBytes = pickedFile!.bytes;
     });
   }
 
@@ -771,7 +776,19 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   Container(
                       color: Colors.blue[100],
                       child: Center(
-                        child: Text(pickedFile!.name),
+                        child: Expanded(
+                          child:
+                              !(defaultTargetPlatform == TargetPlatform.android)
+                                  ? Image.memory(
+                                      pickedFileBytes!,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.file(
+                                      File(pickedFile!.path!),
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                        ),
                       )),
                 // Upload from Gallery
                 SizedBox(
