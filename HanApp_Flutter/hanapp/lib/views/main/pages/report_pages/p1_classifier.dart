@@ -45,9 +45,15 @@ class _Page1ClassifierState extends State<Page1Classifier> {
       // set the state of the checkboxes
       isVictimNaturalCalamity =
           _prefs.getBool('p1_isVictimNaturalCalamity') ?? false;
+<<<<<<< HEAD
       isMinor = _prefs.getBool('isMinor') ?? false;
       isMissing24Hours = _prefs.getBool('isMissing24Hours') ?? false;
       isVictimCrime = _prefs.getBool('isVictimCrime') ?? false;
+=======
+      isMinor = _prefs.getBool('p1_isMinor') ?? false;
+      isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
+      isVictimCrime = _prefs.getBool('p1_isVictimCrime') ?? false;
+>>>>>>> tarek
     });
   }
 
@@ -97,10 +103,14 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isVictimNaturalCalamity = value;
                           });
                           // save the value of the checkbox
+<<<<<<< HEAD
                           // _prefs.setBool('isVictimNaturalCalamity', value!);
                           // save value of checkbox in shared preferences
                           _prefs.setBool('isVictimNaturalCalamity', value!);
                           print('isVictimNaturalCalamity: $value');
+=======
+                          _prefs.setBool('p1_isVictimNaturalCalamity', value!);
+>>>>>>> tarek
                         },
                       ), // Checkbox for Natural Calamity
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -111,8 +121,11 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           });
                           _prefs.setBool('p1_isVictimNaturalCalamity',
                               isVictimNaturalCalamity!);
+<<<<<<< HEAD
                           print(
                               'isVictimNaturalCalamity: $isVictimNaturalCalamity');
+=======
+>>>>>>> tarek
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -135,7 +148,12 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isMinor = value;
                           });
                           // save the value of the checkbox
+<<<<<<< HEAD
                           _prefs.setBool('isMinor', value!);
+=======
+                          _prefs.setBool('p1_isMinor', value!);
+                          ;
+>>>>>>> tarek
                         },
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -144,6 +162,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isMinor = !isMinor!;
                           });
+                          _prefs.setBool('p1_isMinor', isMinor!);
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -165,7 +184,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isMissing24Hours = value;
                           });
                           // save the value of the checkbox
-                          _prefs.setBool('isMissing24Hours', value!);
+                          _prefs.setBool('p1_isMissing24Hours', value!);
                         },
                       ),
                       GestureDetector(
@@ -173,6 +192,8 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isMissing24Hours = !isMissing24Hours!;
                           });
+                          _prefs.setBool(
+                              'p1_isMissing24Hours', isMissing24Hours!);
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -193,7 +214,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isVictimCrime = value;
                           });
                           // save the value of the checkbox
-                          _prefs.setBool('isVictimCrime', value!);
+                          _prefs.setBool('p1_isVictimCrime', value!);
                         },
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -202,6 +223,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isVictimCrime = !isVictimCrime!;
                           });
+                          _prefs.setBool('p1_isVictimCrime', isVictimCrime!);
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width - 100,
