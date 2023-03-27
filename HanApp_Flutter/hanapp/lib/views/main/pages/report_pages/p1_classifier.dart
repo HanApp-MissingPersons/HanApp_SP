@@ -44,7 +44,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
     setState(() {
       // set the state of the checkboxes
       isVictimNaturalCalamity =
-          _prefs.getBool('isVictimNaturalCalamity') ?? false;
+          _prefs.getBool('p1_isVictimNaturalCalamity') ?? false;
       isMinor = _prefs.getBool('isMinor') ?? false;
       isMissing24Hours = _prefs.getBool('isMissing24Hours') ?? false;
       isVictimCrime = _prefs.getBool('isVictimCrime') ?? false;
@@ -109,7 +109,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isVictimNaturalCalamity = !isVictimNaturalCalamity!;
                           });
-                          _prefs.setBool('isVictimNaturalCalamity',
+                          _prefs.setBool('p1_isVictimNaturalCalamity',
                               isVictimNaturalCalamity!);
                           print(
                               'isVictimNaturalCalamity: $isVictimNaturalCalamity');

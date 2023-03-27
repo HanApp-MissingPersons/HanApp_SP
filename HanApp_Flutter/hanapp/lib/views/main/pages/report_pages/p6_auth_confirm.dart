@@ -219,10 +219,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                     onPressed: () async {
                       final prefs = await SharedPreferences.getInstance();
                       print(prefs.getKeys());
-                      // print boolean value of 'isVictimNaturalCalamity
-                      print(prefs.getBool('isVictimNaturalCalamity'));
-                      // print string for reportee name
-                      print(prefs.getString('reporteeName'));
                     },
                     child: const Text('Print Shared Preferences'),
                   ),
