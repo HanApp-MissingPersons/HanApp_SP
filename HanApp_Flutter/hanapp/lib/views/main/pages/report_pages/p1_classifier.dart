@@ -43,10 +43,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
     setState(() {
       // set the state of the checkboxes
       isVictimNaturalCalamity =
-          _prefs.getBool('isVictimNaturalCalamity') ?? false;
-      isMinor = _prefs.getBool('isMinor') ?? false;
-      isMissing24Hours = _prefs.getBool('isMissing24Hours') ?? false;
-      isVictimCrime = _prefs.getBool('isVictimCrime') ?? false;
+          _prefs.getBool('p1_isVictimNaturalCalamity') ?? false;
+      isMinor = _prefs.getBool('p1_isMinor') ?? false;
+      isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
+      isVictimCrime = _prefs.getBool('p1_isVictimCrime') ?? false;
     });
   }
 
@@ -97,7 +97,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isVictimNaturalCalamity = value;
                           });
                           // save the value of the checkbox
-                          _prefs.setBool('isVictimNaturalCalamity', value!);
+                          _prefs.setBool('p1_isVictimNaturalCalamity', value!);
                         },
                       ), // Checkbox for Natural Calamity
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -106,6 +106,8 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isVictimNaturalCalamity = !isVictimNaturalCalamity!;
                           });
+                          _prefs.setBool('p1_isVictimNaturalCalamity',
+                              isVictimNaturalCalamity!);
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -128,7 +130,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isMinor = value;
                           });
                           // save the value of the checkbox
-                          _prefs.setBool('isMinor', value!);
+                          _prefs.setBool('p1_isMinor', value!);
                           ;
                         },
                       ),
@@ -138,6 +140,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isMinor = !isMinor!;
                           });
+                          _prefs.setBool('p1_isMinor', isMinor!);
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -159,7 +162,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isMissing24Hours = value;
                           });
                           // save the value of the checkbox
-                          _prefs.setBool('isMissing24Hours', value!);
+                          _prefs.setBool('p1_isMissing24Hours', value!);
                         },
                       ),
                       GestureDetector(
@@ -167,6 +170,8 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isMissing24Hours = !isMissing24Hours!;
                           });
+                          _prefs.setBool(
+                              'p1_isMissing24Hours', isMissing24Hours!);
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -187,7 +192,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isVictimCrime = value;
                           });
                           // save the value of the checkbox
-                          _prefs.setBool('isVictimCrime', value!);
+                          _prefs.setBool('p1_isVictimCrime', value!);
                         },
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -196,6 +201,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isVictimCrime = !isVictimCrime!;
                           });
+                          _prefs.setBool('p1_isVictimCrime', isVictimCrime!);
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width - 100,
