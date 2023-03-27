@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 1. Need to automatically add padding between rows (instead of hardcoding the padding in between rows)
 2. Need backend to store the values of the checkboxes
 3. Need state management to store the values of the checkboxes
-
 */
 
 class Page1Classifier extends StatefulWidget {
@@ -34,7 +33,6 @@ class _Page1ClassifierState extends State<Page1Classifier> {
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
-
   /* END OF FORMATTING STUFF */
 
   /* SHARED PREFERENCE STUFF */
@@ -45,15 +43,9 @@ class _Page1ClassifierState extends State<Page1Classifier> {
       // set the state of the checkboxes
       isVictimNaturalCalamity =
           _prefs.getBool('p1_isVictimNaturalCalamity') ?? false;
-<<<<<<< HEAD
-      isMinor = _prefs.getBool('isMinor') ?? false;
-      isMissing24Hours = _prefs.getBool('isMissing24Hours') ?? false;
-      isVictimCrime = _prefs.getBool('isVictimCrime') ?? false;
-=======
       isMinor = _prefs.getBool('p1_isMinor') ?? false;
       isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
       isVictimCrime = _prefs.getBool('p1_isVictimCrime') ?? false;
->>>>>>> tarek
     });
   }
 
@@ -98,19 +90,13 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         // value: _isVictimNaturalCalamity,
                         // retrieve value of the checkbox from shared preferences
                         value: isVictimNaturalCalamity,
+
                         onChanged: (bool? value) {
                           setState(() {
                             isVictimNaturalCalamity = value;
                           });
                           // save the value of the checkbox
-<<<<<<< HEAD
-                          // _prefs.setBool('isVictimNaturalCalamity', value!);
-                          // save value of checkbox in shared preferences
-                          _prefs.setBool('isVictimNaturalCalamity', value!);
-                          print('isVictimNaturalCalamity: $value');
-=======
                           _prefs.setBool('p1_isVictimNaturalCalamity', value!);
->>>>>>> tarek
                         },
                       ), // Checkbox for Natural Calamity
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -121,11 +107,6 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           });
                           _prefs.setBool('p1_isVictimNaturalCalamity',
                               isVictimNaturalCalamity!);
-<<<<<<< HEAD
-                          print(
-                              'isVictimNaturalCalamity: $isVictimNaturalCalamity');
-=======
->>>>>>> tarek
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -148,12 +129,8 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                             isMinor = value;
                           });
                           // save the value of the checkbox
-<<<<<<< HEAD
-                          _prefs.setBool('isMinor', value!);
-=======
                           _prefs.setBool('p1_isMinor', value!);
                           ;
->>>>>>> tarek
                         },
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -250,6 +227,13 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         ),
                       ),
                     ],
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      print(prefs.getKeys());
+                    },
+                    child: const Text('Print Shared Preferences'),
                   ),
                 ],
               ),

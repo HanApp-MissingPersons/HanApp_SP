@@ -69,37 +69,64 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   bool? mp_dental_available = false;
   bool? mp_fingerprints_available = false;
 
+  // all controlers for text fields
+  late final TextEditingController _mp_scars = TextEditingController();
+  late final TextEditingController _mp_marks = TextEditingController();
+  late final TextEditingController _mp_tattoos = TextEditingController();
+  late final TextEditingController _mp_hair_color = TextEditingController();
+  late final TextEditingController _mp_eye_color = TextEditingController();
+  late final TextEditingController _mp_prosthetics = TextEditingController();
+  late final TextEditingController _mp_birth_defects = TextEditingController();
+  late final TextEditingController _mp_last_clothing = TextEditingController();
+  late final TextEditingController _mp_height_feet = TextEditingController();
+  late final TextEditingController _mp_height_inches = TextEditingController();
+  late final TextEditingController _mp_weight = TextEditingController();
+  late final TextEditingController _mp_blood_type = TextEditingController();
+  late final TextEditingController _mp_medications = TextEditingController();
+  // socmed details
+  late final TextEditingController _mp_facebook = TextEditingController();
+  late final TextEditingController _mp_twitter = TextEditingController();
+  late final TextEditingController _mp_instagram = TextEditingController();
+  late final TextEditingController _mp_socmed_other_platform =
+      TextEditingController();
+  late final TextEditingController _mp_socmed_other_username =
+      TextEditingController();
+  // all controllers for boolean variables
+  late final TextEditingController _mp_hair_color_natural =
+      TextEditingController();
+  late final TextEditingController _mp_eye_color_natural =
+      TextEditingController();
+
   /* INITIALIZE VARIABLES FOR SHARED PREFERENCE */
   // get text and boolean values from shared preferences
-  Future<void> _getUserChoices() async {
-    _prefs = await SharedPreferences.getInstance();
-    setState(() {
-      // set the state of the checkboxes
-      mp_scars = _prefs.getString('p4_mp_scars') ?? '';
-      mp_marks = _prefs.getString('p4_mp_marks') ?? '';
-      mp_tattoos = _prefs.getString('p4_mp_tattoos') ?? '';
-      mp_hair_color = _prefs.getString('p4_mp_hair_color') ?? '';
-      mp_hair_color_natural =
-          _prefs.getBool('p4_mp_hair_color_natural') ?? false;
-      mp_eye_color = _prefs.getString('p4_mp_eye_color') ?? '';
-      mp_eye_color_natural = _prefs.getBool('p4_mp_eye_color_natural') ?? false;
-      mp_prosthetics = _prefs.getString('p4_mp_prosthetics') ?? '';
-      mp_birth_defects = _prefs.getString('p4_mp_birth_defects') ?? '';
-      last_clothing = _prefs.getString('p4_last_clothing') ?? '';
-      mp_height_feet = _prefs.getString('p4_mp_height_feet') ?? '';
-      mp_height_inches = _prefs.getString('p4_mp_height_inches') ?? '';
-      mp_weight = _prefs.getString('p4_mp_weight') ?? '';
-      mp_blood_type = _prefs.getString('p4_mp_blood_type') ?? '';
-      mp_medications = _prefs.getString('p4_mp_medications') ?? '';
-      mp_facebook = _prefs.getString('p4_mp_facebook') ?? '';
-      mp_twitter = _prefs.getString('p4_mp_twitter') ?? '';
-      mp_instagram = _prefs.getString('p4_mp_instagram') ?? '';
-      mp_socmed_other_platform =
-          _prefs.getString('p4_mp_socmed_other_platform') ?? '';
-      mp_socmed_other_username =
-          _prefs.getString('p4_mp_socmed_other_username') ?? '';
-    });
-  }
+  // Future<void> _getUserChoices() async {
+  //   _prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     mp_scars = _prefs.getString('p4_mp_scars') ?? '';
+  //     mp_marks = _prefs.getString('p4_mp_marks') ?? '';
+  //     mp_tattoos = _prefs.getString('p4_mp_tattoos') ?? '';
+  //     mp_hair_color = _prefs.getString('p4_mp_hair_color') ?? '';
+  //     mp_hair_color_natural =
+  //         _prefs.getBool('p4_mp_hair_color_natural') ?? false;
+  //     mp_eye_color = _prefs.getString('p4_mp_eye_color') ?? '';
+  //     mp_eye_color_natural = _prefs.getBool('p4_mp_eye_color_natural') ?? false;
+  //     mp_prosthetics = _prefs.getString('p4_mp_prosthetics') ?? '';
+  //     mp_birth_defects = _prefs.getString('p4_mp_birth_defects') ?? '';
+  //     last_clothing = _prefs.getString('p4_last_clothing') ?? '';
+  //     mp_height_feet = _prefs.getString('p4_mp_height_feet') ?? '';
+  //     mp_height_inches = _prefs.getString('p4_mp_height_inches') ?? '';
+  //     mp_weight = _prefs.getString('p4_mp_weight') ?? '';
+  //     mp_blood_type = _prefs.getString('p4_mp_blood_type') ?? '';
+  //     mp_medications = _prefs.getString('p4_mp_medications') ?? '';
+  //     mp_facebook = _prefs.getString('p4_mp_facebook') ?? '';
+  //     mp_twitter = _prefs.getString('p4_mp_twitter') ?? '';
+  //     mp_instagram = _prefs.getString('p4_mp_instagram') ?? '';
+  //     mp_socmed_other_platform =
+  //         _prefs.getString('p4_mp_socmed_other_platform') ?? '';
+  //     mp_socmed_other_username =
+  //         _prefs.getString('p4_mp_socmed_other_username') ?? '';
+  //   });
+  // }
 
   // save images to shared preference
   Future<void> _saveImages() async {
@@ -163,10 +190,47 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   @override
   void initState() {
     super.initState();
-    _getUserChoices();
-    _loadImages();
+    // _getUserChoices(); // this is to get the text and boolean values from shared preference when the page is loaded
+    _loadImages(); // this is to load the images from shared preference when the page is loaded
+    SharedPreferences.getInstance().then((prefs) {
+      setState(() {
+        _prefs = prefs;
+        // scars, marks, tattoos
+        _mp_scars.text = _prefs.getString('p4_mp_scars') ?? '';
+        _mp_marks.text = _prefs.getString('p4_mp_marks') ?? '';
+        _mp_tattoos.text = _prefs.getString('p4_mp_tattoos') ?? '';
+        // hair, eye color
+        _mp_hair_color.text = _prefs.getString('p4_mp_hair_color') ?? '';
+        _mp_eye_color.text = _prefs.getString('p4_mp_eye_color') ?? '';
+        // boolean for hair and eye color
+        mp_hair_color_natural =
+            _prefs.getBool('p4_mp_hair_color_unknown') ?? false;
+        mp_eye_color_natural =
+            _prefs.getBool('p4_mp_eye_color_unknown') ?? false;
+        // prosthetics, birth defects, last clothing
+        _mp_prosthetics.text = _prefs.getString('p4_mp_prosthetics') ?? '';
+        _mp_birth_defects.text = _prefs.getString('p4_mp_birth_defects') ?? '';
+        _mp_last_clothing.text = _prefs.getString('p4_mp_last_clothing') ?? '';
+        // MP medical details
+        _mp_height_feet.text = _prefs.getString('p4_mp_height_feet') ?? '';
+        _mp_height_inches.text = _prefs.getString('p4_mp_height_inches') ?? '';
+        _mp_weight.text = _prefs.getString('p4_mp_weight') ?? '';
+        _mp_blood_type.text = _prefs.getString('p4_mp_blood_type') ?? '';
+        _mp_medications.text = _prefs.getString('p4_mp_medications') ?? '';
+        // MP socmed details
+        _mp_facebook.text =
+            _prefs.getString('p4_mp_socmed_facebook_username') ?? '';
+        _mp_twitter.text =
+            _prefs.getString('p4_mp_socmed_twitter_username') ?? '';
+        _mp_instagram.text =
+            _prefs.getString('p4_mp_socmed_instagram_username') ?? '';
+        _mp_socmed_other_platform.text =
+            _prefs.getString('p4_mp_socmed_other_platform') ?? '';
+        _mp_socmed_other_username.text =
+            _prefs.getString('p4_mp_socmed_other_username') ?? '';
+      });
+    });
   }
-  // this is to load the images from shared preference when the page is loaded
 
   /* BUILD WIDGET */
   @override
@@ -199,8 +263,74 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
               ],
             ),
+            // SCARS, MARKS, AND TATTOOS SECTION
             _verticalPadding,
-            // upload recent photo
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Scars, Marks, and Tattoos',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            _verticalPadding,
+            // scars text field, saves to shared preference after user types
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextField(
+                controller: _mp_scars,
+                decoration: const InputDecoration(
+                  labelText: 'Scars',
+                  hintText: 'Scars',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _prefs.setString('p4_mp_scars', value);
+                  });
+                },
+              ),
+            ),
+            _verticalPadding,
+            // marks text field, saves to shared preference after user types
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextField(
+                controller: _mp_marks,
+                decoration: const InputDecoration(
+                  labelText: 'Marks',
+                  hintText: 'Marks',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _prefs.setString('p4_mp_marks', value);
+                  });
+                },
+              ),
+            ),
+            _verticalPadding,
+            // tattoos text field, saves to shared preference after user types
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextField(
+                controller: _mp_tattoos,
+                decoration: const InputDecoration(
+                  labelText: 'Tattoos',
+                  hintText: 'Tattoos',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _prefs.setString('p4_mp_tattoos', value);
+                  });
+                },
+              ),
+            ),
+
+            // RECENT PHOTO SECTION
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
@@ -339,6 +469,15 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 "End of Absent/Missing Person Details Form. Swipe left to move to next page",
                 style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
+            ),
+            TextButton(
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                print(prefs.getKeys());
+                print(prefs.getString('p4_mp_scars'));
+                print(prefs.getString('p4_mp_marks'));
+              },
+              child: const Text('Print Shared Preferences'),
             ),
           ]))
     ]);
