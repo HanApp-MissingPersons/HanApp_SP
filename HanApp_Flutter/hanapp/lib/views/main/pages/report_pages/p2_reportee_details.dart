@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
@@ -99,6 +100,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   PlatformFile? pickedFile;
   Uint8List? pickedFileBytes;
 
+  Uint8List? singlePhoto;
+  Uint8List? singlePhoto_face;
   String? relationshipToMP;
   String? citizenship;
   String? civil_status;
@@ -120,10 +123,69 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   String? highestEduc;
   String? occupation;
 
+  Future<void> loadImages() async {
+    String? singlePhotoString = _prefs.getString('p2_singlePhoto');
+    if (singlePhotoString == null) {
+      print('[p2] No ID photo');
+      return;
+    } else {
+      setState(() {
+        singlePhoto = base64Decode(singlePhotoString);
+      });
+    }
+  }
+
+  Future<void> loadImage_face() async {
+    String? singlePhotoStringFace = _prefs.getString('p2_singlePhoto_face');
+    if (singlePhotoStringFace == null) {
+      print('[p2] No user selfie ');
+      return;
+    } else {
+      setState(() {
+        singlePhoto_face = base64Decode(singlePhotoStringFace);
+      });
+    }
+  }
+
+  Future<void> saveImages() async {
+    if (singlePhoto != null) {
+      _prefs.setString('p2_singlePhoto', base64Encode(singlePhoto!));
+    }
+    if (singlePhoto_face != null) {
+      _prefs.setString('p2_singlePhoto_face', base64Encode(singlePhoto_face!));
+    }
+  }
+
+  Future<void> getImages() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final imageBytes = await pickedFile.readAsBytes();
+      setState(() {
+        singlePhoto = imageBytes;
+      });
+      await saveImages();
+    }
+  }
+
+  Future<void> getImageFace() async {
+    final pickerFace = ImagePicker();
+    final pickedFileFace =
+        await pickerFace.pickImage(source: ImageSource.camera);
+    if (pickedFileFace != null) {
+      final imageBytesFace = await pickedFileFace.readAsBytes();
+      setState(() {
+        singlePhoto_face = imageBytesFace;
+      });
+      await saveImages();
+    }
+  }
+
   Future<void> getReporteeInfo() async {
     _prefs = await SharedPreferences.getInstance();
+    loadImages();
+    loadImage_face();
     setState(() {
-      // set the state of the checkboxes
       relationshipToMP = _prefs.getString('p2_relationshipToMP');
       if (relationshipToMP != null) {
         _reporteeRelationshipToMissingPerson.text = relationshipToMP!;
@@ -999,45 +1061,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (pickedFile != null)
-                  Container(
-                      color: Colors.blue[100],
-                      child: Center(
-                        child: Expanded(
-                          child:
-                              !(defaultTargetPlatform == TargetPlatform.android)
-                                  ? Image.memory(
-                                      pickedFileBytes!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : Image.file(
-                                      File(pickedFile!.path!),
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                    ),
-                        ),
-                      )),
-                // Upload from Gallery
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
-                    onPressed: selectFile,
-                    child: const Text("Upload From Gallery"),
-                  ),
-                ),
-                // Upload from Camera
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
+                if (singlePhoto != null)
+                  Center(child: Image.memory(singlePhoto!)), // show image
+                ElevatedButton(
                     onPressed: () {
-                      final XFile? _reportee_ID = _picker.pickImage(
-                          source: ImageSource.camera,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
+                      getImages();
                     },
-                    child: const Text("Upload From Camera"),
-                  ),
-                ),
+                    child: const Text("Upload ID")),
               ],
             ),
             _verticalPadding,
@@ -1054,32 +1084,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Upload from Gallery
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
+                if (singlePhoto_face != null)
+                  Center(child: Image.memory(singlePhoto_face!)), // show image
+                ElevatedButton(
                     onPressed: () {
-                      final XFile? _reportee_photo = _picker.pickImage(
-                          source: ImageSource.gallery,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
+                      getImageFace();
                     },
-                    child: const Text("Upload From Gallery"),
-                  ),
-                ),
-                // Upload from Camera
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final XFile? _reportee_photo = _picker.pickImage(
-                          source: ImageSource.camera,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
-                    },
-                    child: const Text("Upload From Camera"),
-                  ),
-                ),
+                    child: const Text("Take Selfie")),
               ],
             ),
             _verticalPadding,
