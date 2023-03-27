@@ -34,6 +34,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+
   /* END OF FORMATTING STUFF */
 
   /* SHARED PREFERENCE STUFF */
@@ -91,13 +92,15 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         // value: _isVictimNaturalCalamity,
                         // retrieve value of the checkbox from shared preferences
                         value: isVictimNaturalCalamity,
-
                         onChanged: (bool? value) {
                           setState(() {
                             isVictimNaturalCalamity = value;
                           });
                           // save the value of the checkbox
+                          // _prefs.setBool('isVictimNaturalCalamity', value!);
+                          // save value of checkbox in shared preferences
                           _prefs.setBool('isVictimNaturalCalamity', value!);
+                          print('isVictimNaturalCalamity: $value');
                         },
                       ), // Checkbox for Natural Calamity
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -106,6 +109,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           setState(() {
                             isVictimNaturalCalamity = !isVictimNaturalCalamity!;
                           });
+                          _prefs.setBool('isVictimNaturalCalamity',
+                              isVictimNaturalCalamity!);
+                          print(
+                              'isVictimNaturalCalamity: $isVictimNaturalCalamity');
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
@@ -129,7 +136,6 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           });
                           // save the value of the checkbox
                           _prefs.setBool('isMinor', value!);
-                          ;
                         },
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped

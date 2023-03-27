@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
+// import p1 to p5
+import 'p1_classifier.dart';
+import 'p2_reportee_details.dart';
+import 'p3_mp_info.dart';
+import 'p4_mp_description.dart';
+import 'p5_incident_details.dart';
+
 // import dart ui
 import 'dart:ui';
 
@@ -203,7 +211,20 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             });
                       },
                       child: const Text('Submit Report'),
+                      // use sharedpreferences getAll() method to get all the data
                     ),
+                  ),
+                  // print all sharedpreferences data
+                  TextButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      print(prefs.getKeys());
+                      // print boolean value of 'isVictimNaturalCalamity
+                      print(prefs.getBool('isVictimNaturalCalamity'));
+                      // print string for reportee name
+                      print(prefs.getString('reporteeName'));
+                    },
+                    child: const Text('Print Shared Preferences'),
                   ),
                 ],
               ),
