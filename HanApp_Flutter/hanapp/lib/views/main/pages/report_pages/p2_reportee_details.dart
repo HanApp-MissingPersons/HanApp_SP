@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /*
 LACKING:
@@ -92,9 +93,137 @@ class Page2ReporteeDetails extends StatefulWidget {
   State<Page2ReporteeDetails> createState() => _Page2ReporteeDetailsState();
 }
 
+late SharedPreferences _prefs;
+
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   PlatformFile? pickedFile;
   Uint8List? pickedFileBytes;
+
+  String? relationshipToMP;
+  String? citizenship;
+  String? civil_status;
+  String? homePhone;
+  String? mobilePhone;
+  String? altMobilePhone;
+  String? region;
+  String? province;
+  String? townCity;
+  String? barangay;
+  String? villageSitio;
+  String? streetHouseNum;
+  String? altRegion;
+  String? altProvince;
+  String? altTownCity;
+  String? altBarangay;
+  String? altVillageSitio;
+  String? altStreetHouseNum;
+  String? highestEduc;
+  String? occupation;
+
+  Future<void> getReporteeInfo() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // set the state of the checkboxes
+      relationshipToMP = _prefs.getString('p2_relationshipToMP');
+      if (relationshipToMP != null) {
+        _reporteeRelationshipToMissingPerson.text = relationshipToMP!;
+      }
+
+      citizenship = _prefs.getString('p2_citizenship');
+      if (citizenship != null) {
+        _reporteeCitizenship.text = citizenship!;
+      }
+
+      civil_status = _prefs.getString('p2_civil_status');
+      if (civil_status != null) {
+        _reporteeCivilStatus.text = civil_status!;
+      }
+
+      homePhone = _prefs.getString('p2_homePhone');
+      if (homePhone != null) {
+        _reporteeHomePhone.text = homePhone!;
+      }
+
+      mobilePhone = _prefs.getString('p2_mobilePhone');
+      if (mobilePhone != null) {
+        _reporteeMobilePhone.text = mobilePhone!;
+      }
+
+      altMobilePhone = _prefs.getString('p2_altMobilePhone');
+      if (altMobilePhone != null) {
+        _reporteeAlternateMobilePhone.text = altMobilePhone!;
+      }
+
+      region = _prefs.getString('p2_region');
+      if (region != null) {
+        _reporteeRegion.text = region!;
+      }
+
+      province = _prefs.getString('p2_province');
+      if (province != null) {
+        _reporteeProvince.text = province!;
+      }
+
+      townCity = _prefs.getString('p2_townCity');
+      if (townCity != null) {
+        _reporteeCity.text = townCity!;
+      }
+
+      barangay = _prefs.getString('p2_barangay');
+      if (barangay != null) {
+        _reporteeBarangay.text = barangay!;
+      }
+
+      villageSitio = _prefs.getString('p2_villageSitio');
+      if (villageSitio != null) {
+        _reporteeVillageSitio.text = villageSitio!;
+      }
+
+      streetHouseNum = _prefs.getString('p2_streetHouseNum');
+      if (streetHouseNum != null) {
+        _reporteeStreetHouseNum.text = streetHouseNum!;
+      }
+
+      altRegion = _prefs.getString('p2_altRegion');
+      if (altRegion != null) {
+        _reporteeAltRegion.text = altRegion!;
+      }
+
+      altProvince = _prefs.getString('p2_altProvince');
+      if (altProvince != null) {
+        _reporteeAltProvince.text = altProvince!;
+      }
+
+      altTownCity = _prefs.getString('p2_altTownCity');
+      if (altTownCity != null) {
+        _reporteeAltCityTown.text = altTownCity!;
+      }
+
+      altBarangay = _prefs.getString('p2_altBarangay');
+      if (altBarangay != null) {
+        _reporteeAltBarangay.text = altBarangay!;
+      }
+
+      altVillageSitio = _prefs.getString('p2_altVillageSitio');
+      if (altVillageSitio != null) {
+        _reporteeAltVillageSitio.text = altVillageSitio!;
+      }
+
+      altStreetHouseNum = _prefs.getString('p2_altStreetHouseNum');
+      if (altStreetHouseNum != null) {
+        _reporteeAltStreetHouseNum.text = altStreetHouseNum!;
+      }
+
+      highestEduc = _prefs.getString('p2_highestEduc');
+      if (highestEduc != null) {
+        _reporteeHighestEduc.text = highestEduc!;
+      }
+      occupation = _prefs.getString('p2_occupation');
+      if (occupation != null) {
+        _reporteeOccupation.text = occupation!;
+      }
+    });
+  }
 
   Future selectFile() async {
     final result = await FilePicker.platform.pickFiles(
@@ -117,14 +246,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
 /* VARIABLES AND CONTROLLERS */
 // controllers for the form
-// REPORTEE NAME
-  late final TextEditingController _reporteeLastName;
-  late final TextEditingController _reporteeFirstName;
-  late final TextEditingController _reporteeMiddleName;
-  late final TextEditingController _reporteeQualifier;
-  late final TextEditingController _reporteeNickName;
 // REPORTEE SEX, CITIZENSHIP, CIVIL STATUS
-  late final TextEditingController _reporteeSex;
   late final TextEditingController _reporteeCitizenship;
   late final TextEditingController _reporteeCivilStatus;
 // REPORTEE BIRTHDAY
@@ -176,12 +298,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 // initialize controllers
   @override
   void initState() {
-    _reporteeLastName = TextEditingController();
-    _reporteeFirstName = TextEditingController();
-    _reporteeMiddleName = TextEditingController();
-    _reporteeQualifier = TextEditingController();
-    _reporteeNickName = TextEditingController();
-    _reporteeSex = TextEditingController();
     _reporteeCitizenship = TextEditingController();
     _reporteeCivilStatus = TextEditingController();
     _reporteeBirthdayController = TextEditingController();
@@ -207,18 +323,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteePhoto = TextEditingController();
     _reporteeRelationshipToMissingPerson = TextEditingController();
     _dateOfBirthController = TextEditingController();
+    getReporteeInfo();
     super.initState();
   }
 
   // dispose controllers
   @override
   void dispose() {
-    _reporteeLastName.dispose();
-    _reporteeFirstName.dispose();
-    _reporteeMiddleName.dispose();
-    _reporteeQualifier.dispose();
-    _reporteeNickName.dispose();
-    _reporteeSex.dispose();
     _reporteeCitizenship.dispose();
     _reporteeCivilStatus.dispose();
     _reporteeBirthdayController.dispose();
@@ -293,6 +404,18 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeRelationshipToMissingPerson,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return _emptyFieldError;
+                      }
+                      return null;
+                    },
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_relationshipToMP', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Relationship to Missing Person',
@@ -334,6 +457,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeCitizenship,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_citizenship', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Citizenship*',
@@ -377,6 +506,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 onChanged: (String? newValue) {
                   setState(() {
                     _civilStatusValue = newValue;
+                    _prefs.setString('p2_civil_status', _civilStatusValue!);
                   });
                 },
                 items: <String>[
@@ -414,6 +544,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeHomePhone,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_homePhone', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Home Phone',
@@ -425,6 +561,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeMobilePhone,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_mobilePhone', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Mobile Phone',
@@ -436,6 +578,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeAlternateMobilePhone,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_altMobilePhone', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Alternate Mobile Phone',
@@ -464,6 +612,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeRegion,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_region', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Region*',
@@ -475,6 +629,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeProvince,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_province', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Province*',
@@ -486,6 +646,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeCity,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_townCity', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Town/City*',
@@ -497,6 +663,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeBarangay,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_barangay', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Barangay*',
@@ -508,6 +680,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeVillageSitio,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_villageSitio', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Village/Sitio',
@@ -519,6 +697,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeStreetHouseNum,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_streetHouseNum', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'House Number/Street',
@@ -591,6 +775,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltRegion,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altRegion', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Region*',
@@ -602,6 +792,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltProvince,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altProvince', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Province*',
@@ -613,6 +809,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltCityTown,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altTownCity', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Town/City*',
@@ -624,6 +826,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltBarangay,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altBarangay', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Barangay*',
@@ -635,6 +843,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltVillageSitio,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altVillageSitio', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Village/Sitio',
@@ -646,6 +860,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltStreetHouseNum,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altStreetHouseNum', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'House Number/Street',
@@ -727,6 +947,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     onChanged: (value) {
                       setState(() {
                         _highestEduc = value.toString();
+                        _prefs.setString('p2_highestEduc', _highestEduc!);
                       });
                     },
                     value: _highestEduc,
@@ -750,6 +971,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeOccupation,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_occupation', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Occupation',
