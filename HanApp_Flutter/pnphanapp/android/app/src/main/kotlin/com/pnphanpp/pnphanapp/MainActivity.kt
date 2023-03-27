@@ -1,0 +1,6 @@
+package com.pnphanpp.pnphanapp
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
