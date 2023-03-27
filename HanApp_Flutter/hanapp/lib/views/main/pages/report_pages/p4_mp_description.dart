@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,13 +63,67 @@ class _Page4MPDescState extends State<Page4MPDesc> {
 
   // initialize ImagePicker
   final ImagePicker _picker = ImagePicker();
+  Uint8List? _imageBytes; // for storing the image as bytes
 
-  Future<File?> _pickImage(ImageSource source) async {
-    final XFile? image = await _picker.pickImage(source: source);
-
-    final File? file = File(image!.path);
-    return file;
+  // _loadImage initialize
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
   }
+
+  // function to load image from shared preferences
+  void _loadImage() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? imageData = prefs.getString('imageData');
+    if (imageData != null) {
+      setState(() {
+        _imageBytes = base64Decode(imageData);
+      });
+    }
+  }
+
+  // function to save image to shared preferences
+  void _saveImage(Uint8List imageBytes) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String imageData = base64Encode(imageBytes);
+    if (_imageBytes != null) {
+      prefs.setString('imageData', base64Encode(imageBytes));
+    }
+  }
+
+  // function to pick image from gallery OR camera
+  void _pickImage(ImageSource source) async {
+    final XFile? image = await _picker.pickImage(source: source);
+    if (image != null) {
+      final Uint8List imageBytes = await image.readAsBytes();
+      _saveImage(imageBytes);
+      setState(() {
+        _imageBytes = imageBytes;
+      });
+    }
+  }
+
+  // function to pick multiple images from gallery OR camera
+  void _pickMultipleImages(ImageSource source) async {
+    final List<XFile>? images = await _picker.pickMultiImage();
+    if (images != null) {
+      for (var image in images) {
+        final Uint8List imageBytes = await image.readAsBytes();
+        _saveImage(imageBytes);
+        setState(() {
+          _imageBytes = imageBytes;
+        });
+      }
+    }
+  }
+
+  // old function
+  // Future<File?> _pickImage(ImageSource source) async {
+  //   final XFile? image = await _picker.pickImage(source: source);
+  //   final File? file = File(image!.path);
+  //   return file;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -506,13 +562,20 @@ class _Page4MPDescState extends State<Page4MPDesc> {
               width: MediaQuery.of(context).size.width - 40,
               child: ElevatedButton(
                 onPressed: () {
-                  final XFile? mp_recent_photo = _picker.pickImage(
-                      source: ImageSource.gallery,
-                      imageQuality: 50,
-                      maxWidth: 1800) as XFile?;
+                  _pickImage(ImageSource.gallery);
+                  // final XFile? mp_recent_photo = _picker.pickImage(
+                  //     source: ImageSource.gallery,
+                  //     imageQuality: 50,
+                  //     maxWidth: 1800) as XFile?;
                 },
                 child: const Text('Upload Photo'),
               ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: _imageBytes != null
+                  ? Image.memory(_imageBytes!)
+                  : const Text('No image selected.'),
             ),
             // ask to upload other photos
             _verticalPadding,
@@ -526,17 +589,26 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     color: Colors.black54),
               ),
             ),
+
             _verticalPadding,
             // upload multiple photos button
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: ElevatedButton(
                 onPressed: () {
-                  final List<XFile>? mp_other_photos = _picker.pickMultiImage(
-                      imageQuality: 50, maxWidth: 1800) as List<XFile>?;
+                  _pickMultipleImages(ImageSource.gallery);
+                  // final List<XFile>? mp_other_photos = _picker.pickMultiImage(
+                  //     imageQuality: 50, maxWidth: 1800) as List<XFile>?;
                 },
                 child: const Text('Upload Photos'),
               ),
+            ),
+            // show image preview
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: _imageBytes != null
+                  ? Image.memory(_imageBytes!)
+                  : const Text('No image selected.'),
             ),
             _verticalPadding,
             // Checkbox to ask if the person has dental and/or finger print records
@@ -594,10 +666,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     width: MediaQuery.of(context).size.width - 40,
                     child: ElevatedButton(
                       onPressed: () {
-                        final XFile? mp_dental_records = _picker.pickImage(
-                            source: ImageSource.gallery,
-                            imageQuality: 50,
-                            maxWidth: 1800) as XFile?;
+                        _pickMultipleImages(ImageSource.gallery);
+                        // final XFile? mp_dental_records = _picker.pickImage(
+                        //     source: ImageSource.gallery,
+                        //     imageQuality: 50,
+                        //     maxWidth: 1800) as XFile?;
                       },
                       child: const Text('Upload Dental Records'),
                     ),
@@ -625,10 +698,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     width: MediaQuery.of(context).size.width - 40,
                     child: ElevatedButton(
                       onPressed: () {
-                        final XFile? mp_fingerprints = _picker.pickImage(
-                            source: ImageSource.gallery,
-                            imageQuality: 50,
-                            maxWidth: 1800) as XFile?;
+                        _pickMultipleImages(ImageSource.gallery);
+                        // final XFile? mp_fingerprints = _picker.pickImage(
+                        //     source: ImageSource.gallery,
+                        //     imageQuality: 50,
+                        //     maxWidth: 1800) as XFile?;
                       },
                       child: const Text('Upload Finger Print Records'),
                     ),
