@@ -282,10 +282,10 @@ HanApp_Flutter/hanapp/.idea
 HanApp_Flutter/hanapp/pubspec.lock
 HanApp_Flutter/hanapp/.vscode/settings.json
 HanApp_Flutter/hanapp/pubspec.lock
-#*.lock
+*.lock
 HanApp_Flutter/hanapp/pubspec.lock
-#*.lock
-#*.yaml
+*.lock
+*.yaml
 HanApp_Flutter/hanapp/macos/Flutter/GeneratedPluginRegistrant.swift
 HanApp_Flutter/hanapp/windows/flutter/generated_plugin_registrant.cc
 HanApp_Flutter/hanapp/windows/flutter/generated_plugins.cmake
