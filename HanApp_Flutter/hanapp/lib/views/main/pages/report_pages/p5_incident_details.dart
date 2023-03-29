@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,6 +99,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   String? lastSeenTime;
   String? lastSeenLoc;
   String? incidentDetails;
+  Uint8List? locSnapshot;
 
   // time
   DateTime? _selectedTime;
@@ -311,33 +315,51 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
             _verticalPadding,
             // Last Seen Location Text Field
             // !NOTE: Replace with Google Maps API later on, for now use text field
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Last Seen Location*',
-                ),
-                onChanged: (value) {
-                  lastSeenLoc = value;
-                },
-              ),
-            ),
             _verticalPadding,
             ElevatedButton(
               onPressed: () async {
-                LatLng? result = await showDialog<LatLng>(
+                Map<String, dynamic>? result =
+                    await showDialog<Map<String, dynamic>?>(
                   context: context,
                   builder: (BuildContext context) {
                     return const MapDialog();
                   },
                 );
                 if (result != null) {
+                  LatLng location = result['location'];
+                  Uint8List? image;
+                  try {
+                    image = result['image'];
+                  } catch (e) {
+                    print(e);
+                  }
                   print(
-                      'Selected location: ${result.latitude}, ${result.longitude}');
+                      'Selected location: ${location.latitude}, ${location.longitude}');
+                  setState(() {
+                    locSnapshot = image;
+                    lastSeenLoc =
+                        'Lat: ${location.latitude}, Long: ${location.longitude}';
+                    prefs.setString('p5_lastSeenLoc', lastSeenLoc!);
+                  });
                 }
               },
-              child: Text('Select Location'),
+              child: const Text('Select Location'),
+            ),
+            _verticalPadding,
+            Center(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * .5,
+                child: locSnapshot != null
+                    ? Image.memory(locSnapshot!)
+                    : locSnapshot != null && kIsWeb
+                        ? const Text(
+                            textAlign: TextAlign.center,
+                            'No location selected',
+                          )
+                        : Text(
+                            textAlign: TextAlign.center,
+                            'Snapshot image of location not supported on web\nlocation: ${lastSeenLoc ?? 'No location selected'}'),
+              ),
             ),
             _verticalPadding,
             // Incident Details

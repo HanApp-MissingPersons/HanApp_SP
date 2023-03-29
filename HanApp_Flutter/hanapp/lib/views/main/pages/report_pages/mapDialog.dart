@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,9 +13,10 @@ class MapDialog extends StatefulWidget {
 
 class _MapDialogState extends State<MapDialog> {
   late GoogleMapController mapController;
-  late LatLng _center;
+  late LatLng _center = LatLng(999999999, 999999999);
 
   Set<Marker> _markers = {};
+  Uint8List? _mapSnapshot;
 
   @override
   void initState() {
@@ -42,6 +45,16 @@ class _MapDialogState extends State<MapDialog> {
       _markers = Set<Marker>.of([marker]);
     });
     print('marker location: ${marker.position}');
+
+    try {
+      mapController.takeSnapshot().then((image) {
+        setState(() {
+          _mapSnapshot = image;
+        });
+      });
+    } catch (e) {
+      print('[takeSnapshot error] $e');
+    }
   }
 
   void _onMapTap(LatLng position) {
@@ -54,25 +67,43 @@ class _MapDialogState extends State<MapDialog> {
   }
 
   void _onConfirmPressed(BuildContext context) {
-    Navigator.of(context).pop(_center);
+    Navigator.of(context).pop({
+      'location': _center,
+      'image': _mapSnapshot,
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Select Location'),
-      content: SizedBox(
-        height: 300,
-        child: GoogleMap(
-          onMapCreated: _onMapCreated,
-          onTap: _onMapTap,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 14,
-          ),
-          markers: _markers,
-        ),
-      ),
+      title: const Text('Select Location'),
+      content: _center != const LatLng(999999999, 999999999)
+          ? SizedBox(
+              height: 300,
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    onMapCreated: _onMapCreated,
+                    onTap: _onMapTap,
+                    initialCameraPosition: CameraPosition(
+                      target: _center,
+                      zoom: 14,
+                    ),
+                    markers: _markers,
+                  ),
+                  if (_mapSnapshot != null)
+                    Positioned.fill(
+                      child: Image.memory(_mapSnapshot!, fit: BoxFit.cover),
+                    ),
+                ],
+              ),
+            )
+          : const Center(
+              child: SpinKitCubeGrid(
+                color: Colors.blue,
+                size: 50,
+              ),
+            ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
