@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 1. Need to automatically add padding between rows (instead of hardcoding the padding in between rows)
 2. Need backend to store the values of the checkboxes
 3. Need state management to store the values of the checkboxes
+
 */
 
 class Page1Classifier extends StatefulWidget {
@@ -227,13 +228,6 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         ),
                       ),
                     ],
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      print(prefs.getKeys());
-                    },
-                    child: const Text('Print Shared Preferences'),
                   ),
                 ],
               ),
