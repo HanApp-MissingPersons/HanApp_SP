@@ -69,9 +69,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   bool? mp_dental_available = false;
   bool? mp_fingerprints_available = false;
 
-  // list for blood types for dropdown
-  List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-
   // all controlers for text fields
   late final TextEditingController _mp_scars = TextEditingController();
   late final TextEditingController _mp_marks = TextEditingController();
@@ -96,6 +93,30 @@ class _Page4MPDescState extends State<Page4MPDesc> {
       TextEditingController();
   bool _mp_hair_color_natural = false;
   bool _mp_eye_color_natural = false;
+
+  // dispose all controllers
+  @override
+  void dispose() {
+    _mp_scars.dispose();
+    _mp_marks.dispose();
+    _mp_tattoos.dispose();
+    _mp_hair_color.dispose();
+    _mp_eye_color.dispose();
+    _mp_prosthetics.dispose();
+    _mp_birth_defects.dispose();
+    _mp_last_clothing.dispose();
+    _mp_height_feet.dispose();
+    _mp_height_inches.dispose();
+    _mp_weight.dispose();
+    _mp_blood_type.dispose();
+    _mp_medications.dispose();
+    _mp_facebook.dispose();
+    _mp_twitter.dispose();
+    _mp_instagram.dispose();
+    _mp_socmed_other_platform.dispose();
+    _mp_socmed_other_username.dispose();
+    super.dispose();
+  }
 
   /* INITIALIZE VARIABLES FOR SHARED PREFERENCE */
   // get text and boolean values from shared preferences

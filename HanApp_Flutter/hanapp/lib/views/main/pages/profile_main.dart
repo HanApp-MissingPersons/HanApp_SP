@@ -132,8 +132,6 @@ class _ProfileMain extends State<ProfileMain> {
                           Padding(
                             padding: const EdgeInsets.only(top: 20),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   // force align to center

@@ -142,7 +142,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Report Date: ',
+                'Report Date',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
