@@ -52,8 +52,11 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
   }
 
   var day = dateParts[2];
-  day = day.substring(0, day.indexOf(' '));
-  if (int.parse(day) % 10 != 0) {
+  var daySpaceIndex = day.indexOf(' ');
+  if (daySpaceIndex >= 0) {
+    day = day.substring(0, daySpaceIndex);
+  }
+  if (day.isNotEmpty && int.parse(day) % 10 != 0) {
     day = day.replaceAll('0', '');
   }
 
@@ -183,6 +186,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: TextEditingController(text: lastSeenDate),
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Last Seen Date*',
