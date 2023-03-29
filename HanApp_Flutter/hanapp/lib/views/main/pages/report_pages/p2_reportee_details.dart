@@ -360,8 +360,14 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 // initialize controllers
   @override
   void initState() {
-    if(kDebugMode){
-      print('[PREFS] ${_prefs.getKeys()}');
+    try {
+      if (kDebugMode) {
+        print('[PREFS] ${_prefs.getKeys()}');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('[PREFS] No prefs found: ${e.toString()}');
+      }
     }
     _reporteeCitizenship = TextEditingController();
     _reporteeCivilStatus = TextEditingController();
@@ -1065,7 +1071,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (singlePhoto != null)
-                  Center(child: SizedBox(width: MediaQuery.of(context).size.width * .9, child: Image.memory(singlePhoto!))), // show image
+                  Center(
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: Image.memory(singlePhoto!))), // show image
                 ElevatedButton(
                     onPressed: () {
                       getImages();
@@ -1088,7 +1097,14 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (singlePhoto_face != null)
-                  Center(child: Container(color: Colors.red ,alignment: Alignment.center ,child: SizedBox(width: MediaQuery.of(context).size.width * .9, child: Image.memory(singlePhoto_face!)))), // show image
+                  Center(
+                      child: Container(
+                          color: Colors.red,
+                          alignment: Alignment.center,
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * .9,
+                              child: Image.memory(
+                                  singlePhoto_face!)))), // show image
                 ElevatedButton(
                     onPressed: () {
                       getImageFace();
