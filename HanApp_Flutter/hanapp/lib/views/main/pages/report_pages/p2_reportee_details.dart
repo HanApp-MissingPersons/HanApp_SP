@@ -360,6 +360,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 // initialize controllers
   @override
   void initState() {
+    if(kDebugMode){
+      print('[PREFS] ${_prefs.getKeys()}');
+    }
     _reporteeCitizenship = TextEditingController();
     _reporteeCivilStatus = TextEditingController();
     _reporteeBirthdayController = TextEditingController();
@@ -1062,7 +1065,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (singlePhoto != null)
-                  Center(child: Image.memory(singlePhoto!)), // show image
+                  Center(child: SizedBox(width: MediaQuery.of(context).size.width * .9, child: Image.memory(singlePhoto!))), // show image
                 ElevatedButton(
                     onPressed: () {
                       getImages();
@@ -1085,7 +1088,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (singlePhoto_face != null)
-                  Center(child: Image.memory(singlePhoto_face!)), // show image
+                  Center(child: Container(color: Colors.red ,alignment: Alignment.center ,child: SizedBox(width: MediaQuery.of(context).size.width * .9, child: Center(child: Image.memory(singlePhoto_face!))))), // show image
                 ElevatedButton(
                     onPressed: () {
                       getImageFace();

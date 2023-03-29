@@ -134,6 +134,7 @@ class _ProfileMain extends State<ProfileMain> {
                             child: Column(
                               children: [
                                 Text(
+                                  textAlign: TextAlign.center,
                                   _usrFullName,
                                   style: const TextStyle(
                                       fontSize: 22.0,
