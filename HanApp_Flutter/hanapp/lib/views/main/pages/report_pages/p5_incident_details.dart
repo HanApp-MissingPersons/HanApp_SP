@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
+
+import 'mapDialog.dart';
 
 // datepicker stuff
 List reformatDate(String dateTime, DateTime dateTimeBday) {
@@ -319,6 +322,22 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   lastSeenLoc = value;
                 },
               ),
+            ),
+            _verticalPadding,
+            ElevatedButton(
+              onPressed: () async {
+                LatLng? result = await showDialog<LatLng>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const MapDialog();
+                  },
+                );
+                if (result != null) {
+                  print(
+                      'Selected location: ${result.latitude}, ${result.longitude}');
+                }
+              },
+              child: Text('Select Location'),
             ),
             _verticalPadding,
             // Incident Details
