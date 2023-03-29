@@ -78,6 +78,8 @@ class Page5IncidentDetails extends StatefulWidget {
 DateTime now = DateTime.now();
 DateTime dateNow = DateTime(now.year, now.month, now.day);
 
+late SharedPreferences prefs;
+
 class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
@@ -107,6 +109,28 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
         lastSeenTime = DateFormat('hh:mm a').format(_selectedTime!);
       });
     }
+  }
+
+  Future<void> getSharedPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString('p5_reportDate', reportDate!);
+      lastSeenDate = prefs.getString('p5_lastSeenDate');
+      lastSeenTime = prefs.getString('p5_lastSeenTime');
+      lastSeenLoc = prefs.getString('p5_lastSeenLoc');
+      incidentDetails = prefs.getString('p5_incidentDetails');
+    });
+  }
+
+  @override
+  void initState() {
+    try {
+      print(prefs.getKeys());
+    } catch (e) {
+      print('[P5] prefs not initialized yet');
+    }
+    super.initState();
+    getSharedPrefs();
   }
 
   @override
@@ -211,6 +235,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         // set state
                         setState(() {
                           lastSeenDate = dateReformatted[0];
+                          prefs.setString('p5_lastSeenDate', lastSeenDate!);
                         });
                       }
                     },
@@ -231,23 +256,39 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               ),
             ),
             _verticalPadding,
-            // Last Seen Time button
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: ElevatedButton(
-                onPressed: _selectTime,
-                child: const Text('Select Time'),
-              ),
-            ),
+            // // Last Seen Time button
+            // SizedBox(
+            //   width: MediaQuery.of(context).size.width - 40,
+            //   child: ElevatedButton(
+            //     onPressed: _selectTime,
+            //     child: const Text('Select Time'),
+            //   ),
+            // ),
             // Last Seen Time Text Field
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                enabled: false,
-                decoration: InputDecoration(
+              child: TextFormField(
+                controller: TextEditingController(text: lastSeenTime),
+                showCursor: false,
+                onTap: () async {
+                  final TimeOfDay? picked = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  if (picked != null) {
+                    setState(() {
+                      _selectedTime = DateTime(now.year, now.month, now.day,
+                          picked.hour, picked.minute);
+                      lastSeenTime =
+                          DateFormat('hh:mm a').format(_selectedTime!);
+                      prefs.setString('p5_lastSeenTime', lastSeenTime!);
+                    });
+                  }
+                },
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
-                  labelText: lastSeenTime,
                   // holder text
+                  labelText: 'Last Seen Time*',
                   hintText: 'Last Seen Time*',
                 ),
               ),
@@ -308,6 +349,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 50,
               child: TextField(
+                controller: TextEditingController(text: incidentDetails),
                 maxLines: 5,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -315,6 +357,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 ),
                 onChanged: (value) {
                   incidentDetails = value;
+                  prefs.setString('p5_incidentDetails', incidentDetails!);
                 },
               ),
             ),
