@@ -22,9 +22,12 @@ class _HomeMainState extends State<HomeMain> {
   @override
   void initState() {
     displayName = user!.displayName;
-    tokenNames = displayName?.split(' ');
-    displayName = tokenNames![0];
-    print('[NAME] $displayName');
+    try {
+      tokenNames = displayName?.split(' ');
+      displayName = tokenNames![0];
+    } catch (e) {
+      print(e);
+    }
     super.initState();
   }
 

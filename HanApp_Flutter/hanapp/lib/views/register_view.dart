@@ -84,7 +84,10 @@ class _RegisterViewState extends State<RegisterView> {
   // Controllers to contain the text in the text fields
   late final TextEditingController _email;
   late final TextEditingController _password;
-  late final TextEditingController _fullName;
+  late final TextEditingController _firstName;
+  late final TextEditingController _middleName;
+  late final TextEditingController _lastName;
+  late final TextEditingController _qualifiers;
   late final TextEditingController _phoneNumber;
   late final TextEditingController _birthDate;
   late final Future<FirebaseApp> _firebaseInit;
@@ -108,7 +111,10 @@ class _RegisterViewState extends State<RegisterView> {
     // binding?
     _email = TextEditingController();
     _password = TextEditingController();
-    _fullName = TextEditingController();
+    _firstName = TextEditingController();
+    _middleName = TextEditingController();
+    _lastName = TextEditingController();
+    _qualifiers = TextEditingController();
     _phoneNumber = TextEditingController();
     _birthDate = TextEditingController();
     _firebaseInit = Firebase.initializeApp(
@@ -122,7 +128,10 @@ class _RegisterViewState extends State<RegisterView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
-    _fullName.dispose();
+    _firstName.dispose();
+    _middleName.dispose();
+    _lastName.dispose();
+    _qualifiers.dispose();
     _phoneNumber.dispose();
     _firebaseInit.asStream().drain();
     super.dispose();
@@ -254,8 +263,8 @@ class _RegisterViewState extends State<RegisterView> {
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: TextFormField(
-                                // full name
-                                controller: _fullName,
+                                // firstName
+                                controller: _firstName,
                                 textCapitalization: TextCapitalization.words,
                                 autocorrect: false,
                                 enableSuggestions: false,
@@ -263,7 +272,7 @@ class _RegisterViewState extends State<RegisterView> {
                                 decoration: const InputDecoration(
                                   prefixIcon:
                                       Icon(Icons.person_outline_rounded),
-                                  labelText: 'Full Name',
+                                  labelText: 'First Name',
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(15)),
@@ -271,11 +280,81 @@ class _RegisterViewState extends State<RegisterView> {
                                 ),
                                 validator: (String? value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter your full name';
+                                    return 'Please enter your first name';
                                   } else {
                                     return null;
                                   }
                                 },
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
+                                // middle Name
+                                controller: _middleName,
+                                textCapitalization: TextCapitalization.words,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                keyboardType: TextInputType.name,
+                                decoration: const InputDecoration(
+                                  prefixIcon:
+                                      Icon(Icons.person_outline_rounded),
+                                  labelText: 'Middle Name',
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
+                                // last name
+                                controller: _lastName,
+                                textCapitalization: TextCapitalization.words,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                keyboardType: TextInputType.name,
+                                decoration: const InputDecoration(
+                                  prefixIcon:
+                                      Icon(Icons.person_outline_rounded),
+                                  labelText: 'Last Name',
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
+                                  ),
+                                ),
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your last name';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: TextFormField(
+                                // qualifiers
+                                controller: _qualifiers,
+                                textCapitalization: TextCapitalization.words,
+                                autocorrect: false,
+                                enableSuggestions: false,
+                                keyboardType: TextInputType.name,
+                                decoration: const InputDecoration(
+                                  prefixIcon:
+                                      Icon(Icons.person_outline_rounded),
+                                  labelText: 'Qualifiers',
+                                  border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
+                                  ),
+                                ),
                               ),
                             ),
 
@@ -317,7 +396,6 @@ class _RegisterViewState extends State<RegisterView> {
                                 onChanged: (String? newValue) {
                                   setState(() {
                                     _selectedSex = newValue;
-                                    print(newValue);
                                   });
                                 },
                                 items: <String>[
@@ -377,7 +455,7 @@ class _RegisterViewState extends State<RegisterView> {
                                       lastDate: DateTime.now(),
                                     ),
                                     dialogSize: const Size(325, 400),
-                                    initialValue: [DateTime.now()],
+                                    value: [DateTime.now()],
                                     borderRadius: BorderRadius.circular(15),
                                   );
                                   // get variable results type
@@ -432,7 +510,14 @@ class _RegisterViewState extends State<RegisterView> {
                                       // get the text from the text fields
                                       final email = _email.text;
                                       final password = _password.text;
-                                      final fullName = _fullName.text;
+                                      final firstName = _firstName.text;
+                                      final lastName = _lastName.text;
+                                      final qualifiers = _qualifiers.text == ''
+                                          ? 'N/A'
+                                          : _qualifiers.text;
+                                      final middleName = _middleName.text == ''
+                                          ? 'N/A'
+                                          : _middleName.text;
                                       final phoneNumber = _phoneNumber.text;
                                       final birthDate = dateTimeBday.toString();
                                       // try to register the user
@@ -450,14 +535,17 @@ class _RegisterViewState extends State<RegisterView> {
                                                       email: email,
                                                       password: password);
                                           User user = userCredential.user!;
-                                          user.updateDisplayName(fullName);
+                                          user.updateDisplayName(firstName);
 
                                           // Realtime Database User
                                           await registrationRef
                                               .child(userCredential.user!.uid)
                                               .set({
                                             'email': email,
-                                            'fullName': fullName,
+                                            'firstName': firstName,
+                                            'lastName': lastName,
+                                            'qualifiers': qualifiers,
+                                            'middleName': middleName,
                                             'phoneNumber': phoneNumber,
                                             'birthDate': birthDate,
                                             'sex': _selectedSex,
