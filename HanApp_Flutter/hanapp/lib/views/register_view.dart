@@ -455,7 +455,7 @@ class _RegisterViewState extends State<RegisterView> {
                                       lastDate: DateTime.now(),
                                     ),
                                     dialogSize: const Size(325, 400),
-                                    initialValue: [DateTime.now()],
+                                    value: [DateTime.now()],
                                     borderRadius: BorderRadius.circular(15),
                                   );
                                   // get variable results type

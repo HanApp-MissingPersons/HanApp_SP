@@ -1088,7 +1088,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (singlePhoto_face != null)
-                  Center(child: Container(color: Colors.red ,alignment: Alignment.center ,child: SizedBox(width: MediaQuery.of(context).size.width * .9, child: Center(child: Image.memory(singlePhoto_face!))))), // show image
+                  Center(child: Container(color: Colors.red ,alignment: Alignment.center ,child: SizedBox(width: MediaQuery.of(context).size.width * .9, child: Image.memory(singlePhoto_face!)))), // show image
                 ElevatedButton(
                     onPressed: () {
                       getImageFace();

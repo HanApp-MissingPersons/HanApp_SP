@@ -195,7 +195,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         config: CalendarDatePicker2WithActionButtonsConfig(
                             firstDate: DateTime(1900),
                             lastDate: DateTime.now()),
-                        initialValue: [DateTime.now()],
+                        value: [DateTime.now()],
                         borderRadius: BorderRadius.circular(15),
                       );
                       if (result != null) {
