@@ -125,6 +125,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   late final TextEditingController _mp_address_streetHouseNum =
       TextEditingController();
   // for alternate address
+  bool mp_hasAltAddress = false;
   late final TextEditingController _mp_address_region_alt =
       TextEditingController();
   late final TextEditingController _mp_address_province_alt =
@@ -141,6 +142,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   late final TextEditingController _mp_education = TextEditingController();
   late final TextEditingController _mp_occupation = TextEditingController();
   // for Work/School Address
+  bool mp_hasSchoolWorkAddress = false;
   late final TextEditingController _mp_workSchool_region =
       TextEditingController();
   late final TextEditingController _mp_workSchool_province =
@@ -162,6 +164,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   bool? hasAlternateAddress = false; // initialize hasAlternateAddress to false
   String? sexValue;
   String? mp_civilStatValue;
+  int age_value = 0;
+  String? mp_educationalAttainment;
 
   /* INITIALIZE CONTROLLERS */
   @override
@@ -594,6 +598,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     _prefs.setString('p3_mp_birthDate', _mp_birthDate.text);
                     // also save age to shared preferences
                     _prefs.setString('p3_mp_age', ageFromMPBirthDate!);
+                    // age controller update (to auto-fill age form field)
+                    _mp_age.text = ageFromMPBirthDate!;
                   },
                 )),
             // AGE SECTION
@@ -619,13 +625,620 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Age",
+                  labelText: "Age (auto-computed)",
                 ),
+                // auto-fill age from birthdate using _mp_age.text
                 onChanged: (value) {
-                  _mp_age.text = ageFromMPBirthDate!;
+                  _prefs.setString('p3_mp_age', value);
                 },
               ),
             ),
+            // CONTACT INFO SECTION
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Contact Information',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            // homePhone
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_contact_homePhone,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Home Phone (landline)",
+                  hintText: "Home Phone (landline)",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_contact_homePhone', value);
+                },
+              ),
+            ),
+            // mobilePhone
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_contact_mobilePhone,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Mobile Phone",
+                  hintText: "Mobile Phone",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_contact_mobilePhone', value);
+                },
+              ),
+            ),
+            // alternate mobile phone
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_contact_mobilePhone_alt,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Alternate Mobile Phone",
+                  hintText: "Alternate Mobile Phone",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_contact_mobilePhone_alt', value);
+                },
+              ),
+            ),
+            // email
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_contact_email,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Email",
+                  hintText: "Email",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_contact_email', value);
+                },
+              ),
+            ),
+            // ADDRESS SECTION
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Address*',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            // region
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_address_region,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Region",
+                  hintText: "Region",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_address_region', value);
+                },
+              ),
+            ),
+            // province
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_address_province,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Province",
+                  hintText: "Province",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_address_province', value);
+                },
+              ),
+            ),
+            // city
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_address_city,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "City/Town",
+                  hintText: "City/Town",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_address_city', value);
+                },
+              ),
+            ),
+            // barangay
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_address_barangay,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Barangay",
+                  hintText: "Barangay",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_address_barangay', value);
+                },
+              ),
+            ),
+            // villageSitio
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_address_villageSitio,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Village/Sitio",
+                  hintText: "Village/Sitio",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_address_villageSitio', value);
+                },
+              ),
+            ),
+            // streetHouseNum
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_address_streetHouseNum,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Street/House Number",
+                  hintText: "Street/House Number",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_address_streetHouseNum', value);
+                },
+              ),
+            ),
+            // ALTERNATE ADDRESS SECTION
+            _verticalPadding,
+            // ask user if MP has an alternate address, if yes, show alternate address fields
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Alternate Address',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+
+            // checkbox to ask user if MP has an alternate address
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: CheckboxListTile(
+                title: const Text(
+                  'Absent/Missing person has an alternate address',
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+                value: mp_hasAltAddress,
+                onChanged: (bool? value) {
+                  setState(() {
+                    mp_hasAltAddress = value!;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            ),
+            if (mp_hasAltAddress)
+              Column(
+                children: [
+                  // region
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_address_region_alt,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Region",
+                        hintText: "Region",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_address_region_alt', value);
+                      },
+                    ),
+                  ),
+                  // province
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_address_province_alt,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Province",
+                        hintText: "Province",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_address_province_alt', value);
+                      },
+                    ),
+                  ),
+                  // city
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_address_city_alt,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "City/Town",
+                        hintText: "City/Town",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_address_city_alt', value);
+                      },
+                    ),
+                  ),
+                  // barangay
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_address_barangay_alt,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Barangay",
+                        hintText: "Barangay",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_address_barangay_alt', value);
+                      },
+                    ),
+                  ),
+                  // villageSitio
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_address_villageSitio_alt,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Village/Sitio",
+                        hintText: "Village/Sitio",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString(
+                            'p3_mp_address_villageSitio_alt', value);
+                      },
+                    ),
+                  ),
+                  // streetHouseNum
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_address_streetHouseNum_alt,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Street/House Number",
+                        hintText: "Street/House Number",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString(
+                            'p3_mp_address_streetHouseNum_alt', value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            // OCCUPATION SECTION
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Occupation',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            // occupation field
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: TextFormField(
+                controller: _mp_occupation,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  labelText: "Occupation",
+                  hintText: "Occupation",
+                ),
+                onChanged: (value) {
+                  _prefs.setString('p3_mp_occupation', value);
+                },
+              ),
+            ),
+            // EDUCATIONAL ATTAINMENT SECTION
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Highest Educational Attainment',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            // educational attainment dropdown
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: DropdownButtonFormField<String>(
+                hint: const Text("Select Highest Educational Attainment*"),
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                ),
+                value: mp_educationalAttainment,
+                icon: const Icon(Icons.arrow_drop_down),
+                iconSize: 24,
+                elevation: 16,
+                style: const TextStyle(color: Colors.black54),
+                items: <String>[
+                  'Elementary',
+                  'High School',
+                  'Vocational',
+                  'College',
+                  'Graduate Studies',
+                  'Unknown',
+                  'NA'
+                ].map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    mp_educationalAttainment = value;
+                    _prefs.setString('p3_mp_education', value!);
+                  });
+                },
+              ),
+            ),
+            // Current WORK/SCHOOL ADDRESS AND INFORMATION SECTION
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Current School/Work Address',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            // checkbox to ask if user has school/work address
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: CheckboxListTile(
+                title: const Text(
+                  'Absent/Missing person has a current work/school address',
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
+                ),
+                value: mp_hasSchoolWorkAddress,
+                onChanged: (bool? value) {
+                  setState(() {
+                    mp_hasSchoolWorkAddress = value!;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              ),
+            ),
+            // school/work address
+            if (mp_hasSchoolWorkAddress)
+              Column(
+                children: [
+                  // region
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_workSchool_region,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Region",
+                        hintText: "Region",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_workSchool_region', value);
+                      },
+                    ),
+                  ),
+                  // province
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_workSchool_province,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Province",
+                        hintText: "Province",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_workSchool_province', value);
+                      },
+                    ),
+                  ),
+                  // city
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_workSchool_city,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "City/Town",
+                        hintText: "City/Town",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_workSchool_city', value);
+                      },
+                    ),
+                  ),
+                  // barangay
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_workSchool_barangay,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Barangay",
+                        hintText: "Barangay",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_workSchool_barangay', value);
+                      },
+                    ),
+                  ),
+                  // villageSitio
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_workSchool_villageSitio,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Village/Sitio",
+                        hintText: "Village/Sitio",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString(
+                            'p3_mp_workSchool_villageSitio', value);
+                      },
+                    ),
+                  ),
+                  // streetHouseNum
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_workSchool_streetHouseNum,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Street/House Number",
+                        hintText: "Street/House Number",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString(
+                            'p3_mp_workSchool_streetHouseNum', value);
+                      },
+                    ),
+                  ),
+                  // Work/School Name
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: TextFormField(
+                      controller: _mp_workSchool_name,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Work/School Name",
+                        hintText: "Work/School Name",
+                      ),
+                      onChanged: (value) {
+                        _prefs.setString('p3_mp_workSchool_name', value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
 
             // DEBUGGER TOOL: check shared_preferences content
             // END OF PAGE
@@ -645,6 +1258,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 print(prefs.getString('p3_mp_sex'));
                 print(prefs.getString('p3_mp_civilStatus'));
                 print(prefs.getString('p3_mp_age'));
+                print(prefs.getString('p3_mp_education'));
               },
               child: const Text('Print Shared Preferences'),
             ),
