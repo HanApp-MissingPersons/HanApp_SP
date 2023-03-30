@@ -227,10 +227,16 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 50,
                     child: TextFormField(
+                      showCursor: false,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      readOnly: true,
+                      keyboardType: TextInputType.datetime,
                       controller: TextEditingController(text: lastSeenDate),
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Last Seen Date*',
+                        hintText: 'Tap to select date'
                       ),
                       // on tap, show date picker:
                       onTap: () async {
@@ -285,8 +291,11 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: TextFormField(
-                  controller: TextEditingController(text: lastSeenTime),
                   showCursor: false,
+                  autocorrect: false,
+                  enableSuggestions: false,
+                  readOnly: true,
+                  controller: TextEditingController(text: lastSeenTime),
                   onTap: () async {
                     final TimeOfDay? picked = await showTimePicker(
                       context: context,
@@ -306,7 +315,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                     border: OutlineInputBorder(),
                     // holder text
                     labelText: 'Last Seen Time*',
-                    hintText: 'Last Seen Time*',
+                    hintText: 'Tap to select time',
                   ),
                 ),
               ),

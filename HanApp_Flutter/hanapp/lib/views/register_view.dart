@@ -434,10 +434,12 @@ class _RegisterViewState extends State<RegisterView> {
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 keyboardType: TextInputType.datetime,
+                                readOnly: true,
                                 decoration: const InputDecoration(
                                   prefixIcon:
                                       Icon(Icons.calendar_today_outlined),
                                   labelText: 'Birth Date',
+                                  hintText: 'Tap to select birth date',
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(15)),
