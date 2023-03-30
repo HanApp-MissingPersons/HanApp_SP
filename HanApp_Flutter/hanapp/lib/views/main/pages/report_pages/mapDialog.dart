@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapDialog extends StatefulWidget {
   const MapDialog({Key? key}) : super(key: key);
@@ -69,6 +71,8 @@ class _MapDialogState extends State<MapDialog> {
       // PRINT CHECK: convert _mapSnapshot as bytes
       String? _mapSnapshotString = _mapSnapshot?.toString();
       print('mapSnapshot: $_mapSnapshotString');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('p5_locSnapshot', base64Encode(_mapSnapshot!));
     } catch (e) {
       print('[takeSnapshot error] $e');
     }

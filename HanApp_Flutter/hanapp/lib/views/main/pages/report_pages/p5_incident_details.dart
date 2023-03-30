@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -126,6 +127,14 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
       lastSeenTime = prefs.getString('p5_lastSeenTime');
       lastSeenLoc = prefs.getString('p5_lastSeenLoc');
       incidentDetails = prefs.getString('p5_incidentDetails');
+      String? locSnapshotString = prefs.getString('p5_locSnapshot');
+      if (locSnapshotString != null) {
+        locSnapshot = base64Decode(locSnapshotString);
+        // print('[p5] locSnapshot: $locSnapshot');
+        // print('[p5] locSnapshot runtime: ${locSnapshot.runtimeType}');
+      } else {
+        print('[p5] No location snapshot');
+      }
     });
   }
 
@@ -349,17 +358,18 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
             Center(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * .5,
-                child: locSnapshot != null
-                    ? Image.memory(locSnapshot!)
-                    : locSnapshot != null && kIsWeb
-                        ? const Text(
-                            textAlign: TextAlign.center,
-                            'No location selected',
-                          )
-                        : Text(
-                            textAlign: TextAlign.center,
-                            'Snapshot image of location not supported on web\nlocation: ${lastSeenLoc ?? 'No location selected'}'),
+                child: locSnapshot == null
+                    ? const Text('No location selected') :
+                locSnapshot.runtimeType.toString() != 'Uint8List?'
+                        ? Image.memory(locSnapshot!)
+                        : Image.memory(base64Decode(locSnapshot!.toString()
+                    )
+                    )
+
+
+
               ),
+
             ),
             _verticalPadding,
             // Incident Details
