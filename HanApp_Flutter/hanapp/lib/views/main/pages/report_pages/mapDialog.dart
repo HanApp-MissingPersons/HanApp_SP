@@ -2,7 +2,8 @@ import 'dart:typed_data';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' as geo;
+import 'package:location/location.dart';
 
 class MapDialog extends StatefulWidget {
   const MapDialog({Key? key}) : super(key: key);
@@ -29,8 +30,10 @@ class _MapDialogState extends State<MapDialog> {
   }
 
   void _getCurrentLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    Location().getLocation();
+
+    geo.Position position = await geo.Geolocator.getCurrentPosition(
+        desiredAccuracy: geo.LocationAccuracy.high);
     setState(() {
       _center = LatLng(position.latitude, position.longitude);
     });
@@ -101,10 +104,32 @@ class _MapDialogState extends State<MapDialog> {
                 ],
               ),
             )
-          : const Center(
-              child: SpinKitCubeGrid(
-                color: Colors.blue,
-                size: 50,
+          : SizedBox(
+              height: 300,
+              child: Center(
+                child: Column(
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: [
+                    const SizedBox(
+                      height: 100,
+                    ),
+                    const Text(
+                      'Getting current location...',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Color.fromARGB(255, 114, 166, 209),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    const SpinKitCubeGrid(
+                      color: Colors.blue,
+                      size: 20,
+                    ),
+                  ],
+                ),
               ),
             ),
       actions: [
