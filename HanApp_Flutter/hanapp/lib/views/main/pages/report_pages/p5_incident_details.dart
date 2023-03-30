@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 
 import 'mapDialog.dart';
 
@@ -105,20 +104,6 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   // time
   DateTime? _selectedTime;
 
-  Future<void> _selectTime() async {
-    final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (picked != null) {
-      setState(() {
-        _selectedTime =
-            DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
-        lastSeenTime = DateFormat('hh:mm a').format(_selectedTime!);
-      });
-    }
-  }
-
   Future<void> getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -200,7 +185,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   enabled: false,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                     labelText: reportDate,
                   ),
                 ),
@@ -416,7 +401,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   controller: TextEditingController(text: incidentDetails),
                   maxLines: 5,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Incident Details*',
                   ),

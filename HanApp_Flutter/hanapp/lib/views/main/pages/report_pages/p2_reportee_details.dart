@@ -1,15 +1,9 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -344,13 +338,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 // REPORTEE RELATIONSHIP TO MISSING PERSON
   late final TextEditingController _reporteeRelationshipToMissingPerson;
 
-  String? _sexValue;
   String? _civilStatusValue;
-  DateTime? _dateOfBirth;
   DateTime? dateTimeBday;
 
   String? _highestEduc;
-  File? _reporteeIDphoto;
 
   bool? reportee_AltAddress_available = false;
 
@@ -429,15 +420,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   }
   /* END OF VARIABLES AND CONTROLLERS */
 
-  // initialize ImagePicker
-  final ImagePicker _picker = ImagePicker();
-
-  Future<File?> _pickImage(ImageSource source) async {
-    final XFile? image = await _picker.pickImage(source: source);
-
-    final File? file = File(image!.path);
-    return file;
-  }
 
   // error message: empty field
   static const String _emptyFieldError = 'Field cannot be empty';
@@ -452,7 +434,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Page 2 of 6: Reportee Details',

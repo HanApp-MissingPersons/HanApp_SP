@@ -130,7 +130,6 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           });
                           // save the value of the checkbox
                           _prefs.setBool('p1_isMinor', value!);
-                          ;
                         },
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
@@ -202,7 +201,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           });
                           _prefs.setBool('p1_isVictimCrime', isVictimCrime!);
                         },
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
                           child: const Text(
                             victimCrimeText,

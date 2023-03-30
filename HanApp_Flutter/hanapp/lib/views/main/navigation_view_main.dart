@@ -5,13 +5,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import '../../firebase_options.dart';
-import '../login_view.dart';
 import 'pages/home_main.dart';
 import 'pages/report_main.dart';
 import 'pages/nearby_main.dart';
 import 'pages/companion_main.dart';
 import 'pages/update_main.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'pages/report_pages/p1_classifier.dart';
 
 class NavigationField extends StatefulWidget {
@@ -133,7 +131,6 @@ class _NavigationFieldState extends State<NavigationField> {
                 return const Center(child: Text('App loading in...'));
               // if the connection is done, return a text widget
               case ConnectionState.done:
-                final user = FirebaseAuth.instance.currentUser;
                 return Stack(
                   children: [
                     Positioned(

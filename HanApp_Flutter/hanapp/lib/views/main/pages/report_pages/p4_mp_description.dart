@@ -6,7 +6,6 @@
 */
 
 /* IMPORTS */
-import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -33,9 +32,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
   static const _verticalPadding = SizedBox(height: 10);
-
-  /* IMAGE PICKER */
-  final ImagePicker _picker = ImagePicker();
 
   /* VARIABLES */
   // MP Appearance

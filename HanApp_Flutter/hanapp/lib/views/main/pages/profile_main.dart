@@ -1,12 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hanapp/views/login_view.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import '../../../firebase_options.dart';
 import '../../../main.dart';
 import '../../register_view.dart';
 
@@ -143,7 +140,7 @@ class _ProfileMain extends State<ProfileMain> {
                                 const SizedBox(height: 5),
                                 SelectableText(
                                   _usrEmail,
-                                  style: TextStyle(fontSize: 15.0),
+                                  style: const TextStyle(fontSize: 15.0),
                                 ),
                               ],
                             ),

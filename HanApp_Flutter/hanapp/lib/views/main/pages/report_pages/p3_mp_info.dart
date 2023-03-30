@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 // datepicker stuff
 List reformatDate(String dateTime, DateTime dateTimeBday) {
@@ -82,15 +80,9 @@ String? _sexValue;
 String? _civilStatusValue;
 // store date of birth value
 DateTime? _dateOfBirth;
-// int age
-int? _age;
 // store highest educational attainment value
 String? _highestEduc;
-// store reportee ID picture
-File? _reportee_ID;
 
-// initialize ImagePicker
-final ImagePicker _picker = ImagePicker();
 
 class _Page3MPDetailsState extends State<Page3MPDetails> {
   // font style for the text

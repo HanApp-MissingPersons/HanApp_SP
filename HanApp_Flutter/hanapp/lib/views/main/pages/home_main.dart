@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/nearby_main.dart';
-import 'package:hanapp/views/main/pages/report_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/views/main/pages/update_main.dart';
 import 'package:firebase_auth/firebase_auth.dart';

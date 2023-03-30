@@ -10,7 +10,6 @@ import 'package:hanapp/views/register_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'GmapsTest.dart';
-import 'companion/homepage_companion.dart';
 import 'verify_email_view.dart';
 
 // this is the login view
@@ -419,7 +418,7 @@ class _LoginViewState extends State<LoginView> {
                                     builder: (context) =>
                                         const SharedPreferencesDemo()));
                               },
-                              child: Text('Go test preferences'))
+                              child: const Text('Go test preferences'))
                         ], // children
                       ),
                     ),
