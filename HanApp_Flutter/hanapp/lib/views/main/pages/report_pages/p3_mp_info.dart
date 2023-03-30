@@ -581,7 +581,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                       config: CalendarDatePicker2WithActionButtonsConfig(
                           firstDate: DateTime(1900), lastDate: DateTime.now()),
                       dialogSize: const Size(325, 400),
-                      initialValue: [DateTime.now()],
+                      value: [DateTime.now()],
                       borderRadius: BorderRadius.circular(15),
                     );
                     // get variable selectedDate type

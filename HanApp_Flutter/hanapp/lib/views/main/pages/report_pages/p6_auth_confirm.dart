@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 // import dart ui
 import 'dart:ui' as ui;
@@ -9,6 +12,7 @@ import 'p2_reportee_details.dart';
 import 'p3_mp_info.dart';
 import 'p4_mp_description.dart';
 import 'p5_incident_details.dart';
+import 'package:image_picker/image_picker.dart';
 
 // import dart ui
 import 'dart:ui';
@@ -36,8 +40,35 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   static const String _dataPrivacy =
       '"I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case." See full Data Privacy Act text here (link).';
 
-  // store user signature
+  // store user signature as Uint8List
+  Uint8List? _signaturePhoto;
+  // store user signature as Image
   Image? _reporteeSignature;
+
+  // save user signature to shared preferences
+  Future<void> _saveSignature() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_signaturePhoto != null) {
+      String signatureString = base64Encode(_signaturePhoto!);
+      prefs.setString('p6_reporteeSignature', signatureString);
+    }
+  }
+
+  // load user signature from shared preferences
+  Future<void> _loadSignature() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getString('p6_reporteeSignature') != null) {
+      String signatureString = prefs.getString('p6_reporteeSignature')!;
+      _signaturePhoto = base64Decode(signatureString);
+    }
+  }
+
+  // initialize shared preferences
+  @override
+  void initState() {
+    super.initState();
+    _loadSignature();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,37 +218,46 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                           onPressed: () async {
                             ui.Image image =
                                 await _signaturePadKey.currentState!.toImage();
+                            // pop up dialog box showing preview of signature
                             // save in gallery
-
-                            // // get the signature image
-                            // final image = await _signaturePadKey.currentState!
-                            //     .toImage(pixelRatio: 3.0);
-                            // final data = await image.toByteData(
-                            //     format: ImageByteFormat.png);
-                            // setState(() {
-                            //   _reporteeSignature =
-                            //       Image.memory(data!.buffer.asUint8List());
-                            // });
+                            final data = await image.toByteData(
+                                format: ImageByteFormat.png);
+                            final bytes = data!.buffer.asUint8List();
+                            _signaturePhoto = bytes;
+                            setState(() {
+                              // save in shared preferences
+                              _saveSignature();
+                            });
                           },
                           child: const Text('Save Signature'),
                         ),
                       ),
                     ],
                   ),
+                  // text saying: Preview of submitted signature
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: const Text(
+                      'Preview of submitted signature:',
+                      style:
+                          TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  // preview of saved signatur
+                  _verticalPadding,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: _signaturePhoto != null
+                        ? Image.memory(_signaturePhoto!)
+                        : const Text('No signature saved'),
+                  ),
+
                   // submit button
+                  _verticalPadding,
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: ElevatedButton(
                       onPressed: () async {
-                        // get the signature image
-                        final image = await _signaturePadKey.currentState!
-                            .toImage(pixelRatio: 3.0);
-                        final data =
-                            await image.toByteData(format: ImageByteFormat.png);
-                        setState(() {
-                          _reporteeSignature =
-                              Image.memory(data!.buffer.asUint8List());
-                        });
                         // show popup dialog asking to confirm submission
                         showDialog(
                             context: context,
