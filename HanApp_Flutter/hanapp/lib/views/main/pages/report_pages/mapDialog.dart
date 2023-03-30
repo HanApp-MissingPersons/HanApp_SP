@@ -45,16 +45,6 @@ class _MapDialogState extends State<MapDialog> {
       _markers = Set<Marker>.of([marker]);
     });
     print('marker location: ${marker.position}');
-
-    try {
-      mapController.takeSnapshot().then((image) {
-        setState(() {
-          _mapSnapshot = image;
-        });
-      });
-    } catch (e) {
-      print('[takeSnapshot error] $e');
-    }
   }
 
   void _onMapTap(LatLng position) {
@@ -66,7 +56,20 @@ class _MapDialogState extends State<MapDialog> {
     }
   }
 
-  void _onConfirmPressed(BuildContext context) {
+  void _onConfirmPressed(BuildContext context) async {
+    try {
+      await mapController.takeSnapshot().then((image) {
+        setState(() {
+          _mapSnapshot = image;
+        });
+      });
+      // PRINT CHECK: convert _mapSnapshot as bytes
+      String? _mapSnapshotString = _mapSnapshot?.toString();
+      print('mapSnapshot: $_mapSnapshotString');
+    } catch (e) {
+      print('[takeSnapshot error] $e');
+    }
+
     Navigator.of(context).pop({
       'location': _center,
       'image': _mapSnapshot,
@@ -110,7 +113,9 @@ class _MapDialogState extends State<MapDialog> {
           child: Text('Cancel'),
         ),
         TextButton(
-          onPressed: () => _onConfirmPressed(context),
+          onPressed: () {
+            _onConfirmPressed(context);
+          },
           child: Text('Confirm'),
         ),
       ],
