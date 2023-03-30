@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
@@ -5,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /*
 LACKING:
@@ -88,7 +94,212 @@ class Page2ReporteeDetails extends StatefulWidget {
   State<Page2ReporteeDetails> createState() => _Page2ReporteeDetailsState();
 }
 
+late SharedPreferences _prefs;
+
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
+  PlatformFile? pickedFile;
+  Uint8List? pickedFileBytes;
+
+  Uint8List? singlePhoto;
+  Uint8List? singlePhoto_face;
+  String? relationshipToMP;
+  String? citizenship;
+  String? civil_status;
+  String? homePhone;
+  String? mobilePhone;
+  String? altMobilePhone;
+  String? region;
+  String? province;
+  String? townCity;
+  String? barangay;
+  String? villageSitio;
+  String? streetHouseNum;
+  String? altRegion;
+  String? altProvince;
+  String? altTownCity;
+  String? altBarangay;
+  String? altVillageSitio;
+  String? altStreetHouseNum;
+  String? highestEduc;
+  String? occupation;
+
+  Future<void> loadImages() async {
+    String? singlePhotoString = _prefs.getString('p2_singlePhoto');
+    if (singlePhotoString == null) {
+      print('[p2] No ID photo');
+      return;
+    } else {
+      setState(() {
+        singlePhoto = base64Decode(singlePhotoString);
+      });
+    }
+  }
+
+  Future<void> loadImage_face() async {
+    String? singlePhotoStringFace = _prefs.getString('p2_singlePhoto_face');
+    if (singlePhotoStringFace == null) {
+      print('[p2] No user selfie ');
+      return;
+    } else {
+      setState(() {
+        singlePhoto_face = base64Decode(singlePhotoStringFace);
+      });
+    }
+  }
+
+  Future<void> saveImages() async {
+    if (singlePhoto != null) {
+      _prefs.setString('p2_singlePhoto', base64Encode(singlePhoto!));
+    }
+    if (singlePhoto_face != null) {
+      _prefs.setString('p2_singlePhoto_face', base64Encode(singlePhoto_face!));
+    }
+  }
+
+  Future<void> getImages() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final imageBytes = await pickedFile.readAsBytes();
+      setState(() {
+        singlePhoto = imageBytes;
+      });
+      await saveImages();
+    }
+  }
+
+  Future<void> getImageFace() async {
+    final pickerFace = ImagePicker();
+    final pickedFileFace =
+        await pickerFace.pickImage(source: ImageSource.camera);
+    if (pickedFileFace != null) {
+      final imageBytesFace = await pickedFileFace.readAsBytes();
+      setState(() {
+        singlePhoto_face = imageBytesFace;
+      });
+      await saveImages();
+    }
+  }
+
+  Future<void> getReporteeInfo() async {
+    _prefs = await SharedPreferences.getInstance();
+    loadImages();
+    loadImage_face();
+    setState(() {
+      relationshipToMP = _prefs.getString('p2_relationshipToMP');
+      if (relationshipToMP != null) {
+        _reporteeRelationshipToMissingPerson.text = relationshipToMP!;
+      }
+
+      citizenship = _prefs.getString('p2_citizenship');
+      if (citizenship != null) {
+        _reporteeCitizenship.text = citizenship!;
+      }
+
+      civil_status = _prefs.getString('p2_civil_status');
+      if (civil_status != null) {
+        _reporteeCivilStatus.text = civil_status!;
+      }
+
+      homePhone = _prefs.getString('p2_homePhone');
+      if (homePhone != null) {
+        _reporteeHomePhone.text = homePhone!;
+      }
+
+      mobilePhone = _prefs.getString('p2_mobilePhone');
+      if (mobilePhone != null) {
+        _reporteeMobilePhone.text = mobilePhone!;
+      }
+
+      altMobilePhone = _prefs.getString('p2_altMobilePhone');
+      if (altMobilePhone != null) {
+        _reporteeAlternateMobilePhone.text = altMobilePhone!;
+      }
+
+      region = _prefs.getString('p2_region');
+      if (region != null) {
+        _reporteeRegion.text = region!;
+      }
+
+      province = _prefs.getString('p2_province');
+      if (province != null) {
+        _reporteeProvince.text = province!;
+      }
+
+      townCity = _prefs.getString('p2_townCity');
+      if (townCity != null) {
+        _reporteeCity.text = townCity!;
+      }
+
+      barangay = _prefs.getString('p2_barangay');
+      if (barangay != null) {
+        _reporteeBarangay.text = barangay!;
+      }
+
+      villageSitio = _prefs.getString('p2_villageSitio');
+      if (villageSitio != null) {
+        _reporteeVillageSitio.text = villageSitio!;
+      }
+
+      streetHouseNum = _prefs.getString('p2_streetHouseNum');
+      if (streetHouseNum != null) {
+        _reporteeStreetHouseNum.text = streetHouseNum!;
+      }
+
+      altRegion = _prefs.getString('p2_altRegion');
+      if (altRegion != null) {
+        _reporteeAltRegion.text = altRegion!;
+      }
+
+      altProvince = _prefs.getString('p2_altProvince');
+      if (altProvince != null) {
+        _reporteeAltProvince.text = altProvince!;
+      }
+
+      altTownCity = _prefs.getString('p2_altTownCity');
+      if (altTownCity != null) {
+        _reporteeAltCityTown.text = altTownCity!;
+      }
+
+      altBarangay = _prefs.getString('p2_altBarangay');
+      if (altBarangay != null) {
+        _reporteeAltBarangay.text = altBarangay!;
+      }
+
+      altVillageSitio = _prefs.getString('p2_altVillageSitio');
+      if (altVillageSitio != null) {
+        _reporteeAltVillageSitio.text = altVillageSitio!;
+      }
+
+      altStreetHouseNum = _prefs.getString('p2_altStreetHouseNum');
+      if (altStreetHouseNum != null) {
+        _reporteeAltStreetHouseNum.text = altStreetHouseNum!;
+      }
+
+      highestEduc = _prefs.getString('p2_highestEduc');
+      if (highestEduc != null) {
+        _reporteeHighestEduc.text = highestEduc!;
+      }
+      occupation = _prefs.getString('p2_occupation');
+      if (occupation != null) {
+        _reporteeOccupation.text = occupation!;
+      }
+    });
+  }
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'jpeg'],
+    );
+    if (result == null) return;
+
+    setState(() {
+      pickedFile = result.files.first;
+      pickedFileBytes = pickedFile!.bytes;
+    });
+  }
+
   /* FORMATTING STUFF */
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
@@ -97,14 +308,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
 /* VARIABLES AND CONTROLLERS */
 // controllers for the form
-// REPORTEE NAME
-  late final TextEditingController _reporteeLastName;
-  late final TextEditingController _reporteeFirstName;
-  late final TextEditingController _reporteeMiddleName;
-  late final TextEditingController _reporteeQualifier;
-  late final TextEditingController _reporteeNickName;
 // REPORTEE SEX, CITIZENSHIP, CIVIL STATUS
-  late final TextEditingController _reporteeSex;
   late final TextEditingController _reporteeCitizenship;
   late final TextEditingController _reporteeCivilStatus;
 // REPORTEE BIRTHDAY
@@ -150,15 +354,21 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
   bool? reportee_AltAddress_available = false;
 
+  // controllers to contain the text in the form
+  late final TextEditingController _dateOfBirthController;
+
 // initialize controllers
   @override
   void initState() {
-    _reporteeLastName = TextEditingController();
-    _reporteeFirstName = TextEditingController();
-    _reporteeMiddleName = TextEditingController();
-    _reporteeQualifier = TextEditingController();
-    _reporteeNickName = TextEditingController();
-    _reporteeSex = TextEditingController();
+    try {
+      if (kDebugMode) {
+        print('[PREFS] ${_prefs.getKeys()}');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('[PREFS] No prefs found: ${e.toString()}');
+      }
+    }
     _reporteeCitizenship = TextEditingController();
     _reporteeCivilStatus = TextEditingController();
     _reporteeBirthdayController = TextEditingController();
@@ -183,18 +393,14 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteeID = TextEditingController();
     _reporteePhoto = TextEditingController();
     _reporteeRelationshipToMissingPerson = TextEditingController();
+    _dateOfBirthController = TextEditingController();
+    getReporteeInfo();
     super.initState();
   }
 
   // dispose controllers
   @override
   void dispose() {
-    _reporteeLastName.dispose();
-    _reporteeFirstName.dispose();
-    _reporteeMiddleName.dispose();
-    _reporteeQualifier.dispose();
-    _reporteeNickName.dispose();
-    _reporteeSex.dispose();
     _reporteeCitizenship.dispose();
     _reporteeCivilStatus.dispose();
     _reporteeBirthdayController.dispose();
@@ -218,6 +424,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteeOccupation.dispose();
     _reporteeID.dispose();
     _reporteePhoto.dispose();
+    _dateOfBirthController.dispose();
     super.dispose();
   }
   /* END OF VARIABLES AND CONTROLLERS */
@@ -234,9 +441,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
   // error message: empty field
   static const String _emptyFieldError = 'Field cannot be empty';
-
-  // controllers to contain the text in the form
-  late final TextEditingController _dateOfBirthController;
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +462,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             // SECTION: Relationship to Missing Person
             _verticalPadding,
             const Text(
-              "Relationship to Missing Person",
+              "Your relationship to Missing Person",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -271,6 +475,18 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeRelationshipToMissingPerson,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return _emptyFieldError;
+                      }
+                      return null;
+                    },
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_relationshipToMP', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Relationship to Missing Person',
@@ -296,91 +512,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
-            // Section: Reportee Name
-            const Text(
-              "Reportee Name",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            _verticalPadding,
-            Column(
-              // center the row
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // last name
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Last Name*',
-                    ),
-                    // add validator:
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _emptyFieldError;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                _verticalPadding,
-                // first name
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'First Name*',
-                    ),
-                    // add validator:
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _emptyFieldError;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                _verticalPadding,
-                // middle name
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Middle Name',
-                    ),
-                  ),
-                ),
-                _verticalPadding,
-                // qualifier (Jr, Sr, III, etc)
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Qualifier',
-                    ),
-                  ),
-                ),
-                _verticalPadding,
-                // Nickname / Known Aliases
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Nickname / Known Aliases',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            _verticalPadding,
-
+            // Section: Reportee Name [REMOVED]
             // Section: Reportee Citizenship
             const Text(
               "Citizenship",
@@ -396,6 +528,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeCitizenship,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_citizenship', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Citizenship*',
@@ -412,49 +550,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
-            // Section: Sex
-            const Text(
-              "Sex",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            Column(
-              // center the row
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // sizedbox-radio for Male
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: RadioListTile(
-                    title: const Text("Male"),
-                    value: "male",
-                    groupValue: _sexValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _sexValue = value.toString();
-                      });
-                    },
-                  ),
-                ),
-                // sizedbox-radio for female
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: RadioListTile(
-                    title: const Text("Female"),
-                    value: "female",
-                    groupValue: _sexValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _sexValue = value.toString();
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            _verticalPadding,
+            // Section: Sex [REMOVED]
             // Section: Civil Status
             const Text(
               "Civil Status",
@@ -481,6 +577,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 onChanged: (String? newValue) {
                   setState(() {
                     _civilStatusValue = newValue;
+                    _prefs.setString('p2_civil_status', _civilStatusValue!);
                   });
                 },
                 items: <String>[
@@ -500,85 +597,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ),
             ),
             _verticalPadding,
-            // Section: Date of Birth
-            const Text(
-              "Date of Birth",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            _verticalPadding,
-            // date picker for date of birth --- THIS IS NOT WORKING YET
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Date of Birth*',
-                    ),
-                    // on tap, show date picker:
-                    onTap: () async {
-                      var result = await showCalendarDatePicker2Dialog(
-                        dialogSize: const Size(325, 400),
-                        context: context,
-                        config: CalendarDatePicker2WithActionButtonsConfig(
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now()),
-                        initialValue: [DateTime.now()],
-                        borderRadius: BorderRadius.circular(15),
-                      );
-                      _dateOfBirth = result![0];
-                      // return date of birth as string
-                      var dateOfBirthString = DateFormat('MM/dd/yyyy')
-                          .format(_dateOfBirth!)
-                          .toString();
-                      // set text field to date of birth
-                      setState(() {
-                        _dateOfBirthController.text = dateOfBirthString;
-                      });
-                    },
-                  ),
-                ),
-                //
-              ],
-            ),
-            _verticalPadding,
-            // Age
-            const Text(
-              "Age",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
-            ),
-            _verticalPadding,
-            // age text field --- !!! this should be auto-calculated and filled out with DOB
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Age*',
-                    ),
-                    // add validator:
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return _emptyFieldError;
-                      }
-                      return null;
-                    },
-                  ),
-                )
-              ],
-            ),
-            _verticalPadding,
+            // Section: Date of Birth [REMOVED]
             // Section: Contact Information
             const Text(
               "Contact Information",
@@ -596,6 +615,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeHomePhone,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_homePhone', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Home Phone',
@@ -607,6 +632,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeMobilePhone,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_mobilePhone', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Mobile Phone',
@@ -618,6 +649,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeAlternateMobilePhone,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_altMobilePhone', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Alternate Mobile Phone',
@@ -625,16 +662,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   ),
                 ),
                 _verticalPadding,
-                // Email Address
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email Address',
-                    ),
-                  ),
-                ),
+                // Email Address [REMOVED]
               ],
             ),
             _verticalPadding,
@@ -655,6 +683,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeRegion,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_region', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Region*',
@@ -666,6 +700,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeProvince,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_province', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Province*',
@@ -677,6 +717,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeCity,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_townCity', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Town/City*',
@@ -688,6 +734,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeBarangay,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_barangay', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Barangay*',
@@ -699,6 +751,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeVillageSitio,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_villageSitio', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Village/Sitio',
@@ -710,6 +768,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeStreetHouseNum,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_streetHouseNum', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'House Number/Street',
@@ -782,6 +846,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltRegion,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altRegion', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Region*',
@@ -793,6 +863,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltProvince,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altProvince', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Province*',
@@ -804,6 +880,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltCityTown,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altTownCity', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Town/City*',
@@ -815,6 +897,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltBarangay,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altBarangay', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Barangay*',
@@ -826,6 +914,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltVillageSitio,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altVillageSitio', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'Village/Sitio',
@@ -837,6 +931,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         child: TextFormField(
+                          controller: _reporteeAltStreetHouseNum,
+                          onChanged: (text) {
+                            setState(() {
+                              _prefs.setString('p2_altStreetHouseNum', text);
+                            });
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: 'House Number/Street',
@@ -893,31 +993,32 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(),
                       labelText: 'Highest Educational Attainment*',
                     ),
-                    items: [
+                    items: const [
                       DropdownMenuItem(
-                        child: const Text("Elementary"),
                         value: "Elementary",
+                        child: Text("Elementary"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("High School"),
                         value: "High School",
+                        child: Text("High School"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("College"),
                         value: "College",
+                        child: Text("College"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("Vocational"),
                         value: "Vocational",
+                        child: Text("Vocational"),
                       ),
                       DropdownMenuItem(
-                        child: const Text("Graduate Studies"),
                         value: "Graduate Studies",
+                        child: Text("Graduate Studies"),
                       ),
                     ],
                     onChanged: (value) {
                       setState(() {
                         _highestEduc = value.toString();
+                        _prefs.setString('p2_highestEduc', _highestEduc!);
                       });
                     },
                     value: _highestEduc,
@@ -941,6 +1042,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
+                    controller: _reporteeOccupation,
+                    onChanged: (text) {
+                      setState(() {
+                        _prefs.setString('p2_occupation', text);
+                      });
+                    },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Occupation',
@@ -963,32 +1070,16 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Upload from Gallery
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
+                if (singlePhoto != null)
+                  Center(
+                      child: SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: Image.memory(singlePhoto!))), // show image
+                ElevatedButton(
                     onPressed: () {
-                      final XFile? _reportee_ID = _picker.pickImage(
-                          source: ImageSource.gallery,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
+                      getImages();
                     },
-                    child: const Text("Upload From Gallery"),
-                  ),
-                ),
-                // Upload from Camera
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final XFile? _reportee_ID = _picker.pickImage(
-                          source: ImageSource.camera,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
-                    },
-                    child: const Text("Upload From Camera"),
-                  ),
-                ),
+                    child: const Text("Upload ID")),
               ],
             ),
             _verticalPadding,
@@ -1005,32 +1096,20 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Upload from Gallery
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
+                if (singlePhoto_face != null)
+                  Center(
+                      child: Container(
+                          color: Colors.red,
+                          alignment: Alignment.center,
+                          child: SizedBox(
+                              width: MediaQuery.of(context).size.width * .9,
+                              child: Image.memory(
+                                  singlePhoto_face!)))), // show image
+                ElevatedButton(
                     onPressed: () {
-                      final XFile? _reportee_photo = _picker.pickImage(
-                          source: ImageSource.gallery,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
+                      getImageFace();
                     },
-                    child: const Text("Upload From Gallery"),
-                  ),
-                ),
-                // Upload from Camera
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      final XFile? _reportee_photo = _picker.pickImage(
-                          source: ImageSource.camera,
-                          imageQuality: 50,
-                          maxWidth: 1800) as XFile?;
-                    },
-                    child: const Text("Upload From Camera"),
-                  ),
-                ),
+                    child: const Text("Take Selfie")),
               ],
             ),
             _verticalPadding,

@@ -134,9 +134,8 @@ class _ProfileMain extends State<ProfileMain> {
                             child: Column(
                               children: [
                                 Text(
-                                  // force align to center
-                                  _usrFullName,
                                   textAlign: TextAlign.center,
+                                  _usrFullName,
                                   style: const TextStyle(
                                       fontSize: 22.0,
                                       fontWeight: FontWeight.w900),
