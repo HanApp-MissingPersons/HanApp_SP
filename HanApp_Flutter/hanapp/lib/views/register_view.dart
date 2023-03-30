@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hanapp/firebase_options.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:hanapp/main.dart';
-import 'package:hanapp/views/login_view.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 import 'verify_email_view.dart';
 
@@ -434,10 +431,12 @@ class _RegisterViewState extends State<RegisterView> {
                                 autocorrect: false,
                                 enableSuggestions: false,
                                 keyboardType: TextInputType.datetime,
+                                readOnly: true,
                                 decoration: const InputDecoration(
                                   prefixIcon:
                                       Icon(Icons.calendar_today_outlined),
                                   labelText: 'Birth Date',
+                                  hintText: 'Tap to select birth date',
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(15)),

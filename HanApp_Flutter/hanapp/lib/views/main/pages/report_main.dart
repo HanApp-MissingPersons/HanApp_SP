@@ -20,9 +20,6 @@ class ReportMain extends StatefulWidget {
 }
 
 class _ReportMainState extends State<ReportMain> {
-  // optionStyle is for the text, we can remove this when actualy doing menu contents
-  static const TextStyle optionStyle = TextStyle(
-      fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
 
   // initialize controller for PageView
   final PageController _pageController = PageController(initialPage: 0);
