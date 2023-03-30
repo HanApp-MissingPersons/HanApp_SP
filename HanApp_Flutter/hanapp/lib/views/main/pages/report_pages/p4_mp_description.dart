@@ -224,10 +224,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         _mp_hair_color.text = _prefs.getString('p4_mp_hair_color') ?? '';
         _mp_eye_color.text = _prefs.getString('p4_mp_eye_color') ?? '';
         // boolean for hair and eye color
-        mp_hair_color_natural =
-            _prefs.getBool('p4_mp_hair_color_unknown') ?? false;
-        mp_eye_color_natural =
-            _prefs.getBool('p4_mp_eye_color_unknown') ?? false;
+        mp_hair_color_natural = _prefs.getBool('p4_mp_hair_natural') ?? false;
+        mp_eye_color_natural = _prefs.getBool('p4_mp_eye_natural') ?? false;
         // prosthetics, birth defects, last clothing
         _mp_prosthetics.text = _prefs.getString('p4_mp_prosthetics') ?? '';
         _mp_birth_defects.text = _prefs.getString('p4_mp_birth_defects') ?? '';
