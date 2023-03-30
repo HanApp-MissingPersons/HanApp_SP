@@ -378,6 +378,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         lastSeenLoc =
                         'Lat: ${location.latitude}, Long: ${location.longitude}';
                         prefs.setString('p5_lastSeenLoc', lastSeenLoc!);
+                        print('[p5 lastSeenLoc]: $lastSeenLoc');
                       });
                     }
                   },
