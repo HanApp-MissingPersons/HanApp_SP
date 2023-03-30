@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// import dart ui
+import 'dart:ui' as ui;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 // import p1 to p5
@@ -156,21 +158,52 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                       backgroundColor: Color.fromARGB(255, 221, 214, 214),
                     ),
                   ),
+
                   // clear signaturepad button using clear() method
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: ElevatedButton(
-                      // button color here
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ElevatedButton(
+                          // button color here
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                          ),
+                          onPressed: () async {
+                            _signaturePadKey.currentState!.clear();
+                          },
+                          child: const Text('Clear Signature'),
+                        ),
                       ),
-                      onPressed: () async {
-                        _signaturePadKey.currentState!.clear();
-                      },
-                      child: const Text('Clear Signature'),
-                    ),
+                      _verticalPadding,
+                      // save signature button
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ElevatedButton(
+                          // button color here
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                          ),
+                          onPressed: () async {
+                            ui.Image image =
+                                await _signaturePadKey.currentState!.toImage();
+                            // save in gallery
+
+                            // // get the signature image
+                            // final image = await _signaturePadKey.currentState!
+                            //     .toImage(pixelRatio: 3.0);
+                            // final data = await image.toByteData(
+                            //     format: ImageByteFormat.png);
+                            // setState(() {
+                            //   _reporteeSignature =
+                            //       Image.memory(data!.buffer.asUint8List());
+                            // });
+                          },
+                          child: const Text('Save Signature'),
+                        ),
+                      ),
+                    ],
                   ),
-                  _verticalPadding,
                   // submit button
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
