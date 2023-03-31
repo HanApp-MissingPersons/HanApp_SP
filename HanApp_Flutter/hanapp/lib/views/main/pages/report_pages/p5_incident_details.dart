@@ -119,6 +119,15 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
     }
   }
 
+  /* SHARED PREF EMPTY CHECKER AND SAVER FUNCTION*/
+  Future<void> _writeToPrefs(String key, String value) async {
+    if (value != '') {
+      prefs.setString(key, value);
+    } else {
+      prefs.remove(key);
+    }
+  }
+
   Future<void> getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -258,7 +267,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                           // set state
                           setState(() {
                             lastSeenDate = dateReformatted[0];
-                            prefs.setString('p5_lastSeenDate', lastSeenDate!);
+                            // prefs.setString('p5_lastSeenDate', lastSeenDate!);
+                            _writeToPrefs('p5_lastSeenDate', lastSeenDate!);
                           });
                         }
                       },
@@ -307,7 +317,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                             picked.hour, picked.minute);
                         lastSeenTime =
                             DateFormat('hh:mm a').format(_selectedTime!);
-                        prefs.setString('p5_lastSeenTime', lastSeenTime!);
+                        // prefs.setString('p5_lastSeenTime', lastSeenTime!);
+                        _writeToPrefs('p5_lastSeenTime', lastSeenTime!);
                       });
                     }
                   },
@@ -375,7 +386,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         locSnapshot = image;
                         lastSeenLoc =
                             'Lat: ${location.latitude}, Long: ${location.longitude}';
-                        prefs.setString('p5_lastSeenLoc', lastSeenLoc!);
+                        // prefs.setString('p5_lastSeenLoc', lastSeenLoc!);
+                        _writeToPrefs('p5_lastSeenLoc', lastSeenLoc!);
                       });
                     }
                   },
@@ -419,7 +431,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   ),
                   onChanged: (value) {
                     incidentDetails = value;
-                    prefs.setString('p5_incidentDetails', incidentDetails!);
+                    // prefs.setString('p5_incidentDetails', incidentDetails!);
+                    _writeToPrefs('p5_incidentDetails', incidentDetails!);
                   },
                 ),
               ),
@@ -430,6 +443,18 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   "End of Absent/Missing Person Details Form. Swipe left to move to next page",
                   style: TextStyle(fontSize: 12, color: Colors.black54),
                 ),
+              ),
+              // DEBUG TOOL: SHARED PREF PRINTER
+              TextButton(
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  print(prefs.getKeys());
+                  print(prefs.getString('p5_lastSeenDate'));
+                  print(prefs.getString('p5_lastSeenTime'));
+                  print(prefs.getString('p5_lastSeenLoc'));
+                  print(prefs.getString('p5_incidentDetails'));
+                },
+                child: const Text('Print Shared Preferences'),
               ),
             ],
           ),

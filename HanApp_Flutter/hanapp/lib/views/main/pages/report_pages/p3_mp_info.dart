@@ -167,6 +167,15 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   int age_value = 0;
   String? mp_educationalAttainment;
 
+  /* SHARED PREF EMPTY CHECKER AND SAVER FUNCTION*/
+  Future<void> _writeToPrefs(String key, String value) async {
+    if (value != '') {
+      _prefs.setString(key, value);
+    } else {
+      _prefs.remove(key);
+    }
+  }
+
   /* INITIALIZE CONTROLLERS */
   @override
   void initState() {
@@ -309,7 +318,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p3_mp_lastName', value);
+                        // _prefs.setString('p3_mp_lastName', value);
+                        _writeToPrefs('p3_mp_lastName', value);
                       });
                     },
                   ),
@@ -334,7 +344,17 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p3_mp_firstName', value);
+                        // _prefs.setString('p3_mp_firstName', value);
+                        // // if value is '', clear from prefs
+                        // if (value == '') {
+                        //   _prefs.remove('p3_mp_firstName');
+                        // }
+                        // if (value != '') {
+                        //   _prefs.setString('p3_mp_firstName', value);
+                        // } else {
+                        //   _prefs.remove('p3_mp_firstName');
+                        // }
+                        _writeToPrefs('p3_mp_firstName', value);
                       });
                     },
                   ),
@@ -359,7 +379,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p3_mp_middleName', value);
+                        // _prefs.setString('p3_mp_middleName', value);
+                        _writeToPrefs('p3_mp_middleName', value);
                       });
                     },
                   ),
@@ -384,7 +405,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p3_mp_qualifier', value);
+                        // _prefs.setString('p3_mp_qualifier', value);
+                        _writeToPrefs('p3_mp_qualifier', value);
                       });
                     },
                   ),
@@ -409,7 +431,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p3_mp_nickname', value);
+                        // _prefs.setString('p3_mp_nickname', value);
+                        _writeToPrefs('p3_mp_nickname', value);
                       });
                     },
                   ),
@@ -446,7 +469,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p3_mp_civilStatus', value);
+                        // _prefs.setString('p3_mp_civilStatus', value);
+                        _writeToPrefs('p3_mp_civilStatus', value);
                       });
                     },
                   ),
@@ -479,7 +503,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     onChanged: (value) {
                       setState(() {
                         sexValue = value;
-                        _prefs.setString('p3_mp_sex', value!);
+                        // _prefs.setString('p3_mp_sex', value!);
+                        _writeToPrefs('p3_mp_sex', value!);
                       });
                     },
                   ),
@@ -494,7 +519,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     onChanged: (value) {
                       setState(() {
                         sexValue = value;
-                        _prefs.setString('p3_mp_sex', value!);
+                        // _prefs.setString('p3_mp_sex', value!);
+                        _writeToPrefs('p3_mp_sex', value!);
                       });
                     },
                   ),
@@ -530,7 +556,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 onChanged: (String? newValue) {
                   setState(() {
                     mp_civilStatValue = newValue;
-                    _prefs.setString('p3_mp_civilStatus', newValue!);
+                    // _prefs.setString('p3_mp_civilStatus', newValue!);
+                    _writeToPrefs('p3_mp_civilStatus', newValue!);
                   });
                 },
                 items: <String>[
@@ -586,18 +613,20 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     );
                     // get variable selectedDate type
                     dateTimeMPBirthDate = pickedDate![0];
-                    var string_dateTimeMPBirthdate =
+                    var stringDatetimempbirthdate =
                         dateTimeMPBirthDate.toString();
                     List returnVal = reformatDate(
-                        string_dateTimeMPBirthdate, dateTimeMPBirthDate!);
+                        stringDatetimempbirthdate, dateTimeMPBirthDate!);
                     String reformattedMPBirthDate = returnVal[0];
                     ageFromMPBirthDate = returnVal[1];
                     // save picked date to text field
                     _mp_birthDate.text = reformattedMPBirthDate;
                     // save to shared preferences using onChanged
-                    _prefs.setString('p3_mp_birthDate', _mp_birthDate.text);
+                    // _prefs.setString('p3_mp_birthDate', _mp_birthDate.text);
+                    _writeToPrefs('p3_mp_birthDate', _mp_birthDate.text);
                     // also save age to shared preferences
-                    _prefs.setString('p3_mp_age', ageFromMPBirthDate!);
+                    // _prefs.setString('p3_mp_age', ageFromMPBirthDate!);
+                    _writeToPrefs('p3_mp_age', ageFromMPBirthDate!);
                     // age controller update (to auto-fill age form field)
                     _mp_age.text = ageFromMPBirthDate!;
                   },
@@ -629,7 +658,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
                 // auto-fill age from birthdate using _mp_age.text
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_age', value);
+                  // _prefs.setString('p3_mp_age', value);
+                  _writeToPrefs('p3_mp_age', value);
                 },
               ),
             ),
@@ -659,7 +689,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Home Phone (landline)",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_contact_homePhone', value);
+                  // _prefs.setString('p3_mp_contact_homePhone', value);
+                  _writeToPrefs('p3_mp_contact_homePhone', value);
                 },
               ),
             ),
@@ -677,7 +708,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Mobile Phone",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_contact_mobilePhone', value);
+                  // _prefs.setString('p3_mp_contact_mobilePhone', value);
+                  _writeToPrefs('p3_mp_contact_mobilePhone', value);
                 },
               ),
             ),
@@ -695,7 +727,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Alternate Mobile Phone",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_contact_mobilePhone_alt', value);
+                  // _prefs.setString('p3_mp_contact_mobilePhone_alt', value);
+                  _writeToPrefs('p3_mp_contact_mobilePhone_alt', value);
                 },
               ),
             ),
@@ -713,7 +746,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Email",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_contact_email', value);
+                  // _prefs.setString('p3_mp_contact_email', value);
+                  _writeToPrefs('p3_mp_contact_email', value);
                 },
               ),
             ),
@@ -743,7 +777,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Region",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_address_region', value);
+                  // _prefs.setString('p3_mp_address_region', value);
+                  _writeToPrefs('p3_mp_address_region', value);
                 },
               ),
             ),
@@ -761,7 +796,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Province",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_address_province', value);
+                  // _prefs.setString('p3_mp_address_province', value);
+                  _writeToPrefs('p3_mp_address_province', value);
                 },
               ),
             ),
@@ -779,7 +815,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "City/Town",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_address_city', value);
+                  // _prefs.setString('p3_mp_address_city', value);
+                  _writeToPrefs('p3_mp_address_city', value);
                 },
               ),
             ),
@@ -797,7 +834,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Barangay",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_address_barangay', value);
+                  // _prefs.setString('p3_mp_address_barangay', value);
+                  _writeToPrefs('p3_mp_address_barangay', value);
                 },
               ),
             ),
@@ -815,7 +853,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Village/Sitio",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_address_villageSitio', value);
+                  // _prefs.setString('p3_mp_address_villageSitio', value);
+                  _writeToPrefs('p3_mp_address_villageSitio', value);
                 },
               ),
             ),
@@ -833,7 +872,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Street/House Number",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_address_streetHouseNum', value);
+                  // _prefs.setString('p3_mp_address_streetHouseNum', value);
+                  _writeToPrefs('p3_mp_address_streetHouseNum', value);
                 },
               ),
             ),
@@ -887,7 +927,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Region",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_address_region_alt', value);
+                        // _prefs.setString('p3_mp_address_region_alt', value);
+                        _writeToPrefs('p3_mp_address_region_alt', value);
                       },
                     ),
                   ),
@@ -906,7 +947,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Province",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_address_province_alt', value);
+                        // _prefs.setString('p3_mp_address_province_alt', value);
+                        _writeToPrefs('p3_mp_address_province_alt', value);
                       },
                     ),
                   ),
@@ -925,7 +967,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "City/Town",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_address_city_alt', value);
+                        // _prefs.setString('p3_mp_address_city_alt', value);
+                        _writeToPrefs('p3_mp_address_city_alt', value);
                       },
                     ),
                   ),
@@ -944,7 +987,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Barangay",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_address_barangay_alt', value);
+                        // _prefs.setString('p3_mp_address_barangay_alt', value);
+                        _writeToPrefs('p3_mp_address_barangay_alt', value);
                       },
                     ),
                   ),
@@ -963,8 +1007,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Village/Sitio",
                       ),
                       onChanged: (value) {
-                        _prefs.setString(
-                            'p3_mp_address_villageSitio_alt', value);
+                        // _prefs.setString('p3_mp_address_villageSitio_alt', value);
+                        _writeToPrefs('p3_mp_address_villageSitio_alt', value);
                       },
                     ),
                   ),
@@ -983,7 +1027,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Street/House Number",
                       ),
                       onChanged: (value) {
-                        _prefs.setString(
+                        // _prefs.setString('p3_mp_address_streetHouseNum_alt', value);
+                        _writeToPrefs(
                             'p3_mp_address_streetHouseNum_alt', value);
                       },
                     ),
@@ -1016,7 +1061,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   hintText: "Occupation",
                 ),
                 onChanged: (value) {
-                  _prefs.setString('p3_mp_occupation', value);
+                  // _prefs.setString('p3_mp_occupation', value);
+                  _writeToPrefs('p3_mp_occupation', value);
                 },
               ),
             ),
@@ -1064,7 +1110,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 onChanged: (String? value) {
                   setState(() {
                     mp_educationalAttainment = value;
-                    _prefs.setString('p3_mp_education', value!);
+                    // _prefs.setString('p3_mp_education', value!);
+                    _writeToPrefs('p3_mp_education', value!);
                   });
                 },
               ),
@@ -1117,7 +1164,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Region",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_workSchool_region', value);
+                        // _prefs.setString('p3_mp_workSchool_region', value);
+                        _writeToPrefs('p3_mp_workSchool_region', value);
                       },
                     ),
                   ),
@@ -1136,7 +1184,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Province",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_workSchool_province', value);
+                        // _prefs.setString('p3_mp_workSchool_province', value);
+                        _writeToPrefs('p3_mp_workSchool_province', value);
                       },
                     ),
                   ),
@@ -1155,7 +1204,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "City/Town",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_workSchool_city', value);
+                        // _prefs.setString('p3_mp_workSchool_city', value);
+                        _writeToPrefs('p3_mp_workSchool_city', value);
                       },
                     ),
                   ),
@@ -1174,7 +1224,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Barangay",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_workSchool_barangay', value);
+                        // _prefs.setString('p3_mp_workSchool_barangay', value);
+                        _writeToPrefs('p3_mp_workSchool_barangay', value);
                       },
                     ),
                   ),
@@ -1193,8 +1244,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Village/Sitio",
                       ),
                       onChanged: (value) {
-                        _prefs.setString(
-                            'p3_mp_workSchool_villageSitio', value);
+                        // _prefs.setString('p3_mp_workSchool_villageSitio', value);
+                        _writeToPrefs('p3_mp_workSchool_villageSitio', value);
                       },
                     ),
                   ),
@@ -1213,8 +1264,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Street/House Number",
                       ),
                       onChanged: (value) {
-                        _prefs.setString(
-                            'p3_mp_workSchool_streetHouseNum', value);
+                        // _prefs.setString('p3_mp_workSchool_streetHouseNum', value);
+                        _writeToPrefs('p3_mp_workSchool_streetHouseNum', value);
                       },
                     ),
                   ),
@@ -1233,7 +1284,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         hintText: "Work/School Name",
                       ),
                       onChanged: (value) {
-                        _prefs.setString('p3_mp_workSchool_name', value);
+                        // _prefs.setString('p3_mp_workSchool_name', value);
+                        _writeToPrefs('p3_mp_workSchool_name', value);
                       },
                     ),
                   ),
@@ -1259,6 +1311,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 print(prefs.getString('p3_mp_civilStatus'));
                 print(prefs.getString('p3_mp_age'));
                 print(prefs.getString('p3_mp_education'));
+                print(prefs.getString('p3_mp_firstName'));
               },
               child: const Text('Print Shared Preferences'),
             ),
