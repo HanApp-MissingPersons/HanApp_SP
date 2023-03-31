@@ -294,6 +294,15 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     });
   }
 
+  /* SHARED PREF EMPTY CHECKER AND SAVER FUNCTION*/
+  Future<void> _writeToPrefs(String key, String value) async {
+    if (value != '') {
+      _prefs.setString(key, value);
+    } else {
+      _prefs.remove(key);
+    }
+  }
+
   /* FORMATTING STUFF */
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
@@ -466,7 +475,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_relationshipToMP', text);
+                        // _prefs.setString('p2_relationshipToMP', text);
+                        _writeToPrefs('p2_relationshipToMP', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -559,7 +569,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 onChanged: (String? newValue) {
                   setState(() {
                     _civilStatusValue = newValue;
-                    _prefs.setString('p2_civil_status', _civilStatusValue!);
+                    // _prefs.setString('p2_civil_status', _civilStatusValue!);
+                    _writeToPrefs('p2_civil_status', _civilStatusValue!);
                   });
                 },
                 items: <String>[
@@ -600,7 +611,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeHomePhone,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_homePhone', text);
+                        // _prefs.setString('p2_homePhone', text);
+                        _writeToPrefs('p2_homePhone', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -617,7 +629,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeMobilePhone,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_mobilePhone', text);
+                        // _prefs.setString('p2_mobilePhone', text);
+                        _writeToPrefs('p2_mobilePhone', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -634,7 +647,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeAlternateMobilePhone,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_altMobilePhone', text);
+                        // _prefs.setString('p2_altMobilePhone', text);
+                        _writeToPrefs('p2_altMobilePhone', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -668,7 +682,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeRegion,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_region', text);
+                        // _prefs.setString('p2_region', text);
+                        _writeToPrefs('p2_region', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -685,7 +700,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeProvince,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_province', text);
+                        // _prefs.setString('p2_province', text);
+                        _writeToPrefs('p2_province', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -702,7 +718,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeCity,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_townCity', text);
+                        // _prefs.setString('p2_townCity', text);
+                        _writeToPrefs('p2_townCity', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -719,7 +736,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeBarangay,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_barangay', text);
+                        // _prefs.setString('p2_barangay', text);
+                        _writeToPrefs('p2_barangay', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -736,7 +754,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeVillageSitio,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_villageSitio', text);
+                        // _prefs.setString('p2_villageSitio', text);
+                        _writeToPrefs('p2_villageSitio', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -753,7 +772,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeStreetHouseNum,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_streetHouseNum', text);
+                        // _prefs.setString('p2_streetHouseNum', text);
+                        _writeToPrefs('p2_streetHouseNum', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -800,6 +820,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     onPressed: () {
                       setState(() {
                         reportee_AltAddress_available = false;
+                        // if reportee_AltAddress_available is false, clear all the alternate address from shared preferences
+                        _prefs.remove('p2_altRegion');
+                        _prefs.remove('p2_altProvince');
+                        _prefs.remove('p2_altTownCity');
+                        _prefs.remove('p2_altBarangay');
+                        _prefs.remove('p2_altVillageSitio');
+                        _prefs.remove('p2_altStreetHouseNum');
                       });
                     },
                     child: const Text('No'),
@@ -831,7 +858,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           controller: _reporteeAltRegion,
                           onChanged: (text) {
                             setState(() {
-                              _prefs.setString('p2_altRegion', text);
+                              // _prefs.setString('p2_altRegion', text);
+                              _writeToPrefs('p2_altRegion', text);
                             });
                           },
                           decoration: const InputDecoration(
@@ -848,7 +876,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           controller: _reporteeAltProvince,
                           onChanged: (text) {
                             setState(() {
-                              _prefs.setString('p2_altProvince', text);
+                              // _prefs.setString('p2_altProvince', text);
+                              _writeToPrefs('p2_altProvince', text);
                             });
                           },
                           decoration: const InputDecoration(
@@ -865,7 +894,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           controller: _reporteeAltCityTown,
                           onChanged: (text) {
                             setState(() {
-                              _prefs.setString('p2_altTownCity', text);
+                              // _prefs.setString('p2_altTownCity', text);
+                              _writeToPrefs('p2_altTownCity', text);
                             });
                           },
                           decoration: const InputDecoration(
@@ -882,7 +912,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           controller: _reporteeAltBarangay,
                           onChanged: (text) {
                             setState(() {
-                              _prefs.setString('p2_altBarangay', text);
+                              // _prefs.setString('p2_altBarangay', text);
+                              _writeToPrefs('p2_altBarangay', text);
                             });
                           },
                           decoration: const InputDecoration(
@@ -899,7 +930,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           controller: _reporteeAltVillageSitio,
                           onChanged: (text) {
                             setState(() {
-                              _prefs.setString('p2_altVillageSitio', text);
+                              // _prefs.setString('p2_altVillageSitio', text);
+                              _writeToPrefs('p2_altVillageSitio', text);
                             });
                           },
                           decoration: const InputDecoration(
@@ -916,7 +948,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           controller: _reporteeAltStreetHouseNum,
                           onChanged: (text) {
                             setState(() {
-                              _prefs.setString('p2_altStreetHouseNum', text);
+                              // _prefs.setString('p2_altStreetHouseNum', text);
+                              _writeToPrefs('p2_altStreetHouseNum', text);
                             });
                           },
                           decoration: const InputDecoration(
@@ -975,32 +1008,47 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(),
                       labelText: 'Highest Educational Attainment*',
                     ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: "Elementary",
-                        child: Text("Elementary"),
-                      ),
-                      DropdownMenuItem(
-                        value: "High School",
-                        child: Text("High School"),
-                      ),
-                      DropdownMenuItem(
-                        value: "College",
-                        child: Text("College"),
-                      ),
-                      DropdownMenuItem(
-                        value: "Vocational",
-                        child: Text("Vocational"),
-                      ),
-                      DropdownMenuItem(
-                        value: "Graduate Studies",
-                        child: Text("Graduate Studies"),
-                      ),
-                    ],
+                    items:
+                        // const [
+                        //   DropdownMenuItem(
+                        //     value: "Elementary",
+                        //     child: Text("Elementary"),
+                        //   ),
+                        //   DropdownMenuItem(
+                        //     value: "High School",
+                        //     child: Text("High School"),
+                        //   ),
+                        //   DropdownMenuItem(
+                        //     value: "College",
+                        //     child: Text("College"),
+                        //   ),
+                        //   DropdownMenuItem(
+                        //     value: "Vocational",
+                        //     child: Text("Vocational"),
+                        //   ),
+                        //   DropdownMenuItem(
+                        //     value: "Graduate Studies",
+                        //     child: Text("Graduate Studies"),
+                        //   ),
+                        // ],
+                        <String>[
+                      'Elementary',
+                      'High School',
+                      'Vocational',
+                      'College',
+                      'Graduate Studies',
+                      'Unknown',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _highestEduc = value.toString();
-                        _prefs.setString('p2_highestEduc', _highestEduc!);
+                        // _prefs.setString('p2_highestEduc', _highestEduc!);
+                        _writeToPrefs('p2_highestEduc', _highestEduc!);
                       });
                     },
                     value: _highestEduc,
@@ -1027,7 +1075,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeOccupation,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_occupation', text);
+                        // _prefs.setString('p2_occupation', text);
+                        _writeToPrefs('p2_occupation', text);
                       });
                     },
                     decoration: const InputDecoration(
@@ -1103,6 +1152,15 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 "End of Reportee Details Form. Swipe left to move to next page",
                 style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
+            ),
+            // DEBUG TOOL: SHARED PREF PRINTER
+            TextButton(
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                print(prefs.getKeys());
+                print(prefs.getString('p2_highestEduc'));
+              },
+              child: const Text('Print Shared Preferences'),
             ),
           ],
         ),

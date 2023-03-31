@@ -65,9 +65,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   bool? mp_dental_available = false;
   bool? mp_fingerprints_available = false;
 
-  // list for blood types for dropdown
-  List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-
   // all controlers for text fields
   late final TextEditingController _mp_scars = TextEditingController();
   late final TextEditingController _mp_marks = TextEditingController();
@@ -92,6 +89,30 @@ class _Page4MPDescState extends State<Page4MPDesc> {
       TextEditingController();
   bool _mp_hair_color_natural = false;
   bool _mp_eye_color_natural = false;
+
+  // dispose all controllers
+  @override
+  void dispose() {
+    _mp_scars.dispose();
+    _mp_marks.dispose();
+    _mp_tattoos.dispose();
+    _mp_hair_color.dispose();
+    _mp_eye_color.dispose();
+    _mp_prosthetics.dispose();
+    _mp_birth_defects.dispose();
+    _mp_last_clothing.dispose();
+    _mp_height_feet.dispose();
+    _mp_height_inches.dispose();
+    _mp_weight.dispose();
+    _mp_blood_type.dispose();
+    _mp_medications.dispose();
+    _mp_facebook.dispose();
+    _mp_twitter.dispose();
+    _mp_instagram.dispose();
+    _mp_socmed_other_platform.dispose();
+    _mp_socmed_other_username.dispose();
+    super.dispose();
+  }
 
   /* INITIALIZE VARIABLES FOR SHARED PREFERENCE */
   // get text and boolean values from shared preferences
@@ -182,6 +203,15 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     }
   }
 
+  /* SHARED PREF EMPTY CHECKER AND SAVER FUNCTION*/
+  Future<void> _writeToPrefs(String key, String value) async {
+    if (value != '') {
+      _prefs.setString(key, value);
+    } else {
+      _prefs.remove(key);
+    }
+  }
+
   /* initState for picking images */
   @override
   void initState() {
@@ -199,10 +229,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         _mp_hair_color.text = _prefs.getString('p4_mp_hair_color') ?? '';
         _mp_eye_color.text = _prefs.getString('p4_mp_eye_color') ?? '';
         // boolean for hair and eye color
-        mp_hair_color_natural =
-            _prefs.getBool('p4_mp_hair_color_unknown') ?? false;
-        mp_eye_color_natural =
-            _prefs.getBool('p4_mp_eye_color_unknown') ?? false;
+        mp_hair_color_natural = _prefs.getBool('p4_mp_hair_natural') ?? false;
+        mp_eye_color_natural = _prefs.getBool('p4_mp_eye_natural') ?? false;
         // prosthetics, birth defects, last clothing
         _mp_prosthetics.text = _prefs.getString('p4_mp_prosthetics') ?? '';
         _mp_birth_defects.text = _prefs.getString('p4_mp_birth_defects') ?? '';
@@ -284,7 +312,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_scars', value);
+                    // _prefs.setString('p4_mp_scars', value);
+                    _writeToPrefs('p4_mp_scars', value);
                   });
                 },
               ),
@@ -302,7 +331,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_marks', value);
+                    // _prefs.setString('p4_mp_marks', value);
+                    _writeToPrefs('p4_mp_marks', value);
                   });
                 },
               ),
@@ -320,7 +350,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_tattoos', value);
+                    // _prefs.setString('p4_mp_tattoos', value);
+                    _writeToPrefs('p4_mp_tattoos', value);
                   });
                 },
               ),
@@ -350,7 +381,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_hair_color', value);
+                    // _prefs.setString('p4_mp_hair_color', value);
+                    _writeToPrefs('p4_mp_hair_color', value);
                   });
                 },
               ),
@@ -366,6 +398,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       setState(() {
                         _mp_hair_color_natural = value!;
                         _prefs.setBool('p4_mp_hair_natural', value);
+                        // if false, remove from shared preferences
+                        if (value == false) {
+                          _prefs.remove('p4_mp_hair_natural');
+                        }
                       });
                     },
                   ),
@@ -402,7 +438,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_eye_color', value);
+                    // _prefs.setString('p4_mp_eye_color', value);
+                    _writeToPrefs('p4_mp_eye_color', value);
                   });
                 },
               ),
@@ -418,6 +455,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       setState(() {
                         _mp_eye_color_natural = value!;
                         _prefs.setBool('p4_mp_eye_natural', value);
+                        if (value == false) {
+                          _prefs.remove('p4_mp_eye_natural');
+                        }
                       });
                     },
                   ),
@@ -455,7 +495,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_prosthetics', value);
+                    // _prefs.setString('p4_mp_prosthetics', value);
+                    _writeToPrefs('p4_mp_prosthetics', value);
                   });
                 },
               ),
@@ -485,7 +526,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_birth_defects', value);
+                    // _prefs.setString('p4_mp_birth_defects', value);
+                    _writeToPrefs('p4_mp_birth_defects', value);
                   });
                 },
               ),
@@ -515,7 +557,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_last_clothing', value);
+                    // _prefs.setString('p4_mp_last_clothing', value);
+                    _writeToPrefs('p4_mp_last_clothing', value);
                   });
                 },
               ),
@@ -549,7 +592,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p4_mp_height_feet', value);
+                        // _prefs.setString('p4_mp_height_feet', value);
+                        _writeToPrefs('p4_mp_height_feet', value);
                       });
                     },
                   ),
@@ -565,7 +609,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p4_mp_height_inches', value);
+                        // _prefs.setString('p4_mp_height_inches', value);
+                        _writeToPrefs('p4_mp_height_inches', value);
                       });
                     },
                   ),
@@ -597,7 +642,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_weight', value);
+                    // _prefs.setString('p4_mp_weight', value);
+                    _writeToPrefs('p4_mp_weight', value);
                   });
                 },
               ),
@@ -629,10 +675,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                   iconSize: 24,
                   elevation: 16,
                   style: const TextStyle(color: Colors.black),
-                  onChanged: (String? bloodtype_value) {
+                  onChanged: (String? bloodtypeValue) {
                     setState(() {
-                      mp_blood_type = bloodtype_value;
-                      _prefs.setString('p4_mp_blood_type', bloodtype_value!);
+                      mp_blood_type = bloodtypeValue;
+                      // _prefs.setString('p4_mp_blood_type', bloodtype_value!);
+                      _writeToPrefs('p4_mp_blood_type', bloodtypeValue!);
                     });
                   },
                   items: <String>[
@@ -677,7 +724,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_medications', value);
+                    // _prefs.setString('p4_mp_medications', value);
+                    _writeToPrefs('p4_mp_medications', value);
                   });
                 },
               ),
@@ -707,7 +755,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_socmed_facebook_username', value);
+                    // _prefs.setString('p4_mp_socmed_facebook_username', value);
+                    _writeToPrefs('p4_mp_socmed_facebook_username', value);
                   });
                 },
               ),
@@ -725,7 +774,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_socmed_twitter_username', value);
+                    // _prefs.setString('p4_mp_socmed_twitter_username', value);
+                    _writeToPrefs('p4_mp_socmed_twitter_username', value);
                   });
                 },
               ),
@@ -743,7 +793,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 ),
                 onChanged: (value) {
                   setState(() {
-                    _prefs.setString('p4_mp_socmed_instagram_username', value);
+                    // _prefs.setString('p4_mp_socmed_instagram_username', value);
+                    _writeToPrefs('p4_mp_socmed_instagram_username', value);
                   });
                 },
               ),
@@ -763,7 +814,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p4_mp_socmed_other_platform', value);
+                        // _prefs.setString('p4_mp_socmed_other_platform', value);
+                        _writeToPrefs('p4_mp_socmed_other_platform', value);
                       });
                     },
                   ),
@@ -779,7 +831,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _prefs.setString('p4_mp_socmed_other_username', value);
+                        // _prefs.setString('p4_mp_socmed_other_username', value);
+                        _writeToPrefs('p4_mp_socmed_other_username', value);
                       });
                     },
                   ),
@@ -929,6 +982,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                 style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
             ),
+            // DEBUG TOOL: SHARED PREF PRINTER
             TextButton(
               onPressed: () async {
                 final prefs = await SharedPreferences.getInstance();
