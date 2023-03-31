@@ -52,17 +52,20 @@ class _MapDialogState extends State<MapDialog> {
     print('marker location: ${marker.position}');
   }
 
-  void _onMapTap(LatLng position) {
+  void _onMapTap(LatLng position) async {
     if (_markers.isEmpty || _markers.first.position != position) {
       setState(() {
         _center = position;
         _addMarker(position);
       });
     }
+    await mapController.animateCamera(CameraUpdate.newLatLng(_center));
   }
 
   void _onConfirmPressed(BuildContext context) async {
     try {
+      // await mapController.moveCamera(_center as CameraUpdate);
+      await mapController.moveCamera(CameraUpdate.newLatLng(_center));
       await mapController.takeSnapshot().then((image) {
         setState(() {
           _mapSnapshot = image;
