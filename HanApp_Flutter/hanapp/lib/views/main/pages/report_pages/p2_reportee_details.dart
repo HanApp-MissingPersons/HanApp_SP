@@ -864,7 +864,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Region*',
+                            labelText: 'Alternate Region',
                           ),
                         ),
                       ),
@@ -882,7 +882,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Province*',
+                            labelText: 'Alternate Province',
                           ),
                         ),
                       ),
@@ -900,7 +900,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Town/City*',
+                            labelText: 'Alternate Town/City',
                           ),
                         ),
                       ),
@@ -918,7 +918,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
-                            labelText: 'Barangay*',
+                            labelText: 'Alternate Barangay',
                           ),
                         ),
                       ),

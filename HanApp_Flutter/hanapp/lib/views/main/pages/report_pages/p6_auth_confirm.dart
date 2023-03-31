@@ -351,6 +351,10 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                         TextButton(
                                           child: const Text('Submit'),
                                           onPressed: () {
+                                            checkReportValidity()
+                                                ? submitReport()
+                                                : print(
+                                                    '[report fail] Report is not valid');
                                             Navigator.of(context).pop();
                                           },
                                         )
@@ -365,9 +369,9 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                       : // show a submit button that is grayed out
                       SizedBox(
                           width: MediaQuery.of(context).size.width - 40,
-                          child: ElevatedButton(
-                            child: const Text('Submit Report'),
+                          child: const ElevatedButton(
                             onPressed: null,
+                            child: Text('Submit Report'),
                           ),
                         ),
                   // print all sharedpreferences data
@@ -386,5 +390,31 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         ),
       ),
     ]);
+  }
+
+  checkReportValidity() {
+    List<String> keysList = prefs.getKeys().toList();
+    bool returnval = false;
+    print('[KEYSLIST] $keysList');
+    // p2 required values
+    if (!(keysList.contains('p2_citizenship') ||
+        keysList.contains('p2_civil_status') ||
+        keysList.contains('p2_region') ||
+        keysList.contains('p2_province') ||
+        keysList.contains('p2_townCity') ||
+        keysList.contains('p2_barangay') ||
+        keysList.contains('p2_highestEduc') ||
+        keysList.contains('p2_singlePhoto') ||
+        keysList.contains('p2_singlePhoto_face'))) {
+      print('[p2 report not valid] p2 values are not complete');
+      returnval = false;
+    } else {
+      returnval = true;
+    }
+    return returnval;
+  }
+
+  submitReport() {
+    print('Report submitted');
   }
 }
