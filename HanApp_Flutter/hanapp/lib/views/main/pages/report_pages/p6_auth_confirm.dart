@@ -394,7 +394,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
   checkReportValidity() {
     List<String> keysList = prefs.getKeys().toList();
-    bool returnval = false;
+    bool returnval = true;
     print('[KEYSLIST] $keysList');
     // p2 required values
     if (!(keysList.contains('p2_citizenship') ||
@@ -408,8 +408,23 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         keysList.contains('p2_singlePhoto_face'))) {
       print('[p2 report not valid] p2 values are not complete');
       returnval = false;
-    } else {
-      returnval = true;
+    }
+    // p3 required values
+    if (!(keysList.contains('p3_mp_lastName') ||
+        keysList.contains('p3_mp_firstName') ||
+        keysList.contains('p3_mp_civilStatus') ||
+        keysList.contains('p3_mp_sex') ||
+        keysList.contains('p3_mp_birthDate') ||
+        keysList.contains('p3_mp_age') ||
+        (keysList.contains('p3_mp_contact_homePhone') ||
+            keysList.contains('p3_mp_contact_mobilePhone')) ||
+        keysList.contains('p3_mp_address_region') ||
+        keysList.contains('p3_mp_address_province') ||
+        keysList.contains('p3_mp_address_city') ||
+        keysList.contains('p3_mp_address_barangay') ||
+        keysList.contains('p3_mp_education'))) {
+      print('[p3 report not valid] p3 values are not complete');
+      returnval = false;
     }
     return returnval;
   }

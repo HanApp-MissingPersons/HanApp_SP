@@ -482,7 +482,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Sex',
+                'Sex*',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -685,7 +685,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Home Phone (landline)",
+                  labelText: "Home Phone (landline)*",
                   hintText: "Home Phone (landline)",
                 ),
                 onChanged: (value) {
@@ -694,6 +694,11 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 },
               ),
             ),
+            SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: const Text('or',
+                    style: TextStyle(color: Colors.grey),
+                    textAlign: TextAlign.center)),
             // mobilePhone
             _verticalPadding,
             SizedBox(
@@ -704,7 +709,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Mobile Phone",
+                  labelText: "Mobile Phone*",
                   hintText: "Mobile Phone",
                 ),
                 onChanged: (value) {
@@ -756,7 +761,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Address*',
+                'Address',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -773,7 +778,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Region",
+                  labelText: "Region*",
                   hintText: "Region",
                 ),
                 onChanged: (value) {
@@ -792,8 +797,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Province",
-                  hintText: "Province",
+                  labelText: "Province*",
+                  hintText: "Province*",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_province', value);
@@ -811,8 +816,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "City/Town",
-                  hintText: "City/Town",
+                  labelText: "City/Town*",
+                  hintText: "City/Town*",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_city', value);
@@ -830,7 +835,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Barangay",
+                  labelText: "Barangay*",
                   hintText: "Barangay",
                 ),
                 onChanged: (value) {
