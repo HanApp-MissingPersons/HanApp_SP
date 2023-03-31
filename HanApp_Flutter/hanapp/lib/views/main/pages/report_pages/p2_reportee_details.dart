@@ -429,7 +429,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   }
   /* END OF VARIABLES AND CONTROLLERS */
 
-
   // error message: empty field
   static const String _emptyFieldError = 'Field cannot be empty';
 
@@ -523,7 +522,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     controller: _reporteeCitizenship,
                     onChanged: (text) {
                       setState(() {
-                        _prefs.setString('p2_citizenship', text);
+                        _writeToPrefs('p2_citizenship', text);
+                        // _prefs.setString('p2_citizenship', text);
                       });
                     },
                     decoration: const InputDecoration(

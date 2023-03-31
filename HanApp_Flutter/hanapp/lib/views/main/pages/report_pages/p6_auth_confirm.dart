@@ -202,8 +202,11 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                   // clear signaturepad button using clear() method
                   Row(
                     children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.445,
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        margin: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.03,
+                            right: MediaQuery.of(context).size.width * 0.03),
                         child: ElevatedButton(
                           // button color here
                           style: ElevatedButton.styleFrom(
@@ -212,13 +215,16 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                           onPressed: () async {
                             signaturePadKey.currentState!.clear();
                           },
-                          child: const Text('Clear Signature Pad'),
+                          child: const Text(
+                            'Clear Signature Pad',
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                       _verticalPadding,
                       // save signature button
                       SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.445,
+                        width: MediaQuery.of(context).size.width * 0.4,
                         child: ElevatedButton(
                           // button color here
                           style: ElevatedButton.styleFrom(
@@ -300,6 +306,12 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                             setState(() {
                                               // set p6_reporteeSignature to null
                                               signaturePhoto = null;
+                                              try {
+                                                prefs.remove(
+                                                    'p6_reporteeSignature');
+                                              } catch (e) {
+                                                print(e);
+                                              }
                                             });
                                             Navigator.of(context).pop();
                                           },
