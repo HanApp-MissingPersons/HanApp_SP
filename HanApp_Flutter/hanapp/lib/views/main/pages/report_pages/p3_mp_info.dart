@@ -1,14 +1,7 @@
 /* IMPORTS */
-import 'dart:io';
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-import 'package:intl/intl.dart';
-import 'package:image_picker/image_picker.dart';
 
 /* SHARED PREFERENCE */
 late SharedPreferences _prefs;
@@ -233,7 +226,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
         _mp_address_streetHouseNum_alt.text =
             prefs.getString('p3_mp_address_streetHouseNum_alt') ?? '';
         // for ocupation and highest education
-        _mp_education.text = prefs.getString('p3_mp_education') ?? '';
+        mp_educationalAttainment = prefs.getString('p3_mp_education') ?? 'NA';
+        _mp_education.text = prefs.getString('p3_mp_education') ?? 'None';
         _mp_occupation.text = prefs.getString('p3_mp_occupation') ?? '';
         // for Work/School Address
         _mp_workSchool_region.text =
@@ -500,7 +494,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
-                    controller: _mp_civilStatus,
+                    controller: _mp_nationalityEthnicity,
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
                         labelText: "Nationality/Ethnicity*",
@@ -1129,7 +1123,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: DropdownButtonFormField<String>(
-                hint: const Text("Select Highest Educational Attainment*"),
+                hint: const Text("Select Highest Educational Attainment"),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),

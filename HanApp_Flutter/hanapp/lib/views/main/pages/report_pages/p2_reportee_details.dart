@@ -181,6 +181,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     loadImages();
     loadImage_face();
     setState(() {
+      _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Common Law';
+      _highestEduc = _prefs.getString('p2_highestEduc') ?? 'Unknown';
       relationshipToMP = _prefs.getString('p2_relationshipToMP');
       if (relationshipToMP != null) {
         _reporteeRelationshipToMissingPerson.text = relationshipToMP!;
@@ -581,7 +583,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   'Separated',
                   'Divorced',
                   'Annulled',
-                  'Common Law'
+                  'Common Law',
                 ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -1016,44 +1018,22 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: DropdownButtonFormField(
+                    value: _highestEduc,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Highest Educational Attainment',
                     ),
-                    items:
-                        // const [
-                        //   DropdownMenuItem(
-                        //     value: "Elementary",
-                        //     child: Text("Elementary"),
-                        //   ),
-                        //   DropdownMenuItem(
-                        //     value: "High School",
-                        //     child: Text("High School"),
-                        //   ),
-                        //   DropdownMenuItem(
-                        //     value: "College",
-                        //     child: Text("College"),
-                        //   ),
-                        //   DropdownMenuItem(
-                        //     value: "Vocational",
-                        //     child: Text("Vocational"),
-                        //   ),
-                        //   DropdownMenuItem(
-                        //     value: "Graduate Studies",
-                        //     child: Text("Graduate Studies"),
-                        //   ),
-                        // ],
-                        <String>[
+                    items: <String>[
                       'Elementary',
                       'High School',
                       'Vocational',
                       'College',
                       'Graduate Studies',
                       'Unknown',
-                    ].map<DropdownMenuItem<String>>((String value) {
+                    ].map<DropdownMenuItem<String>>((String newValue) {
                       return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+                        value: newValue,
+                        child: Text(newValue),
                       );
                     }).toList(),
                     onChanged: (value) {
@@ -1063,7 +1043,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_highestEduc', _highestEduc!);
                       });
                     },
-                    value: _highestEduc,
                   ),
                 ),
               ],

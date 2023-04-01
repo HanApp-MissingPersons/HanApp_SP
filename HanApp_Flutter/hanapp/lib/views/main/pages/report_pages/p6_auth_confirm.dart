@@ -442,6 +442,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         keysList.contains('p3_mp_sex') &&
         keysList.contains('p3_mp_birthDate') &&
         keysList.contains('p3_mp_age') &&
+        keysList.contains('p3_mp_nationalityEthnicity') &&
+        keysList.contains('p3_mp_citizenship') &&
         (keysList.contains('p3_mp_contact_homePhone') ||
             keysList.contains('p3_mp_contact_mobilePhone')) &&
         keysList.contains('p3_mp_address_region') &&
