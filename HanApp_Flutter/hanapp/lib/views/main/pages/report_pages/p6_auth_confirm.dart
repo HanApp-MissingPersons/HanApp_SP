@@ -449,8 +449,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         keysList.contains('p3_mp_address_region') &&
         keysList.contains('p3_mp_address_province') &&
         keysList.contains('p3_mp_address_city') &&
-        keysList.contains('p3_mp_address_barangay') &&
-        keysList.contains('p3_mp_education'))) {
+        keysList.contains('p3_mp_address_barangay'))) {
       print('[p3 report not valid] p3 values are not complete');
       dialogMessage.add('p3');
       returnval = false;

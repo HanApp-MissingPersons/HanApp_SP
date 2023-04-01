@@ -181,6 +181,9 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
       setState(() {
         _prefs = prefs;
         // basic info
+        mp_civilStatValue =
+            prefs.getString('p3_mp_civilStatus') ?? 'Common Law';
+        sexValue = prefs.getString('p3_mp_sex') ?? '';
         _mp_lastName.text = prefs.getString('p3_mp_lastName') ?? '';
         _mp_firstName.text = prefs.getString('p3_mp_firstName') ?? '';
         _mp_middleName.text = prefs.getString('p3_mp_middleName') ?? '';
@@ -457,7 +460,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
-                    controller: _mp_civilStatus,
+                    controller: _mp_citizenship,
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
                         labelText: "Citizenship*",
@@ -467,7 +470,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        // _prefs.setString('p3_mp_civilStatus', value);
                         _writeToPrefs('p3_mp_citizenship', value);
                       });
                     },
@@ -504,7 +506,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                                 BorderRadius.all(Radius.circular(10)))),
                     onChanged: (value) {
                       setState(() {
-                        // _prefs.setString('p3_mp_civilStatus', value);
                         _writeToPrefs('p3_mp_nationalityEthnicity', value);
                       });
                     },
