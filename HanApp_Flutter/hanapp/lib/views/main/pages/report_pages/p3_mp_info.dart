@@ -101,6 +101,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   late final TextEditingController _mp_qualifier = TextEditingController();
   late final TextEditingController _mp_nickname = TextEditingController();
   late final TextEditingController _mp_citizenship = TextEditingController();
+  late final TextEditingController _mp_nationalityEthnicity =
+      TextEditingController();
   late final TextEditingController _mp_sex = TextEditingController();
   late final TextEditingController _mp_civilStatus = TextEditingController();
   late final TextEditingController _mp_birthDate;
@@ -192,6 +194,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
         _mp_qualifier.text = prefs.getString('p3_mp_qualifier') ?? '';
         _mp_nickname.text = prefs.getString('p3_mp_nickname') ?? '';
         _mp_citizenship.text = prefs.getString('p3_mp_citizenship') ?? '';
+        _mp_nationalityEthnicity.text =
+            prefs.getString('p3_mp_nationalityEthnicity') ?? '';
         _mp_sex.text = prefs.getString('p3_mp_sex') ?? '';
         _mp_civilStatus.text = prefs.getString('p3_mp_civilStatus') ?? '';
         _mp_birthDate.text = prefs.getString('p3_mp_birthDate') ?? '';
@@ -292,7 +296,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Absent/Missing Person Name',
+                'Absent/Missing Person Name*',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -470,7 +474,44 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     onChanged: (value) {
                       setState(() {
                         // _prefs.setString('p3_mp_civilStatus', value);
-                        _writeToPrefs('p3_mp_civilStatus', value);
+                        _writeToPrefs('p3_mp_citizenship', value);
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            // NATIONALITY/ETHNICITY SECTION
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Nationality/Ethnicity',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black54),
+              ),
+            ),
+            // textfield for nationality/ethnicity
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: TextFormField(
+                    controller: _mp_civilStatus,
+                    keyboardType: TextInputType.name,
+                    decoration: const InputDecoration(
+                        labelText: "Nationality/Ethnicity*",
+                        hintText: "Nationality/Ethnicity*",
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10)))),
+                    onChanged: (value) {
+                      setState(() {
+                        // _prefs.setString('p3_mp_civilStatus', value);
+                        _writeToPrefs('p3_mp_nationalityEthnicity', value);
                       });
                     },
                   ),
@@ -597,7 +638,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   keyboardType: TextInputType.datetime,
                   decoration: const InputDecoration(
                       prefixIcon: Icon(Icons.calendar_today_outlined),
-                      labelText: "Birth Date",
+                      labelText: "Birth Date*",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10)))),
                   onTap: () async {
@@ -868,8 +909,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Street/House Number",
-                  hintText: "Street/House Number",
+                  labelText: "Street/House Number*",
+                  hintText: "Street/House Number*",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_streetHouseNum', value);
