@@ -424,8 +424,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         keysList.contains('p2_province') &&
         keysList.contains('p2_townCity') &&
         keysList.contains('p2_barangay') &&
-        keysList.contains('p2_highestEduc') &&
-        keysList.contains('p2_singlePhoto') &&
+        keysList.contains('p2_reportee_ID_Photo') &&
+        keysList.contains('p2_relationshipToMP') &&
         keysList.contains('p2_singlePhoto_face'))) {
       print('[p2 report not valid] p2 values are not complete');
       dialogMessage.add('p2');

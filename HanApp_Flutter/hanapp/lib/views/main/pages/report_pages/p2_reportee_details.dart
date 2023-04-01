@@ -610,6 +610,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
                     controller: _reporteeHomePhone,
+                    keyboardType: TextInputType.phone,
                     onChanged: (text) {
                       setState(() {
                         // _prefs.setString('p2_homePhone', text);
@@ -623,11 +624,21 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   ),
                 ),
                 _verticalPadding,
+                Container(
+                  width: MediaQuery.of(context).size.width - 40,
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'or',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                _verticalPadding,
                 // Mobile Phone
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   child: TextFormField(
                     controller: _reporteeMobilePhone,
+                    keyboardType: TextInputType.phone,
                     onChanged: (text) {
                       setState(() {
                         // _prefs.setString('p2_mobilePhone', text);
