@@ -375,8 +375,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                                         ],
                                                       );
                                                     });
-                                            print(
-                                                '[report fail] Report is not valid');
                                             Navigator.of(context).pop();
                                           },
                                         )
