@@ -94,7 +94,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   PlatformFile? pickedFile;
   Uint8List? pickedFileBytes;
 
-  Uint8List? singlePhoto;
+  Uint8List? reportee_ID_Photo;
   Uint8List? singlePhoto_face;
   String? relationshipToMP;
   String? citizenship;
@@ -118,13 +118,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   String? occupation;
 
   Future<void> loadImages() async {
-    String? singlePhotoString = _prefs.getString('p2_singlePhoto');
-    if (singlePhotoString == null) {
+    String? reportee_ID_Photo_String = _prefs.getString('p2_reportee_ID_Photo');
+    if (reportee_ID_Photo_String == null) {
       print('[p2] No ID photo');
       return;
     } else {
       setState(() {
-        singlePhoto = base64Decode(singlePhotoString);
+        reportee_ID_Photo = base64Decode(reportee_ID_Photo_String);
       });
     }
   }
@@ -142,8 +142,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   }
 
   Future<void> saveImages() async {
-    if (singlePhoto != null) {
-      _prefs.setString('p2_singlePhoto', base64Encode(singlePhoto!));
+    if (reportee_ID_Photo != null) {
+      _prefs.setString(
+          'p2_reportee_ID_Photo', base64Encode(reportee_ID_Photo!));
     }
     if (singlePhoto_face != null) {
       _prefs.setString('p2_singlePhoto_face', base64Encode(singlePhoto_face!));
@@ -156,7 +157,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     if (pickedFile != null) {
       final imageBytes = await pickedFile.readAsBytes();
       setState(() {
-        singlePhoto = imageBytes;
+        reportee_ID_Photo = imageBytes;
       });
       await saveImages();
     }
@@ -452,7 +453,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             // SECTION: Relationship to Missing Person
             _verticalPadding,
             const Text(
-              "Your relationship to Missing Person",
+              "Your relationship to Missing Person*",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -480,7 +481,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Relationship to Missing Person',
+                      labelText: 'Relationship to Missing Person*',
                     ),
                   ),
                 ),
@@ -557,7 +558,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               width: MediaQuery.of(context).size.width - 50,
               child: DropdownButtonFormField<String>(
                 // text to display when no value is selected
-                hint: const Text("Select Civil Status*"),
+                hint: const Text("Select Civil Status"),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
@@ -617,7 +618,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Home Phone',
+                      labelText: 'Home Phone*',
                     ),
                   ),
                 ),
@@ -635,7 +636,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Mobile Phone',
+                      labelText: 'Mobile Phone*',
                     ),
                   ),
                 ),
@@ -664,7 +665,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             _verticalPadding,
             // SECTION: Address
             const Text(
-              "Address",
+              "Address*",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -778,7 +779,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'House Number/Street',
+                      labelText: 'House Number/Street*',
                     ),
                   ),
                 ),
@@ -1006,7 +1007,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   child: DropdownButtonFormField(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      labelText: 'Highest Educational Attainment*',
+                      labelText: 'Highest Educational Attainment',
                     ),
                     items:
                         // const [
@@ -1090,7 +1091,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             _verticalPadding,
             // SECTION: Proof of Identity
             const Text(
-              "Proof of Identity: Upload ID",
+              "Proof of Identity: Upload ID*",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -1101,11 +1102,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (singlePhoto != null)
+                if (reportee_ID_Photo != null)
                   Center(
                       child: SizedBox(
                           width: MediaQuery.of(context).size.width * .9,
-                          child: Image.memory(singlePhoto!))), // show image
+                          child:
+                              Image.memory(reportee_ID_Photo!))), // show image
                 ElevatedButton(
                     onPressed: () {
                       getImages();
@@ -1116,7 +1118,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             _verticalPadding,
             // SECTION: Photograph of Reportee
             const Text(
-              "Photograph of Reportee",
+              "Photograph of Reportee*",
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
