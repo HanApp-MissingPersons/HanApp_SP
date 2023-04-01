@@ -449,10 +449,6 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
                   print(prefs.getKeys());
-                  print(prefs.getString('p5_lastSeenDate'));
-                  print(prefs.getString('p5_lastSeenTime'));
-                  print(prefs.getString('p5_lastSeenLoc'));
-                  print(prefs.getString('p5_incidentDetails'));
                 },
                 child: const Text('Print Shared Preferences'),
               ),

@@ -350,11 +350,33 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                         ),
                                         TextButton(
                                           child: const Text('Submit'),
-                                          onPressed: () {
+                                          onPressed: () async {
                                             checkReportValidity()
                                                 ? submitReport()
-                                                : print(
-                                                    '[report fail] Report is not valid');
+                                                : await showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text(
+                                                            'Incomplete form'),
+                                                        content: Text(
+                                                            formErrorMessage()),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            child: const Text(
+                                                                'Close'),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          ),
+                                                        ],
+                                                      );
+                                                    });
+                                            print(
+                                                '[report fail] Report is not valid');
                                             Navigator.of(context).pop();
                                           },
                                         )
@@ -392,41 +414,81 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     ]);
   }
 
+  List<String> dialogMessage = ['none'];
   checkReportValidity() {
     List<String> keysList = prefs.getKeys().toList();
     bool returnval = true;
     print('[KEYSLIST] $keysList');
     // p2 required values
-    if (!(keysList.contains('p2_citizenship') ||
-        keysList.contains('p2_civil_status') ||
-        keysList.contains('p2_region') ||
-        keysList.contains('p2_province') ||
-        keysList.contains('p2_townCity') ||
-        keysList.contains('p2_barangay') ||
-        keysList.contains('p2_highestEduc') ||
-        keysList.contains('p2_singlePhoto') ||
+    if (!(keysList.contains('p2_citizenship') &&
+        keysList.contains('p2_civil_status') &&
+        keysList.contains('p2_region') &&
+        keysList.contains('p2_province') &&
+        keysList.contains('p2_townCity') &&
+        keysList.contains('p2_barangay') &&
+        keysList.contains('p2_highestEduc') &&
+        keysList.contains('p2_singlePhoto') &&
         keysList.contains('p2_singlePhoto_face'))) {
       print('[p2 report not valid] p2 values are not complete');
+      dialogMessage.add('p2');
       returnval = false;
+    } else {
+      if (dialogMessage.contains('p2')) {
+        dialogMessage.remove('p2');
+      }
     }
     // p3 required values
-    if (!(keysList.contains('p3_mp_lastName') ||
-        keysList.contains('p3_mp_firstName') ||
-        keysList.contains('p3_mp_civilStatus') ||
-        keysList.contains('p3_mp_sex') ||
-        keysList.contains('p3_mp_birthDate') ||
-        keysList.contains('p3_mp_age') ||
+    if (!(keysList.contains('p3_mp_lastName') &&
+        keysList.contains('p3_mp_firstName') &&
+        keysList.contains('p3_mp_civilStatus') &&
+        keysList.contains('p3_mp_sex') &&
+        keysList.contains('p3_mp_birthDate') &&
+        keysList.contains('p3_mp_age') &&
         (keysList.contains('p3_mp_contact_homePhone') ||
-            keysList.contains('p3_mp_contact_mobilePhone')) ||
-        keysList.contains('p3_mp_address_region') ||
-        keysList.contains('p3_mp_address_province') ||
-        keysList.contains('p3_mp_address_city') ||
-        keysList.contains('p3_mp_address_barangay') ||
+            keysList.contains('p3_mp_contact_mobilePhone')) &&
+        keysList.contains('p3_mp_address_region') &&
+        keysList.contains('p3_mp_address_province') &&
+        keysList.contains('p3_mp_address_city') &&
+        keysList.contains('p3_mp_address_barangay') &&
         keysList.contains('p3_mp_education'))) {
       print('[p3 report not valid] p3 values are not complete');
+      dialogMessage.add('p3');
       returnval = false;
+    } else {
+      if (dialogMessage.contains('p3')) {
+        dialogMessage.remove('p3');
+      }
+    }
+    // p5 required values
+    if (!(keysList.contains('p5_reportDate') &&
+        keysList.contains('p5_lastSeenDate') &&
+        keysList.contains('p5_lastSeenTime') &&
+        keysList.contains('p5_locSnapshot') &&
+        keysList.contains('p5_lastSeenLoc') &&
+        keysList.contains('p5_incidentDetails'))) {
+      print('[p5 report not valid] p5 values are not complete');
+      dialogMessage.add('p5');
+      returnval = false;
+    } else {
+      if (dialogMessage.contains('p5')) {
+        dialogMessage.remove('p5');
+      }
     }
     return returnval;
+  }
+
+  formErrorMessage() {
+    String returnVal = 'Incomplete fields on:';
+    if (dialogMessage.contains('p2')) {
+      returnVal = '$returnVal\nPage 2: Reportee details';
+    }
+    if (dialogMessage.contains('p3')) {
+      returnVal = '$returnVal\nPage 3: Missing person details';
+    }
+    if (dialogMessage.contains('p5')) {
+      returnVal = '$returnVal\nPage 5: Incident details';
+    }
+    return returnVal;
   }
 
   submitReport() {
