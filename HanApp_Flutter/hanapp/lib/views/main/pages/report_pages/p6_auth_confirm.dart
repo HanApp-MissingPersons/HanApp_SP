@@ -1,6 +1,8 @@
 /* IMPORTS */
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +30,13 @@ class Page6AuthConfirm extends StatefulWidget {
 }
 
 class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
+  // Firebase Realtime Database initialize
+  FirebaseDatabase database = FirebaseDatabase.instance;
+  DatabaseReference mainUsersRef = FirebaseDatabase.instance.ref("Main Users");
+  DatabaseReference reportsRef = FirebaseDatabase.instance.ref("Reports");
+  late String? reportCount = '';
+  final user = FirebaseAuth.instance.currentUser;
+
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
@@ -79,6 +88,18 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   void initState() {
     super.initState();
     _loadSignature();
+    print('[bwahaha] ${mainUsersRef.child(user!.uid)}');
+    retrieveUserData();
+  }
+
+  // TODO: FINISH UP, THIS ONE RETRIECES USER DATA ON INIT
+  retrieveUserData() async {
+    await mainUsersRef.child(user!.uid).get().then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> userDict = snapshot.value as Map<dynamic, dynamic>;
+      print('${userDict['firstName']} ${userDict['lastName']}');
+      reportCount = 'BRO';
+    });
+    print('[REPORT COUNT] report count: $reportCount');
   }
 
   @override
