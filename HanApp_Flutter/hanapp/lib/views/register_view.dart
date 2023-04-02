@@ -548,6 +548,7 @@ class _RegisterViewState extends State<RegisterView> {
                                             'phoneNumber': phoneNumber,
                                             'birthDate': birthDate,
                                             'sex': _selectedSex,
+                                            'reportCount': '0'
                                           });
 
                                           if (kDebugMode) {

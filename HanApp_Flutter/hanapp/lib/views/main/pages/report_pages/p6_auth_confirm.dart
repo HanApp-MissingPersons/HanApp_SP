@@ -36,6 +36,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   DatabaseReference reportsRef = FirebaseDatabase.instance.ref("Reports");
   late String? reportCount = '';
   final user = FirebaseAuth.instance.currentUser;
+  Map<String, String> prefsDict = {};
 
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
@@ -57,7 +58,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
   // save user signature to shared preferences
   Future<void> _saveSignature() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     if (signaturePhoto != null) {
       String signaturePhotoString = base64Encode(signaturePhoto!);
       prefs.setString('p6_reporteeSignature', signaturePhotoString);
@@ -89,17 +89,33 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     super.initState();
     _loadSignature();
     print('[bwahaha] ${mainUsersRef.child(user!.uid)}');
+    retrievePrefsData();
     retrieveUserData();
   }
 
-  // TODO: FINISH UP, THIS ONE RETRIECES USER DATA ON INIT
+  // todo: FINISH UP, THIS ONE RETRIEVE USER DATA ON INIT
   retrieveUserData() async {
+    prefs = await SharedPreferences.getInstance();
     await mainUsersRef.child(user!.uid).get().then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> userDict = snapshot.value as Map<dynamic, dynamic>;
       print('${userDict['firstName']} ${userDict['lastName']}');
-      reportCount = 'BRO';
+      reportCount = userDict['reportCount'];
     });
     print('[REPORT COUNT] report count: $reportCount');
+  }
+
+  retrievePrefsData() async {
+    prefs = await SharedPreferences.getInstance();
+    List<String> keyList = prefs.getKeys().toList();
+    print('[keulist in retrieve] $keyList');
+
+    await Future.forEach(keyList, (key) async {
+      String? value = prefs.getString(key);
+      if (value != null) {
+        prefsDict[key] = value;
+      }
+    });
+    print(prefsDict);
   }
 
   @override
@@ -438,6 +454,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     List<String> keysList = prefs.getKeys().toList();
     bool returnval = true;
     print('[KEYSLIST] $keysList');
+    print('[PREFSDICT] $prefsDict');
     // p2 required values
     if (!(keysList.contains('p2_citizenship') &&
         keysList.contains('p2_civil_status') &&
