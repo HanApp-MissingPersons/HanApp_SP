@@ -113,7 +113,16 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       'p2_singlePhoto_face',
       'p4_mp_recent_photo',
       'p5_locSnapshot',
-      'p6_reporteeSignature'
+      'p6_reporteeSignature',
+      // optionals, if null, don't add to imageList
+      // 'p4_mp_dental_record_photo'
+      (prefs.getString('p4_mp_dental_record_photo') != null)
+          ? 'p4_mp_dental_record_photo'
+          : '',
+      // p4_mp_finger_print_record_photo
+      (prefs.getString('p4_mp_finger_print_record_photo') != null)
+          ? 'p4_mp_finger_print_record_photo'
+          : '',
     ];
     print('[keulist in retrieve] $keyList');
 
@@ -295,7 +304,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             ui.Image image =
                                 await signaturePadKey.currentState!.toImage();
                             await _getSignature(image);
-                            print(signaturePhoto);
 
                             // pop-up showing preview of signature
                             // ignore: use_build_context_synchronously
@@ -521,6 +529,35 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         dialogMessage.remove('p3');
       }
     }
+    // p4 required values (excluding photos); all required
+    if (!(keysList.contains('p4_mp_hair_color_natural') &&
+        keysList.contains('p4_mp_eye_color_natural') &&
+        keysList.contains('p4_mp_scars') &&
+        keysList.contains('p4_mp_marks') &&
+        keysList.contains('p4_mp_tattoos') &&
+        keysList.contains('p4_mp_hair_color') &&
+        keysList.contains('p4_mp_eye_color') &&
+        keysList.contains('p4_mp_prosthetics') &&
+        keysList.contains('p4_mp_birth_defects') &&
+        keysList.contains('p4_mp_last_clothing') &&
+        keysList.contains('p4_mp_height_feet') &&
+        keysList.contains('p4_mp_height_inches') &&
+        keysList.contains('p4_mp_weight') &&
+        keysList.contains('p4_mp_blood_type') &&
+        keysList.contains('p4_mp_medications') &&
+        // in socmed, other platform is not required
+        keysList.contains('p4_mp_socmed_facebook_username') &&
+        keysList.contains('p4_mp_socmed_twitter_username') &&
+        keysList.contains('p4_mp_socmed_instagram_username'))) {
+      print('[p4 report not valid] p4 values are not complete');
+      dialogMessage.add('p4');
+      returnval = false;
+    } else {
+      if (dialogMessage.contains('p4')) {
+        dialogMessage.remove('p4');
+      }
+    }
+
     // p5 required values
     if (!(keysList.contains('p5_reportDate') &&
         keysList.contains('p5_lastSeenDate') &&
@@ -546,6 +583,9 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     }
     if (dialogMessage.contains('p3')) {
       returnVal = '$returnVal\nPage 3: Missing person details';
+    }
+    if (dialogMessage.contains('p4')) {
+      returnVal = '$returnVal\nPage 4: Missing person descriptions';
     }
     if (dialogMessage.contains('p5')) {
       returnVal = '$returnVal\nPage 5: Incident details';
