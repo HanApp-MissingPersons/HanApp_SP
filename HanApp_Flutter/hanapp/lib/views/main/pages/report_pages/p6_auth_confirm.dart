@@ -456,46 +456,46 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     print('[KEYSLIST] $keysList');
     print('[PREFSDICT] $prefsDict');
     // p2 required values
-    // if (!(keysList.contains('p2_citizenship') &&
-    //     keysList.contains('p2_civil_status') &&
-    //     keysList.contains('p2_region') &&
-    //     keysList.contains('p2_province') &&
-    //     keysList.contains('p2_townCity') &&
-    //     keysList.contains('p2_barangay') &&
-    //     keysList.contains('p2_reportee_ID_Photo') &&
-    //     keysList.contains('p2_relationshipToMP') &&
-    //     keysList.contains('p2_singlePhoto_face'))) {
-    //   print('[p2 report not valid] p2 values are not complete');
-    //   dialogMessage.add('p2');
-    //   returnval = false;
-    // } else {
-    //   if (dialogMessage.contains('p2')) {
-    //     dialogMessage.remove('p2');
-    //   }
-    // }
+    if (!(keysList.contains('p2_citizenship') &&
+        keysList.contains('p2_civil_status') &&
+        keysList.contains('p2_region') &&
+        keysList.contains('p2_province') &&
+        keysList.contains('p2_townCity') &&
+        keysList.contains('p2_barangay') &&
+        keysList.contains('p2_reportee_ID_Photo') &&
+        keysList.contains('p2_relationshipToMP') &&
+        keysList.contains('p2_singlePhoto_face'))) {
+      print('[p2 report not valid] p2 values are not complete');
+      dialogMessage.add('p2');
+      returnval = false;
+    } else {
+      if (dialogMessage.contains('p2')) {
+        dialogMessage.remove('p2');
+      }
+    }
     // p3 required values
-    // if (!(keysList.contains('p3_mp_lastName') &&
-    //     keysList.contains('p3_mp_firstName') &&
-    //     keysList.contains('p3_mp_civilStatus') &&
-    //     keysList.contains('p3_mp_sex') &&
-    //     keysList.contains('p3_mp_birthDate') &&
-    //     keysList.contains('p3_mp_age') &&
-    //     keysList.contains('p3_mp_nationalityEthnicity') &&
-    //     keysList.contains('p3_mp_citizenship') &&
-    //     (keysList.contains('p3_mp_contact_homePhone') ||
-    //         keysList.contains('p3_mp_contact_mobilePhone')) &&
-    //     keysList.contains('p3_mp_address_region') &&
-    //     keysList.contains('p3_mp_address_province') &&
-    //     keysList.contains('p3_mp_address_city') &&
-    //     keysList.contains('p3_mp_address_barangay'))) {
-    //   print('[p3 report not valid] p3 values are not complete');
-    //   dialogMessage.add('p3');
-    //   returnval = false;
-    // } else {
-    //   if (dialogMessage.contains('p3')) {
-    //     dialogMessage.remove('p3');
-    //   }
-    // }
+    if (!(keysList.contains('p3_mp_lastName') &&
+        keysList.contains('p3_mp_firstName') &&
+        keysList.contains('p3_mp_civilStatus') &&
+        keysList.contains('p3_mp_sex') &&
+        keysList.contains('p3_mp_birthDate') &&
+        keysList.contains('p3_mp_age') &&
+        keysList.contains('p3_mp_nationalityEthnicity') &&
+        keysList.contains('p3_mp_citizenship') &&
+        (keysList.contains('p3_mp_contact_homePhone') ||
+            keysList.contains('p3_mp_contact_mobilePhone')) &&
+        keysList.contains('p3_mp_address_region') &&
+        keysList.contains('p3_mp_address_province') &&
+        keysList.contains('p3_mp_address_city') &&
+        keysList.contains('p3_mp_address_barangay'))) {
+      print('[p3 report not valid] p3 values are not complete');
+      dialogMessage.add('p3');
+      returnval = false;
+    } else {
+      if (dialogMessage.contains('p3')) {
+        dialogMessage.remove('p3');
+      }
+    }
     // p5 required values
     if (!(keysList.contains('p5_reportDate') &&
         keysList.contains('p5_lastSeenDate') &&
