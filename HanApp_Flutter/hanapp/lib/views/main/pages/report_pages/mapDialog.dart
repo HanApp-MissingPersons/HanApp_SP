@@ -17,6 +17,7 @@ class MapDialog extends StatefulWidget {
 class _MapDialogState extends State<MapDialog> {
   late GoogleMapController mapController;
   late LatLng _center = LatLng(999999999, 999999999);
+  bool isMarkerPresent = false;
 
   Set<Marker> _markers = {};
   Uint8List? _mapSnapshot;
@@ -50,6 +51,7 @@ class _MapDialogState extends State<MapDialog> {
       _markers = Set<Marker>.of([marker]);
     });
     print('marker location: ${marker.position}');
+    isMarkerPresent = true;
   }
 
   void _onMapTap(LatLng position) async {
@@ -145,9 +147,14 @@ class _MapDialogState extends State<MapDialog> {
           child: Text('Cancel'),
         ),
         TextButton(
-          onPressed: () {
-            _onConfirmPressed(context);
-          },
+          onPressed: isMarkerPresent ? () => _onConfirmPressed(context) : null,
+          // {
+          //   if (isMarkerPresent) {
+          //     _onConfirmPressed(context);
+          //   } else {
+          //     null;
+          //   }
+          // },
           child: Text('Confirm'),
         ),
       ],
