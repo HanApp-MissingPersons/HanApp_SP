@@ -196,6 +196,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
         _mp_civilStatus.text = prefs.getString('p3_mp_civilStatus') ?? '';
         _mp_birthDate.text = prefs.getString('p3_mp_birthDate') ?? '';
         ageFromMPBirthDate = prefs.getString('p3_mp_age') ?? '';
+        _mp_age.text = prefs.getString('p3_mp_age') ?? '';
         // for contact info
         _mp_contact_homePhone.text =
             prefs.getString('p3_mp_contact_homePhone') ?? '';

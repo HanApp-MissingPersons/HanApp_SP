@@ -36,7 +36,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   DatabaseReference reportsRef = FirebaseDatabase.instance.ref("Reports");
   late String? reportCount = '';
   final user = FirebaseAuth.instance.currentUser;
-  Map<String, String> prefsDict = {};
+  Map<String, dynamic> prefsDict = {};
 
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
@@ -110,9 +110,16 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     print('[keulist in retrieve] $keyList');
 
     await Future.forEach(keyList, (key) async {
-      String? value = prefs.getString(key);
-      if (value != null) {
-        prefsDict[key] = value;
+      try {
+        String? value = prefs.getString(key);
+        if (value != null) {
+          prefsDict[key] = value;
+        }
+      } catch (e) {
+        bool? value = prefs.getBool(key);
+        if (value != null) {
+          prefsDict[key] = value;
+        }
       }
     });
     print(prefsDict);
@@ -274,6 +281,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             print(signaturePhoto);
 
                             // pop-up showing preview of signature
+                            // ignore: use_build_context_synchronously
                             await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
