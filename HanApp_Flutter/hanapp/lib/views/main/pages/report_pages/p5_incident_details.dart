@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
+import 'dart:io';
 
 import 'mapDialog.dart';
 
@@ -104,6 +105,29 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   // time
   DateTime? _selectedTime;
 
+  Future<void> _selectTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedTime =
+            DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
+        lastSeenTime = DateFormat('hh:mm a').format(_selectedTime!);
+      });
+    }
+  }
+
+  /* SHARED PREF EMPTY CHECKER AND SAVER FUNCTION*/
+  Future<void> _writeToPrefs(String key, String value) async {
+    if (value != '') {
+      prefs.setString(key, value);
+    } else {
+      prefs.remove(key);
+    }
+  }
+
   Future<void> getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -185,7 +209,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   enabled: false,
                   decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(),
                     labelText: reportDate,
                   ),
                 ),
@@ -219,10 +243,9 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                       keyboardType: TextInputType.datetime,
                       controller: TextEditingController(text: lastSeenDate),
                       decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Last Seen Date*',
-                        hintText: 'Tap to select date'
-                      ),
+                          border: OutlineInputBorder(),
+                          labelText: 'Last Seen Date*',
+                          hintText: 'Tap to select date'),
                       // on tap, show date picker:
                       onTap: () async {
                         var result = await showCalendarDatePicker2Dialog(
@@ -239,11 +262,13 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                           var date = result[0];
                           var dateFormatted =
                               DateFormat('yyyy-MM-dd').format(date!);
-                          var dateReformatted = reformatDate(dateFormatted, date);
+                          var dateReformatted =
+                              reformatDate(dateFormatted, date);
                           // set state
                           setState(() {
                             lastSeenDate = dateReformatted[0];
-                            prefs.setString('p5_lastSeenDate', lastSeenDate!);
+                            // prefs.setString('p5_lastSeenDate', lastSeenDate!);
+                            _writeToPrefs('p5_lastSeenDate', lastSeenDate!);
                           });
                         }
                       },
@@ -292,7 +317,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                             picked.hour, picked.minute);
                         lastSeenTime =
                             DateFormat('hh:mm a').format(_selectedTime!);
-                        prefs.setString('p5_lastSeenTime', lastSeenTime!);
+                        // prefs.setString('p5_lastSeenTime', lastSeenTime!);
+                        _writeToPrefs('p5_lastSeenTime', lastSeenTime!);
                       });
                     }
                   },
@@ -322,18 +348,16 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               _verticalPadding,
               Center(
                 child: Container(
-                  alignment: Alignment.center,
-                    margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * .05),
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * .05),
                     width: MediaQuery.of(context).size.width * .8,
                     child: locSnapshot == null
-                        ? const Text('No location selected') :
-                    locSnapshot.runtimeType.toString() != 'Uint8List?'
-                        ? Image.memory(locSnapshot!)
-                        : Image.memory(base64Decode(locSnapshot!.toString()
-                    )
-                    )
-                ),
-
+                        ? const Text('No location selected')
+                        : locSnapshot.runtimeType.toString() != 'Uint8List?'
+                            ? Image.memory(locSnapshot!)
+                            : Image.memory(
+                                base64Decode(locSnapshot!.toString()))),
               ),
               _verticalPadding,
               Container(
@@ -342,7 +366,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: ElevatedButton(
                   onPressed: () async {
                     Map<String, dynamic>? result =
-                    await showDialog<Map<String, dynamic>?>(
+                        await showDialog<Map<String, dynamic>?>(
                       context: context,
                       builder: (BuildContext context) {
                         return const MapDialog();
@@ -361,9 +385,9 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                       setState(() {
                         locSnapshot = image;
                         lastSeenLoc =
-                        'Lat: ${location.latitude}, Long: ${location.longitude}';
-                        prefs.setString('p5_lastSeenLoc', lastSeenLoc!);
-                        print('[p5 lastSeenLoc]: $lastSeenLoc');
+                            'Lat: ${location.latitude}, Long: ${location.longitude}';
+                        // prefs.setString('p5_lastSeenLoc', lastSeenLoc!);
+                        _writeToPrefs('p5_lastSeenLoc', lastSeenLoc!);
                       });
                     }
                   },
@@ -401,13 +425,14 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   controller: TextEditingController(text: incidentDetails),
                   maxLines: 5,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Incident Details*',
                   ),
                   onChanged: (value) {
                     incidentDetails = value;
-                    prefs.setString('p5_incidentDetails', incidentDetails!);
+                    // prefs.setString('p5_incidentDetails', incidentDetails!);
+                    _writeToPrefs('p5_incidentDetails', incidentDetails!);
                   },
                 ),
               ),
@@ -418,6 +443,14 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   "End of Absent/Missing Person Details Form. Swipe left to move to next page",
                   style: TextStyle(fontSize: 12, color: Colors.black54),
                 ),
+              ),
+              // DEBUG TOOL: SHARED PREF PRINTER
+              TextButton(
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  print(prefs.getKeys());
+                },
+                child: const Text('Print Shared Preferences'),
               ),
             ],
           ),

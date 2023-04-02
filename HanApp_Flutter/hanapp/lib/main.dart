@@ -6,7 +6,6 @@ import 'package:hanapp/views/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hanapp/views/main/navigation_view_main.dart';
-import 'package:hanapp/assets/colors/palette.dart';
 
 void main() async {
   // initialize firebase

@@ -65,9 +65,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   bool? mp_dental_available = false;
   bool? mp_fingerprints_available = false;
 
-  // list for blood types for dropdown
-  List<String> bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-
   // all controlers for text fields
   late final TextEditingController _mp_scars = TextEditingController();
   late final TextEditingController _mp_marks = TextEditingController();
@@ -90,8 +87,32 @@ class _Page4MPDescState extends State<Page4MPDesc> {
       TextEditingController();
   late final TextEditingController _mp_socmed_other_username =
       TextEditingController();
-  bool _mp_hair_color_natural = false;
-  bool _mp_eye_color_natural = false;
+  // bool _mp_hair_color_natural = false;
+  // bool _mp_eye_color_natural = false;
+
+  // dispose all controllers
+  @override
+  void dispose() {
+    _mp_scars.dispose();
+    _mp_marks.dispose();
+    _mp_tattoos.dispose();
+    _mp_hair_color.dispose();
+    _mp_eye_color.dispose();
+    _mp_prosthetics.dispose();
+    _mp_birth_defects.dispose();
+    _mp_last_clothing.dispose();
+    _mp_height_feet.dispose();
+    _mp_height_inches.dispose();
+    _mp_weight.dispose();
+    _mp_blood_type.dispose();
+    _mp_medications.dispose();
+    _mp_facebook.dispose();
+    _mp_twitter.dispose();
+    _mp_instagram.dispose();
+    _mp_socmed_other_platform.dispose();
+    _mp_socmed_other_username.dispose();
+    super.dispose();
+  }
 
   /* INITIALIZE VARIABLES FOR SHARED PREFERENCE */
   // get text and boolean values from shared preferences
@@ -182,7 +203,25 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     }
   }
 
-  /* initState for picking images */
+  /* SHARED PREF EMPTY CHECKER AND SAVER FUNCTION*/
+  Future<void> _writeToPrefs(String key, String value) async {
+    if (value != '') {
+      _prefs.setString(key, value);
+    } else {
+      _prefs.remove(key);
+    }
+  }
+
+  Future<void> getBoolChoices() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      mp_hair_color_natural =
+          _prefs.getBool('p4_mp_hair_color_natural') ?? false;
+      mp_eye_color_natural = _prefs.getBool('p4_mp_eye_color_natural') ?? false;
+    });
+  }
+
+  /* initState for shared pref text and bool */
   @override
   void initState() {
     super.initState();
@@ -199,10 +238,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         _mp_hair_color.text = _prefs.getString('p4_mp_hair_color') ?? '';
         _mp_eye_color.text = _prefs.getString('p4_mp_eye_color') ?? '';
         // boolean for hair and eye color
-        mp_hair_color_natural =
-            _prefs.getBool('p4_mp_hair_color_unknown') ?? false;
-        mp_eye_color_natural =
-            _prefs.getBool('p4_mp_eye_color_unknown') ?? false;
+        // mp_hair_color_natural = _prefs.getBool('p4_mp_hair_natural') ?? false;
+        // mp_eye_color_natural = _prefs.getBool('p4_mp_eye_natural') ?? false;
         // prosthetics, birth defects, last clothing
         _mp_prosthetics.text = _prefs.getString('p4_mp_prosthetics') ?? '';
         _mp_birth_defects.text = _prefs.getString('p4_mp_birth_defects') ?? '';
@@ -226,721 +263,778 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             _prefs.getString('p4_mp_socmed_other_username') ?? '';
       });
     });
+    getBoolChoices();
   }
 
   /* BUILD WIDGET */
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Positioned(
-          top: 100,
-          left: 20,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Page 4: Absent/Missing Person Description',
-                style: optionStyle,
-              ),
-            ),
-            _verticalPadding,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.info),
-                SizedBox(width: 5),
-                Text(
-                  '''Fields with (*) are required.''',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
-                ),
-              ],
-            ),
-            // SCARS, MARKS, AND TATTOOS SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Scars, Marks, and Tattoos',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // scars text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_scars,
-                decoration: const InputDecoration(
-                  labelText: 'Scars',
-                  hintText: 'Scars',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_scars', value);
-                  });
-                },
-              ),
-            ),
-            _verticalPadding,
-            // marks text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_marks,
-                decoration: const InputDecoration(
-                  labelText: 'Marks',
-                  hintText: 'Marks',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_marks', value);
-                  });
-                },
-              ),
-            ),
-            _verticalPadding,
-            // tattoos text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_tattoos,
-                decoration: const InputDecoration(
-                  labelText: 'Tattoos',
-                  hintText: 'Tattoos',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_tattoos', value);
-                  });
-                },
-              ),
-            ),
-            _verticalPadding,
-            // HAIR COLOR SECTION
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Hair Color',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // hair color text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_hair_color,
-                decoration: const InputDecoration(
-                  labelText: 'Hair Color',
-                  hintText: 'Hair Color',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_hair_color', value);
-                  });
-                },
-              ),
-            ),
-            // checkbox to ask if the person's hair is natural
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: _mp_hair_color_natural,
-                    onChanged: (value) {
-                      setState(() {
-                        _mp_hair_color_natural = value!;
-                        _prefs.setBool('p4_mp_hair_natural', value);
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: const Text(
-                        'Is the hair color natural? (not dyed/ wearing wig)'),
-                  ),
-                ],
-              ),
-            ),
-            _verticalPadding,
-            // EYE COLOR SECTION
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Eye Color',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // eye color text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_eye_color,
-                decoration: const InputDecoration(
-                  labelText: 'Eye Color',
-                  hintText: 'Eye Color',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_eye_color', value);
-                  });
-                },
-              ),
-            ),
-            // checkbox to ask if the person's eye color is natural
-            SizedBox(
-              // width: MediaQuery.of(context).size.width - 40,
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: _mp_eye_color_natural,
-                    onChanged: (value) {
-                      setState(() {
-                        _mp_eye_color_natural = value!;
-                        _prefs.setBool('p4_mp_eye_natural', value);
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.6,
-                    child: const Text(
-                        'Is the eye color natural (not wearing contacts)?'),
-                  ),
-                ],
-              ),
-            ),
-            _verticalPadding,
-            // PROSTHETICS SECTION
-            // text for the prosthetics section
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Prosthetics',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            // ask if the person has any prosthetics
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_prosthetics,
-                decoration: const InputDecoration(
-                  labelText: 'Prosthetics (if none/unknown type "NA")',
-                  hintText: 'Prosthetics',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_prosthetics', value);
-                  });
-                },
-              ),
-            ),
-            // BIRTH DEFECTS SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Birth Defects',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // birth defects text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_birth_defects,
-                decoration: const InputDecoration(
-                  labelText: 'Birth Defects (if none/unknown type "NA")',
-                  hintText: 'Birth Defects',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_birth_defects', value);
-                  });
-                },
-              ),
-            ),
-            // LAST KNOWN CLOTHING AND ACCESSORIES SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Last Known Clothing and Accessories',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // last known clothing and accessories text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_last_clothing,
-                decoration: const InputDecoration(
-                  labelText: 'Last Known Clothing and Accessories',
-                  hintText: 'Last Known Clothing and Accessories',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_last_clothing', value);
-                  });
-                },
-              ),
-            ),
-            // HEIGHT SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Height',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            // HEIGHT (in inches and feet, two separate text field rows)
-            _verticalPadding,
-            // height in inches text field, saves to shared preference after user types
-            Row(
-              // height in inches text field, saves to shared preference after user types
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: TextField(
-                    controller: _mp_height_inches,
-                    decoration: const InputDecoration(
-                      labelText: 'Height (feet)',
-                      hintText: 'Height (feet)',
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _prefs.setString('p4_mp_height_feet', value);
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: TextField(
-                    controller: _mp_height_feet,
-                    decoration: const InputDecoration(
-                      labelText: 'Height (inches)',
-                      hintText: 'Height (inches)',
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _prefs.setString('p4_mp_height_inches', value);
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            // WEIGHT SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Weight',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // weight text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_weight,
-                decoration: const InputDecoration(
-                  labelText: 'Weight (kilograms)',
-                  hintText: 'Weight (kilograms)',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_weight', value);
-                  });
-                },
-              ),
-            ),
-            // BLOOD TYPE SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Blood Type',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // bloodtype Drop down menu, saves to shared preference after user types
-            SizedBox(
-                width: MediaQuery.of(context).size.width - 40,
-                child: DropdownButtonFormField<String>(
-                  // text to display when no value is selected
-                  hint: const Text('Select Blood Type'),
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
-                  value: mp_blood_type,
-                  icon: const Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.black),
-                  onChanged: (String? bloodtype_value) {
-                    setState(() {
-                      mp_blood_type = bloodtype_value;
-                      _prefs.setString('p4_mp_blood_type', bloodtype_value!);
-                    });
-                  },
-                  items: <String>[
-                    'A+',
-                    'A-',
-                    'B+',
-                    'B-',
-                    'AB+',
-                    'AB-',
-                    'O+',
-                    'O-',
-                    'Unknown',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                )),
-            // MEDICATIONS SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Medications',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // medications text field, saves to shared preference after user types
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_medications,
-                decoration: const InputDecoration(
-                  labelText: 'Medications (if none/unknown type "NA")',
-                  hintText: 'Medications',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_medications', value);
-                  });
-                },
-              ),
-            ),
-            // SOCIAL MEDIA ACCOUNTS SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Social Media Accounts',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            // text fields for facebook username
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_facebook,
-                decoration: const InputDecoration(
-                  labelText: 'Facebook Username',
-                  hintText: 'Facebook Username',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_socmed_facebook_username', value);
-                  });
-                },
-              ),
-            ),
-            _verticalPadding,
-            // text fields for twitter username
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_twitter,
-                decoration: const InputDecoration(
-                  labelText: 'Twitter Username',
-                  hintText: 'Twitter Username',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_socmed_twitter_username', value);
-                  });
-                },
-              ),
-            ),
-            _verticalPadding,
-            // text fields for instagram username
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: TextField(
-                controller: _mp_instagram,
-                decoration: const InputDecoration(
-                  labelText: 'Instagram Username',
-                  hintText: 'Instagram Username',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _prefs.setString('p4_mp_socmed_instagram_username', value);
-                  });
-                },
-              ),
-            ),
-            _verticalPadding,
-            // two text fields in a row for "other social media platform" and "username"
-            Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  child: TextField(
-                    controller: _mp_socmed_other_platform,
-                    decoration: const InputDecoration(
-                      labelText: 'Other Socmed Platform',
-                      hintText: 'Platform Name',
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _prefs.setString('p4_mp_socmed_other_platform', value);
-                      });
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: TextField(
-                    controller: _mp_socmed_other_username,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      hintText: 'Username',
-                      border: OutlineInputBorder(),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _prefs.setString('p4_mp_socmed_other_username', value);
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
+    return mp_eye_color_natural != null
+        ? Stack(children: [
+            Positioned(
+                top: 100,
+                left: 20,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Page 4: Absent/Missing Person Description',
+                          style: optionStyle,
+                        ),
+                      ),
+                      _verticalPadding,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.info),
+                          _verticalPadding,
+                          SizedBox(
+                            width: 300,
+                            child: Text(
+                              '''All fields for Absent/Missing Person Description are required, if unknown or unsure, write NA.''',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      // SCARS, MARKS, AND TATTOOS SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Scars, Marks, and Tattoos',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // scars text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_scars,
+                          decoration: const InputDecoration(
+                            labelText: 'Scars',
+                            hintText: 'Scars',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_scars', value);
+                              _writeToPrefs('p4_mp_scars', value);
+                            });
+                          },
+                        ),
+                      ),
+                      _verticalPadding,
+                      // marks text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_marks,
+                          decoration: const InputDecoration(
+                            labelText: 'Marks',
+                            hintText: 'Marks',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_marks', value);
+                              _writeToPrefs('p4_mp_marks', value);
+                            });
+                          },
+                        ),
+                      ),
+                      _verticalPadding,
+                      // tattoos text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_tattoos,
+                          decoration: const InputDecoration(
+                            labelText: 'Tattoos',
+                            hintText: 'Tattoos',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_tattoos', value);
+                              _writeToPrefs('p4_mp_tattoos', value);
+                            });
+                          },
+                        ),
+                      ),
+                      _verticalPadding,
+                      // HAIR COLOR SECTION
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Hair Color',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // hair color text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_hair_color,
+                          decoration: const InputDecoration(
+                            labelText: 'Hair Color',
+                            hintText: 'Hair Color',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_hair_color', value);
+                              _writeToPrefs('p4_mp_hair_color', value);
+                            });
+                          },
+                        ),
+                      ),
+                      // checkbox to ask if the person's hair is natural
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: mp_hair_color_natural,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  mp_hair_color_natural = value;
+                                  // if (value == false) {
+                                  //   _prefs.remove('p4_mp_hair_natural');
+                                  // }
+                                  // write to shared preferences
+                                });
+                                _prefs.setBool(
+                                    'p4_mp_hair_color_natural', value!);
+                                // print value from shared preferences
+                                // print(_prefs.getBool('p4_mp_hair_natural'));
+                                // if false, remove from shared preferences
+                              },
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              child: const Text(
+                                  'Is the hair color natural? (not dyed/ wearing wig)'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      _verticalPadding,
+                      // EYE COLOR SECTION
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Eye Color',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // eye color text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_eye_color,
+                          decoration: const InputDecoration(
+                            labelText: 'Eye Color',
+                            hintText: 'Eye Color',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_eye_color', value);
+                              _writeToPrefs('p4_mp_eye_color', value);
+                            });
+                          },
+                        ),
+                      ),
+                      // checkbox to ask if the person's eye color is natural
+                      SizedBox(
+                        // width: MediaQuery.of(context).size.width - 40,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: mp_eye_color_natural,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  mp_eye_color_natural = value;
+                                  // if (value == false) {
+                                  //   _prefs.remove('p4_mp_eye_natural');
+                                  // }
+                                });
+                                // write to shared preferences
+                                _prefs.setBool(
+                                    'p4_mp_eye_color_natural', value!);
+                                // print value from shared preferences
+                                // print(_prefs.getBool('p4_mp_eye_natural'));
+                              },
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              child: const Text(
+                                  'Is the eye color natural (not wearing contacts)?'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      _verticalPadding,
+                      // PROSTHETICS SECTION
+                      // text for the prosthetics section
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Prosthetics',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      // ask if the person has any prosthetics
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_prosthetics,
+                          decoration: const InputDecoration(
+                            labelText:
+                                'Prosthetics (if none/unknown type "NA")',
+                            hintText: 'Prosthetics',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_prosthetics', value);
+                              _writeToPrefs('p4_mp_prosthetics', value);
+                            });
+                          },
+                        ),
+                      ),
+                      // BIRTH DEFECTS SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Birth Defects',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // birth defects text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_birth_defects,
+                          decoration: const InputDecoration(
+                            labelText:
+                                'Birth Defects (if none/unknown type "NA")',
+                            hintText: 'Birth Defects',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_birth_defects', value);
+                              _writeToPrefs('p4_mp_birth_defects', value);
+                            });
+                          },
+                        ),
+                      ),
+                      // LAST KNOWN CLOTHING AND ACCESSORIES SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Last Known Clothing and Accessories',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // last known clothing and accessories text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_last_clothing,
+                          decoration: const InputDecoration(
+                            labelText: 'Last Known Clothing and Accessories',
+                            hintText: 'Last Known Clothing and Accessories',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_last_clothing', value);
+                              _writeToPrefs('p4_mp_last_clothing', value);
+                            });
+                          },
+                        ),
+                      ),
+                      // HEIGHT SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Height',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      // HEIGHT (in inches and feet, two separate text field rows)
+                      _verticalPadding,
+                      // height in inches text field, saves to shared preference after user types
+                      Row(
+                        // height in inches text field, saves to shared preference after user types
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: TextField(
+                              controller: _mp_height_inches,
+                              decoration: const InputDecoration(
+                                labelText: 'Height (feet)',
+                                hintText: 'Height (feet)',
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  // _prefs.setString('p4_mp_height_feet', value);
+                                  _writeToPrefs('p4_mp_height_feet', value);
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: TextField(
+                              controller: _mp_height_feet,
+                              decoration: const InputDecoration(
+                                labelText: 'Height (inches)',
+                                hintText: 'Height (inches)',
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  // _prefs.setString('p4_mp_height_inches', value);
+                                  _writeToPrefs('p4_mp_height_inches', value);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      // WEIGHT SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Weight',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // weight text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_weight,
+                          decoration: const InputDecoration(
+                            labelText: 'Weight (kilograms)',
+                            hintText: 'Weight (kilograms)',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_weight', value);
+                              _writeToPrefs('p4_mp_weight', value);
+                            });
+                          },
+                        ),
+                      ),
+                      // BLOOD TYPE SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Blood Type',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // bloodtype Drop down menu, saves to shared preference after user types
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width - 40,
+                          child: DropdownButtonFormField<String>(
+                            // text to display when no value is selected
+                            hint: const Text('Select Blood Type'),
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                            ),
+                            value: mp_blood_type,
+                            icon: const Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: const TextStyle(color: Colors.black),
+                            onChanged: (String? bloodtypeValue) {
+                              setState(() {
+                                mp_blood_type = bloodtypeValue;
+                                // _prefs.setString('p4_mp_blood_type', bloodtype_value!);
+                                _writeToPrefs(
+                                    'p4_mp_blood_type', bloodtypeValue!);
+                              });
+                            },
+                            items: <String>[
+                              'A+',
+                              'A-',
+                              'B+',
+                              'B-',
+                              'AB+',
+                              'AB-',
+                              'O+',
+                              'O-',
+                              'Unknown',
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          )),
+                      // MEDICATIONS SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Medications',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // medications text field, saves to shared preference after user types
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_medications,
+                          decoration: const InputDecoration(
+                            labelText:
+                                'Medications (if none/unknown type "NA")',
+                            hintText: 'Medications',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_medications', value);
+                              _writeToPrefs('p4_mp_medications', value);
+                            });
+                          },
+                        ),
+                      ),
+                      // SOCIAL MEDIA ACCOUNTS SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Social Media Accounts',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // text fields for facebook username
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_facebook,
+                          decoration: const InputDecoration(
+                            labelText: 'Facebook Username',
+                            hintText: 'Facebook Username',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_socmed_facebook_username', value);
+                              _writeToPrefs(
+                                  'p4_mp_socmed_facebook_username', value);
+                            });
+                          },
+                        ),
+                      ),
+                      _verticalPadding,
+                      // text fields for twitter username
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_twitter,
+                          decoration: const InputDecoration(
+                            labelText: 'Twitter Username',
+                            hintText: 'Twitter Username',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_socmed_twitter_username', value);
+                              _writeToPrefs(
+                                  'p4_mp_socmed_twitter_username', value);
+                            });
+                          },
+                        ),
+                      ),
+                      _verticalPadding,
+                      // text fields for instagram username
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: TextField(
+                          controller: _mp_instagram,
+                          decoration: const InputDecoration(
+                            labelText: 'Instagram Username',
+                            hintText: 'Instagram Username',
+                            border: OutlineInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_socmed_instagram_username', value);
+                              _writeToPrefs(
+                                  'p4_mp_socmed_instagram_username', value);
+                            });
+                          },
+                        ),
+                      ),
+                      _verticalPadding,
+                      // two text fields in a row for "other social media platform" and "username"
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            child: TextField(
+                              controller: _mp_socmed_other_platform,
+                              decoration: const InputDecoration(
+                                labelText: 'Other Socmed Platform',
+                                hintText: 'Platform Name',
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  // _prefs.setString('p4_mp_socmed_other_platform', value);
+                                  _writeToPrefs(
+                                      'p4_mp_socmed_other_platform', value);
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: TextField(
+                              controller: _mp_socmed_other_username,
+                              decoration: const InputDecoration(
+                                labelText: 'Username',
+                                hintText: 'Username',
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  // _prefs.setString('p4_mp_socmed_other_username', value);
+                                  _writeToPrefs(
+                                      'p4_mp_socmed_other_username', value);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
 
-            // RECENT PHOTO SECTION
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Most recent photo of the absent/missing person',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: ElevatedButton(
-                onPressed: () {
-                  _getImages('mp_recent_photo');
-                },
-                child: const Text('Upload'),
-              ),
-            ),
-            _verticalPadding,
-            // show recent photo in sizedbox
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              height: 200,
-              child: mp_recent_photo != null
-                  ? Image.memory(mp_recent_photo!)
-                  : const Text('No image selected.'),
-            ),
-            _verticalPadding,
-            // checkbox to ask if the person has dental and/or finger print records
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Does the person have dental and/or finger print records?',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
-            _verticalPadding,
-            Row(
-              children: [
-                const Text('Dental Records'),
-                Checkbox(
-                  value: mp_dental_available,
-                  onChanged: (value) {
-                    setState(() {
-                      mp_dental_available = value!;
-                    });
-                  },
-                ),
-                const Text('Finger Print Records'),
-                Checkbox(
-                  value: mp_fingerprints_available,
-                  onChanged: (value) {
-                    setState(() {
-                      mp_fingerprints_available = value!;
-                    });
-                  },
-                ),
-              ],
-            ),
-            // if mp_dental_records_available is true, show ask to upload dental record photo
-            if (mp_dental_available == true)
-              Column(
-                children: [
-                  _verticalPadding,
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: const Text(
-                      'Upload dental record photo',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _getImages('mp_dental_record_photo');
-                      },
-                      child: const Text('Upload'),
-                    ),
-                  ),
-                  _verticalPadding,
-                  // show dental record photo in sizedbox
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: mp_dental_record_photo != null
-                        ? Image.memory(mp_dental_record_photo!)
-                        : const Text('No image selected.'),
-                  ),
-                ],
-              ),
-            // if mp_finger_print_records_available is true, show ask to upload finger print record photo
-            if (mp_fingerprints_available == true)
-              Column(
-                children: [
-                  _verticalPadding,
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: const Text(
-                      'Upload finger print record photo',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54),
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _getImages('mp_finger_print_record_photo');
-                      },
-                      child: const Text('Upload'),
-                    ),
-                  ),
-                  _verticalPadding,
-                  // show finger print record photo in sizedbox
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    height: 200,
-                    child: mp_finger_print_record_photo != null
-                        ? Image.memory(mp_finger_print_record_photo!)
-                        : const Text('No image selected.'),
-                  ),
-                ],
-              ),
-            // END OF PAGE
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 50,
-              child: const Text(
-                "End of Absent/Missing Person Details Form. Swipe left to move to next page",
-                style: TextStyle(fontSize: 12, color: Colors.black54),
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                print(prefs.getKeys());
-                print(prefs.getString('p4_mp_scars'));
-                print(prefs.getString('p4_mp_marks'));
-                print(prefs.getString('p4_mp_blood_type'));
-                print(prefs.getString('p4_mp_socmed_facebook_username'));
-              },
-              child: const Text('Print Shared Preferences'),
-            ),
-          ]))
-    ]);
+                      // RECENT PHOTO SECTION
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Most recent photo of the absent/missing person',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _getImages('mp_recent_photo');
+                          },
+                          child: const Text('Upload'),
+                        ),
+                      ),
+                      _verticalPadding,
+                      // show recent photo in sizedbox
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        height: 200,
+                        child: mp_recent_photo != null
+                            ? Image.memory(mp_recent_photo!)
+                            : const Text('No image selected.'),
+                      ),
+                      _verticalPadding,
+                      // checkbox to ask if the person has dental and/or finger print records
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Does the person have dental and/or finger print records?',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black54),
+                        ),
+                      ),
+                      _verticalPadding,
+                      Row(
+                        children: [
+                          const Text('Dental Records'),
+                          Checkbox(
+                            value: mp_dental_available,
+                            onChanged: (value) {
+                              setState(() {
+                                mp_dental_available = value!;
+                              });
+                            },
+                          ),
+                          const Text('Finger Print Records'),
+                          Checkbox(
+                            value: mp_fingerprints_available,
+                            onChanged: (value) {
+                              setState(() {
+                                mp_fingerprints_available = value!;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      // if mp_dental_records_available is true, show ask to upload dental record photo
+                      if (mp_dental_available == true)
+                        Column(
+                          children: [
+                            _verticalPadding,
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: const Text(
+                                'Upload dental record photo',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _getImages('mp_dental_record_photo');
+                                },
+                                child: const Text('Upload'),
+                              ),
+                            ),
+                            _verticalPadding,
+                            // show dental record photo in sizedbox
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: mp_dental_record_photo != null
+                                  ? Image.memory(mp_dental_record_photo!)
+                                  : const Text('No image selected.'),
+                            ),
+                          ],
+                        ),
+                      // if mp_finger_print_records_available is true, show ask to upload finger print record photo
+                      if (mp_fingerprints_available == true)
+                        Column(
+                          children: [
+                            _verticalPadding,
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: const Text(
+                                'Upload finger print record photo',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black54),
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  _getImages('mp_finger_print_record_photo');
+                                },
+                                child: const Text('Upload'),
+                              ),
+                            ),
+                            _verticalPadding,
+                            // show finger print record photo in sizedbox
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              height: 200,
+                              child: mp_finger_print_record_photo != null
+                                  ? Image.memory(mp_finger_print_record_photo!)
+                                  : const Text('No image selected.'),
+                            ),
+                          ],
+                        ),
+                      // END OF PAGE
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: const Text(
+                          "End of Absent/Missing Person Details Form. Swipe left to move to next page",
+                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                        ),
+                      ),
+                      // DEBUG TOOL: SHARED PREF PRINTER
+                      TextButton(
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          // print(prefs.getKeys());
+                          // print(prefs.getString('p4_mp_scars'));
+                          // print(prefs.getString('p4_mp_marks'));
+                          // print(prefs.getString('p4_mp_blood_type'));
+                          // print(prefs.getString('p4_mp_socmed_facebook_username'));
+                          // print bools for hair and eye
+                          print(prefs.getBool('p4_mp_hair_color_natural'));
+                          print(prefs.getBool('p4_mp_eye_color_natural'));
+                        },
+                        child: const Text('Print Shared Preferences'),
+                      ),
+                    ]))
+          ])
+        : // Circular loading icon
+        const Center(
+            child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+          ));
   }
 }
