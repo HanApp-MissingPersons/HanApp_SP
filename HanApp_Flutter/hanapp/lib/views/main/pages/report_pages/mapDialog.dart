@@ -32,7 +32,7 @@ class _MapDialogState extends State<MapDialog> {
   }
 
   void _getCurrentLocation() async {
-    Location().getLocation();
+    await Location().getLocation();
 
     geo.Position position = await geo.Geolocator.getCurrentPosition(
         desiredAccuracy: geo.LocationAccuracy.high);
