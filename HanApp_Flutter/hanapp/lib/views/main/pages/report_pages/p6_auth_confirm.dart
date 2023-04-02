@@ -37,6 +37,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   late String? reportCount = '';
   final user = FirebaseAuth.instance.currentUser;
   Map<String, dynamic> prefsDict = {};
+  Map<String, String> prefsImageDict = {};
 
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
@@ -107,22 +108,38 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   retrievePrefsData() async {
     prefs = await SharedPreferences.getInstance();
     List<String> keyList = prefs.getKeys().toList();
+    List<String> imagesList = [
+      'p2_reportee_ID_Photo',
+      'p2_singlePhoto_face',
+      'p4_mp_recent_photo',
+      'p5_locSnapshot',
+      'p6_reporteeSignature'
+    ];
     print('[keulist in retrieve] $keyList');
 
     await Future.forEach(keyList, (key) async {
-      try {
-        String? value = prefs.getString(key);
-        if (value != null) {
-          prefsDict[key] = value;
+      if (imagesList.contains(key)) {
+        print('[image] $key');
+        String? valueImg = prefs.getString(key);
+        if (valueImg != null) {
+          prefsImageDict[key] = valueImg;
         }
-      } catch (e) {
-        bool? value = prefs.getBool(key);
-        if (value != null) {
-          prefsDict[key] = value;
+      } else {
+        print('[NONimage] $key');
+        try {
+          String? value = prefs.getString(key);
+          if (value != null) {
+            prefsDict[key] = value;
+          }
+        } catch (e) {
+          bool? value = prefs.getBool(key);
+          if (value != null) {
+            prefsDict[key] = value;
+          }
         }
       }
     });
-    print(prefsDict);
+    print('[IMGPREF] $prefsImageDict');
   }
 
   @override
@@ -541,6 +558,11 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     prefsDict['p6_reporteeSignature'] = signaturePhotoString;
     if (reportCount != null) {
       await reportsRef.child(user!.uid).child(reportCount!).set(prefsDict);
+      await reportsRef
+          .child(user!.uid)
+          .child(reportCount!)
+          .child('images')
+          .set(prefsImageDict);
       var reportsRefInt = int.parse(reportCount!);
       reportsRefInt = reportsRefInt + 1;
       await mainUsersRef.child(user!.uid).update({
