@@ -8,8 +8,72 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
-import 'p2_reportee_details.dart';
+
 import 'mapDialog.dart';
+
+// datepicker stuff
+List reformatDate(String dateTime, DateTime dateTimeBday) {
+  var dateParts = dateTime.split('-');
+  var month = dateParts[1];
+  if (int.parse(month) % 10 != 0) {
+    month = month.replaceAll('0', '');
+  }
+  // switch case of shame
+  switch (month) {
+    case '1':
+      month = 'January';
+      break;
+    case '2':
+      month = 'February';
+      break;
+    case '3':
+      month = 'March';
+      break;
+    case '4':
+      month = 'April';
+      break;
+    case '5':
+      month = 'May';
+      break;
+    case '6':
+      month = 'June';
+      break;
+    case '7':
+      month = 'July';
+      break;
+    case '8':
+      month = 'August';
+      break;
+    case '9':
+      month = 'September';
+      break;
+    case '10':
+      month = 'October';
+      break;
+    case '11':
+      month = 'November';
+      break;
+    case '12':
+      month = 'December';
+      break;
+  }
+
+  var day = dateParts[2];
+  var daySpaceIndex = day.indexOf(' ');
+  if (daySpaceIndex >= 0) {
+    day = day.substring(0, daySpaceIndex);
+  }
+  if (day.isNotEmpty && int.parse(day) % 10 != 0) {
+    day = day.replaceAll('0', '');
+  }
+
+  var year = dateParts[0];
+
+  var age =
+      (DateTime.now().difference(dateTimeBday).inDays / 365).floor().toString();
+  var returnVal = '$month $day, $year';
+  return [returnVal, age];
+}
 
 class Page5IncidentDetails extends StatefulWidget {
   const Page5IncidentDetails({super.key});
