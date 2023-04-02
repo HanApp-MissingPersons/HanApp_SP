@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pnphanapp/views/main/pnp_navigation_view.dart';
+import 'package:pnphanapp/views/main/report_dashboard_main.dart';
 import 'package:pnphanapp/views/pnp_login_view.dart';
 
 
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
-      home: LoginView(),
+      home: const NavRailView(),
     );
   }
 }

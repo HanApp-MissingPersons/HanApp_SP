@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pnphanapp/views/main/report_dashboard_main.dart';
+import 'package:pnphanapp/views/main/pnp_navigation_view.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -107,7 +107,7 @@ class _LoginViewState extends State<LoginView> {
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ))),
-                        onPressed: null,
+                        onPressed: () {const NavRailView();},
                         child: Text(
                           'Login',
                           style: GoogleFonts.inter(
@@ -144,11 +144,11 @@ class _LoginViewState extends State<LoginView> {
                                 text:
                                 'Having Troubles Logging in?'),
                             TextSpan(
-                                text: ' Contact the Developers:',
+                                text: ' Contact the Developers: ',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w700)),
                             TextSpan(
-                                text: ' hanapp.sp@gmail.com',
+                                text: 'hanapp.sp@gmail.com',
                                 style: TextStyle(
                                   decoration: TextDecoration.underline,
                                 )
