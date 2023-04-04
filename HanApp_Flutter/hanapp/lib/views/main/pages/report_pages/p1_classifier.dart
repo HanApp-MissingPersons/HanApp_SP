@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hanapp/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 
 /* LACKING:
 1. Need to automatically add padding between rows (instead of hardcoding the padding in between rows)
@@ -29,10 +32,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
 
   /* FORMATTING STUFF */
   // row padding
-  static const _verticalPadding = SizedBox(height: 10);
+  static const _verticalPadding = SizedBox(height: 15);
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+      fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black87);
   /* END OF FORMATTING STUFF */
 
   /* SHARED PREFERENCE STUFF */
@@ -59,13 +62,15 @@ class _Page1ClassifierState extends State<Page1Classifier> {
 
   // classifier texts
   static const String naturalCalamityText =
-      'Is the absent/missing person a victim of a natural calamity (typhoons, earthquakes, landslides), or human-induced disasters or accidents?';
+      //'Is the absent/missing person a victim of a natural calamity (typhoons, earthquakes, landslides), or human-induced disasters or accidents?';
+      'The person is missing due to natural calamity/disaster (typhoons, earthquakes, landslides), or accident';
   static const String minorText =
-      'Is the absent/missing person a minor (under the age of 18)?';
+      // 'Is the absent/missing person a minor (under the age of 18)?';
+      'The person is still a minor (under the age of 18)';
   static const String missing24HoursText =
-      'Has the absent/missing person not been located for more than 24 hours since their perceived disappearance?';
+      'The person has been missing for more than 24 hours since they were last seen';
   static const String victimCrimeText =
-      'Is the absent/missing person believed to be a victim of violence and crimes (including but not limited to: kidnapping, abduction, enforced disappearance, human trafficking)';
+      'The person is a victim of a crime such as but not limited to kidnapping, abduction, or human trafficking';
 
   @override
   Widget build(BuildContext context) {
@@ -73,31 +78,62 @@ class _Page1ClassifierState extends State<Page1Classifier> {
         ? Stack(children: [
             // Checkboxes for classifiers
             Positioned(
-              top: 100,
+              top: MediaQuery.of(context).size.height / 8,
               left: 20,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Page 1 of 6: Classifiers',
-                    style: optionStyle,
+                  const Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: Text(
+                      'Page 1 of 6: Classifiers',
+                      style: optionStyle,
+                    ),
                   ), // Page 1 Text
+                  _verticalPadding,
+                  Padding(
+                    padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width/50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const SizedBox(width: 5),
+                        const Icon(Icons.info_outline_rounded, size: 20,),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 80,
+                          child: const Text(
+                            '''Please check all statements that apply regarding the status of the absent/missing person''',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _verticalPadding,
                   // add padding between rows
                   _verticalPadding,
                   Row(
                     children: [
-                      Checkbox(
-                        // value: _isVictimNaturalCalamity,
-                        // retrieve value of the checkbox from shared preferences
-                        value: isVictimNaturalCalamity,
+                      Transform.scale(
+                        scale: 1.2,
+                        child: Checkbox(
+                          // value: _isVictimNaturalCalamity,
+                          // retrieve value of the checkbox from shared preferences
+                          value: isVictimNaturalCalamity,
+                          activeColor: Palette.indigo,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
 
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isVictimNaturalCalamity = value;
-                          });
-                          // save the value of the checkbox
-                          _prefs.setBool('p1_isVictimNaturalCalamity', value!);
-                        },
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isVictimNaturalCalamity = value;
+                            });
+                            // save the value of the checkbox
+                            _prefs.setBool('p1_isVictimNaturalCalamity', value!);
+                          },
+                        ),
                       ), // Checkbox for Natural Calamity
                       // GestureDetector that checks the checkbox when the text is tapped
                       GestureDetector(
@@ -122,15 +158,20 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   Row(
                     // add space between checkbox rows
                     children: [
-                      Checkbox(
-                        value: isMinor,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isMinor = value;
-                          });
-                          // save the value of the checkbox
-                          _prefs.setBool('p1_isMinor', value!);
-                        },
+                      Transform.scale(
+                        scale: 1.2,
+                        child: Checkbox(
+                          activeColor: Palette.indigo,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                          value: isMinor,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isMinor = value;
+                            });
+                            // save the value of the checkbox
+                            _prefs.setBool('p1_isMinor', value!);
+                          },
+                        ),
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
                       GestureDetector(
@@ -153,15 +194,20 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   _verticalPadding,
                   Row(
                     children: [
-                      Checkbox(
-                        value: isMissing24Hours,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isMissing24Hours = value;
-                          });
-                          // save the value of the checkbox
-                          _prefs.setBool('p1_isMissing24Hours', value!);
-                        },
+                      Transform.scale(
+                        scale: 1.2,
+                        child: Checkbox(
+                          activeColor: Palette.indigo,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                          value: isMissing24Hours,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isMissing24Hours = value;
+                            });
+                            // save the value of the checkbox
+                            _prefs.setBool('p1_isMissing24Hours', value!);
+                          },
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -183,15 +229,20 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   _verticalPadding,
                   Row(
                     children: [
-                      Checkbox(
-                        value: isVictimCrime,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isVictimCrime = value;
-                          });
-                          // save the value of the checkbox
-                          _prefs.setBool('p1_isVictimCrime', value!);
-                        },
+                      Transform.scale(
+                        scale: 1.2,
+                        child: Checkbox(
+                          activeColor: Palette.indigo,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                          value: isVictimCrime,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              isVictimCrime = value;
+                            });
+                            // save the value of the checkbox
+                            _prefs.setBool('p1_isVictimCrime', value!);
+                          },
+                        ),
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
                       GestureDetector(
@@ -212,27 +263,34 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   ), // end of Row for Victim of Crime
                   // add padding between rows
                   _verticalPadding,
-                  // info/instruction
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.info),
-                      SizedBox(width: 5),
-                      Text(
-                        '''Please check all that apply. Swipe left to continue.''',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black54,
+                  _verticalPadding,
+                  //info/instruction
+                  Padding(
+                    padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width/50),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.info_outline_rounded, size: 20,),
+                        SizedBox(width: 5),
+                        Text(
+                          '''Swipe left to continue.''',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black54,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  TextButton(
-                    onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      print(prefs.getKeys());
-                    },
-                    child: const Text('Print Shared Preferences'),
+                  Padding(
+                    padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width/6),
+                    child: TextButton(
+                      onPressed: () async {
+                        final prefs = await SharedPreferences.getInstance();
+                        print(prefs.getKeys());
+                      },
+                      child: const Text('Print Shared Preferences'),
+                    ),
                   ),
                 ],
               ),
@@ -241,8 +299,9 @@ class _Page1ClassifierState extends State<Page1Classifier> {
         :
         // Circular loading icon
         const Center(
-            child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-          ));
+            child: SpinKitCubeGrid(
+              color: Palette.indigo,
+              size: 40.0,
+            ),);
   }
 }

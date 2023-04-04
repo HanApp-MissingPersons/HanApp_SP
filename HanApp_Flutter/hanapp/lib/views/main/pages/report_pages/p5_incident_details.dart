@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hanapp/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
@@ -90,8 +91,13 @@ late SharedPreferences prefs;
 class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+      fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black87);
   static const _verticalPadding = SizedBox(height: 10);
+
+  static const TextStyle headingStyle = TextStyle(
+      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
+
+
 
   // local variables for text fields
   // reportDate should be automatically filled with the current date, formatted (MM/DD/YYYY):
@@ -162,7 +168,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned(
-        top: 100,
+        top: MediaQuery.of(context).size.height / 8,
         left: 20,
         child: Center(
           child: Column(
@@ -171,7 +177,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
-                  'Page 5: Incident Details',
+                  'Page 5 of 6: Incident Details',
                   style: optionStyle,
                 ),
               ),
@@ -179,7 +185,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Icon(Icons.info),
+                  Icon(Icons.info_outline_rounded, size: 20),
                   SizedBox(width: 5),
                   Text(
                     '''Fields with (*) are required.''',
@@ -192,14 +198,12 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               ),
               _verticalPadding,
               // Report Date
+              _verticalPadding,
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
-                  'Report Date: ',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54),
+                  'Report Date:',
+                  style: headingStyle,
                 ),
               ),
               _verticalPadding,
@@ -209,7 +213,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   enabled: false,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                     labelText: reportDate,
                   ),
                 ),
@@ -220,10 +224,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
                   'Last Seen Date',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54),
+                  style: headingStyle,
                 ),
               ),
               _verticalPadding,
@@ -243,8 +244,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                       keyboardType: TextInputType.datetime,
                       controller: TextEditingController(text: lastSeenDate),
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Last Seen Date*',
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           hintText: 'Tap to select date'),
                       // on tap, show date picker:
                       onTap: () async {
@@ -281,11 +282,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
-                  'Last Seen Time: ',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54),
+                  'Last Seen Time',
+                  style: headingStyle,
                 ),
               ),
               _verticalPadding,
@@ -323,9 +321,9 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                     }
                   },
                   decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
                     // holder text
-                    labelText: 'Last Seen Time*',
                     hintText: 'Tap to select time',
                   ),
                 ),
@@ -335,11 +333,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
-                  'Last Seen Location: ',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54),
+                  'Last Seen Location',
+                  style: headingStyle,
                 ),
               ),
               _verticalPadding,
@@ -399,11 +394,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
-                  'Incident Details: ',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54),
+                  'Incident Details',
+                  style: headingStyle,
                 ),
               ),
               _verticalPadding,
@@ -414,7 +406,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   '''Please provide as much detail as possible. Answering the "Who, What, When, Where, Why, and How" questions will help us better understand the incident.''',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.black54,
+                    color: Colors.black38,
                   ),
                 ),
               ),
@@ -425,8 +417,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   controller: TextEditingController(text: incidentDetails),
                   maxLines: 5,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                     labelText: 'Incident Details*',
                   ),
                   onChanged: (value) {
