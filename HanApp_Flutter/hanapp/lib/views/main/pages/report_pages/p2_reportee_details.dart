@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hanapp/main.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -308,7 +309,11 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
 
   /* FORMATTING STUFF */
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+      fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black87);
+
+  static const TextStyle headingStyle = TextStyle(
+      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
+
   static const _verticalPadding = SizedBox(height: 10);
   /* END OF FORMATTING STUFF */
 
@@ -333,6 +338,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   late final TextEditingController _reporteeBarangay;
   late final TextEditingController _reporteeVillageSitio;
   late final TextEditingController _reporteeStreetHouseNum;
+  // For alternative addres
+  bool reportee_hasAltAddress = false;
 // REPORTEE ALTERNATE ADDRESS
   late final TextEditingController _reporteeAltRegion;
   late final TextEditingController _reporteeAltProvince;
@@ -440,33 +447,46 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     return Stack(children: [
       // Checkboxes for classifiers
       Positioned(
-        top: 100,
+        top: MediaQuery.of(context).size.height / 8,
         left: 20,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
+              width: MediaQuery.of(context).size.width - 10,
               child: const Text(
                 'Page 2 of 6: Reportee Details',
                 style: optionStyle,
               ),
             ),
+            _verticalPadding,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.info_outline_rounded, size: 20),
+                SizedBox(width: 5),
+                Text(
+                  '''Fields with (*) are required.''',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
+            ),
+            _verticalPadding,
             // SECTION: Relationship to Missing Person
             _verticalPadding,
             const Text(
-              "Your relationship to Missing Person*",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+              "Relationship to Missing Person*",
+              style: headingStyle,
             ),
             _verticalPadding,
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeRelationshipToMissingPerson,
                     validator: (value) {
@@ -481,9 +501,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_relationshipToMP', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Relationship to Missing Person*',
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      //labelText: 'Relationship to Missing Person*',
+                      hintText: 'Sibling, Relative, Spouse, etc.',
                     ),
                   ),
                 ),
@@ -491,36 +515,19 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             ),
             _verticalPadding, // Page 1 Text
             // add padding between rows
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.info),
-                SizedBox(width: 5),
-                Text(
-                  '''Fields with (*) are required.''',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black54,
-                  ),
-                ),
-              ],
-            ),
-            _verticalPadding,
+
             // Section: Reportee Name [REMOVED]
             // Section: Reportee Citizenship
             const Text(
-              "Citizenship",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+              "Citizenship*",
+              style: headingStyle,
             ),
             _verticalPadding,
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeCitizenship,
                     onChanged: (text) {
@@ -529,9 +536,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         // _prefs.setString('p2_citizenship', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Citizenship*',
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      //labelText: 'Citizenship*',
+                      hintText: 'Filipino',
                     ),
                     // add validator:
                     validator: (value) {
@@ -549,20 +560,18 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             // Section: Civil Status
             const Text(
               "Civil Status",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+              style: headingStyle,
             ),
             _verticalPadding,
             // dropdown for civil status and update _civilStatusValue
             SizedBox(
-              width: MediaQuery.of(context).size.width - 50,
+              width: MediaQuery.of(context).size.width - 40,
               child: DropdownButtonFormField<String>(
                 // text to display when no value is selected
                 hint: const Text("Select Civil Status"),
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
                 value: _civilStatusValue,
                 icon: const Icon(Icons.arrow_drop_down),
@@ -597,10 +606,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             // Section: Contact Information
             const Text(
               "Contact Information",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+              style: headingStyle,
             ),
             _verticalPadding,
             // text fields for Home Phone, Mobile Phone, Alternate Mobile Phone, Email Address
@@ -609,7 +615,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               children: [
                 // Home Phone
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeHomePhone,
                     keyboardType: TextInputType.phone,
@@ -620,8 +626,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       });
                     },
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Home Phone*',
+                        border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                      labelText: 'Home Phone/Landline*',
+                      hintText: '432-1234',
                     ),
                   ),
                 ),
@@ -637,7 +645,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 _verticalPadding,
                 // Mobile Phone
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeMobilePhone,
                     keyboardType: TextInputType.phone,
@@ -648,17 +656,20 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       });
                     },
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Mobile Phone*',
+                      hintText: '09231234567',
                     ),
                   ),
                 ),
                 _verticalPadding,
                 // Alternate Mobile Phone
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeAlternateMobilePhone,
+                    keyboardType: TextInputType.phone,
                     onChanged: (text) {
                       setState(() {
                         // _prefs.setString('p2_altMobilePhone', text);
@@ -666,8 +677,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       });
                     },
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Alternate Mobile Phone',
+                      hintText: '09231234567',
                     ),
                   ),
                 ),
@@ -678,11 +691,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             _verticalPadding,
             // SECTION: Address
             const Text(
-              "Address*",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+              "Address",
+              style: headingStyle,
             ),
             _verticalPadding,
             // text fiels for Region, Province, Town/City, Barangay, Village/Sitio, House Number/Street
@@ -691,7 +701,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               children: [
                 // Region
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeRegion,
                     onChanged: (text) {
@@ -700,8 +710,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_region', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Region*',
                     ),
                   ),
@@ -709,7 +720,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 _verticalPadding,
                 // Province
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeProvince,
                     onChanged: (text) {
@@ -718,8 +729,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_province', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Province*',
                     ),
                   ),
@@ -727,7 +739,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 _verticalPadding,
                 // Town/City
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeCity,
                     onChanged: (text) {
@@ -736,8 +748,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_townCity', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Town/City*',
                     ),
                   ),
@@ -745,7 +758,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 _verticalPadding,
                 // Barangay
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeBarangay,
                     onChanged: (text) {
@@ -754,8 +767,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_barangay', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Barangay*',
                     ),
                   ),
@@ -763,7 +777,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 _verticalPadding,
                 // Village/Sitio
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeVillageSitio,
                     onChanged: (text) {
@@ -772,8 +786,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_villageSitio', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Village/Sitio',
                     ),
                   ),
@@ -781,7 +796,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 _verticalPadding,
                 // House Number/Street
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeStreetHouseNum,
                     onChanged: (text) {
@@ -790,8 +805,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_streetHouseNum', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'House Number/Street*',
                     ),
                   ),
@@ -799,75 +815,41 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
-            // ask if user has alternate address if yes, show another section for alternate address
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Do you have an alternate address?',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
+
+            const Text(
+              'Alternate Address',
+              style: headingStyle,
             ),
-            _verticalPadding,
+            // ask if user has alternate address if yes, show another section for alternate address
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Yes
-                SizedBox(
-                  width: 100,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        reportee_AltAddress_available = true;
-                      });
-                    },
-                    child: const Text('Yes'),
-                  ),
+                Checkbox(
+                  value: reportee_hasAltAddress,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      reportee_hasAltAddress = value!;
+                    });
+                  },
                 ),
 
-                // No
-                SizedBox(
-                  width: 100,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        reportee_AltAddress_available = false;
-                        // if reportee_AltAddress_available is false, clear all the alternate address from shared preferences
-                        _prefs.remove('p2_altRegion');
-                        _prefs.remove('p2_altProvince');
-                        _prefs.remove('p2_altTownCity');
-                        _prefs.remove('p2_altBarangay');
-                        _prefs.remove('p2_altVillageSitio');
-                        _prefs.remove('p2_altStreetHouseNum');
-                      });
-                    },
-                    child: const Text('No'),
-                  ),
+                const Text(
+                  'Do you have another house location/address?',
+                  style: TextStyle(fontSize: 12, color: Colors.black54),
                 ),
               ],
             ),
-            _verticalPadding,
-            if (reportee_AltAddress_available == true)
+
+            if (reportee_hasAltAddress)
               Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Alternate Address, ask for Region, Province, Town/City, Barangay, Village/Sitio, House Number/Street
-                  const Text(
-                    "Alternate Address",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54),
-                  ),
-                  _verticalPadding,
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Region
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
+                        width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
                           controller: _reporteeAltRegion,
                           onChanged: (text) {
@@ -876,16 +858,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                               _writeToPrefs('p2_altRegion', text);
                             });
                           },
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Alternate Region',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Region',
                           ),
                         ),
                       ),
                       _verticalPadding,
                       // Province
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
+                        width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
                           controller: _reporteeAltProvince,
                           onChanged: (text) {
@@ -894,16 +877,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                               _writeToPrefs('p2_altProvince', text);
                             });
                           },
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Alternate Province',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Province',
                           ),
                         ),
                       ),
                       _verticalPadding,
                       // Town/City
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
+                        width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
                           controller: _reporteeAltCityTown,
                           onChanged: (text) {
@@ -912,16 +896,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                               _writeToPrefs('p2_altTownCity', text);
                             });
                           },
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Alternate Town/City',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Town/City',
                           ),
                         ),
                       ),
                       _verticalPadding,
                       // Barangay
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
+                        width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
                           controller: _reporteeAltBarangay,
                           onChanged: (text) {
@@ -930,16 +915,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                               _writeToPrefs('p2_altBarangay', text);
                             });
                           },
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Alternate Barangay',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Barangay',
                           ),
                         ),
                       ),
                       _verticalPadding,
                       // Village/Sitio
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
+                        width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
                           controller: _reporteeAltVillageSitio,
                           onChanged: (text) {
@@ -948,8 +934,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                               _writeToPrefs('p2_altVillageSitio', text);
                             });
                           },
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             labelText: 'Village/Sitio',
                           ),
                         ),
@@ -957,7 +944,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       _verticalPadding,
                       // House Number/Street
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
+                        width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
                           controller: _reporteeAltStreetHouseNum,
                           onChanged: (text) {
@@ -966,12 +953,15 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                               _writeToPrefs('p2_altStreetHouseNum', text);
                             });
                           },
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             labelText: 'House Number/Street',
                           ),
                         ),
                       ),
+                      _verticalPadding,
+                      _verticalPadding,
                     ],
                   ),
                 ],
@@ -1005,10 +995,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             // SECTION: Highest Educational Attainment
             const Text(
               "Highest Educational Attainment",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+              style: headingStyle,
             ),
             _verticalPadding,
             // dropdown for highest educational attainment (elementary, high school, college, etc.)
@@ -1016,12 +1003,11 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: DropdownButtonFormField(
                     value: _highestEduc,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Highest Educational Attainment',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                     ),
                     items: <String>[
                       'Elementary',
@@ -1047,13 +1033,11 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 ),
               ],
             ),
+            _verticalPadding,
             // SECTION: Occupation
             const Text(
               "Occupation",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+              style: headingStyle,
             ),
             _verticalPadding,
             // textfield for occupation
@@ -1061,7 +1045,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: MediaQuery.of(context).size.width - 50,
+                  width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeOccupation,
                     onChanged: (text) {
@@ -1070,8 +1054,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         _writeToPrefs('p2_occupation', text);
                       });
                     },
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Occupation',
                     ),
                   ),
@@ -1079,30 +1065,40 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ],
             ),
             _verticalPadding,
+            _verticalPadding,
             // SECTION: Proof of Identity
             const Text(
-              "Proof of Identity: Upload ID*",
+              "Proof of Identity",
               style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 21,
                   fontWeight: FontWeight.bold,
                   color: Colors.black54),
             ),
             _verticalPadding,
+            const Text(
+              "Identification Card/Document*",
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black38),
+            ),
             // use image picker to upload ID
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (reportee_ID_Photo != null)
-                  Center(
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width * .9,
-                          child:
-                              Image.memory(reportee_ID_Photo!))), // show image
-                ElevatedButton(
-                    onPressed: () {
-                      getImages();
-                    },
-                    child: const Text("Upload ID")),
+                  SizedBox(
+                      width: MediaQuery.of(context).size.width * .9,
+                      child:
+                          Image.memory(reportee_ID_Photo!)), // show image
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        getImages();
+                      },
+                      child: const Text("Upload ID")),
+                ),
               ],
             ),
             _verticalPadding,
@@ -1110,11 +1106,11 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             const Text(
               "Photograph of Reportee*",
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54),
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black38,
+              ),
             ),
-            _verticalPadding,
             // use image picker to upload photo of reportee
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -1128,18 +1124,20 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                               width: MediaQuery.of(context).size.width * .9,
                               child: Image.memory(
                                   singlePhoto_face!)))), // show image
-                ElevatedButton(
-                    onPressed: () {
-                      getImageFace();
-                    },
-                    child: const Text("Take Selfie")),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        getImageFace();
+                      },
+                      child: const Text("Take Selfie")),
+                ),
               ],
             ),
             _verticalPadding,
-
             // "Swipe Right to Move to Next Page"
             SizedBox(
-              width: MediaQuery.of(context).size.width - 50,
+              width: MediaQuery.of(context).size.width - 30,
               child: const Text(
                 "End of Reportee Details Form. Swipe left to move to next page",
                 style: TextStyle(fontSize: 12, color: Colors.black54),

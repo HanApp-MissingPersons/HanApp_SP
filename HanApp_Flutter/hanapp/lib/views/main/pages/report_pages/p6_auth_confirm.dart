@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:hanapp/main.dart';
 import 'dart:ui' as ui;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
@@ -41,7 +42,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+      fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black87);
   static const _verticalPadding = SizedBox(height: 10);
 
   // authorization and confirmation texts
@@ -157,7 +158,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
     return Stack(children: [
       Positioned(
-        top: 100,
+        top: MediaQuery.of(context).size.height / 8,
         left: 20,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -165,12 +166,13 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Page 6: Confirmation and Authorization',
+                'Page 6 of 6: Confirmation and Authorization',
                 style: optionStyle,
               ),
             ),
             _verticalPadding,
             // text saying "By affixing my signature below"
+            _verticalPadding,
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
@@ -280,13 +282,13 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                         child: ElevatedButton(
                           // button color here
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
+                            backgroundColor: Colors.white60,
                           ),
                           onPressed: () async {
                             signaturePadKey.currentState!.clear();
                           },
                           child: const Text(
-                            'Clear Signature Pad',
+                            'Clear', style: TextStyle(color: Colors.black87),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -298,7 +300,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                         child: ElevatedButton(
                           // button color here
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: Palette.indigo,
                           ),
                           onPressed: () async {
                             ui.Image image =
@@ -325,7 +327,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                   );
                                 });
                           },
-                          child: const Text('Save Signature'),
+                          child: const Text('Save'),
                         ),
                       ),
                     ],
@@ -344,11 +346,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                   prefs.getString('p6_reporteeSignature') != null
                       ? SizedBox(
                           width: MediaQuery.of(context).size.width - 40,
-                          child: ElevatedButton(
+                          child: TextButton(
                             // button color here
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                            ),
                             onPressed: () async {
                               // pop-up showing preview of signature
                               showDialog(
@@ -411,6 +410,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                       title: const Text('Confirm Submission'),
                                       content: const Text(
                                           'Are you sure you want to submit this report?'),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15)),
                                       actions: <Widget>[
                                         TextButton(
                                           child: const Text('Cancel'),
@@ -418,35 +419,44 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                             Navigator.of(context).pop();
                                           },
                                         ),
-                                        TextButton(
-                                          child: const Text('Submit'),
-                                          onPressed: () async {
-                                            checkReportValidity()
-                                                ? submitReport()
-                                                : await showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Text(
-                                                            'Incomplete form'),
-                                                        content: Text(
-                                                            formErrorMessage()),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            child: const Text(
-                                                                'Close'),
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                          ),
-                                                        ],
-                                                      );
-                                                    });
-                                            Navigator.of(context).pop();
-                                          },
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 10, right: 20),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Palette.indigo,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(5.0),
+                                              ),
+                                            ),
+                                            child: const Text('Submit'),
+                                            onPressed: () async {
+                                              checkReportValidity()
+                                                  ? submitReport()
+                                                  : await showDialog(
+                                                      context: context,
+                                                      builder:
+                                                          (BuildContext context) {
+                                                        return AlertDialog(
+                                                          title: const Text(
+                                                              'Incomplete form'),
+                                                          content: Text(
+                                                              formErrorMessage()),
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                              child: const Text(
+                                                                  'Close'),
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                            ),
+                                                          ],
+                                                        );
+                                                      });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
                                         )
                                       ],
                                     );

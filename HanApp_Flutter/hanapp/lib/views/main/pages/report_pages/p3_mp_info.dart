@@ -83,8 +83,12 @@ class Page3MPDetails extends StatefulWidget {
 class _Page3MPDetailsState extends State<Page3MPDetails> {
   /* FORMATTERS */
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+      fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black87);
+
   static const _verticalPadding = SizedBox(height: 10);
+
+  static const TextStyle headingStyle = TextStyle(
+      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
 
   /* CONTROLLERS */
   // for basic info
@@ -263,7 +267,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned(
-          top: 100,
+          top: MediaQuery.of(context).size.height / 8,
           left: 20,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -278,7 +282,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const [
-                Icon(Icons.info),
+                Icon(Icons.info_outline_rounded, size: 20),
                 SizedBox(width: 5),
                 Text(
                   '''Fields with (*) are required.''',
@@ -289,16 +293,14 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
+                _verticalPadding,
             // ABSENT/MISSING PERSON NAME SECTION
             _verticalPadding,
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Absent/Missing Person Name*',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                'Absent/Missing Person Name',
+                style: headingStyle,
               ),
             ),
             _verticalPadding,
@@ -312,9 +314,10 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   child: TextFormField(
                     controller: _mp_lastName,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Last Name*",
-                        hintText: "Last Name*",
+                        hintText: "Dela Cruz",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -338,9 +341,10 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   child: TextFormField(
                     controller: _mp_firstName,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "First Name*",
-                        hintText: "First Name*",
+                        hintText: "Juan",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -373,9 +377,10 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   child: TextFormField(
                     controller: _mp_middleName,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Middle Name",
-                        hintText: "Middle Name",
+                        hintText: "Pedro",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -399,9 +404,10 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   child: TextFormField(
                     controller: _mp_qualifier,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Qualifier",
-                        hintText: "Qualifier",
+                        hintText: "Jr.",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -446,11 +452,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Citizenship',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                'Citizenship*',
+                style: headingStyle,
               ),
             ),
             _verticalPadding,
@@ -463,9 +466,10 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   child: TextFormField(
                     controller: _mp_citizenship,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                        labelText: "Citizenship*",
-                        hintText: "Citizenship*",
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        hintText: "Filipino",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -483,13 +487,11 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
-                'Nationality/Ethnicity',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                'Nationality/Ethnicity*',
+                style: headingStyle,
               ),
             ),
+                _verticalPadding,
             // textfield for nationality/ethnicity
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -501,7 +503,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
                         labelText: "Nationality/Ethnicity*",
-                        hintText: "Nationality/Ethnicity*",
+                        hintText: "Asian, Hispanic, Latino, etc.",
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -516,20 +519,17 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             ),
             // SEX SECTION
             _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Sex*',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
-              ),
-            ),
             // rows for Male and Female radio buttons
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                const SizedBox(
+                  width: 40,
+                  child: Text(
+                    'Sex*',
+                    style: headingStyle,
+                  ),
+                ),
                 //male
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .4,
@@ -570,10 +570,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Civil Status',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // dropdown for civil status
@@ -583,7 +580,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: DropdownButtonFormField<String>(
                 hint: const Text("Select Civil Status*"),
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
                 value: mp_civilStatValue,
                 icon: const Icon(Icons.arrow_drop_down),
@@ -619,10 +617,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Birth Date*',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // date picker widget
@@ -674,10 +669,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Age*',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // pre-filled out and grayed out text field for age
@@ -700,16 +692,14 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 },
               ),
             ),
+                _verticalPadding,
             // CONTACT INFO SECTION
             _verticalPadding,
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Contact Information',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // homePhone
@@ -722,8 +712,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Home Phone (landline)*",
-                  hintText: "Home Phone (landline)",
+                  labelText: "Home Phone/Landline*",
+                  hintText: "432-1234",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_homePhone', value);
@@ -731,6 +721,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 },
               ),
             ),
+                _verticalPadding,
             SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text('or',
@@ -747,7 +738,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Mobile Phone*",
-                  hintText: "Mobile Phone",
+                  hintText: "09231234567",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_mobilePhone', value);
@@ -766,7 +757,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Alternate Mobile Phone",
-                  hintText: "Alternate Mobile Phone",
+                  hintText: "09231234567",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_mobilePhone_alt', value);
@@ -785,7 +776,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Email",
-                  hintText: "Email",
+                  hintText: "juandelacruz@gmail.com",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_email', value);
@@ -795,14 +786,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             ),
             // ADDRESS SECTION
             _verticalPadding,
+                _verticalPadding,
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Address',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // region
@@ -812,6 +801,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: TextFormField(
                 controller: _mp_address_region,
                 keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -831,6 +821,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: TextFormField(
                 controller: _mp_address_province,
                 keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -850,6 +841,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: TextFormField(
                 controller: _mp_address_city,
                 keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -869,6 +861,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: TextFormField(
                 controller: _mp_address_barangay,
                 keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -888,6 +881,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: TextFormField(
                 controller: _mp_address_villageSitio,
                 keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -907,6 +901,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: TextFormField(
                 controller: _mp_address_streetHouseNum,
                 keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -926,31 +921,30 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Alternate Address',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
 
             // checkbox to ask user if MP has an alternate address
-            _verticalPadding,
+                Row(
+                  children: [
+                    Checkbox(
+                      value: mp_hasAltAddress,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          mp_hasAltAddress = value!;
+                        });
+                      },
+                    ),
             SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: CheckboxListTile(
-                title: const Text(
-                  'Absent/Missing person has an alternate address',
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-                value: mp_hasAltAddress,
-                onChanged: (bool? value) {
-                  setState(() {
-                    mp_hasAltAddress = value!;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
+              width: MediaQuery.of(context).size.width - 80,
+              child: const Text(
+                      'Absent/Missing person has another location/alternate address',
+                      style: TextStyle(fontSize: 12, color: Colors.black54)),
             ),
+                  ],
+                ),
+
             if (mp_hasAltAddress)
               Column(
                 children: [
@@ -961,6 +955,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_address_region_alt,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -981,6 +976,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_address_province_alt,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1001,6 +997,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_address_city_alt,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1021,6 +1018,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_address_barangay_alt,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1041,6 +1039,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_address_villageSitio_alt,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1061,6 +1060,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_address_streetHouseNum_alt,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1075,18 +1075,15 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                       },
                     ),
                   ),
+                  _verticalPadding,
                 ],
               ),
             // OCCUPATION SECTION
-            _verticalPadding,
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Occupation',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // occupation field
@@ -1096,7 +1093,9 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: TextFormField(
                 controller: _mp_occupation,
                 keyboardType: TextInputType.text,
+                textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Occupation",
@@ -1114,10 +1113,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Highest Educational Attainment',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // educational attainment dropdown
@@ -1164,28 +1160,29 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
                 'Current School/Work Address',
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black54),
+                style: headingStyle,
               ),
             ),
             // checkbox to ask if user has school/work address
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: CheckboxListTile(
-                title: const Text(
-                  'Absent/Missing person has a current work/school address',
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
+            Row(
+              children: [
+                Checkbox(
+                  value: mp_hasSchoolWorkAddress,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      mp_hasSchoolWorkAddress = value!;
+                    });
+                  },
                 ),
-                value: mp_hasSchoolWorkAddress,
-                onChanged: (bool? value) {
-                  setState(() {
-                    mp_hasSchoolWorkAddress = value!;
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
+
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 80,
+                  child: const Text(
+                    'Absent/Missing person has a current work/school address',
+                    style: TextStyle(fontSize: 12, color: Colors.black54),
+                  ),
+                ),
+              ],
             ),
             // school/work address
             if (mp_hasSchoolWorkAddress)
@@ -1198,6 +1195,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_workSchool_region,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1217,6 +1215,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
                       controller: _mp_workSchool_province,
+                      textCapitalization: TextCapitalization.words,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
@@ -1238,6 +1237,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_workSchool_city,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1258,6 +1258,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_workSchool_barangay,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1278,6 +1279,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_workSchool_villageSitio,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1298,6 +1300,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_workSchool_streetHouseNum,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:
@@ -1318,6 +1321,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     child: TextFormField(
                       controller: _mp_workSchool_name,
                       keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderRadius:

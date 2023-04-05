@@ -30,8 +30,11 @@ class Page4MPDesc extends StatefulWidget {
 class _Page4MPDescState extends State<Page4MPDesc> {
   /* FORMATTING */
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
+      fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black87);
   static const _verticalPadding = SizedBox(height: 10);
+
+  static const TextStyle headingStyle = TextStyle(
+      fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
 
   /* VARIABLES */
   // MP Appearance
@@ -272,7 +275,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     return mp_eye_color_natural != null
         ? Stack(children: [
             Positioned(
-                top: 100,
+                top: MediaQuery.of(context).size.height / 8,
                 left: 20,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,20 +283,20 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
-                          'Page 4: Absent/Missing Person Description',
+                          'Page 4 of 6: Absent/Missing Person Description',
                           style: optionStyle,
                         ),
                       ),
                       _verticalPadding,
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          Icon(Icons.info),
-                          _verticalPadding,
+                        children: [
+                          const Icon(Icons.info_outline_rounded, size: 20),
+                          const SizedBox(width: 10),
                           SizedBox(
-                            width: 300,
-                            child: Text(
-                              '''All fields for Absent/Missing Person Description are required, if unknown or unsure, write NA.''',
+                            width: MediaQuery.of(context).size.width - 80,
+                            child: const Text(
+                              '''All fields for the descriptions are required, if unknown or unsure, write NA.''',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.black54,
@@ -302,16 +305,14 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           ),
                         ],
                       ),
+                      _verticalPadding,
                       // SCARS, MARKS, AND TATTOOS SECTION
                       _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Scars, Marks, and Tattoos',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle,
                         ),
                       ),
                       _verticalPadding,
@@ -323,7 +324,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Scars',
                             hintText: 'Scars',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10))
+                            ),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -342,7 +345,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Marks',
                             hintText: 'Marks',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10))
+                            ),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -361,7 +366,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Tattoos',
                             hintText: 'Tattoos',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10))
+                            ),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -377,12 +384,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Hair Color',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle),
                         ),
-                      ),
+
                       _verticalPadding,
                       // hair color text field, saves to shared preference after user types
                       SizedBox(
@@ -390,9 +394,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_hair_color,
                           decoration: const InputDecoration(
-                            labelText: 'Hair Color',
                             hintText: 'Hair Color',
-                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10))
+                            ),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -425,9 +431,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               },
                             ),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
+                              width: MediaQuery.of(context).size.width - 100,
                               child: const Text(
-                                  'Is the hair color natural? (not dyed/ wearing wig)'),
+                                  'Natural hair color? (not dyed/wearing wig)',
+                                  style: TextStyle(fontSize: 12, color: Colors.black54)),
                             ),
                           ],
                         ),
@@ -436,13 +443,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       // EYE COLOR SECTION
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: const Text(
-                          'Eye Color',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
-                        ),
+                        child: const Text('Eye Color', style: headingStyle),
                       ),
                       _verticalPadding,
                       // eye color text field, saves to shared preference after user types
@@ -453,7 +454,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Eye Color',
                             hintText: 'Eye Color',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -485,9 +486,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               },
                             ),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
+                              width: MediaQuery.of(context).size.width - 100,
                               child: const Text(
-                                  'Is the eye color natural (not wearing contacts)?'),
+                                  'Natural eye color? (not wearing contacts)',
+                                  style:TextStyle(fontSize: 12, color: Colors.black54)),
                             ),
                           ],
                         ),
@@ -499,10 +501,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Prosthetics',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle,
                         ),
                       ),
                       // ask if the person has any prosthetics
@@ -512,10 +511,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_prosthetics,
                           decoration: const InputDecoration(
-                            labelText:
-                                'Prosthetics (if none/unknown type "NA")',
-                            hintText: 'Prosthetics',
-                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            hintText: 'If none/unknown type "NA"',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -529,13 +527,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: const Text(
-                          'Birth Defects',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
-                        ),
+                        child: const Text('Birth Defects', style: headingStyle),
                       ),
                       _verticalPadding,
                       // birth defects text field, saves to shared preference after user types
@@ -544,10 +536,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_birth_defects,
                           decoration: const InputDecoration(
-                            labelText:
-                                'Birth Defects (if none/unknown type "NA")',
-                            hintText: 'Birth Defects',
-                            border: OutlineInputBorder(),
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            hintText: 'If none/unknown type "NA"',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -563,10 +554,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Last Known Clothing and Accessories',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle
                         ),
                       ),
                       _verticalPadding,
@@ -576,9 +564,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_last_clothing,
                           decoration: const InputDecoration(
-                            labelText: 'Last Known Clothing and Accessories',
-                            hintText: 'Last Known Clothing and Accessories',
-                            border: OutlineInputBorder(),
+                            hintText: 'Clothing and Accessories',
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -594,10 +582,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Height',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle,
                         ),
                       ),
                       // HEIGHT (in inches and feet, two separate text field rows)
@@ -605,37 +590,40 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       // height in inches text field, saves to shared preference after user types
                       Row(
                         // height in inches text field, saves to shared preference after user types
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: TextField(
-                              controller: _mp_height_inches,
-                              decoration: const InputDecoration(
-                                labelText: 'Height (feet)',
-                                hintText: 'Height (feet)',
-                                border: OutlineInputBorder(),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  // _prefs.setString('p4_mp_height_feet', value);
-                                  _writeToPrefs('p4_mp_height_feet', value);
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
+                            width: MediaQuery.of(context).size.width * 0.425,
                             child: TextField(
                               controller: _mp_height_feet,
+                              keyboardType: TextInputType.phone,
                               decoration: const InputDecoration(
-                                labelText: 'Height (inches)',
-                                hintText: 'Height (inches)',
-                                border: OutlineInputBorder(),
+                                hintText: 'Feet (ft)',
+                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                               ),
                               onChanged: (value) {
                                 setState(() {
                                   // _prefs.setString('p4_mp_height_inches', value);
                                   _writeToPrefs('p4_mp_height_inches', value);
+                                });
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.425,
+                            child: TextField(
+                              controller: _mp_height_inches,
+                              keyboardType: TextInputType.phone,
+                              decoration: const InputDecoration(
+                                hintText: 'Inches (inch)',
+                                floatingLabelBehavior: FloatingLabelBehavior.never,
+                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  // _prefs.setString('p4_mp_height_feet', value);
+                                  _writeToPrefs('p4_mp_height_feet', value);
                                 });
                               },
                             ),
@@ -648,10 +636,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Weight',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle,
                         ),
                       ),
                       _verticalPadding,
@@ -660,10 +645,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
                           controller: _mp_weight,
+                          keyboardType: TextInputType.phone,
                           decoration: const InputDecoration(
-                            labelText: 'Weight (kilograms)',
-                            hintText: 'Weight (kilograms)',
-                            border: OutlineInputBorder(),
+                            hintText: 'Kilograms (kg)',
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -679,10 +665,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Blood Type',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle,
                         ),
                       ),
                       _verticalPadding,
@@ -693,13 +676,13 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             // text to display when no value is selected
                             hint: const Text('Select Blood Type'),
                             decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             ),
                             value: mp_blood_type,
-                            icon: const Icon(Icons.arrow_downward),
+                            icon: const Icon(Icons.arrow_drop_down),
                             iconSize: 24,
                             elevation: 16,
-                            style: const TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black54),
                             onChanged: (String? bloodtypeValue) {
                               setState(() {
                                 mp_blood_type = bloodtypeValue;
@@ -731,10 +714,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Medications',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle,
                         ),
                       ),
                       _verticalPadding,
@@ -745,9 +725,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           controller: _mp_medications,
                           decoration: const InputDecoration(
                             labelText:
-                                'Medications (if none/unknown type "NA")',
+                                'If none/unknown type "NA"',
                             hintText: 'Medications',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -763,10 +743,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Social Media Accounts',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          style: headingStyle,
                         ),
                       ),
                       _verticalPadding,
@@ -776,9 +753,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_facebook,
                           decoration: const InputDecoration(
-                            labelText: 'Facebook Username',
+                            labelText: 'Facebook',
                             hintText: 'Facebook Username',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -796,9 +773,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_twitter,
                           decoration: const InputDecoration(
-                            labelText: 'Twitter Username',
+                            labelText: 'Twitter',
                             hintText: 'Twitter Username',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -816,9 +793,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_instagram,
                           decoration: const InputDecoration(
-                            labelText: 'Instagram Username',
+                            labelText: 'Instagram',
                             hintText: 'Instagram Username',
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -834,13 +811,13 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       Row(
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.45,
+                            width: MediaQuery.of(context).size.width * 0.425,
                             child: TextField(
                               controller: _mp_socmed_other_platform,
                               decoration: const InputDecoration(
-                                labelText: 'Other Socmed Platform',
+                                labelText: 'Others',
                                 hintText: 'Platform Name',
-                                border: OutlineInputBorder(),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -851,14 +828,15 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               },
                             ),
                           ),
+                          const SizedBox(width: 15),
                           SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
+                            width: MediaQuery.of(context).size.width * 0.425,
                             child: TextField(
                               controller: _mp_socmed_other_username,
                               decoration: const InputDecoration(
                                 labelText: 'Username',
                                 hintText: 'Username',
-                                border: OutlineInputBorder(),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -871,47 +849,66 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           ),
                         ],
                       ),
+                      _verticalPadding,
 
                       // RECENT PHOTO SECTION
                       _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
-                          'Most recent photo of the absent/missing person',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                          'Photograph of the Absent/Missing Person',
+                          style: headingStyle,
                         ),
                       ),
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Center(
+                          child: Text(
+                            'Please upload the most recent pictures/photographs of the person being reported',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black38
+                            ),
+                          ),
+                        ),
+                      ),
+                      _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: ElevatedButton(
                           onPressed: () {
                             _getImages('mp_recent_photo');
                           },
-                          child: const Text('Upload'),
+                          child: const Text('Upload Photo'),
                         ),
                       ),
                       _verticalPadding,
                       // show recent photo in sizedbox
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        height: 200,
+                        //height: 200,
                         child: mp_recent_photo != null
                             ? Image.memory(mp_recent_photo!)
-                            : const Text('No image selected.'),
+                            : const Center(child: Text('No image selected.')),
                       ),
                       _verticalPadding,
+                      _verticalPadding,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Records of Dental and Fingerprints',
+                          style: headingStyle),
+                        ),
+                      const SizedBox(height: 5),
                       // checkbox to ask if the person has dental and/or finger print records
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
-                          'Does the person have dental and/or finger print records?',
+                          'Does the person have dental and/or finger print records? Please check all that apply',
                           style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black54),
+                              fontSize: 12,
+                              color: Colors.black38),
                         ),
                       ),
                       _verticalPadding,
@@ -926,7 +923,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               });
                             },
                           ),
-                          const Text('Finger Print Records'),
+                          const Center(child: Text('Finger Print Records')),
                           Checkbox(
                             value: mp_fingerprints_available,
                             onChanged: (value) {
@@ -945,11 +942,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
                               child: const Text(
-                                'Upload dental record photo',
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
+                                'Dental Record Photo',
+                                style: headingStyle,
                               ),
                             ),
                             SizedBox(
@@ -967,7 +961,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               width: MediaQuery.of(context).size.width - 40,
                               child: mp_dental_record_photo != null
                                   ? Image.memory(mp_dental_record_photo!)
-                                  : const Text('No image selected.'),
+                                  : const Center(child: Text('No image selected.')),
                             ),
                           ],
                         ),
@@ -979,11 +973,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
                               child: const Text(
-                                'Upload finger print record photo',
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black54),
+                                'Fingerprint Record Photo',
+                                style: headingStyle,
                               ),
                             ),
                             SizedBox(
@@ -999,7 +990,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             // show finger print record photo in sizedbox
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
-                              height: 200,
                               child: mp_finger_print_record_photo != null
                                   ? Image.memory(mp_finger_print_record_photo!)
                                   : const Text('No image selected.'),

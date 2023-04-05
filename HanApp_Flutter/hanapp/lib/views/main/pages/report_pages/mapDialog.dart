@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
+import 'package:hanapp/main.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -94,7 +95,8 @@ class _MapDialogState extends State<MapDialog> {
       title: const Text('Select Location'),
       content: _center != const LatLng(999999999, 999999999)
           ? SizedBox(
-              height: 300,
+              height: MediaQuery.of(context).size.height * 0.5,
+              width: MediaQuery.of(context).size.width * 0.5,
               child: Stack(
                 children: [
                   GoogleMap(
@@ -114,7 +116,7 @@ class _MapDialogState extends State<MapDialog> {
               ),
             )
           : SizedBox(
-              height: 300,
+              height: MediaQuery.of(context).size.height * 0.5,
               child: Center(
                 child: Column(
                   // ignore: prefer_const_literals_to_create_immutables
@@ -127,14 +129,14 @@ class _MapDialogState extends State<MapDialog> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Color.fromARGB(255, 114, 166, 209),
+                        color: Colors.black87,
                       ),
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     const SpinKitCubeGrid(
-                      color: Colors.blue,
+                      color: Palette.indigo,
                       size: 20,
                     ),
                   ],
@@ -144,20 +146,48 @@ class _MapDialogState extends State<MapDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
-        TextButton(
-          onPressed: isMarkerPresent ? () => _onConfirmPressed(context) : null,
-          // {
-          //   if (isMarkerPresent) {
-          //     _onConfirmPressed(context);
-          //   } else {
-          //     null;
-          //   }
-          // },
-          child: Text('Confirm'),
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: ElevatedButton(
+            onPressed: isMarkerPresent ? () => _onConfirmPressed(context) : null,
+            // {
+            //   if (isMarkerPresent) {
+            //     _onConfirmPressed(context);
+            //   } else {
+            //     null;
+            //   }
+            // },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Palette.indigo,
+              shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0)
+              ),
+            ),
+            child: const Text('Confirm', style: TextStyle(color: Colors.white),),
+          ),
         ),
       ],
     );
   }
 }
+
+// Container(
+// height: 35,
+// decoration: BoxDecoration(
+// color: Palette.indigo,
+// border: Border.all(width: 0.5),
+// borderRadius: const BorderRadius.all(Radius.circular(5))
+// ),
+// child: ElevatedButton(
+// onPressed: () {
+// Navigator.of(context).pop();
+// setState(() {
+// _selectedIndex = index;
+// });
+// // if user is on report page and wants to navigate away
+// // clear the prefs
+// clearPrefs();
+// },
+// child: const Text('Discard', style: TextStyle(color: Colors.white),),
