@@ -615,10 +615,11 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     String signaturePhotoString = base64Encode(signaturePhoto!);
     prefsDict['p6_reporteeSignature'] = signaturePhotoString;
     if (reportCount != null) {
-      await reportsRef.child(user!.uid).child(reportCount!).set(prefsDict);
+      String reportChildName = "report_${reportCount!}";
+      await reportsRef.child(user!.uid).child(reportChildName).set(prefsDict);
       await reportsRef
           .child(user!.uid)
-          .child(reportCount!)
+          .child(reportChildName)
           .child('images')
           .set(prefsImageDict);
       var reportsRefInt = int.parse(reportCount!);
