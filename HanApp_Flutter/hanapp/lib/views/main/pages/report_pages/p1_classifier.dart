@@ -32,6 +32,8 @@ class _Page1ClassifierState extends State<Page1Classifier> {
 
   // ageFromP3
   int? ageFromMPBirthDate;
+  // hoursSinceLastSeenFromP5
+  int? hoursSinceLastSeenFromP5;
 
   /* FORMATTING STUFF */
   // row padding
@@ -51,7 +53,6 @@ class _Page1ClassifierState extends State<Page1Classifier> {
           _prefs.getBool('p1_isVictimNaturalCalamity') ?? false;
 
       // isMinor depends on p3_mp_age
-      // check if p3_mp_age is null
       if (_prefs.getString('p3_mp_age') == null) {
         isMinor = false;
       } else {
@@ -64,7 +65,21 @@ class _Page1ClassifierState extends State<Page1Classifier> {
         }
       }
 
-      isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
+      // isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
+      // isMissing24Hours depends on p5_totalHoursSinceLastSeen
+      if (_prefs.getString('p5_totalHoursSinceLastSeen') == null) {
+        isMissing24Hours = false;
+      } else {
+        // if p5_totalHoursSinceLastSeen is not null, check if it is less than 24
+        hoursSinceLastSeenFromP5 =
+            int.parse(_prefs.getString('p5_totalHoursSinceLastSeen')!);
+        if (hoursSinceLastSeenFromP5! >= 24) {
+          isMissing24Hours = true;
+        } else {
+          isMissing24Hours = false;
+        }
+      }
+
       isVictimCrime = _prefs.getBool('p1_isVictimCrime') ?? false;
     });
   }
@@ -236,23 +251,41 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(3.0)),
                           value: isMissing24Hours,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isMissing24Hours = value;
-                            });
-                            // save the value of the checkbox
-                            _prefs.setBool('p1_isMissing24Hours', value!);
-                          },
+                          onChanged: hoursSinceLastSeenFromP5 != null
+                              ? null
+                              : (bool? value) {
+                                  setState(() {
+                                    isMissing24Hours = value;
+                                  });
+                                  // save the value of the checkbox
+                                  _prefs.setBool('p1_isMissing24Hours', value!);
+                                },
+                          // (bool? value) {
+                          // setState(() {
+                          //   isMissing24Hours = value;
+                          // });
+                          // // save the value of the checkbox
+                          // _prefs.setBool('p1_isMissing24Hours', value!);
+                          // },
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isMissing24Hours = !isMissing24Hours!;
-                          });
-                          _prefs.setBool(
-                              'p1_isMissing24Hours', isMissing24Hours!);
-                        },
+                        onTap: hoursSinceLastSeenFromP5 != null
+                            ? null
+                            : () {
+                                setState(() {
+                                  isMissing24Hours = !isMissing24Hours!;
+                                });
+                                _prefs.setBool(
+                                    'p1_isMissing24Hours', isMissing24Hours!);
+                              },
+                        // onTap: () {
+                        //   setState(() {
+                        //     isMissing24Hours = !isMissing24Hours!;
+                        //   });
+                        //   _prefs.setBool(
+                        //       'p1_isMissing24Hours', isMissing24Hours!);
+                        // },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
                           child: const Text(
@@ -336,6 +369,12 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           print(prefs.get('p3_mp_age'));
                         } else {
                           print("No age supplied yet");
+                        }
+                        //print p5_totalHoursSinceLastSeen from shared preferences if not null
+                        if (prefs.get('p5_totalHoursSinceLastSeen') != null) {
+                          print(prefs.get('p5_totalHoursSinceLastSeen'));
+                        } else {
+                          print("No hours supplied yet");
                         }
                       },
                       child: const Text('Print Shared Preferences'),
