@@ -288,7 +288,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             signaturePadKey.currentState!.clear();
                           },
                           child: const Text(
-                            'Clear', style: TextStyle(color: Colors.black87),
+                            'Clear',
+                            style: TextStyle(color: Colors.black87),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -411,7 +412,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                       content: const Text(
                                           'Are you sure you want to submit this report?'),
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15)),
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
                                       actions: <Widget>[
                                         TextButton(
                                           child: const Text('Cancel'),
@@ -420,12 +422,14 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                           },
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 10, right: 20),
+                                          padding: const EdgeInsets.only(
+                                              left: 10, right: 20),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Palette.indigo,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(5.0),
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
                                               ),
                                             ),
                                             child: const Text('Submit'),
@@ -434,8 +438,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                                   ? submitReport()
                                                   : await showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (BuildContext context) {
+                                                      builder: (BuildContext
+                                                          context) {
                                                         return AlertDialog(
                                                           title: const Text(
                                                               'Incomplete form'),

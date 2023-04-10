@@ -325,8 +325,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             labelText: 'Scars',
                             hintText: 'Scars',
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10))
-                            ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -346,8 +346,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             labelText: 'Marks',
                             hintText: 'Marks',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10))
-                            ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -367,8 +367,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             labelText: 'Tattoos',
                             hintText: 'Tattoos',
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10))
-                            ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -382,10 +382,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       // HAIR COLOR SECTION
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: const Text(
-                          'Hair Color',
-                          style: headingStyle),
-                        ),
+                        child: const Text('Hair Color', style: headingStyle),
+                      ),
 
                       _verticalPadding,
                       // hair color text field, saves to shared preference after user types
@@ -397,8 +395,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             hintText: 'Hair Color',
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10))
-                            ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -434,7 +432,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               width: MediaQuery.of(context).size.width - 100,
                               child: const Text(
                                   'Natural hair color? (not dyed/wearing wig)',
-                                  style: TextStyle(fontSize: 12, color: Colors.black54)),
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.black54)),
                             ),
                           ],
                         ),
@@ -454,7 +453,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Eye Color',
                             hintText: 'Eye Color',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -489,7 +490,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               width: MediaQuery.of(context).size.width - 100,
                               child: const Text(
                                   'Natural eye color? (not wearing contacts)',
-                                  style:TextStyle(fontSize: 12, color: Colors.black54)),
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.black54)),
                             ),
                           ],
                         ),
@@ -513,7 +515,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             hintText: 'If none/unknown type "NA"',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -538,7 +542,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             hintText: 'If none/unknown type "NA"',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -552,10 +558,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: const Text(
-                          'Last Known Clothing and Accessories',
-                          style: headingStyle
-                        ),
+                        child: const Text('Last Known Clothing and Accessories',
+                            style: headingStyle),
                       ),
                       _verticalPadding,
                       // last known clothing and accessories text field, saves to shared preference after user types
@@ -566,7 +570,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             hintText: 'Clothing and Accessories',
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -599,7 +605,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               keyboardType: TextInputType.phone,
                               decoration: const InputDecoration(
                                 hintText: 'Feet (ft)',
-                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -617,8 +625,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               keyboardType: TextInputType.phone,
                               decoration: const InputDecoration(
                                 hintText: 'Inches (inch)',
-                                floatingLabelBehavior: FloatingLabelBehavior.never,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -649,7 +660,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             hintText: 'Kilograms (kg)',
                             floatingLabelBehavior: FloatingLabelBehavior.never,
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -676,7 +689,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             // text to display when no value is selected
                             hint: const Text('Select Blood Type'),
                             decoration: const InputDecoration(
-                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
                             ),
                             value: mp_blood_type,
                             icon: const Icon(Icons.arrow_drop_down),
@@ -724,10 +739,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_medications,
                           decoration: const InputDecoration(
-                            labelText:
-                                'If none/unknown type "NA"',
+                            labelText: 'If none/unknown type "NA"',
                             hintText: 'Medications',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -755,7 +771,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Facebook',
                             hintText: 'Facebook Username',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -775,7 +793,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Twitter',
                             hintText: 'Twitter Username',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -795,7 +815,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           decoration: const InputDecoration(
                             labelText: 'Instagram',
                             hintText: 'Instagram Username',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -817,7 +839,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               decoration: const InputDecoration(
                                 labelText: 'Others',
                                 hintText: 'Platform Name',
-                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -836,7 +860,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               decoration: const InputDecoration(
                                 labelText: 'Username',
                                 hintText: 'Username',
-                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                                border: OutlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
                               ),
                               onChanged: (value) {
                                 setState(() {
@@ -866,10 +892,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: const Center(
                           child: Text(
                             'Please upload the most recent pictures/photographs of the person being reported',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black38
-                            ),
+                            style:
+                                TextStyle(fontSize: 12, color: Colors.black38),
                           ),
                         ),
                       ),
@@ -896,19 +920,16 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: const Text(
-                          'Records of Dental and Fingerprints',
-                          style: headingStyle),
-                        ),
+                        child: const Text('Records of Dental and Fingerprints',
+                            style: headingStyle),
+                      ),
                       const SizedBox(height: 5),
                       // checkbox to ask if the person has dental and/or finger print records
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Does the person have dental and/or finger print records? Please check all that apply',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black38),
+                          style: TextStyle(fontSize: 12, color: Colors.black38),
                         ),
                       ),
                       _verticalPadding,
@@ -961,7 +982,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               width: MediaQuery.of(context).size.width - 40,
                               child: mp_dental_record_photo != null
                                   ? Image.memory(mp_dental_record_photo!)
-                                  : const Center(child: Text('No image selected.')),
+                                  : const Center(
+                                      child: Text('No image selected.')),
                             ),
                           ],
                         ),

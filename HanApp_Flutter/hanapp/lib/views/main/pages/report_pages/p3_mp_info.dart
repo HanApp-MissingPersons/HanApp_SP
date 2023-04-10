@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'p1_classifier.dart';
 
 /* SHARED PREFERENCE */
 late SharedPreferences _prefs;
@@ -293,7 +294,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-                _verticalPadding,
+            _verticalPadding,
             // ABSENT/MISSING PERSON NAME SECTION
             _verticalPadding,
             SizedBox(
@@ -491,7 +492,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 style: headingStyle,
               ),
             ),
-                _verticalPadding,
+            _verticalPadding,
             // textfield for nationality/ethnicity
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -661,6 +662,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     _writeToPrefs('p3_mp_age', ageFromMPBirthDate!);
                     // age controller update (to auto-fill age form field)
                     _mp_age.text = ageFromMPBirthDate!;
+                    // from p1_classifier.dart, validator for p1_isMinor (<18)
+                    if (int.parse(ageFromMPBirthDate!) < 18) {
+                      _prefs.setBool('p1_isMinor', true);
+                    } else {
+                      _prefs.setBool('p1_isMinor', false);
+                    }
                   },
                 )),
             // AGE SECTION
@@ -692,7 +699,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 },
               ),
             ),
-                _verticalPadding,
+            _verticalPadding,
             // CONTACT INFO SECTION
             _verticalPadding,
             SizedBox(
@@ -721,7 +728,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 },
               ),
             ),
-                _verticalPadding,
+            _verticalPadding,
             SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text('or',
@@ -786,7 +793,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             ),
             // ADDRESS SECTION
             _verticalPadding,
-                _verticalPadding,
+            _verticalPadding,
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: const Text(
@@ -926,24 +933,24 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             ),
 
             // checkbox to ask user if MP has an alternate address
-                Row(
-                  children: [
-                    Checkbox(
-                      value: mp_hasAltAddress,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          mp_hasAltAddress = value!;
-                        });
-                      },
-                    ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 80,
-              child: const Text(
+            Row(
+              children: [
+                Checkbox(
+                  value: mp_hasAltAddress,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      mp_hasAltAddress = value!;
+                    });
+                  },
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 80,
+                  child: const Text(
                       'Absent/Missing person has another location/alternate address',
                       style: TextStyle(fontSize: 12, color: Colors.black54)),
-            ),
-                  ],
                 ),
+              ],
+            ),
 
             if (mp_hasAltAddress)
               Column(
@@ -1174,7 +1181,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     });
                   },
                 ),
-
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 80,
                   child: const Text(
@@ -1358,6 +1364,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 print(prefs.getString('p3_mp_age'));
                 print(prefs.getString('p3_mp_education'));
                 print(prefs.getString('p3_mp_firstName'));
+                print(prefs.getBool('p1_isMinor'));
               },
               child: const Text('Print Shared Preferences'),
             ),
