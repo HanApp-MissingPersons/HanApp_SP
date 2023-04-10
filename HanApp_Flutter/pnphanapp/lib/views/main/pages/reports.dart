@@ -1,21 +1,18 @@
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import '../../../firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class reportsPNP extends StatefulWidget {
-  const reportsPNP({super.key});
+  const reportsPNP({Key? key}) : super(key: key);
 
   @override
   State<reportsPNP> createState() => _reportsPNPState();
 }
 
-// ignore: camel_case_types
 class _reportsPNPState extends State<reportsPNP> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
+  List<Map> reportList = [];
 
   Widget listItem({required Map report}) {
     return Container(
@@ -48,17 +45,43 @@ class _reportsPNPState extends State<reportsPNP> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: double.infinity,
-        child: FirebaseAnimatedList(
-          query: dbRef,
-          itemBuilder: (BuildContext context, DataSnapshot snapshot,
-              Animation<double> animation, int index) {
-            dynamic values = snapshot.value;
-            print('[values] ${values[0]}');
-            // Map report = snapshot.value as Map;
-            // return listItem(report: report);
-            return (Text('balls'));
-          },
-        ));
+      height: double.infinity,
+      child: StreamBuilder(
+        stream: dbRef.onValue,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
+          reportList.clear();
+          dynamic values = snapshot.data?.snapshot.value;
+          if (values != null) {
+            Map<dynamic, dynamic> reports = values;
+            // users
+            reports.forEach((key, value) {
+              // reports of each user
+              value.forEach((key, value) {
+                value['key'] = key;
+                print('[key] $key');
+                print('[value] $value');
+                reportList.add(value);
+              });
+            });
+            // print('[reports] ${reports.values}');
+            // dynamic whoa = Map.fromIterable(reports.values);
+            Map<dynamic, dynamic> map = {
+              for (var item in reports.values) item: item
+            };
+            // print(map.keys.length);
+            // print('[keys] ${whoa.values}');
+          }
+          return ListView.builder(
+            itemCount: reportList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return listItem(report: reportList[index]);
+            },
+          );
+        },
+      ),
+    );
   }
 }
