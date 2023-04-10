@@ -631,5 +631,13 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       print('[unsuccessful] Report count is null.');
     }
     clearPrefs();
+    // show snackbar saying "Report Successfully Submitted"
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+            'Report Successfully Submitted.\nSee Updates page for more details.'),
+        duration: Duration(seconds: 3),
+      ),
+    );
   }
 }
