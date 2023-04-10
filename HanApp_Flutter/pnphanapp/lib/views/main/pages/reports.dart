@@ -15,6 +15,7 @@ class _reportsPNPState extends State<reportsPNP> {
   List<Map> reportList = [];
 
   Widget listItem({required Map report}) {
+    print('[report] $report');
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
@@ -22,7 +23,7 @@ class _reportsPNPState extends State<reportsPNP> {
       color: Colors.purple.shade100,
       child: Column(
         children: [
-          const Text('Reportee name'),
+          Text('Report Key: ${report['key']}'),
           GestureDetector(
             onTap: () {
               print('Tapped');
@@ -58,9 +59,11 @@ class _reportsPNPState extends State<reportsPNP> {
             Map<dynamic, dynamic> reports = values;
             // users
             reports.forEach((key, value) {
+              dynamic uid = key;
               // reports of each user
               value.forEach((key, value) {
-                value['key'] = key;
+                value['key'] = '${key}__$uid';
+                value['uid'] = uid;
                 print('[key] $key');
                 print('[value] $value');
                 reportList.add(value);
