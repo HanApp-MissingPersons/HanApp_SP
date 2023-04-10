@@ -97,8 +97,6 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   static const TextStyle headingStyle = TextStyle(
       fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
 
-
-
   // local variables for text fields
   // reportDate should be automatically filled with the current date, formatted (MM/DD/YYYY):
   String? reportDate = '${dateNow.month}/${dateNow.day}/${dateNow.year}';
@@ -153,6 +151,29 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
     });
   }
 
+  /* TOTAL HOURS SINCE LAST SEEN */
+  // totalHouseSinceLastSeen should be calculated by: CurrentDate+CurrentTime - LastSeenDate+LastSeenTime
+  String? totalHoursSinceLastSeen;
+  // function to calculate total hours since last seen, returns a string
+  Future<void> calculateHoursSinceLastSeen() async {
+    if (lastSeenDate != null && lastSeenTime != null) {
+      DateTime lastSeenDateTime =
+          DateFormat('MM/dd/yyyy hh:mm a').parse('$lastSeenDate $lastSeenTime');
+      DateTime currentDateTime = DateTime.now();
+
+      Duration timeDifference = currentDateTime.difference(lastSeenDateTime);
+
+      int totalHoursSinceLastSeenInt = timeDifference.inHours;
+      totalHoursSinceLastSeen = totalHoursSinceLastSeenInt.toString();
+
+      // save to shared prefs
+      prefs.setString('p5_totalHoursSinceLastSeen', totalHoursSinceLastSeen!);
+
+      // print
+      print('[p5] totalHoursSinceLastSeen: $totalHoursSinceLastSeen');
+    }
+  }
+
   @override
   void initState() {
     try {
@@ -162,6 +183,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
     }
     super.initState();
     getSharedPrefs();
+    calculateHoursSinceLastSeen();
   }
 
   @override
@@ -213,7 +235,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   enabled: false,
                   decoration: InputDecoration(
-                    border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     labelText: reportDate,
                   ),
                 ),
@@ -244,8 +267,10 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                       keyboardType: TextInputType.datetime,
                       controller: TextEditingController(text: lastSeenDate),
                       decoration: const InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
                           hintText: 'Tap to select date'),
                       // on tap, show date picker:
                       onTap: () async {
@@ -321,7 +346,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                     }
                   },
                   decoration: const InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     // holder text
                     hintText: 'Tap to select time',
@@ -329,6 +355,12 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 ),
               ),
               _verticalPadding,
+              /* HOURS SINCE LAST SEEN */
+              // print result of calculateHoursSinceLastSeen()
+              Text('Hours since last seen: ${calculateHoursSinceLastSeen()}'),
+
+              _verticalPadding,
+
               // Last Seen Location
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
@@ -418,7 +450,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   controller: TextEditingController(text: incidentDetails),
                   maxLines: 5,
                   decoration: const InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     labelText: 'Incident Details*',
                   ),
                   onChanged: (value) {
@@ -441,6 +474,10 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
                   print(prefs.getKeys());
+                  print(prefs.getString('p5_lastSeenDate'));
+                  print(prefs.getString('p5_lastSeenTime'));
+                  // print p5_totalHoursSinceLastSeen
+                  print(prefs.getString('p5_totalHoursSinceLastSeen'));
                 },
                 child: const Text('Print Shared Preferences'),
               ),
