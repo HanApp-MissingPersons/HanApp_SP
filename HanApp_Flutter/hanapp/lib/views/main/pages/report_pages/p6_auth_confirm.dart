@@ -288,7 +288,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             signaturePadKey.currentState!.clear();
                           },
                           child: const Text(
-                            'Clear', style: TextStyle(color: Colors.black87),
+                            'Clear',
+                            style: TextStyle(color: Colors.black87),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -411,7 +412,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                       content: const Text(
                                           'Are you sure you want to submit this report?'),
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15)),
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
                                       actions: <Widget>[
                                         TextButton(
                                           child: const Text('Cancel'),
@@ -420,12 +422,14 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                           },
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.only(left: 10, right: 20),
+                                          padding: const EdgeInsets.only(
+                                              left: 10, right: 20),
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Palette.indigo,
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(5.0),
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
                                               ),
                                             ),
                                             child: const Text('Submit'),
@@ -434,8 +438,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                                   ? submitReport()
                                                   : await showDialog(
                                                       context: context,
-                                                      builder:
-                                                          (BuildContext context) {
+                                                      builder: (BuildContext
+                                                          context) {
                                                         return AlertDialog(
                                                           title: const Text(
                                                               'Incomplete form'),
@@ -498,91 +502,91 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     bool returnval = true;
     print('[KEYSLIST] $keysList');
     print('[PREFSDICT] $prefsDict');
-    // p2 required values
-    if (!(keysList.contains('p2_citizenship') &&
-        keysList.contains('p2_civil_status') &&
-        keysList.contains('p2_region') &&
-        keysList.contains('p2_province') &&
-        keysList.contains('p2_townCity') &&
-        keysList.contains('p2_barangay') &&
-        keysList.contains('p2_reportee_ID_Photo') &&
-        keysList.contains('p2_relationshipToMP') &&
-        keysList.contains('p2_singlePhoto_face'))) {
-      print('[p2 report not valid] p2 values are not complete');
-      dialogMessage.add('p2');
-      returnval = false;
-    } else {
-      if (dialogMessage.contains('p2')) {
-        dialogMessage.remove('p2');
-      }
-    }
-    // p3 required values
-    if (!(keysList.contains('p3_mp_lastName') &&
-        keysList.contains('p3_mp_firstName') &&
-        keysList.contains('p3_mp_civilStatus') &&
-        keysList.contains('p3_mp_sex') &&
-        keysList.contains('p3_mp_birthDate') &&
-        keysList.contains('p3_mp_age') &&
-        keysList.contains('p3_mp_nationalityEthnicity') &&
-        keysList.contains('p3_mp_citizenship') &&
-        (keysList.contains('p3_mp_contact_homePhone') ||
-            keysList.contains('p3_mp_contact_mobilePhone')) &&
-        keysList.contains('p3_mp_address_region') &&
-        keysList.contains('p3_mp_address_province') &&
-        keysList.contains('p3_mp_address_city') &&
-        keysList.contains('p3_mp_address_barangay'))) {
-      print('[p3 report not valid] p3 values are not complete');
-      dialogMessage.add('p3');
-      returnval = false;
-    } else {
-      if (dialogMessage.contains('p3')) {
-        dialogMessage.remove('p3');
-      }
-    }
-    // p4 required values (excluding photos); all required
-    if (!(keysList.contains('p4_mp_hair_color_natural') &&
-        keysList.contains('p4_mp_eye_color_natural') &&
-        keysList.contains('p4_mp_scars') &&
-        keysList.contains('p4_mp_marks') &&
-        keysList.contains('p4_mp_tattoos') &&
-        keysList.contains('p4_mp_hair_color') &&
-        keysList.contains('p4_mp_eye_color') &&
-        keysList.contains('p4_mp_prosthetics') &&
-        keysList.contains('p4_mp_birth_defects') &&
-        keysList.contains('p4_mp_last_clothing') &&
-        keysList.contains('p4_mp_height_feet') &&
-        keysList.contains('p4_mp_height_inches') &&
-        keysList.contains('p4_mp_weight') &&
-        keysList.contains('p4_mp_blood_type') &&
-        keysList.contains('p4_mp_medications') &&
-        // in socmed, other platform is not required
-        keysList.contains('p4_mp_socmed_facebook_username') &&
-        keysList.contains('p4_mp_socmed_twitter_username') &&
-        keysList.contains('p4_mp_socmed_instagram_username'))) {
-      print('[p4 report not valid] p4 values are not complete');
-      dialogMessage.add('p4');
-      returnval = false;
-    } else {
-      if (dialogMessage.contains('p4')) {
-        dialogMessage.remove('p4');
-      }
-    }
+    // // p2 required values
+    // if (!(keysList.contains('p2_citizenship') &&
+    //     keysList.contains('p2_civil_status') &&
+    //     keysList.contains('p2_region') &&
+    //     keysList.contains('p2_province') &&
+    //     keysList.contains('p2_townCity') &&
+    //     keysList.contains('p2_barangay') &&
+    //     keysList.contains('p2_reportee_ID_Photo') &&
+    //     keysList.contains('p2_relationshipToMP') &&
+    //     keysList.contains('p2_singlePhoto_face'))) {
+    //   print('[p2 report not valid] p2 values are not complete');
+    //   dialogMessage.add('p2');
+    //   returnval = false;
+    // } else {
+    //   if (dialogMessage.contains('p2')) {
+    //     dialogMessage.remove('p2');
+    //   }
+    // }
+    // // p3 required values
+    // if (!(keysList.contains('p3_mp_lastName') &&
+    //     keysList.contains('p3_mp_firstName') &&
+    //     keysList.contains('p3_mp_civilStatus') &&
+    //     keysList.contains('p3_mp_sex') &&
+    //     keysList.contains('p3_mp_birthDate') &&
+    //     keysList.contains('p3_mp_age') &&
+    //     keysList.contains('p3_mp_nationalityEthnicity') &&
+    //     keysList.contains('p3_mp_citizenship') &&
+    //     (keysList.contains('p3_mp_contact_homePhone') ||
+    //         keysList.contains('p3_mp_contact_mobilePhone')) &&
+    //     keysList.contains('p3_mp_address_region') &&
+    //     keysList.contains('p3_mp_address_province') &&
+    //     keysList.contains('p3_mp_address_city') &&
+    //     keysList.contains('p3_mp_address_barangay'))) {
+    //   print('[p3 report not valid] p3 values are not complete');
+    //   dialogMessage.add('p3');
+    //   returnval = false;
+    // } else {
+    //   if (dialogMessage.contains('p3')) {
+    //     dialogMessage.remove('p3');
+    //   }
+    // }
+    // // p4 required values (excluding photos); all required
+    // if (!(keysList.contains('p4_mp_hair_color_natural') &&
+    //     keysList.contains('p4_mp_eye_color_natural') &&
+    //     keysList.contains('p4_mp_scars') &&
+    //     keysList.contains('p4_mp_marks') &&
+    //     keysList.contains('p4_mp_tattoos') &&
+    //     keysList.contains('p4_mp_hair_color') &&
+    //     keysList.contains('p4_mp_eye_color') &&
+    //     keysList.contains('p4_mp_prosthetics') &&
+    //     keysList.contains('p4_mp_birth_defects') &&
+    //     keysList.contains('p4_mp_last_clothing') &&
+    //     keysList.contains('p4_mp_height_feet') &&
+    //     keysList.contains('p4_mp_height_inches') &&
+    //     keysList.contains('p4_mp_weight') &&
+    //     keysList.contains('p4_mp_blood_type') &&
+    //     keysList.contains('p4_mp_medications') &&
+    //     // in socmed, other platform is not required
+    //     keysList.contains('p4_mp_socmed_facebook_username') &&
+    //     keysList.contains('p4_mp_socmed_twitter_username') &&
+    //     keysList.contains('p4_mp_socmed_instagram_username'))) {
+    //   print('[p4 report not valid] p4 values are not complete');
+    //   dialogMessage.add('p4');
+    //   returnval = false;
+    // } else {
+    //   if (dialogMessage.contains('p4')) {
+    //     dialogMessage.remove('p4');
+    //   }
+    // }
 
-    // p5 required values
-    if (!(keysList.contains('p5_reportDate') &&
-        keysList.contains('p5_lastSeenDate') &&
-        keysList.contains('p5_lastSeenTime') &&
-        keysList.contains('p5_locSnapshot') &&
-        keysList.contains('p5_lastSeenLoc') &&
-        keysList.contains('p5_incidentDetails'))) {
-      print('[p5 report not valid] p5 values are not complete');
-      dialogMessage.add('p5');
-      returnval = false;
-    } else {
-      if (dialogMessage.contains('p5')) {
-        dialogMessage.remove('p5');
-      }
-    }
+    // // p5 required values
+    // if (!(keysList.contains('p5_reportDate') &&
+    //     keysList.contains('p5_lastSeenDate') &&
+    //     keysList.contains('p5_lastSeenTime') &&
+    //     keysList.contains('p5_locSnapshot') &&
+    //     keysList.contains('p5_lastSeenLoc') &&
+    //     keysList.contains('p5_incidentDetails'))) {
+    //   print('[p5 report not valid] p5 values are not complete');
+    //   dialogMessage.add('p5');
+    //   returnval = false;
+    // } else {
+    //   if (dialogMessage.contains('p5')) {
+    //     dialogMessage.remove('p5');
+    //   }
+    // }
     return returnval;
   }
 
@@ -604,13 +608,14 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   }
 
   submitReport() async {
-    String signaturePhotoString = base64Encode(signaturePhoto!);
-    prefsDict['p6_reporteeSignature'] = signaturePhotoString;
+    // String signaturePhotoString = base64Encode(signaturePhoto!);
+    // prefsDict['p6_reporteeSignature'] = signaturePhotoString;
     if (reportCount != null) {
-      await reportsRef.child(user!.uid).child(reportCount!).set(prefsDict);
+      String reportChildName = "report_${reportCount!}";
+      await reportsRef.child(user!.uid).child(reportChildName).set(prefsDict);
       await reportsRef
           .child(user!.uid)
-          .child(reportCount!)
+          .child(reportChildName)
           .child('images')
           .set(prefsImageDict);
       var reportsRefInt = int.parse(reportCount!);
