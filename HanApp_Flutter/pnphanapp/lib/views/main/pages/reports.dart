@@ -219,6 +219,11 @@ class _reportsPNPState extends State<reportsPNP> {
             };
             // print(map.keys.length);
             // print('[keys] ${whoa.values}');
+          } else {
+            return Container(
+              alignment: Alignment.center,
+              child: const Text('There are currently no reports'),
+            );
           }
           return ListView.builder(
             itemCount: reportList.length,
