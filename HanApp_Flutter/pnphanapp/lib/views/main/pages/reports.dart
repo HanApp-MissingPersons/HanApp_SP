@@ -18,7 +18,7 @@ class _reportsPNPState extends State<reportsPNP> {
   List<Map> reportList = [];
 
   Widget listItem({required Map report}) {
-    print('[report] $report');
+    // print('[report] $report');
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
@@ -31,7 +31,11 @@ class _reportsPNPState extends State<reportsPNP> {
         ),
         child: GestureDetector(
           onTap: () {
-            print('Tapped');
+            print('\n\n');
+            for (dynamic i in reportList) {
+              print('\n[aye] ${i.keys} ${i.runtimeType}');
+            }
+            // print(reportList);
           },
           child: Row(
             children: [
@@ -207,9 +211,21 @@ class _reportsPNPState extends State<reportsPNP> {
               value.forEach((key, value) {
                 value['key'] = '${key}__$uid';
                 value['uid'] = uid;
-                print('[key] $key');
-                print('[value] $value');
+                // print('[key] $key');
+                // print('[value] $value');
+
+                // add report to list
                 reportList.add(value);
+
+                value.forEach((key, value) {
+                  if (key == 'images') {
+                    // images in the report
+                    value.forEach((key, value) {
+                      print('[keyYEAH] $key');
+                    });
+                  }
+                  // print('[keyoop] $key');
+                });
               });
             });
             // print('[reports] ${reports.values}');

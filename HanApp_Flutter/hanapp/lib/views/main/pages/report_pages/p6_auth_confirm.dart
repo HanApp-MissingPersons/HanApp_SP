@@ -307,7 +307,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             ui.Image image =
                                 await signaturePadKey.currentState!.toImage();
                             await _getSignature(image);
-
+                            await _saveSignature();
                             // pop-up showing preview of signature
                             // ignore: use_build_context_synchronously
                             await showDialog(
