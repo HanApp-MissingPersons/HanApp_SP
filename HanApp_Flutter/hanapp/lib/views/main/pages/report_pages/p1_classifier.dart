@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hanapp/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'p3_mp_info.dart';
 
 /* LACKING:
 1. Need to automatically add padding between rows (instead of hardcoding the padding in between rows)
@@ -30,6 +30,11 @@ class _Page1ClassifierState extends State<Page1Classifier> {
   bool? isMissing24Hours;
   bool? isVictimCrime;
 
+  // ageFromP3
+  int? ageFromMPBirthDate;
+  // hoursSinceLastSeenFromP5
+  int? hoursSinceLastSeenFromP5;
+
   /* FORMATTING STUFF */
   // row padding
   static const _verticalPadding = SizedBox(height: 15);
@@ -46,8 +51,35 @@ class _Page1ClassifierState extends State<Page1Classifier> {
       // set the state of the checkboxes
       isVictimNaturalCalamity =
           _prefs.getBool('p1_isVictimNaturalCalamity') ?? false;
-      isMinor = _prefs.getBool('p1_isMinor') ?? false;
-      isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
+
+      // isMinor depends on p3_mp_age
+      if (_prefs.getString('p3_mp_age') == null) {
+        isMinor = false;
+      } else {
+        // if p3_mp_age is not null, check if it is less than 18
+        ageFromMPBirthDate = int.parse(_prefs.getString('p3_mp_age')!);
+        if (ageFromMPBirthDate! < 18) {
+          isMinor = true;
+        } else {
+          isMinor = false;
+        }
+      }
+
+      // isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
+      // isMissing24Hours depends on p5_totalHoursSinceLastSeen
+      if (_prefs.getString('p5_totalHoursSinceLastSeen') == null) {
+        isMissing24Hours = false;
+      } else {
+        // if p5_totalHoursSinceLastSeen is not null, check if it is less than 24
+        hoursSinceLastSeenFromP5 =
+            int.parse(_prefs.getString('p5_totalHoursSinceLastSeen')!);
+        if (hoursSinceLastSeenFromP5! >= 24) {
+          isMissing24Hours = true;
+        } else {
+          isMissing24Hours = false;
+        }
+      }
+
       isVictimCrime = _prefs.getBool('p1_isVictimCrime') ?? false;
     });
   }
@@ -92,12 +124,16 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   ), // Page 1 Text
                   _verticalPadding,
                   Padding(
-                    padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width/50),
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width / 50),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         const SizedBox(width: 5),
-                        const Icon(Icons.info_outline_rounded, size: 20,),
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          size: 20,
+                        ),
                         const SizedBox(width: 10),
                         SizedBox(
                           width: MediaQuery.of(context).size.width - 80,
@@ -124,14 +160,16 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                           // retrieve value of the checkbox from shared preferences
                           value: isVictimNaturalCalamity,
                           activeColor: Palette.indigo,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3.0)),
 
                           onChanged: (bool? value) {
                             setState(() {
                               isVictimNaturalCalamity = value;
                             });
                             // save the value of the checkbox
-                            _prefs.setBool('p1_isVictimNaturalCalamity', value!);
+                            _prefs.setBool(
+                                'p1_isVictimNaturalCalamity', value!);
                           },
                         ),
                       ), // Checkbox for Natural Calamity
@@ -162,25 +200,37 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         scale: 1.2,
                         child: Checkbox(
                           activeColor: Palette.indigo,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3.0)),
                           value: isMinor,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isMinor = value;
-                            });
-                            // save the value of the checkbox
-                            _prefs.setBool('p1_isMinor', value!);
-                          },
+                          onChanged: ageFromMPBirthDate != null
+                              ? null
+                              : (bool? value) {
+                                  setState(() {
+                                    isMinor = value;
+                                  });
+                                  // save the value of the checkbox
+                                  _prefs.setBool('p1_isMinor', value!);
+                                },
                         ),
                       ),
                       // GestureDetector that checks the checkbox when the text is tapped
                       GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isMinor = !isMinor!;
-                          });
-                          _prefs.setBool('p1_isMinor', isMinor!);
-                        },
+                        // disable tap if ageFromMPBirthDate is not null && ageFromMPBirthDate >= 18
+                        onTap: ageFromMPBirthDate != null
+                            ? null
+                            : () {
+                                setState(() {
+                                  isMinor = !isMinor!;
+                                });
+                                _prefs.setBool('p1_isMinor', isMinor!);
+                              },
+                        // onTap: () {
+                        //   setState(() {
+                        //     isMinor = !isMinor!;
+                        //   });
+                        //   _prefs.setBool('p1_isMinor', isMinor!);
+                        // },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
                           child: const Text(
@@ -198,25 +248,44 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         scale: 1.2,
                         child: Checkbox(
                           activeColor: Palette.indigo,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3.0)),
                           value: isMissing24Hours,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isMissing24Hours = value;
-                            });
-                            // save the value of the checkbox
-                            _prefs.setBool('p1_isMissing24Hours', value!);
-                          },
+                          onChanged: hoursSinceLastSeenFromP5 != null
+                              ? null
+                              : (bool? value) {
+                                  setState(() {
+                                    isMissing24Hours = value;
+                                  });
+                                  // save the value of the checkbox
+                                  _prefs.setBool('p1_isMissing24Hours', value!);
+                                },
+                          // (bool? value) {
+                          // setState(() {
+                          //   isMissing24Hours = value;
+                          // });
+                          // // save the value of the checkbox
+                          // _prefs.setBool('p1_isMissing24Hours', value!);
+                          // },
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isMissing24Hours = !isMissing24Hours!;
-                          });
-                          _prefs.setBool(
-                              'p1_isMissing24Hours', isMissing24Hours!);
-                        },
+                        onTap: hoursSinceLastSeenFromP5 != null
+                            ? null
+                            : () {
+                                setState(() {
+                                  isMissing24Hours = !isMissing24Hours!;
+                                });
+                                _prefs.setBool(
+                                    'p1_isMissing24Hours', isMissing24Hours!);
+                              },
+                        // onTap: () {
+                        //   setState(() {
+                        //     isMissing24Hours = !isMissing24Hours!;
+                        //   });
+                        //   _prefs.setBool(
+                        //       'p1_isMissing24Hours', isMissing24Hours!);
+                        // },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width - 100,
                           child: const Text(
@@ -233,7 +302,8 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         scale: 1.2,
                         child: Checkbox(
                           activeColor: Palette.indigo,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(3.0)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(3.0)),
                           value: isVictimCrime,
                           onChanged: (bool? value) {
                             setState(() {
@@ -266,11 +336,15 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   _verticalPadding,
                   //info/instruction
                   Padding(
-                    padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width/50),
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width / 50),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [
-                        Icon(Icons.info_outline_rounded, size: 20,),
+                        Icon(
+                          Icons.info_outline_rounded,
+                          size: 20,
+                        ),
                         SizedBox(width: 5),
                         Text(
                           '''Swipe left to continue.''',
@@ -283,11 +357,25 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left:  MediaQuery.of(context).size.width/6),
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width / 6),
                     child: TextButton(
                       onPressed: () async {
                         final prefs = await SharedPreferences.getInstance();
                         print(prefs.getKeys());
+                        print(prefs.get('p1_isMinor'));
+                        //print p3_mp_age from shared preferences if not null
+                        if (prefs.get('p3_mp_age') != null) {
+                          print(prefs.get('p3_mp_age'));
+                        } else {
+                          print("No age supplied yet");
+                        }
+                        //print p5_totalHoursSinceLastSeen from shared preferences if not null
+                        if (prefs.get('p5_totalHoursSinceLastSeen') != null) {
+                          print(prefs.get('p5_totalHoursSinceLastSeen'));
+                        } else {
+                          print("No hours supplied yet");
+                        }
                       },
                       child: const Text('Print Shared Preferences'),
                     ),
@@ -302,6 +390,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
             child: SpinKitCubeGrid(
               color: Palette.indigo,
               size: 40.0,
-            ),);
+            ),
+          );
   }
 }

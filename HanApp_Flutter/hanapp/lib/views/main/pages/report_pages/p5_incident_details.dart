@@ -97,13 +97,13 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   static const TextStyle headingStyle = TextStyle(
       fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
 
-
-
   // local variables for text fields
   // reportDate should be automatically filled with the current date, formatted (MM/DD/YYYY):
   String? reportDate = '${dateNow.month}/${dateNow.day}/${dateNow.year}';
   String? lastSeenDate;
   String? lastSeenTime;
+  // totalHouseSinceLastSeen should be calculated by: CurrentDate+CurrentTime - LastSeenDate+LastSeenTime
+  String? totalHoursSinceLastSeen;
   String? lastSeenLoc;
   String? incidentDetails;
   Uint8List? locSnapshot;
@@ -140,6 +140,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
       prefs.setString('p5_reportDate', reportDate!);
       lastSeenDate = prefs.getString('p5_lastSeenDate');
       lastSeenTime = prefs.getString('p5_lastSeenTime');
+      totalHoursSinceLastSeen = prefs.getString('p5_totalHoursSinceLastSeen');
       lastSeenLoc = prefs.getString('p5_lastSeenLoc');
       incidentDetails = prefs.getString('p5_incidentDetails');
       String? locSnapshotString = prefs.getString('p5_locSnapshot');
@@ -153,6 +154,27 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
     });
   }
 
+  // /* TOTAL HOURS SINCE LAST SEEN */
+  // // function to calculate total hours since last seen, returns a string
+  // Future<void> calculateHoursSinceLastSeen() async {
+  //   if (lastSeenDate != null && lastSeenTime != null) {
+  //     DateTime lastSeenDateTime =
+  //         DateFormat('MM/dd/yyyy hh:mm a').parse('$lastSeenDate $lastSeenTime');
+  //     DateTime currentDateTime = DateTime.now();
+
+  //     Duration timeDifference = currentDateTime.difference(lastSeenDateTime);
+
+  //     int totalHoursSinceLastSeenInt = timeDifference.inHours;
+  //     totalHoursSinceLastSeen = totalHoursSinceLastSeenInt.toString();
+
+  //     // save to shared prefs
+  //     prefs.setString('p5_totalHoursSinceLastSeen', totalHoursSinceLastSeen!);
+
+  //     // print
+  //     print('[p5] totalHoursSinceLastSeen: $totalHoursSinceLastSeen');
+  //   }
+  // }
+
   @override
   void initState() {
     try {
@@ -162,6 +184,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
     }
     super.initState();
     getSharedPrefs();
+    // calculateHoursSinceLastSeen();
   }
 
   @override
@@ -213,7 +236,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   enabled: false,
                   decoration: InputDecoration(
-                    border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     labelText: reportDate,
                   ),
                 ),
@@ -244,8 +268,10 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                       keyboardType: TextInputType.datetime,
                       controller: TextEditingController(text: lastSeenDate),
                       decoration: const InputDecoration(
-                        floatingLabelBehavior: FloatingLabelBehavior.never,
-                          border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
                           hintText: 'Tap to select date'),
                       // on tap, show date picker:
                       onTap: () async {
@@ -279,56 +305,100 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               ),
               _verticalPadding,
               // Last Seen Time Text
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 40,
-                child: const Text(
-                  'Last Seen Time',
-                  style: headingStyle,
+              if (lastSeenDate != null)
+                Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: const Text(
+                        'Last Seen Time',
+                        style: headingStyle,
+                      ),
+                    ),
+                    _verticalPadding,
+                    // Last Seen Time Text Field
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: TextFormField(
+                        showCursor: false,
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        readOnly: true,
+                        controller: TextEditingController(text: lastSeenTime),
+                        onTap: () async {
+                          final TimeOfDay? picked = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (picked != null) {
+                            setState(() {
+                              _selectedTime = DateTime(now.year, now.month,
+                                  now.day, picked.hour, picked.minute);
+                              lastSeenTime =
+                                  DateFormat('hh:mm a').format(_selectedTime!);
+                              // prefs.setString('p5_lastSeenTime', lastSeenTime!);
+                              _writeToPrefs('p5_lastSeenTime', lastSeenTime!);
+                              // calculate hours since last seen from last seen date and time
+                              // print lastSeenDate and lastSeenTime in one string
+                              print('DateTime: $lastSeenDate $lastSeenTime');
+                              DateFormat inputFormat =
+                                  DateFormat('MMMM d, y hh:mm a');
+                              DateTime lastSeenDateAndTime = inputFormat
+                                  .parse('$lastSeenDate $lastSeenTime');
+                              print('LastSeenDateTime: $lastSeenDateAndTime');
+                              DateTime currentDateAndTime = DateTime.now();
+                              print('CurrentDateTime: $currentDateAndTime');
+                              Duration timeDifference = currentDateAndTime
+                                  .difference(lastSeenDateAndTime);
+                              print('TimeDifference: $timeDifference');
+                              int hoursSinceLastSeen = timeDifference.inHours;
+                              print('HoursSinceLastSeen: $hoursSinceLastSeen');
+                              totalHoursSinceLastSeen =
+                                  hoursSinceLastSeen.toString();
+                              _writeToPrefs('p5_totalHoursSinceLastSeen',
+                                  totalHoursSinceLastSeen!);
+                            });
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                          // holder text
+                          hintText: 'Tap to select time',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
               _verticalPadding,
-              // // Last Seen Time button
-              // SizedBox(
-              //   width: MediaQuery.of(context).size.width - 40,
-              //   child: ElevatedButton(
-              //     onPressed: _selectTime,
-              //     child: const Text('Select Time'),
-              //   ),
-              // ),
-              // Last Seen Time Text Field
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 40,
-                child: TextFormField(
-                  showCursor: false,
-                  autocorrect: false,
-                  enableSuggestions: false,
-                  readOnly: true,
-                  controller: TextEditingController(text: lastSeenTime),
-                  onTap: () async {
-                    final TimeOfDay? picked = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (picked != null) {
-                      setState(() {
-                        _selectedTime = DateTime(now.year, now.month, now.day,
-                            picked.hour, picked.minute);
-                        lastSeenTime =
-                            DateFormat('hh:mm a').format(_selectedTime!);
-                        // prefs.setString('p5_lastSeenTime', lastSeenTime!);
-                        _writeToPrefs('p5_lastSeenTime', lastSeenTime!);
-                      });
-                    }
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
-                    // holder text
-                    hintText: 'Tap to select time',
+              /* HOURS SINCE LAST SEEN */
+              // print result of calculateHoursSinceLastSeen() in a text field
+              // if last seen date and time are not null, show sized box
+              if (lastSeenDate != null && lastSeenTime != null)
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: TextField(
+                    controller:
+                        TextEditingController(text: totalHoursSinceLastSeen),
+                    enabled: false,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      labelText: "Hours Since Last Seen",
+                    ),
+                    onChanged: (value) {
+                      totalHoursSinceLastSeen = value;
+                      // prefs.setString('p5_hoursSinceLastSeen', value);
+                      _writeToPrefs('p5_hoursSinceLastSeen', value);
+                    },
                   ),
-                ),
-              ),
+                )
+              else
+                const SizedBox(),
               _verticalPadding,
+              // end of hours since last seen
               // Last Seen Location
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
@@ -418,7 +488,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   controller: TextEditingController(text: incidentDetails),
                   maxLines: 5,
                   decoration: const InputDecoration(
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                     labelText: 'Incident Details*',
                   ),
                   onChanged: (value) {
@@ -441,6 +512,10 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 onPressed: () async {
                   final prefs = await SharedPreferences.getInstance();
                   print(prefs.getKeys());
+                  print(prefs.getString('p5_lastSeenDate'));
+                  print(prefs.getString('p5_lastSeenTime'));
+                  // print p5_totalHoursSinceLastSeen
+                  print(prefs.getString('p5_totalHoursSinceLastSeen'));
                 },
                 child: const Text('Print Shared Preferences'),
               ),
