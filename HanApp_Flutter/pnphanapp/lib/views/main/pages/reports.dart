@@ -18,10 +18,43 @@ class _reportsPNPState extends State<reportsPNP> {
   List<Map> reportList = [];
 
   Widget listItem({required Map report}) {
+    // ignore: unused_local_variable
     Map reportImages;
     if (report.containsKey('images')) {
       reportImages = report['images'];
     }
+
+    String importanceString = '';
+    String lastSeenDate = report['p5_lastSeenDate'] ?? '';
+    String lastSeenTime = report['p5_lastSeenTime'] ?? '';
+    String dateReported = report['p5_reportDate'] ?? '';
+    if (report['p1_isMinor'] != null && report['p1_isMinor']) {
+      importanceString = 'Minor';
+    }
+    if (report['p1_isMissing24Hours'] != null &&
+        report['p1_isMissing24Hours']) {
+      if (importanceString.isNotEmpty) {
+        importanceString = '${importanceString}, Over 24 hours missing';
+      } else {
+        importanceString = 'Over 24 hours missing';
+      }
+    }
+    if (report['p1_isVictimCrime'] != null && report['p1_isVictimCrime']) {
+      if (importanceString.isNotEmpty) {
+        importanceString = '$importanceString, \nVictim of Crime';
+      } else {
+        importanceString = '\nVictim of Crime';
+      }
+    }
+    if (report['p1_isVictimNaturalCalamity'] != null &&
+        report['p1_isVictimNaturalCalamity']) {
+      if (importanceString.isNotEmpty) {
+        importanceString = '$importanceString, \nVictim of Calamity';
+      } else {
+        importanceString = 'Victim of Calamity';
+      }
+    }
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
@@ -65,7 +98,9 @@ class _reportsPNPState extends State<reportsPNP> {
                               fontSize: 6, fontWeight: FontWeight.w700),
                         ),
                         Text(
-                          'Minor, Victim of Calamity',
+                          importanceString == ''
+                              ? 'Absent Person'
+                              : importanceString,
                           style: GoogleFonts.inter(fontSize: 13),
                         ),
                       ],
@@ -74,31 +109,49 @@ class _reportsPNPState extends State<reportsPNP> {
                 ),
               ),
 
-              // TIME REPORTED
+              // last seen date
               SizedBox(
                 width: 150,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('11:55',
+                    // change text
+                    Text(lastSeenDate,
                         style: GoogleFonts.inter(
                             fontSize: 18, fontWeight: FontWeight.w600)),
-                    Text('Time Reported',
+                    Text('Last Seen Date',
                         style: GoogleFonts.inter(
                             fontSize: 13, color: Colors.black38)),
                   ],
                 ),
               ),
 
-              // DATE REPORTED
+              // Last seen time
               SizedBox(
                 width: 200,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('April 11, 2023',
+                    Text(lastSeenTime,
+                        style: GoogleFonts.inter(
+                            fontSize: 18, fontWeight: FontWeight.w600)),
+                    Text('Last Seen time',
+                        style: GoogleFonts.inter(
+                            fontSize: 13, color: Colors.black38)),
+                  ],
+                ),
+              ),
+
+              // date reported
+              SizedBox(
+                width: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(dateReported,
                         style: GoogleFonts.inter(
                             fontSize: 18, fontWeight: FontWeight.w600)),
                     Text('Date Reported',
