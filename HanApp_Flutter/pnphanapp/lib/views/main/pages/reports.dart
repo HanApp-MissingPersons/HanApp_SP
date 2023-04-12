@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -19,7 +22,7 @@ class _reportsPNPState extends State<reportsPNP> {
 
   Widget listItem({required Map report}) {
     // ignore: unused_local_variable
-    Map reportImages;
+    Map reportImages = {};
     if (report.containsKey('images')) {
       reportImages = report['images'];
     }
@@ -28,6 +31,10 @@ class _reportsPNPState extends State<reportsPNP> {
     String lastSeenDate = report['p5_lastSeenDate'] ?? '';
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
+    String missingPersonImageString = reportImages['p4_mp_recent_photo'] ?? '';
+    Uint8List missingPersonImageBytes;
+
+    // classify importance
     if (report['p1_isMinor'] != null && report['p1_isMinor']) {
       importanceString = 'Minor';
     }
@@ -43,7 +50,7 @@ class _reportsPNPState extends State<reportsPNP> {
       if (importanceString.isNotEmpty) {
         importanceString = '$importanceString, \nVictim of Crime';
       } else {
-        importanceString = '\nVictim of Crime';
+        importanceString = 'Victim of Crime';
       }
     }
     if (report['p1_isVictimNaturalCalamity'] != null &&
@@ -53,6 +60,13 @@ class _reportsPNPState extends State<reportsPNP> {
       } else {
         importanceString = 'Victim of Calamity';
       }
+    }
+
+    // mp recent photo
+    if (missingPersonImageString.isNotEmpty) {
+      missingPersonImageBytes = base64Decode(missingPersonImageString);
+    } else {
+      missingPersonImageBytes = Uint8List(0);
     }
 
     return SingleChildScrollView(
@@ -86,6 +100,9 @@ class _reportsPNPState extends State<reportsPNP> {
                       height: 50,
                       width: 50,
                       color: Colors.indigo,
+                      child: missingPersonImageString.isNotEmpty
+                          ? Image.memory(missingPersonImageBytes)
+                          : const Icon(Icons.person),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
