@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -41,7 +42,7 @@ class _reportsPNPState extends State<reportsPNP> {
     if (report['p1_isMissing24Hours'] != null &&
         report['p1_isMissing24Hours']) {
       if (importanceString.isNotEmpty) {
-        importanceString = '${importanceString}, Over 24 hours missing';
+        importanceString = '$importanceString, Over 24 hours missing';
       } else {
         importanceString = 'Over 24 hours missing';
       }
@@ -61,6 +62,7 @@ class _reportsPNPState extends State<reportsPNP> {
         importanceString = 'Victim of Calamity';
       }
     }
+    report['importanceTags'] = importanceString;
 
     // mp recent photo
     if (missingPersonImageString.isNotEmpty) {
@@ -87,6 +89,8 @@ class _reportsPNPState extends State<reportsPNP> {
             // for (dynamic i in reportList) {
             //   // print('\n[aye] ${i.keys} ${i.runtimeType}');
             // }
+            displayReportDialog(context, report, reportImages);
+            setState(() {});
           },
           child: Row(
             children: [
@@ -99,7 +103,7 @@ class _reportsPNPState extends State<reportsPNP> {
                       margin: const EdgeInsets.only(right: 10),
                       height: 50,
                       width: 50,
-                      color: Colors.indigo,
+                      color: Colors.grey,
                       child: missingPersonImageString.isNotEmpty
                           ? Image.memory(missingPersonImageBytes)
                           : const Icon(Icons.person),
@@ -258,6 +262,61 @@ class _reportsPNPState extends State<reportsPNP> {
           ),
         ),
       ),
+    );
+  }
+
+  void displayReportDialog(BuildContext context, Map report, Map reportImages) {
+    String lastSeenDate = report['p5_lastSeenDate'] ?? '';
+    String lastSeenTime = report['p5_lastSeenTime'] ?? '';
+    String dateReported = report['p5_reportDate'] ?? '';
+    String lastSeenLocation = report['p5_lastSeenLoc'] ?? '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          width: MediaQuery.of(context).size.width * .75,
+          height: MediaQuery.of(context).size.height * .6,
+          child: AlertDialog(
+            title: Text("Report Details"),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.all(20),
+                    child: Image.memory(
+                      base64Decode(reportImages['p4_mp_recent_photo']),
+                      width: MediaQuery.of(context).size.width * .4 > 200
+                          ? MediaQuery.of(context).size.width * .25
+                          : MediaQuery.of(context).size.width * .4,
+                    ),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      alignment: Alignment.center,
+                      child: Text(report['importanceTags'])),
+                  Text("Name: Big Poo"),
+                  Text('Date Reported: $dateReported'),
+                  Text("Last Seen Location: $lastSeenLocation"),
+                  Text("Last Seen Date: $lastSeenDate"),
+                  Text("Last Seen Time: $lastSeenTime"),
+                  // Add more details as needed
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("OK"),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
