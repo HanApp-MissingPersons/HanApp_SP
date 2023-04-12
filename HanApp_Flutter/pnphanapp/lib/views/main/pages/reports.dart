@@ -18,7 +18,10 @@ class _reportsPNPState extends State<reportsPNP> {
   List<Map> reportList = [];
 
   Widget listItem({required Map report}) {
-    // print('[report] $report');
+    Map reportImages;
+    if (report.containsKey('images')) {
+      reportImages = report['images'];
+    }
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
@@ -31,11 +34,12 @@ class _reportsPNPState extends State<reportsPNP> {
         ),
         child: GestureDetector(
           onTap: () {
-            print('\n\n');
-            for (dynamic i in reportList) {
-              print('\n[aye] ${i.keys} ${i.runtimeType}');
-            }
-            // print(reportList);
+            print('tapped ${report['key']}');
+            // print('\n\n');
+            // print(reportList.length);
+            // for (dynamic i in reportList) {
+            //   // print('\n[aye] ${i.keys} ${i.runtimeType}');
+            // }
           },
           child: Row(
             children: [
@@ -211,30 +215,11 @@ class _reportsPNPState extends State<reportsPNP> {
               value.forEach((key, value) {
                 value['key'] = '${key}__$uid';
                 value['uid'] = uid;
-                // print('[key] $key');
-                // print('[value] $value');
 
                 // add report to list
                 reportList.add(value);
-
-                value.forEach((key, value) {
-                  if (key == 'images') {
-                    // images in the report
-                    value.forEach((key, value) {
-                      print('[keyYEAH] $key');
-                    });
-                  }
-                  // print('[keyoop] $key');
-                });
               });
             });
-            // print('[reports] ${reports.values}');
-            // dynamic whoa = Map.fromIterable(reports.values);
-            Map<dynamic, dynamic> map = {
-              for (var item in reports.values) item: item
-            };
-            // print(map.keys.length);
-            // print('[keys] ${whoa.values}');
           } else {
             return Container(
               alignment: Alignment.center,
