@@ -51,6 +51,7 @@ dependencies:
   image_picker: ^0.8.7 # for uploading camera
   syncfusion_flutter_signaturepad: ^21.1.35
   file_picker: ^5.2.6
+  geocoding: ^2.1.0
 
 dev_dependencies:
   flutter_test:

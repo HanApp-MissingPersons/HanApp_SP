@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:geocoding/geocoding.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -107,6 +107,13 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   String? lastSeenLoc;
   String? incidentDetails;
   Uint8List? locSnapshot;
+  // for geocoding
+  String? lastSeenLoc_lat;
+  String? lastSeenLoc_lng;
+  String? placeName;
+  String? nearestLandmark;
+  String? cityName;
+  String? brgyName;
 
   // time
   DateTime? _selectedTime;
@@ -151,6 +158,11 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
       } else {
         print('[p5] No location snapshot');
       }
+      // for geocoding
+      placeName = prefs.getString('p5_placeName');
+      nearestLandmark = prefs.getString('p5_nearestLandmark');
+      cityName = prefs.getString('p5_cityName');
+      brgyName = prefs.getString('p5_brgyName');
     });
   }
 
@@ -174,6 +186,83 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   //     print('[p5] totalHoursSinceLastSeen: $totalHoursSinceLastSeen');
   //   }
   // }
+
+  /* FUNCTIONS FOR GEOCODING */
+  Future<void> _getAddress() async {
+    // _getPinLocName();
+    // _getLandmark();
+    // _getCity();
+    // _getBrgy();
+    final lat = double.tryParse(lastSeenLoc_lat!);
+    final lng = double.tryParse(lastSeenLoc_lng!);
+    if (lat == null || lng == null) {
+      return;
+    }
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+    // print placemarks to see what is available
+    for (var placemark in placemarks) {
+      print('placemark = $placemark');
+    }
+
+    setState(() {
+      // for pinned location place name
+      placeName = placemarks.isNotEmpty
+          ? placemarks.first.name ?? 'Place not found.'
+          : 'Place not found.';
+      _writeToPrefs('p5_placeName', placeName!);
+      // for landmark
+      nearestLandmark = placemarks.isNotEmpty
+          ?
+          // this should be the nearest non-Plus Code name
+          placemarks
+                  .firstWhere((element) =>
+                      false == element.name!.contains('+') ||
+                      // or is only a number
+                      int.tryParse(element.name!) != null)
+                  .name ??
+              'Landmark not found.'
+          : 'Landmark not found.';
+      _writeToPrefs('p5_nearestLandmark', nearestLandmark!);
+      // for city
+      cityName = placemarks.isNotEmpty
+          ? placemarks.first.locality ?? 'City not found.'
+          : 'City not found.';
+      _writeToPrefs('p5_cityName', cityName!);
+      // for brgy
+      if (placemarks.isNotEmpty) {
+        if (placemarks.first.subLocality == '') {
+          brgyName = "Not Registered in GMaps";
+        } else {
+          brgyName = placemarks.first.subLocality!;
+        }
+      }
+      _writeToPrefs('p5_brgyName', brgyName!);
+    });
+  }
+
+  // // get Name of Place from lat/lng
+  // Future<void> _getPinLocName() async {
+  //   final lat = double.tryParse(lastSeenLoc_lat!);
+  //   final lng = double.tryParse(lastSeenLoc_lng!);
+  //   if (lat == null || lng == null) {
+  //     return;
+  //   }
+  //   List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
+  //   // print placemarks to see what is available
+  //   for (var placemark in placemarks) {
+  //     print('placemark = $placemark');
+  //   }
+
+  //   setState(() {
+  //     placeName = placemarks.isNotEmpty
+  //         ? placemarks.first.name ?? 'Place not found.'
+  //         : 'Place not found.';
+  //     // write to shared preferences
+  //     _writeToPrefs('p5_placeName', placeName!);
+  //   });
+  // }
+
+  /* END OF FUNCTIONS FOR GEOCODING */
 
   @override
   void initState() {
@@ -445,18 +534,101 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                       } catch (e) {
                         print(e);
                       }
+
                       print(
                           'Selected location: ${location.latitude}, ${location.longitude}');
                       setState(() {
                         locSnapshot = image;
                         lastSeenLoc =
                             'Lat: ${location.latitude}, Long: ${location.longitude}';
-                        // prefs.setString('p5_lastSeenLoc', lastSeenLoc!);
                         _writeToPrefs('p5_lastSeenLoc', lastSeenLoc!);
+                        // geocoding shit
+                        lastSeenLoc_lat = location.latitude.toString();
+                        lastSeenLoc_lng = location.longitude.toString();
+                        _getAddress();
+                        _writeToPrefs('p5_placeName', placeName!);
+                        _writeToPrefs('p5_nearestLandmark', nearestLandmark!);
+                        _writeToPrefs('p5_cityName', cityName!);
+                        _writeToPrefs('p5_brgyName', brgyName!);
                       });
+                      _getAddress;
+                      // set lastSeenLoc_lat and lastSeenLoc_long
                     }
                   },
                   child: const Text('Select Location'),
+                ),
+              ),
+              _verticalPadding,
+              // Pinned Loc Details
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: const Text(
+                  'Pinned Location',
+                  style: headingStyle,
+                ),
+              ),
+              _verticalPadding,
+              // Pinned Loc Details Text Field
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: TextField(
+                  controller: TextEditingController(text: placeName),
+                  enabled: false,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    labelText: "Pinned Location (may show location code)",
+                  ),
+                  onChanged: (placeName) {},
+                ),
+              ),
+              _verticalPadding,
+              // Nearest Landmark
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: TextField(
+                  controller: TextEditingController(text: nearestLandmark),
+                  enabled: false,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    labelText: "Nearest Landmark",
+                  ),
+                  onChanged: (nearestLandmark) {},
+                ),
+              ),
+              _verticalPadding,
+              // City
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: TextField(
+                  controller: TextEditingController(text: cityName),
+                  enabled: false,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    labelText: "City",
+                  ),
+                  onChanged: (cityName) {},
+                ),
+              ),
+              _verticalPadding,
+              // Barangay
+              SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: TextField(
+                  controller: TextEditingController(text: brgyName),
+                  enabled: false,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    labelText: "Barangay",
+                  ),
+                  onChanged: (brgyName) {},
                 ),
               ),
               _verticalPadding,
@@ -516,6 +688,11 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   print(prefs.getString('p5_lastSeenTime'));
                   // print p5_totalHoursSinceLastSeen
                   print(prefs.getString('p5_totalHoursSinceLastSeen'));
+                  print('Address Details:');
+                  print(prefs.getString('p5_placeName'));
+                  print(prefs.getString('p5_nearestLandmark'));
+                  print(prefs.getString('p5_cityName'));
+                  print(prefs.getString('p5_brgyName'));
                 },
                 child: const Text('Print Shared Preferences'),
               ),
