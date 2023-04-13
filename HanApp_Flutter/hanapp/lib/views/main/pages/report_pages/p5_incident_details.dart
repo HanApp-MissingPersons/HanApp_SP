@@ -542,7 +542,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         lastSeenLoc =
                             'Lat: ${location.latitude}, Long: ${location.longitude}';
                         _writeToPrefs('p5_lastSeenLoc', lastSeenLoc!);
-                        // geocoding shit
+                        // geocoding stuff
                         lastSeenLoc_lat = location.latitude.toString();
                         lastSeenLoc_lng = location.longitude.toString();
                         _getAddress();
@@ -610,13 +610,13 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
-                    labelText: "City",
+                    labelText: "City/Municipality",
                   ),
                   onChanged: (cityName) {},
                 ),
               ),
               _verticalPadding,
-              // Barangay
+              // Barangay/District
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: TextField(
@@ -626,7 +626,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
-                    labelText: "Barangay",
+                    labelText: "Barangay/District",
                   ),
                   onChanged: (brgyName) {},
                 ),
