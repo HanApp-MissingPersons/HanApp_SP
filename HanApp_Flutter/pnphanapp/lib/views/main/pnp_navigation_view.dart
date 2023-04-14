@@ -36,30 +36,33 @@ class _NavRailViewState extends State<NavRailView> {
         height: 40,
         color: Palette.indigo,
       ),
-      trailing: IconButton(
-        icon: _isExpanded == true
-            ? const Icon(Icons.close_rounded)
-            : const Icon(Icons.menu_rounded),
-        onPressed: () {
-          setState(() {
-            _isExpanded = !_isExpanded;
-          });
-        },
+      trailing: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2),
+        child: IconButton(
+          icon: _isExpanded == true
+              ? const Icon(Icons.close_rounded)
+              : const Icon(Icons.menu_rounded),
+          onPressed: () {
+            setState(() {
+              _isExpanded = !_isExpanded;
+            });
+          },
+        ),
       ),
       destinations: const <NavigationRailDestination>[
         NavigationRailDestination(
-          icon: Icon(Icons.home_outlined),
-          selectedIcon: Icon(Icons.home),
+          icon: Icon(Icons.summarize_outlined),
+          selectedIcon: Icon(Icons.summarize_rounded),
           label: Text('Reports'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.calendar_month_outlined),
-          selectedIcon: Icon(Icons.calendar_month),
+          icon: Icon(Icons.map_outlined),
+          selectedIcon: Icon(Icons.map),
           label: Text('Temp Page 1'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.email_outlined),
-          selectedIcon: Icon(Icons.email),
+          icon: Icon(Icons.settings_outlined),
+          selectedIcon: Icon(Icons.settings),
           label: Text('Temp Page 2'),
         ),
       ],

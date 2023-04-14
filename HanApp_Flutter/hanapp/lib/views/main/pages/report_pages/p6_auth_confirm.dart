@@ -14,7 +14,6 @@ import 'p3_mp_info.dart';
 import 'p4_mp_description.dart';
 import 'p5_incident_details.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:hanapp/views/main/pages/home_main.dart'; // reroute to home page
 import 'dart:ui';
 
 /* SHARED PREFERENCE */
@@ -22,7 +21,6 @@ late SharedPreferences _prefs;
 void clearPrefs() async {
   _prefs = await SharedPreferences.getInstance();
   _prefs.clear();
-  print('[SUCCESS] Cleared shared preferences');
 }
 
 class Page6AuthConfirm extends StatefulWidget {
@@ -311,7 +309,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             await _getSignature(image);
                             await _saveSignature();
                             await retrievePrefsData();
-
+                            await retrievePrefsData();
                             // pop-up showing preview of signature
                             // ignore: use_build_context_synchronously
                             await showDialog(
@@ -504,8 +502,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   checkReportValidity() {
     List<String> keysList = prefs.getKeys().toList();
     bool returnval = true;
-    // print('[KEYSLIST] $keysList');
-    // print('[PREFSDICT] $prefsDict');
+    print('[KEYSLIST] $keysList');
+    print('[PREFSDICT] $prefsDict');
     // // p2 required values
     // if (!(keysList.contains('p2_citizenship') &&
     //     keysList.contains('p2_civil_status') &&
@@ -591,8 +589,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     //     dialogMessage.remove('p5');
     //   }
     // }
-
-    // // return true if all required values are present
     return returnval;
   }
 
@@ -633,14 +629,5 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     } else {
       print('[unsuccessful] Report count is null.');
     }
-    clearPrefs();
-    // show snackbar saying "Report Successfully Submitted"
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-            'Report Successfully Submitted.\nSee Updates page for more details.'),
-        duration: Duration(seconds: 3),
-      ),
-    );
   }
 }
