@@ -258,10 +258,10 @@ class _reportsPNPState extends State<reportsPNP> {
                 style: const TextStyle(color: Colors.black54),
                 onChanged: null,
                 items: <String>[
-                  'Received',
                   'Verified',
                   'Already Found',
                   'Incomplete Details',
+                  'Rejected',
                 ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -350,10 +350,10 @@ class _reportsPNPState extends State<reportsPNP> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: AlertDialog(
-            title: Text(
-              "Report Details",
-              textAlign: TextAlign.center,
-            ),
+            // title: Text(
+            //   "Report Details",
+            //   textAlign: TextAlign.center,
+            // ),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             content: SingleChildScrollView(
@@ -361,29 +361,17 @@ class _reportsPNPState extends State<reportsPNP> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        alignment: Alignment.topCenter,
-                        margin: const EdgeInsets.all(20),
-                        child: Image.memory(
-                          base64Decode(reportImages['p4_mp_recent_photo']),
-                          width: MediaQuery.of(context).size.width * .4 > 200
-                              ? MediaQuery.of(context).size.width * .25
-                              : MediaQuery.of(context).size.width * .4,
-                        ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          alignment: Alignment.center,
-                          child: Text(report['importanceTags'])),
-                      // Add more details as needed
-                    ],
-                  ),
-                  Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: Text("Report Details",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,)),
+                      ),
+
                       Text("FULL NAME",
                           style: TextStyle(
                               fontWeight: FontWeight.w900,
@@ -394,7 +382,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
                         padding: const EdgeInsets.only(left: 15),
-                        width: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.25,
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
@@ -418,7 +406,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
                         padding: const EdgeInsets.only(left: 15),
-                        width: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.25,
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
@@ -441,8 +429,8 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
-                        width: MediaQuery.of(context).size.width * 0.15,
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
                         height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
@@ -466,7 +454,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
                         padding: const EdgeInsets.only(left: 15),
-                        width: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.25,
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
@@ -490,7 +478,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
                         padding: const EdgeInsets.only(left: 15),
-                        width: MediaQuery.of(context).size.width * 0.15,
+                        width: MediaQuery.of(context).size.width * 0.25,
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
@@ -502,13 +490,338 @@ class _reportsPNPState extends State<reportsPNP> {
                           style: const TextStyle(fontSize: 15.0),
                         ),
                       ),
+
+
+                      const Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: Text("Descriptions",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,)),
+                      ),
+
+                      Text("SCARS",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: Colors.black54)),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.5),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(15))),
+                        child: Text(
+                          "Cleft above the lip",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+
+                      Text("MARKS",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: Colors.black54)),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.5),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(15))),
+                        child: Text(
+                          "Birthmark near shoulders",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+
+                      Text("TATTOOS",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: Colors.black54)),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.5),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(15))),
+                        child: Text(
+                          "Butterfly tattoo thighs",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+
+                      Text("HAIR COLOR",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: Colors.black54)),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.5),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(15))),
+                        child: Text(
+                          "Pink",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+
+                      Text("EYE COLOR",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: Colors.black54)),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.5),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(15))),
+                        child: Text(
+                          "Violet/Purple",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+
+                      Text("PROSTHETICS/BIRTH DEFECTS",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: Colors.black54)),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.5),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(15))),
+                        child: Text(
+                          "NA",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+
+                      Text("LAST KNOWN CLOTHING AND ACCESSORIES",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 10,
+                              letterSpacing: 2,
+                              color: Colors.black54)),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                        padding: const EdgeInsets.all(5),
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 0.5),
+                            borderRadius:
+                            const BorderRadius.all(Radius.circular(15))),
+                        child: Text(
+                          "Pink Dress, headband and violet gem earings",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontSize: 15.0),
+                        ),
+                      ),
+
+
+
+
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.topCenter,
+                        margin: const EdgeInsets.all(20),
+                        child: Image.memory(
+                          base64Decode(reportImages['p4_mp_recent_photo']),
+                          width: MediaQuery.of(context).size.width * .4 > 200
+                              ? MediaQuery.of(context).size.width * .25
+                              : MediaQuery.of(context).size.width * .4,
+                        ),
+                      ),
+                      Container(
+                          margin: EdgeInsets.only(bottom: 20),
+                          alignment: Alignment.center,
+                          child: Text(report['importanceTags'])),
+                      // Add more details as needed
+
+                      const Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: Text("Missing Person Details",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,)),
+                      ),
+
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Text("HEIGHT",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top: 5),
+                                //padding: const EdgeInsets.only(left: 15),
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                                child: Text(
+                                  "5'4",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 10,),
+
+                          Column(
+                            children: [
+                              Text("WEIGHT",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top: 5),
+                                //padding: const EdgeInsets.only(left: 15),
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                                child: Text(
+                                  "60 kg",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: 15),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Text("SEX",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top: 5),
+                                //padding: const EdgeInsets.only(left: 15),
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                                child: Text(
+                                  "Female",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 10,),
+
+                          Column(
+                            children: [
+                              Text("CIVIL STATUS",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top: 5),
+                                //padding: const EdgeInsets.only(left: 15),
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                                child: Text(
+                                  "Separated",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                   Container(
                     color: Palette.indigo,
-                    margin: const EdgeInsets.only(left: 20),
-                    width: MediaQuery.of(context).size.width * 0.3,
-                    height: MediaQuery.of(context).size.height * 0.9,
+                    margin: const EdgeInsets.all(20),
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    //height: MediaQuery.of(context).size.height * 0.8,
                     child: Image.memory(lastSeenLocSnapshot),
                   )
                 ],
