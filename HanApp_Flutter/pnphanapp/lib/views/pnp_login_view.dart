@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pnphanapp/views/main/pages/reports.dart';
 import 'package:pnphanapp/views/main/pnp_navigation_view.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -26,7 +28,7 @@ class _LoginViewState extends State<LoginView> {
                 height: MediaQuery.of(context).size.height * 0.8),
             Padding(
               padding: EdgeInsets.only(
-                  top: 150, left: MediaQuery.of(context).size.height / 8),
+                  top: 15, left: MediaQuery.of(context).size.height / 8),
               child: Column(
                 children: [
                   Align(
@@ -128,6 +130,7 @@ class _LoginViewState extends State<LoginView> {
                           GoogleFonts.inter(fontSize: 12, color: Colors.black),
                     ),
                   ),
+                  //
                   // text button to register hard-coded pnp accounts
                   kDebugMode
                       ? TextButton(
@@ -151,6 +154,89 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         )
                       : const SizedBox(),
+                  //
+                  // login hard-coded pnp accounts
+                  kDebugMode
+                      ? Container(
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: 'miagao_hanapp@gmail.com',
+                                      password: 'abc123');
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const NavRailView()),
+                                  (route) => false);
+                            },
+                            child: Text('Login as Miagao'),
+                          ),
+                        )
+                      : const SizedBox(),
+                  kDebugMode
+                      ? Container(
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: 'sanjoaqin_hanapp@gmail.com',
+                                      password: 'abc123');
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const NavRailView()),
+                                  (route) => false);
+                            },
+                            child: Text('Login as San Joaqin'),
+                          ),
+                        )
+                      : const SizedBox(),
+                  kDebugMode
+                      ? Container(
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: 'jaro_hanapp@gmail.com',
+                                      password: 'abc123');
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const NavRailView()),
+                                  (route) => false);
+                            },
+                            child: Text('Login as Jaro'),
+                          ),
+                        )
+                      : const SizedBox(),
+                  kDebugMode
+                      ? Container(
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: 'national_hanapp@gmail.com',
+                                      password: 'abc123');
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const NavRailView()),
+                                  (route) => false);
+                            },
+                            child: Text('Login as National'),
+                          ),
+                        )
+                      : const SizedBox(),
+                  // end of login hard-coded pnp accounts
                   Padding(
                     padding: const EdgeInsets.only(top: 100),
                     child: Container(
