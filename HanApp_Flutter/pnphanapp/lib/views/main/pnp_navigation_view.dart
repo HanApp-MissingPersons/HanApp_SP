@@ -56,15 +56,20 @@ class _NavRailViewState extends State<NavRailView> {
           label: Text('Reports'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.map_outlined),
-          selectedIcon: Icon(Icons.map),
-          label: Text('Temp Page 1'),
+          icon: Icon(Icons.fact_check_outlined),
+          selectedIcon: Icon(Icons.fact_check_rounded),
+          label: Text('Verified Reports'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.settings_outlined),
-          selectedIcon: Icon(Icons.settings),
-          label: Text('Temp Page 2'),
+          icon: Icon(Icons.delete_forever_outlined),
+          selectedIcon: Icon(Icons.delete_forever_rounded),
+          label: Text('Archived Reports'),
         ),
+        // NavigationRailDestination(
+        //   icon: Icon(Icons.settings_outlined),
+        //   selectedIcon: Icon(Icons.settings),
+        //   label: Text('Settings'),
+        // ),
       ],
     );
   }
