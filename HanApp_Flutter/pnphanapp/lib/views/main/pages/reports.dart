@@ -2,12 +2,14 @@ import 'dart:convert';
 //import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:pnphanapp/main.dart';
 
 class reportsPNP extends StatefulWidget {
@@ -18,10 +20,40 @@ class reportsPNP extends StatefulWidget {
 }
 
 class _reportsPNPState extends State<reportsPNP> {
+  final user = FirebaseAuth.instance.currentUser;
+  DatabaseReference pnpAccountsRef =
+      FirebaseDatabase.instance.ref('PNP Accounts');
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   List<Map> reportList = [];
   Uint8List lastSeenLocSnapshot = Uint8List(0);
   String scars = "";
+  String userLat = '';
+  String userLong = '';
+  LatLng userLatLng = LatLng(0, 0);
+
+  @override
+  void initState() {
+    super.initState();
+    print(user!.uid);
+    _activateListeners();
+  }
+
+  void _activateListeners() {
+    pnpAccountsRef.onValue.listen((event) {
+      var pnpProfiles = Map<String, dynamic>.from(
+          event.snapshot.value as Map<dynamic, dynamic>);
+      pnpProfiles.forEach((key, value) {
+        // print(value);
+        if (value['uid'] == user!.uid) {
+          setState(() {
+            userLat = value['lat'].toString();
+            userLong = value['long'].toString();
+            userLatLng = LatLng(double.parse(userLat), double.parse(userLong));
+          });
+        }
+      });
+    });
+  }
 
   Widget listItem({required Map report}) {
     // ignore: unused_local_variable
@@ -914,7 +946,7 @@ class _reportsPNPState extends State<reportsPNP> {
       child: StreamBuilder(
         stream: dbRef.onValue,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData || userLatLng == LatLng(0, 0)) {
             return const SpinKitCubeGrid(
               color: Palette.indigo,
               size: 40.0,
@@ -924,6 +956,7 @@ class _reportsPNPState extends State<reportsPNP> {
           dynamic values = snapshot.data?.snapshot.value;
           if (values != null) {
             Map<dynamic, dynamic> reports = values;
+            print('[userLatLng] $userLatLng');
             // users
             reports.forEach((key, value) {
               dynamic uid = key;
