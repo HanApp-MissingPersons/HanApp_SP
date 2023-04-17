@@ -92,54 +92,57 @@ class _reportsPNPState extends State<reportsPNP> {
         ),
         child: Row(
           children: [
-            SizedBox(
-              width: 250,
-              child: GestureDetector(
-                onTap: () {
-                  print('tapped ${report['key']}');
-                  // print('\n\n');
-                  // print(reportList.length);
-                  // for (dynamic i in reportList) {
-                  //   // print('\n[aye] ${i.keys} ${i.runtimeType}');
-                  // }
-                  displayReportDialog(context, report, reportImages);
-                  setState(() {});
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      height: 50,
-                      width: 50,
-                      color: Colors.grey,
-                      // decoration: const BoxDecoration(
-                      //     color: Colors.grey,
-                      //     borderRadius: BorderRadius.all(Radius.circular(20))
-                      // ),
-                      child: missingPersonImageString.isNotEmpty
-                          ? Image.memory(missingPersonImageBytes)
-                          : const Icon(Icons.person),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Report Key: ${report['key']}',
-                          //JUST change the font size to 18 when Name is applied
-                          style: GoogleFonts.inter(
-                              fontSize: 6, fontWeight: FontWeight.w700),
-                        ),
-                        // Text(
-                        //   importanceString == ''
-                        //       ? 'Absent Person'
-                        //       : importanceString,
-                        //   style: GoogleFonts.inter(fontSize: 12),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: SizedBox(
+                width: 250, height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    print('tapped ${report['key']}');
+                    // print('\n\n');
+                    // print(reportList.length);
+                    // for (dynamic i in reportList) {
+                    //   // print('\n[aye] ${i.keys} ${i.runtimeType}');
+                    // }
+                    displayReportDialog(context, report, reportImages);
+                    setState(() {});
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        height: 50,
+                        width: 50,
+                        color: Colors.grey,
+                        // decoration: const BoxDecoration(
+                        //     color: Colors.grey,
+                        //     borderRadius: BorderRadius.all(Radius.circular(20))
                         // ),
-                      ],
-                    ),
-                  ],
+                        child: missingPersonImageString.isNotEmpty
+                            ? Image.memory(missingPersonImageBytes)
+                            : const Icon(Icons.person),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Report Key: ${report['key']}',
+                            //JUST change the font size to 18 when Name is applied
+                            style: GoogleFonts.inter(
+                                fontSize: 6, fontWeight: FontWeight.w700),
+                          ),
+                          // Text(
+                          //   importanceString == ''
+                          //       ? 'Absent Person'
+                          //       : importanceString,
+                          //   style: GoogleFonts.inter(fontSize: 12),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -372,28 +375,71 @@ class _reportsPNPState extends State<reportsPNP> {
                               fontWeight: FontWeight.w900,)),
                       ),
 
-                      Text("FULL NAME",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
-                              letterSpacing: 2,
-                              color: Colors.black54)),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 0.5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
-                        child: Text(
-                          'Juan dela Cruz',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15.0),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("FIRST NAME",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                padding: const EdgeInsets.all(15),
+                                width: MediaQuery.of(context).size.width * 0.115,
+                                //height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius:
+                                        const BorderRadius.all(Radius.circular(15))),
+                                child: Text(
+                                  'Juan Manuel',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(width: 25),
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("LAST NAME",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                padding: const EdgeInsets.all(15),
+                                constraints: BoxConstraints(minWidth: 100, maxWidth: 200),
+                                width: MediaQuery.of(context).size.width * 0.115,
+                                //height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                                child: Text(
+                                  'dela Cruz',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                        ],
                       ),
+
 
                       // Date Reported
                       Text("DATE REPORTED",
@@ -405,9 +451,9 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        //height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -420,7 +466,7 @@ class _reportsPNPState extends State<reportsPNP> {
                       ),
 
                       // Last Seen Location
-                      Text("LAST SEEN LOCATION",
+                      Text("LAST TRACKED LOCATION",
                           style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 10,
@@ -429,9 +475,9 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        ////height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -453,9 +499,8 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -477,9 +522,9 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        //height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -507,11 +552,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        ////height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -530,11 +575,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -553,11 +598,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -576,11 +621,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -599,11 +644,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -622,11 +667,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -645,11 +690,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -667,7 +712,7 @@ class _reportsPNPState extends State<reportsPNP> {
                     ],
                   ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         alignment: Alignment.topCenter,
@@ -814,6 +859,13 @@ class _reportsPNPState extends State<reportsPNP> {
                             ],
                           ),
                         ],
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: Text("Contact Information",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,)),
                       ),
                     ],
                   ),
