@@ -216,9 +216,13 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
           // this should be the nearest non-Plus Code name
           placemarks
                   .firstWhere((element) =>
-                      false == element.name!.contains('+') ||
-                      // or is only a number
-                      int.tryParse(element.name!) != null)
+                          (false == element.name!.contains('+') &&
+                              false == element.name!.contains('Unnamed')) ||
+                          // or is only a number
+                          int.tryParse(element.name!) != null
+                      // // or is only numbers and symbols, no letters:
+                      // element.name!.contains(RegExp(r'[a-zA-Z]')) == true)
+                      )
                   .name ??
               'Landmark not found.'
           : 'Landmark not found.';
