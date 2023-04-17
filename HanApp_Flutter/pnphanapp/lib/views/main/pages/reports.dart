@@ -18,9 +18,9 @@ class reportsPNP extends StatefulWidget {
 }
 
 class _reportsPNPState extends State<reportsPNP> {
-
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   List<Map> reportList = [];
+  Uint8List lastSeenLocSnapshot = Uint8List(0);
 
   Widget listItem({required Map report}) {
     // ignore: unused_local_variable
@@ -34,6 +34,7 @@ class _reportsPNPState extends State<reportsPNP> {
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
     String missingPersonImageString = reportImages['p4_mp_recent_photo'] ?? '';
+    String lastSeenLocSnapshotString = reportImages['p5_locSnapshot'] ?? '';
     Uint8List missingPersonImageBytes;
 
     // classify importance
@@ -70,6 +71,13 @@ class _reportsPNPState extends State<reportsPNP> {
       missingPersonImageBytes = base64Decode(missingPersonImageString);
     } else {
       missingPersonImageBytes = Uint8List(0);
+    }
+
+    // mp last seen location snapshot
+    if (lastSeenLocSnapshotString.isNotEmpty) {
+      lastSeenLocSnapshot = base64Decode(lastSeenLocSnapshotString);
+    } else {
+      lastSeenLocSnapshot = Uint8List(0);
     }
 
     return SingleChildScrollView(
@@ -139,14 +147,13 @@ class _reportsPNPState extends State<reportsPNP> {
             SizedBox(
               width: 200,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment. center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    importanceString == ''
-                        ? 'Absent Person'
-                        : importanceString,
-                    style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, height: 2),
+                    importanceString == '' ? 'Absent Person' : importanceString,
+                    style: GoogleFonts.inter(
+                        fontSize: 12, fontWeight: FontWeight.w700, height: 2),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 2),
@@ -156,7 +163,6 @@ class _reportsPNPState extends State<reportsPNP> {
                 ],
               ),
             ),
-
 
             // last seen date
             SizedBox(
@@ -237,7 +243,10 @@ class _reportsPNPState extends State<reportsPNP> {
               height: 50,
               child: DropdownButtonFormField<String>(
                 // text to display when no value is selected
-                hint: const Text('Select Report Status', style: TextStyle(fontSize: 12),),
+                hint: const Text(
+                  'Select Report Status',
+                  style: TextStyle(fontSize: 12),
+                ),
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -283,20 +292,23 @@ class _reportsPNPState extends State<reportsPNP> {
                         onPressed: null),
 
                     PopupMenuButton(
-                      icon: const Icon(Icons.more_vert, color: Colors.black38,),
-                      tooltip: "Show options",
-                      itemBuilder: (context) => [
-                        const PopupMenuItem(child: Text('Edit')),
-                        const PopupMenuItem(child: Text('Add')),
-                        const PopupMenuItem(child: Text('Delete'),
-                        // onTap: () {
-                        //   displayReportDialog(context, report, reportImages);
-                        //   setState(() {
-                        //   });}
-                        )
-                      ],
-                      onSelected: null
-                    ),
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: Colors.black38,
+                        ),
+                        tooltip: "Show options",
+                        itemBuilder: (context) => [
+                              const PopupMenuItem(child: Text('Edit')),
+                              const PopupMenuItem(child: Text('Add')),
+                              const PopupMenuItem(
+                                child: Text('Delete'),
+                                // onTap: () {
+                                //   displayReportDialog(context, report, reportImages);
+                                //   setState(() {
+                                //   });}
+                              )
+                            ],
+                        onSelected: null),
 
                     IconButton(
                         icon: const Icon(
@@ -306,10 +318,8 @@ class _reportsPNPState extends State<reportsPNP> {
                         ),
                         onPressed: () {
                           displayReportDialog(context, report, reportImages);
-                          setState(() {
-                          });}
-                        )
-
+                          setState(() {});
+                        })
                   ],
                 )),
             // const IconButton(
@@ -331,6 +341,7 @@ class _reportsPNPState extends State<reportsPNP> {
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
     String lastSeenLocation = report['p5_lastSeenLoc'] ?? '';
+    String nearestLandmark = report['p5_nearestLandmark'] ?? '';
 
     showDialog(
       context: context,
@@ -339,7 +350,10 @@ class _reportsPNPState extends State<reportsPNP> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: AlertDialog(
-            title: Text("Report Details", textAlign: TextAlign.center,),
+            title: Text(
+              "Report Details",
+              textAlign: TextAlign.center,
+            ),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             content: SingleChildScrollView(
@@ -375,7 +389,7 @@ class _reportsPNPState extends State<reportsPNP> {
                               fontWeight: FontWeight.w900,
                               fontSize: 10,
                               letterSpacing: 2,
-                          color: Colors.black54)),
+                              color: Colors.black54)),
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
@@ -384,8 +398,8 @@ class _reportsPNPState extends State<reportsPNP> {
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(15))),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           'Juan dela Cruz',
                           textAlign: TextAlign.center,
@@ -408,8 +422,8 @@ class _reportsPNPState extends State<reportsPNP> {
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(15))),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           dateReported,
                           textAlign: TextAlign.center,
@@ -429,13 +443,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
                         padding: const EdgeInsets.only(left: 15),
                         width: MediaQuery.of(context).size.width * 0.15,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(15))),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
-                          lastSeenLocation,
+                          nearestLandmark,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15.0),
                         ),
@@ -456,8 +470,8 @@ class _reportsPNPState extends State<reportsPNP> {
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(15))),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           lastSeenDate,
                           textAlign: TextAlign.center,
@@ -480,8 +494,8 @@ class _reportsPNPState extends State<reportsPNP> {
                         height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
-                            borderRadius: const BorderRadius.all(
-                                Radius.circular(15))),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           lastSeenTime,
                           textAlign: TextAlign.center,
@@ -490,13 +504,12 @@ class _reportsPNPState extends State<reportsPNP> {
                       ),
                     ],
                   ),
-
                   Container(
                     color: Palette.indigo,
                     margin: const EdgeInsets.only(left: 20),
                     width: MediaQuery.of(context).size.width * 0.3,
                     height: MediaQuery.of(context).size.height * 0.9,
-                    child: Text('PUT HERE THE LOCATION SNAPSHOT'),
+                    child: Image.memory(lastSeenLocSnapshot),
                   )
                 ],
               ),
@@ -563,5 +576,3 @@ class _reportsPNPState extends State<reportsPNP> {
     );
   }
 }
-
-
