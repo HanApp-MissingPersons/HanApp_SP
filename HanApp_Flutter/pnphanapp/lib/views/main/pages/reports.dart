@@ -21,6 +21,7 @@ class _reportsPNPState extends State<reportsPNP> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   List<Map> reportList = [];
   Uint8List lastSeenLocSnapshot = Uint8List(0);
+  String scars = "";
 
   Widget listItem({required Map report}) {
     // ignore: unused_local_variable
@@ -35,7 +36,9 @@ class _reportsPNPState extends State<reportsPNP> {
     String dateReported = report['p5_reportDate'] ?? '';
     String missingPersonImageString = reportImages['p4_mp_recent_photo'] ?? '';
     String lastSeenLocSnapshotString = reportImages['p5_locSnapshot'] ?? '';
+    String nearestLandmark = report['p5_nearestLandmark'] ?? '';
     Uint8List missingPersonImageBytes;
+    scars = report['p4_mp_scars'] ?? "";
 
     // classify importance
     if (report['p1_isMinor'] != null && report['p1_isMinor']) {
@@ -228,7 +231,8 @@ class _reportsPNPState extends State<reportsPNP> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Brgy. Maty, Miagao',
+                  Text(nearestLandmark,
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
                           fontSize: 18, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 3),
@@ -562,7 +566,7 @@ class _reportsPNPState extends State<reportsPNP> {
                             borderRadius:
                             const BorderRadius.all(Radius.circular(15))),
                         child: Text(
-                          "Cleft above the lip",
+                          scars,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15.0),
                         ),
