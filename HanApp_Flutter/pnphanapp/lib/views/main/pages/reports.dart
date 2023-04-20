@@ -29,7 +29,7 @@ class _reportsPNPState extends State<reportsPNP> {
   String scars = "";
   String userLat = '';
   String userLong = '';
-  LatLng userLatLng = LatLng(0, 0);
+  late LatLng userLatLng = LatLng(0, 0);
 
   @override
   void initState() {
@@ -49,10 +49,29 @@ class _reportsPNPState extends State<reportsPNP> {
             userLat = value['lat'].toString();
             userLong = value['long'].toString();
             userLatLng = LatLng(double.parse(userLat), double.parse(userLong));
+            print('userLatLng: $userLatLng');
           });
         }
       });
     });
+  }
+
+  num calculateDistance(LatLng first, LatLng second) {
+    return SphericalUtil.computeDistanceBetween(first, second);
+  }
+
+  List<double> extractDoubles(String input) {
+    RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
+
+    List<double> doubles = [];
+
+    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+
+    for (RegExpMatch match in matches) {
+      doubles.add(double.parse(match.group(0)!));
+    }
+
+    return doubles;
   }
 
   Widget listItem({required Map report}) {
@@ -63,6 +82,7 @@ class _reportsPNPState extends State<reportsPNP> {
     }
 
     String importanceString = '';
+    String lastSeenLoc = report['p5_lastSeenLoc'] ?? '';
     String lastSeenDate = report['p5_lastSeenDate'] ?? '';
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
@@ -71,6 +91,19 @@ class _reportsPNPState extends State<reportsPNP> {
     String nearestLandmark = report['p5_nearestLandmark'] ?? '';
     Uint8List missingPersonImageBytes;
     scars = report['p4_mp_scars'] ?? "";
+    num distance = 0;
+
+    // calculate distance
+    if (lastSeenLoc.isNotEmpty) {
+      // print('lastseenloc runtime type: ${lastSeenLoc.runtimeType}');
+      // print('doubles in lastseenloc: ${extractDoubles(lastSeenLoc)}');
+      List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
+      double lastSeenLocLat = lastSeenLocList[0];
+      double lastSeenLocLong = lastSeenLocList[1];
+      LatLng lastSeenLocLatLng = LatLng(lastSeenLocLat, lastSeenLocLong);
+      distance = calculateDistance(userLatLng, lastSeenLocLatLng);
+      report['distance'] = distance;
+    }
 
     // classify importance
     if (report['p1_isMinor'] != null && report['p1_isMinor']) {
@@ -135,6 +168,8 @@ class _reportsPNPState extends State<reportsPNP> {
                 child: GestureDetector(
                   onTap: () {
                     print('tapped ${report['key']}');
+                    print('lastSeenLoc: $lastSeenLoc');
+                    print('distance: $distance meters away from you');
                     // print('\n\n');
                     // print(reportList.length);
                     // for (dynamic i in reportList) {
