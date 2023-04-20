@@ -27,8 +27,8 @@ class _reportsPNPState extends State<reportsPNP> {
   List<Map> reportList = [];
   Uint8List lastSeenLocSnapshot = Uint8List(0);
   String scars = "";
-  String userLat = '';
-  String userLong = '';
+  var userLat;
+  var userLong;
   late LatLng userLatLng = LatLng(0, 0);
 
   @override
@@ -46,10 +46,14 @@ class _reportsPNPState extends State<reportsPNP> {
         // print(value);
         if (value['uid'] == user!.uid) {
           setState(() {
-            userLat = value['lat'].toString();
-            userLong = value['long'].toString();
-            userLatLng = LatLng(double.parse(userLat), double.parse(userLong));
-            print('userLatLng: $userLatLng');
+            userLat = value['lat'] ?? '';
+            userLong = value['long'] ?? '';
+            if (userLat != '' && userLong != '') {
+              userLatLng = LatLng(double.parse(userLat.toString()),
+                  double.parse(userLong.toString()));
+            } else {
+              userLatLng = LatLng(999999, 999999);
+            }
           });
         }
       });
@@ -991,7 +995,6 @@ class _reportsPNPState extends State<reportsPNP> {
           dynamic values = snapshot.data?.snapshot.value;
           if (values != null) {
             Map<dynamic, dynamic> reports = values;
-            print('[userLatLng] $userLatLng');
             // users
             reports.forEach((key, value) {
               dynamic uid = key;
@@ -999,9 +1002,30 @@ class _reportsPNPState extends State<reportsPNP> {
               value.forEach((key, value) {
                 value['key'] = '${key}__$uid';
                 value['uid'] = uid;
-
-                // add report to list
-                reportList.add(value);
+                var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
+                if (lastSeenLoc != '') {
+                  if (userLatLng.latitude == 999999 &&
+                      userLatLng.longitude == 999999) {
+                    // add report to list
+                    reportList.add(value);
+                  } else {
+                    List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
+                    double lastSeenLocLat = lastSeenLocList[0];
+                    double lastSeenLocLong = lastSeenLocList[1];
+                    LatLng lastSeenLocLatLng =
+                        LatLng(lastSeenLocLat, lastSeenLocLong);
+                    var distance =
+                        calculateDistance(userLatLng, lastSeenLocLatLng);
+                    // currently, distance is set to 10km
+                    if (distance <= 10000) {
+                      // add report to list
+                      reportList.add(value);
+                    } else {
+                      print('[NOT OK] distance is: $distance');
+                    }
+                  }
+                }
+                // reportList.add(value);
               });
             });
           } else {
@@ -1011,13 +1035,19 @@ class _reportsPNPState extends State<reportsPNP> {
             );
           }
 
-          return ListView.builder(
-            itemCount: reportList.length,
-            physics: const BouncingScrollPhysics(parent: PageScrollPhysics()),
-            itemBuilder: (BuildContext context, int index) {
-              return listItem(report: reportList[index]);
-            },
-          );
+          return reportList.isNotEmpty
+              ? ListView.builder(
+                  itemCount: reportList.length,
+                  physics:
+                      const BouncingScrollPhysics(parent: PageScrollPhysics()),
+                  itemBuilder: (BuildContext context, int index) {
+                    return listItem(report: reportList[index]);
+                  },
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  child: const Text('There are currently no reports'),
+                );
         },
       ),
     );
