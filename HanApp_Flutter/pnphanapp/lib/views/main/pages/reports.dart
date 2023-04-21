@@ -152,6 +152,7 @@ class _reportsPNPState extends State<reportsPNP> {
       lastSeenLocSnapshot = Uint8List(0);
     }
 
+    var statusValue;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
@@ -332,21 +333,48 @@ class _reportsPNPState extends State<reportsPNP> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
-                value: null,
+                value: statusValue,
                 icon: const Icon(Icons.arrow_drop_down),
                 iconSize: 24,
                 elevation: 16,
                 style: const TextStyle(color: Colors.black54),
-                onChanged: null,
+                onChanged: (String? newValue) {
+                  // show dialog to confirm change in DropdownButtonFormField
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Change Report Status'),
+                          content: const Text(
+                              'Are you sure you want to change the report status?'),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel')),
+                            TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    statusValue = newValue;
+                                  });
+                                  print('[changed status] ${report['key']}');
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Change'))
+                          ],
+                        );
+                      });
+                },
                 items: <String>[
                   'Verified',
                   'Already Found',
                   'Incomplete Details',
                   'Rejected',
-                ].map<DropdownMenuItem<String>>((String value) {
+                ].map<DropdownMenuItem<String>>((statusValue) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: statusValue,
+                    child: Text(statusValue),
                   );
                 }).toList(),
               ),
@@ -1003,7 +1031,8 @@ class _reportsPNPState extends State<reportsPNP> {
                 value['key'] = '${key}__$uid';
                 value['uid'] = uid;
                 var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
-                if (lastSeenLoc != '') {
+                var status = value['status'] ?? '';
+                if (lastSeenLoc != '' && status == 'pending') {
                   if (userLatLng.latitude == 999999 &&
                       userLatLng.longitude == 999999) {
                     // add report to list
