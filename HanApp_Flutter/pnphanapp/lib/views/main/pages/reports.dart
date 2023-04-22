@@ -23,6 +23,8 @@ class _reportsPNPState extends State<reportsPNP> {
   final user = FirebaseAuth.instance.currentUser;
   DatabaseReference pnpAccountsRef =
       FirebaseDatabase.instance.ref('PNP Accounts');
+  DatabaseReference databaseReportsReference =
+      FirebaseDatabase.instance.ref('Reports');
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   List<Map> reportList = [];
   Uint8List lastSeenLocSnapshot = Uint8List(0);
@@ -172,7 +174,7 @@ class _reportsPNPState extends State<reportsPNP> {
                 height: 50,
                 child: GestureDetector(
                   onTap: () {
-                    print('tapped ${report['key']}');
+                    print('tapped ${report['keyUid']}');
                     print('lastSeenLoc: $lastSeenLoc');
                     print('distance: $distance meters away from you');
                     // print('\n\n');
@@ -206,7 +208,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Report Key: ${report['key']}',
+                            'Report Key: ${report['keyUid']}',
                             //JUST change the font size to 18 when Name is applied
                             style: GoogleFonts.inter(
                                 fontSize: 6, fontWeight: FontWeight.w700),
@@ -346,7 +348,7 @@ class _reportsPNPState extends State<reportsPNP> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                                'Are you sure you want to change the report status of report ${report['key']}?'),
+                                'Are you sure you want to change the report status of report ${report['keyUid']}?'),
                             const SizedBox(height: 16),
                             DropdownButtonFormField<String>(
                               // text to display when no value is selected
@@ -390,13 +392,16 @@ class _reportsPNPState extends State<reportsPNP> {
                             child: const Text('Cancel'),
                           ),
                           TextButton(
-                            onPressed: () {
-                              setState(() {
-                                statusValue = newStatusValue;
-                                report['status'] = statusValue;
-                              });
+                            onPressed: () async {
+                              statusValue = newStatusValue;
+                              report['status'] = statusValue;
+                              await databaseReportsReference
+                                  .child(report['uid'])
+                                  .child(report['key'])
+                                  .update({"status": "$statusValue"});
+
                               print(
-                                  '[changed status] ${report['key']} to $statusValue');
+                                  '[changed status] ${report['keyUid']} to $statusValue');
                               Navigator.of(context).pop();
                             },
                             child: const Text('Change'),
@@ -1067,7 +1072,8 @@ class _reportsPNPState extends State<reportsPNP> {
               dynamic uid = key;
               // reports of each user
               value.forEach((key, value) {
-                value['key'] = '${key}__$uid';
+                value['keyUid'] = '${key}__$uid';
+                value['key'] = key;
                 value['uid'] = uid;
                 var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
                 var status = value['status'] ?? '';
