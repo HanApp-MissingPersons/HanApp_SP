@@ -36,7 +36,7 @@ class _NavRailViewState extends State<NavRailView> {
         color: Palette.indigo,
       ),
       trailing: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2.5),
         child: IconButton(
           icon: _isExpanded == true
               ? const Icon(Icons.close_rounded)
