@@ -27,7 +27,7 @@ class _reportsPNPState extends State<reportsPNP> {
   DatabaseReference databaseReportsReference =
       FirebaseDatabase.instance.ref('Reports');
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
-  List<Map> reportList = [];
+  List<Map>? reportList = [];
   Uint8List lastSeenLocSnapshot = Uint8List(0);
   String scars = "";
   var userLat;
@@ -186,7 +186,6 @@ class _reportsPNPState extends State<reportsPNP> {
                     if (dateReported.isNotEmpty) {
                       displayReportDialog(context, report, reportImages);
                     }
-                    setState(() {});
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -404,6 +403,8 @@ class _reportsPNPState extends State<reportsPNP> {
                               print(
                                   '[changed status] ${report['keyUid']} to $statusValue');
                               Navigator.of(context).pop();
+
+                              setState(() {});
                             },
                             child: const Text('Change'),
                           ),
@@ -477,7 +478,6 @@ class _reportsPNPState extends State<reportsPNP> {
                           if (dateReported.isNotEmpty) {
                             displayReportDialog(context, report, reportImages);
                           }
-                          setState(() {});
                         })
                   ],
                 )),
@@ -1059,8 +1059,8 @@ class _reportsPNPState extends State<reportsPNP> {
     List<String>? filterValueLocal = widget.filterValue;
     return Container(
       height: double.infinity,
-      child: StreamBuilder(
-        stream: dbRef.onValue,
+      child: FutureBuilder(
+        future: dbRef.once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData || userLatLng == LatLng(0, 0)) {
             return const SpinKitCubeGrid(
@@ -1068,7 +1068,7 @@ class _reportsPNPState extends State<reportsPNP> {
               size: 40.0,
             );
           }
-          reportList.clear();
+          reportList!.clear();
           dynamic values = snapshot.data?.snapshot.value;
           if (values != null) {
             Map<dynamic, dynamic> reports = values;
@@ -1086,7 +1086,7 @@ class _reportsPNPState extends State<reportsPNP> {
                   if (userLatLng.latitude == 999999 &&
                       userLatLng.longitude == 999999) {
                     // add report to list
-                    reportList.add(value);
+                    reportList!.add(value);
                   } else {
                     List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
                     double lastSeenLocLat = lastSeenLocList[0];
@@ -1098,7 +1098,7 @@ class _reportsPNPState extends State<reportsPNP> {
                     // currently, distance is set to 10km
                     if (distance <= 10000) {
                       // add report to list
-                      reportList.add(value);
+                      reportList!.add(value);
                     } else {
                       print('[NOT OK] distance is: $distance');
                     }
@@ -1114,13 +1114,13 @@ class _reportsPNPState extends State<reportsPNP> {
             );
           }
 
-          return reportList.isNotEmpty
+          return reportList!.isNotEmpty
               ? ListView.builder(
-                  itemCount: reportList.length,
+                  itemCount: reportList!.length,
                   physics:
                       const BouncingScrollPhysics(parent: PageScrollPhysics()),
                   itemBuilder: (BuildContext context, int index) {
-                    return listItem(report: reportList[index]);
+                    return listItem(report: reportList![index]);
                   },
                 )
               : Container(
