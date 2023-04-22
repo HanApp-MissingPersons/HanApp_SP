@@ -321,62 +321,101 @@ class _reportsPNPState extends State<reportsPNP> {
             const SizedBox(width: 20),
 
             SizedBox(
-              width: 165,
+              width: 125,
               height: 50,
-              child: DropdownButtonFormField<String>(
-                // text to display when no value is selected
-                hint: const Text(
-                  'Select Report Status',
-                  style: TextStyle(fontSize: 12),
+              child: TextButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      side: const BorderSide(
+                          color: Colors.black,
+                          width: 1,
+                          style: BorderStyle.solid),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
                 ),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                value: statusValue,
-                icon: const Icon(Icons.arrow_drop_down),
-                iconSize: 24,
-                elevation: 16,
-                style: const TextStyle(color: Colors.black54),
-                onChanged: (String? newValue) {
-                  // show dialog to confirm change in DropdownButtonFormField
+                onPressed: () {
                   showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Change Report Status'),
-                          content: const Text(
-                              'Are you sure you want to change the report status?'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Cancel')),
-                            TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    statusValue = newValue;
-                                  });
-                                  print('[changed status] ${report['key']}');
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Change'))
+                    context: context,
+                    builder: (BuildContext context) {
+                      String? newStatusValue = statusValue;
+                      return AlertDialog(
+                        title: const Text('Change Report Status'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                                'Are you sure you want to change the report status of report ${report['key']}?'),
+                            const SizedBox(height: 16),
+                            DropdownButtonFormField<String>(
+                              // text to display when no value is selected
+                              hint: const Text(
+                                'Select Report Status',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                              ),
+                              value: newStatusValue,
+                              icon: const Icon(Icons.arrow_drop_down),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.black54),
+                              onChanged: (String? value) {
+                                newStatusValue = value;
+                              },
+                              items: <String>[
+                                'Verified',
+                                'Already Found',
+                                'Incomplete Details',
+                                'Rejected',
+                              ].map<DropdownMenuItem<String>>((statusValue) {
+                                return DropdownMenuItem<String>(
+                                  value: statusValue,
+                                  child: Text(statusValue),
+                                );
+                              }).toList(),
+                            ),
                           ],
-                        );
-                      });
-                },
-                items: <String>[
-                  'Verified',
-                  'Already Found',
-                  'Incomplete Details',
-                  'Rejected',
-                ].map<DropdownMenuItem<String>>((statusValue) {
-                  return DropdownMenuItem<String>(
-                    value: statusValue,
-                    child: Text(statusValue),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                statusValue = newStatusValue;
+                                report['status'] = statusValue;
+                              });
+                              print(
+                                  '[changed status] ${report['key']} to $statusValue');
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Change'),
+                          ),
+                        ],
+                      );
+                    },
                   );
-                }).toList(),
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(report['status'],
+                        style: GoogleFonts.inter(
+                            fontSize: 12, fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 5),
+                    const Icon(Icons.edit, size: 15),
+                  ],
+                ),
               ),
             ),
 
