@@ -414,7 +414,10 @@ class _reportsPNPState extends State<reportsPNP> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(report['status'],
+                    Text(
+                        report['status'] == 'pending'
+                            ? 'Pending'
+                            : report['status'],
                         style: GoogleFonts.inter(
                             fontSize: 12, fontWeight: FontWeight.w700)),
                     const SizedBox(width: 5),
