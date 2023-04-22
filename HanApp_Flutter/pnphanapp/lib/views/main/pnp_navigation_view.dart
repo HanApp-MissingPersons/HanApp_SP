@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:pnphanapp/views/main/pages/reports.dart';
-import 'package:pnphanapp/views/main/pages/tempPage1.dart';
-import 'package:pnphanapp/views/main/pages/tempPage2.dart';
 
 class NavRailView extends StatefulWidget {
   const NavRailView({super.key});
@@ -15,9 +13,10 @@ class _NavRailViewState extends State<NavRailView> {
   int _selectedIndex = 0;
   // final List<dynamic> _destinations = ['Home', 'Calendar', 'Email', reportsPNP];
   static const List<Widget> _destinations = <Widget>[
-    reportsPNP(),
-    tempPage1(),
-    tempPage2(),
+    reportsPNP(filterValue: ['pending']), //first page
+    reportsPNP(filterValue: ['Verified']), //second page
+    reportsPNP(filterValue: ['Incomplete Details', 'Rejected']),
+    reportsPNP(filterValue: ['Already Found']), // fourth page
   ];
   bool _isExpanded = false;
 
@@ -37,7 +36,7 @@ class _NavRailViewState extends State<NavRailView> {
         color: Palette.indigo,
       ),
       trailing: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height/2),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2),
         child: IconButton(
           icon: _isExpanded == true
               ? const Icon(Icons.close_rounded)
@@ -65,11 +64,11 @@ class _NavRailViewState extends State<NavRailView> {
           selectedIcon: Icon(Icons.delete_forever_rounded),
           label: Text('Archived Reports'),
         ),
-        // NavigationRailDestination(
-        //   icon: Icon(Icons.settings_outlined),
-        //   selectedIcon: Icon(Icons.settings),
-        //   label: Text('Settings'),
-        // ),
+        NavigationRailDestination(
+          icon: Icon(Icons.checklist_rtl_rounded),
+          selectedIcon: Icon(Icons.checklist_rtl_outlined),
+          label: Text('Already Found'),
+        ),
       ],
     );
   }

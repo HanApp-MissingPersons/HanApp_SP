@@ -13,7 +13,8 @@ import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:pnphanapp/main.dart';
 
 class reportsPNP extends StatefulWidget {
-  const reportsPNP({Key? key}) : super(key: key);
+  final List<String> filterValue;
+  const reportsPNP({Key? key, required this.filterValue}) : super(key: key);
 
   @override
   State<reportsPNP> createState() => _reportsPNPState();
@@ -1055,6 +1056,7 @@ class _reportsPNPState extends State<reportsPNP> {
 
   @override
   Widget build(BuildContext context) {
+    List<String>? filterValueLocal = widget.filterValue;
     return Container(
       height: double.infinity,
       child: StreamBuilder(
@@ -1080,7 +1082,7 @@ class _reportsPNPState extends State<reportsPNP> {
                 value['uid'] = uid;
                 var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
                 var status = value['status'] ?? '';
-                if (lastSeenLoc != '' && status == 'pending') {
+                if (lastSeenLoc != '' && filterValueLocal.contains(status)) {
                   if (userLatLng.latitude == 999999 &&
                       userLatLng.longitude == 999999) {
                     // add report to list
@@ -1108,7 +1110,7 @@ class _reportsPNPState extends State<reportsPNP> {
           } else {
             return Container(
               alignment: Alignment.center,
-              child: const Text('There are currently no reports'),
+              child: const Text('There are currently no reports here'),
             );
           }
 
