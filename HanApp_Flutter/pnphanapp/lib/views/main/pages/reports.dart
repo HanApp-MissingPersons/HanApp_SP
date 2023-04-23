@@ -2,25 +2,84 @@ import 'dart:convert';
 //import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:pnphanapp/main.dart';
 
 class reportsPNP extends StatefulWidget {
-  const reportsPNP({Key? key}) : super(key: key);
+  final List<String> filterValue;
+  const reportsPNP({Key? key, required this.filterValue}) : super(key: key);
 
   @override
   State<reportsPNP> createState() => _reportsPNPState();
 }
 
 class _reportsPNPState extends State<reportsPNP> {
+  final user = FirebaseAuth.instance.currentUser;
+  DatabaseReference pnpAccountsRef =
+      FirebaseDatabase.instance.ref('PNP Accounts');
+  DatabaseReference databaseReportsReference =
+      FirebaseDatabase.instance.ref('Reports');
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
-  List<Map> reportList = [];
+  List<Map>? reportList = [];
   Uint8List lastSeenLocSnapshot = Uint8List(0);
+  String scars = "";
+  var userLat;
+  var userLong;
+  late LatLng userLatLng = LatLng(0, 0);
+
+  @override
+  void initState() {
+    super.initState();
+    print(user!.uid);
+    _activateListeners();
+  }
+
+  void _activateListeners() {
+    pnpAccountsRef.onValue.listen((event) {
+      var pnpProfiles = Map<String, dynamic>.from(
+          event.snapshot.value as Map<dynamic, dynamic>);
+      pnpProfiles.forEach((key, value) {
+        // print(value);
+        if (value['uid'] == user!.uid) {
+          setState(() {
+            userLat = value['lat'] ?? '';
+            userLong = value['long'] ?? '';
+            if (userLat != '' && userLong != '') {
+              userLatLng = LatLng(double.parse(userLat.toString()),
+                  double.parse(userLong.toString()));
+            } else {
+              userLatLng = LatLng(999999, 999999);
+            }
+          });
+        }
+      });
+    });
+  }
+
+  num calculateDistance(LatLng first, LatLng second) {
+    return SphericalUtil.computeDistanceBetween(first, second);
+  }
+
+  List<double> extractDoubles(String input) {
+    RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
+
+    List<double> doubles = [];
+
+    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+
+    for (RegExpMatch match in matches) {
+      doubles.add(double.parse(match.group(0)!));
+    }
+
+    return doubles;
+  }
 
   Widget listItem({required Map report}) {
     // ignore: unused_local_variable
@@ -30,12 +89,28 @@ class _reportsPNPState extends State<reportsPNP> {
     }
 
     String importanceString = '';
+    String lastSeenLoc = report['p5_lastSeenLoc'] ?? '';
     String lastSeenDate = report['p5_lastSeenDate'] ?? '';
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
     String missingPersonImageString = reportImages['p4_mp_recent_photo'] ?? '';
     String lastSeenLocSnapshotString = reportImages['p5_locSnapshot'] ?? '';
+    String nearestLandmark = report['p5_nearestLandmark'] ?? '';
     Uint8List missingPersonImageBytes;
+    scars = report['p4_mp_scars'] ?? "";
+    num distance = 0;
+
+    // calculate distance
+    if (lastSeenLoc.isNotEmpty) {
+      // print('lastseenloc runtime type: ${lastSeenLoc.runtimeType}');
+      // print('doubles in lastseenloc: ${extractDoubles(lastSeenLoc)}');
+      List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
+      double lastSeenLocLat = lastSeenLocList[0];
+      double lastSeenLocLong = lastSeenLocList[1];
+      LatLng lastSeenLocLatLng = LatLng(lastSeenLocLat, lastSeenLocLong);
+      distance = calculateDistance(userLatLng, lastSeenLocLatLng);
+      report['distance'] = distance;
+    }
 
     // classify importance
     if (report['p1_isMinor'] != null && report['p1_isMinor']) {
@@ -80,6 +155,7 @@ class _reportsPNPState extends State<reportsPNP> {
       lastSeenLocSnapshot = Uint8List(0);
     }
 
+    var statusValue;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
@@ -92,54 +168,61 @@ class _reportsPNPState extends State<reportsPNP> {
         ),
         child: Row(
           children: [
-            SizedBox(
-              width: 250,
-              child: GestureDetector(
-                onTap: () {
-                  print('tapped ${report['key']}');
-                  // print('\n\n');
-                  // print(reportList.length);
-                  // for (dynamic i in reportList) {
-                  //   // print('\n[aye] ${i.keys} ${i.runtimeType}');
-                  // }
-                  displayReportDialog(context, report, reportImages);
-                  setState(() {});
-                },
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      height: 50,
-                      width: 50,
-                      color: Colors.grey,
-                      // decoration: const BoxDecoration(
-                      //     color: Colors.grey,
-                      //     borderRadius: BorderRadius.all(Radius.circular(20))
-                      // ),
-                      child: missingPersonImageString.isNotEmpty
-                          ? Image.memory(missingPersonImageBytes)
-                          : const Icon(Icons.person),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Report Key: ${report['key']}',
-                          //JUST change the font size to 18 when Name is applied
-                          style: GoogleFonts.inter(
-                              fontSize: 6, fontWeight: FontWeight.w700),
-                        ),
-                        // Text(
-                        //   importanceString == ''
-                        //       ? 'Absent Person'
-                        //       : importanceString,
-                        //   style: GoogleFonts.inter(fontSize: 12),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: SizedBox(
+                width: 250,
+                height: 50,
+                child: GestureDetector(
+                  onTap: () {
+                    print('tapped ${report['keyUid']}');
+                    print('lastSeenLoc: $lastSeenLoc');
+                    print('distance: $distance meters away from you');
+                    // print('\n\n');
+                    // print(reportList.length);
+                    // for (dynamic i in reportList) {
+                    //   // print('\n[aye] ${i.keys} ${i.runtimeType}');
+                    // }
+                    if (dateReported.isNotEmpty) {
+                      displayReportDialog(context, report, reportImages);
+                    }
+                  },
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        height: 50,
+                        width: 50,
+                        color: Colors.grey,
+                        // decoration: const BoxDecoration(
+                        //     color: Colors.grey,
+                        //     borderRadius: BorderRadius.all(Radius.circular(20))
                         // ),
-                      ],
-                    ),
-                  ],
+                        child: missingPersonImageString.isNotEmpty
+                            ? Image.memory(missingPersonImageBytes)
+                            : const Icon(Icons.person),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Report Key: ${report['keyUid']}',
+                            //JUST change the font size to 18 when Name is applied
+                            style: GoogleFonts.inter(
+                                fontSize: 6, fontWeight: FontWeight.w700),
+                          ),
+                          // Text(
+                          //   importanceString == ''
+                          //       ? 'Absent Person'
+                          //       : importanceString,
+                          //   style: GoogleFonts.inter(fontSize: 12),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -225,7 +308,8 @@ class _reportsPNPState extends State<reportsPNP> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Brgy. Maty, Miagao',
+                  Text(nearestLandmark,
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
                           fontSize: 18, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 3),
@@ -239,35 +323,109 @@ class _reportsPNPState extends State<reportsPNP> {
             const SizedBox(width: 20),
 
             SizedBox(
-              width: 165,
+              width: 125,
               height: 50,
-              child: DropdownButtonFormField<String>(
-                // text to display when no value is selected
-                hint: const Text(
-                  'Select Report Status',
-                  style: TextStyle(fontSize: 12),
+              child: TextButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      side: const BorderSide(
+                          color: Colors.black,
+                          width: 1,
+                          style: BorderStyle.solid),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
                 ),
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                ),
-                value: null,
-                icon: const Icon(Icons.arrow_drop_down),
-                iconSize: 24,
-                elevation: 16,
-                style: const TextStyle(color: Colors.black54),
-                onChanged: null,
-                items: <String>[
-                  'Verified',
-                  'Already Found',
-                  'Incomplete Details',
-                  'Rejected',
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      String? newStatusValue = statusValue;
+                      return AlertDialog(
+                        title: const Text('Change Report Status'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                                'Are you sure you want to change the report status of report ${report['keyUid']}?'),
+                            const SizedBox(height: 16),
+                            DropdownButtonFormField<String>(
+                              // text to display when no value is selected
+                              hint: const Text(
+                                'Select Report Status',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                              ),
+                              value: newStatusValue,
+                              icon: const Icon(Icons.arrow_drop_down),
+                              iconSize: 24,
+                              elevation: 16,
+                              style: const TextStyle(color: Colors.black54),
+                              onChanged: (String? value) {
+                                newStatusValue = value;
+                              },
+                              items: <String>[
+                                'Verified',
+                                'Already Found',
+                                'Incomplete Details',
+                                'Rejected',
+                              ].map<DropdownMenuItem<String>>((statusValue) {
+                                return DropdownMenuItem<String>(
+                                  value: statusValue,
+                                  child: Text(statusValue),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              statusValue = newStatusValue;
+                              report['status'] = statusValue;
+                              await databaseReportsReference
+                                  .child(report['uid'])
+                                  .child(report['key'])
+                                  .update({"status": "$statusValue"});
+
+                              print(
+                                  '[changed status] ${report['keyUid']} to $statusValue');
+                              Navigator.of(context).pop();
+
+                              setState(() {});
+                            },
+                            child: const Text('Change'),
+                          ),
+                        ],
+                      );
+                    },
                   );
-                }).toList(),
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                        report['status'] == 'pending'
+                            ? 'Pending'
+                            : report['status'],
+                        style: GoogleFonts.inter(
+                            fontSize: 12, fontWeight: FontWeight.w700)),
+                    const SizedBox(width: 5),
+                    const Icon(Icons.edit, size: 15),
+                  ],
+                ),
               ),
             ),
 
@@ -317,8 +475,9 @@ class _reportsPNPState extends State<reportsPNP> {
                           color: Colors.black38,
                         ),
                         onPressed: () {
-                          displayReportDialog(context, report, reportImages);
-                          setState(() {});
+                          if (dateReported.isNotEmpty) {
+                            displayReportDialog(context, report, reportImages);
+                          }
                         })
                   ],
                 )),
@@ -369,30 +528,75 @@ class _reportsPNPState extends State<reportsPNP> {
                         child: Text("Report Details",
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w900,)),
+                              fontWeight: FontWeight.w900,
+                            )),
                       ),
 
-                      Text("FULL NAME",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
-                              letterSpacing: 2,
-                              color: Colors.black54)),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 0.5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
-                        child: Text(
-                          'Juan dela Cruz',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15.0),
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("FIRST NAME",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
+                                padding: const EdgeInsets.all(15),
+                                width:
+                                    MediaQuery.of(context).size.width * 0.115,
+                                //height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
+                                child: Text(
+                                  'Juan Manuel',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(width: 25),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("LAST NAME",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 10,
+                                      letterSpacing: 2,
+                                      color: Colors.black54)),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
+                                padding: const EdgeInsets.all(15),
+                                constraints: BoxConstraints(
+                                    minWidth: 100, maxWidth: 200),
+                                width:
+                                    MediaQuery.of(context).size.width * 0.115,
+                                //height: MediaQuery.of(context).size.height * 0.05,
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.5),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
+                                child: Text(
+                                  'dela Cruz',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontSize: 15.0),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
 
                       // Date Reported
@@ -405,9 +609,9 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        //height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -420,7 +624,7 @@ class _reportsPNPState extends State<reportsPNP> {
                       ),
 
                       // Last Seen Location
-                      Text("LAST SEEN LOCATION",
+                      Text("LAST TRACKED LOCATION",
                           style: TextStyle(
                               fontWeight: FontWeight.w900,
                               fontSize: 10,
@@ -429,9 +633,9 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        ////height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -453,9 +657,8 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -477,9 +680,9 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.only(left: 15),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.05,
+                        //height: MediaQuery.of(context).size.height * 0.05,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
@@ -491,13 +694,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         ),
                       ),
 
-
                       const Padding(
                         padding: EdgeInsets.only(top: 30, bottom: 20),
                         child: Text("Descriptions",
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w900,)),
+                              fontWeight: FontWeight.w900,
+                            )),
                       ),
 
                       Text("SCARS",
@@ -507,17 +710,17 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        ////height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
-                          "Cleft above the lip",
+                          scars,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15.0),
                         ),
@@ -530,15 +733,15 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           "Birthmark near shoulders",
                           textAlign: TextAlign.center,
@@ -553,15 +756,15 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           "Butterfly tattoo thighs",
                           textAlign: TextAlign.center,
@@ -576,15 +779,15 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           "Pink",
                           textAlign: TextAlign.center,
@@ -599,15 +802,15 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           "Violet/Purple",
                           textAlign: TextAlign.center,
@@ -622,15 +825,15 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           "NA",
                           textAlign: TextAlign.center,
@@ -645,29 +848,25 @@ class _reportsPNPState extends State<reportsPNP> {
                               letterSpacing: 2,
                               color: Colors.black54)),
                       Container(
-                        alignment: Alignment.topLeft,
+                        alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(15),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        height: MediaQuery.of(context).size.height * 0.1,
+                        //height: MediaQuery.of(context).size.height * 0.1,
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           "Pink Dress, headband and violet gem earings",
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15.0),
                         ),
                       ),
-
-
-
-
                     ],
                   ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
                         alignment: Alignment.topCenter,
@@ -690,9 +889,9 @@ class _reportsPNPState extends State<reportsPNP> {
                         child: Text("Missing Person Details",
                             style: TextStyle(
                               fontSize: 18,
-                              fontWeight: FontWeight.w900,)),
+                              fontWeight: FontWeight.w900,
+                            )),
                       ),
-
 
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -710,11 +909,12 @@ class _reportsPNPState extends State<reportsPNP> {
                                 margin: const EdgeInsets.only(top: 5),
                                 //padding: const EdgeInsets.only(left: 15),
                                 width: MediaQuery.of(context).size.width * 0.07,
-                                height: MediaQuery.of(context).size.height * 0.05,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(15))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
                                 child: Text(
                                   "5'4",
                                   textAlign: TextAlign.center,
@@ -723,8 +923,9 @@ class _reportsPNPState extends State<reportsPNP> {
                               ),
                             ],
                           ),
-                          const SizedBox(width: 10,),
-
+                          const SizedBox(
+                            width: 10,
+                          ),
                           Column(
                             children: [
                               Text("WEIGHT",
@@ -738,11 +939,12 @@ class _reportsPNPState extends State<reportsPNP> {
                                 margin: const EdgeInsets.only(top: 5),
                                 //padding: const EdgeInsets.only(left: 15),
                                 width: MediaQuery.of(context).size.width * 0.07,
-                                height: MediaQuery.of(context).size.height * 0.05,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(15))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
                                 child: Text(
                                   "60 kg",
                                   textAlign: TextAlign.center,
@@ -772,11 +974,12 @@ class _reportsPNPState extends State<reportsPNP> {
                                 margin: const EdgeInsets.only(top: 5),
                                 //padding: const EdgeInsets.only(left: 15),
                                 width: MediaQuery.of(context).size.width * 0.07,
-                                height: MediaQuery.of(context).size.height * 0.05,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(15))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
                                 child: Text(
                                   "Female",
                                   textAlign: TextAlign.center,
@@ -785,8 +988,9 @@ class _reportsPNPState extends State<reportsPNP> {
                               ),
                             ],
                           ),
-                          const SizedBox(width: 10,),
-
+                          const SizedBox(
+                            width: 10,
+                          ),
                           Column(
                             children: [
                               Text("CIVIL STATUS",
@@ -800,11 +1004,12 @@ class _reportsPNPState extends State<reportsPNP> {
                                 margin: const EdgeInsets.only(top: 5),
                                 //padding: const EdgeInsets.only(left: 15),
                                 width: MediaQuery.of(context).size.width * 0.07,
-                                height: MediaQuery.of(context).size.height * 0.05,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(15))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
                                 child: Text(
                                   "Separated",
                                   textAlign: TextAlign.center,
@@ -814,6 +1019,14 @@ class _reportsPNPState extends State<reportsPNP> {
                             ],
                           ),
                         ],
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 30, bottom: 20),
+                        child: Text("Contact Information",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                            )),
                       ),
                     ],
                   ),
@@ -843,18 +1056,19 @@ class _reportsPNPState extends State<reportsPNP> {
 
   @override
   Widget build(BuildContext context) {
+    List<String>? filterValueLocal = widget.filterValue;
     return Container(
       height: double.infinity,
-      child: StreamBuilder(
-        stream: dbRef.onValue,
+      child: FutureBuilder(
+        future: dbRef.once(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData || userLatLng == LatLng(0, 0)) {
             return const SpinKitCubeGrid(
               color: Palette.indigo,
               size: 40.0,
             );
           }
-          reportList.clear();
+          reportList!.clear();
           dynamic values = snapshot.data?.snapshot.value;
           if (values != null) {
             Map<dynamic, dynamic> reports = values;
@@ -863,27 +1077,56 @@ class _reportsPNPState extends State<reportsPNP> {
               dynamic uid = key;
               // reports of each user
               value.forEach((key, value) {
-                value['key'] = '${key}__$uid';
+                value['keyUid'] = '${key}__$uid';
+                value['key'] = key;
                 value['uid'] = uid;
-
-                // add report to list
-                reportList.add(value);
+                var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
+                var status = value['status'] ?? '';
+                if (lastSeenLoc != '' && filterValueLocal.contains(status)) {
+                  if (userLatLng.latitude == 999999 &&
+                      userLatLng.longitude == 999999) {
+                    // add report to list
+                    reportList!.add(value);
+                  } else {
+                    List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
+                    double lastSeenLocLat = lastSeenLocList[0];
+                    double lastSeenLocLong = lastSeenLocList[1];
+                    LatLng lastSeenLocLatLng =
+                        LatLng(lastSeenLocLat, lastSeenLocLong);
+                    var distance =
+                        calculateDistance(userLatLng, lastSeenLocLatLng);
+                    // currently, distance is set to 10km
+                    if (distance <= 10000) {
+                      // add report to list
+                      reportList!.add(value);
+                    } else {
+                      print('[NOT OK] distance is: $distance');
+                    }
+                  }
+                }
+                // reportList.add(value);
               });
             });
           } else {
             return Container(
               alignment: Alignment.center,
-              child: const Text('There are currently no reports'),
+              child: const Text('There are currently no reports here'),
             );
           }
 
-          return ListView.builder(
-            itemCount: reportList.length,
-            physics: const BouncingScrollPhysics(parent: PageScrollPhysics()),
-            itemBuilder: (BuildContext context, int index) {
-              return listItem(report: reportList[index]);
-            },
-          );
+          return reportList!.isNotEmpty
+              ? ListView.builder(
+                  itemCount: reportList!.length,
+                  physics:
+                      const BouncingScrollPhysics(parent: PageScrollPhysics()),
+                  itemBuilder: (BuildContext context, int index) {
+                    return listItem(report: reportList![index]);
+                  },
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  child: const Text('There are currently no reports'),
+                );
         },
       ),
     );
