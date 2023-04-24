@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hanapp/main.dart';
 import 'package:location/location.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class NearbyMain extends StatefulWidget {
   const NearbyMain({super.key});
@@ -15,6 +16,7 @@ class NearbyMain extends StatefulWidget {
 class _NearbyMainState extends State<NearbyMain> {
   final Completer<GoogleMapController> _controller = Completer();
   late StreamSubscription<LocationData> _locationSubscription;
+  Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
 
   LatLng sourceLocation = const LatLng(37.33500926, -122.03272188);
   LocationData? currentLocation;
@@ -22,6 +24,16 @@ class _NearbyMainState extends State<NearbyMain> {
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
+
+  List<double> extractDoubles(String input) {
+    RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
+    List<double> doubles = [];
+    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+    for (RegExpMatch match in matches) {
+      doubles.add(double.parse(match.group(0)!));
+    }
+    return doubles;
+  }
 
   void getCurrentLocation() async {
     Location location = Location();
@@ -97,7 +109,7 @@ class _NearbyMainState extends State<NearbyMain> {
                     padding: EdgeInsets.only(bottom: 15.0),
                     child: Text(
                       'Loading times may vary depending on your '
-                      'internet connection',
+                      'internet connection. . .',
                       textAlign: TextAlign.center,
                       textScaleFactor: 0.67,
                     ),
@@ -111,24 +123,76 @@ class _NearbyMainState extends State<NearbyMain> {
                 )
               ],
             )
-          : GoogleMap(
-              onMapCreated: (mapController) =>
-                  _controller.complete(mapController),
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 20,
-              ),
-              markers: {
-                Marker(
-                  markerId: const MarkerId('currentLocation'),
-                  position: LatLng(
-                      currentLocation!.latitude!, currentLocation!.longitude!),
-                  // icon: currentLocationIcon,
-                )
-              },
-            ),
+          : FutureBuilder(
+              future: dbRef.once(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Error');
+                } else {
+                  dynamic values = snapshot.data?.snapshot.value;
+                  // print(values);
+                  if (values != null) {
+                    Map<dynamic, dynamic> reports = values;
+                    List<dynamic> latLngList = [];
+                    reports.forEach((key, value) {
+                      value.forEach((key, value) {
+                        var reportLatLng = value['p5_lastSeenLoc'];
+                        List<double> lastSeenLocList =
+                            extractDoubles(reportLatLng);
+                        double lastSeenLocLat = lastSeenLocList[0];
+                        double lastSeenLocLong = lastSeenLocList[1];
+                        LatLng lastSeenLocLatLng =
+                            LatLng(lastSeenLocLat, lastSeenLocLong);
+                        print(lastSeenLocLatLng);
+                        latLngList.add(lastSeenLocLatLng);
+                        // print(value[])
+                      });
+                    });
+                    return GoogleMap(
+                      onMapCreated: (mapController) =>
+                          _controller.complete(mapController),
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(currentLocation!.latitude!,
+                            currentLocation!.longitude!),
+                        zoom: 20,
+                      ),
+                      markers: {
+                        Marker(
+                          markerId: const MarkerId('currentLocation'),
+                          position: LatLng(currentLocation!.latitude!,
+                              currentLocation!.longitude!),
+                          // icon: currentLocationIcon,
+                        )
+                      },
+                    );
+                  } else {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const <Widget>[
+                        Center(child: Text('Google maps is loading...')),
+                        Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 15.0),
+                            child: Text(
+                              'Getting Reports . . . ',
+                              textAlign: TextAlign.center,
+                              textScaleFactor: 0.67,
+                            ),
+                          ),
+                        ),
+                        Center(
+                          child: SpinKitCubeGrid(
+                            color: Palette.indigo,
+                            size: 25.0,
+                          ),
+                        )
+                      ],
+                    );
+                  }
+                }
+              }),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'nearbyMain',
         onPressed: () {
           recenterToUser();
         },
