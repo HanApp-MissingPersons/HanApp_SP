@@ -19,18 +19,25 @@ class _NearbyMainState extends State<NearbyMain> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
   late dynamic _reports = {};
+  int timesWidgetBuilt = 0;
   LatLng sourceLocation = const LatLng(37.33500926, -122.03272188);
   LocationData? currentLocation;
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
+  BitmapDescriptor greenPin =
+      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
+  BitmapDescriptor yellowPin =
+      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
 
   Future<void> _fetchData() async {
     final snapshot = await dbRef2.once();
     setState(() {
       _reports = snapshot.snapshot.value ?? {};
     });
+    print(
+        '[DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED]');
   }
 
   List<double> extractDoubles(String input) {
@@ -159,24 +166,37 @@ class _NearbyMainState extends State<NearbyMain> {
         markerId: MarkerId('currentLocation'),
         position:
             LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+        icon: greenPin,
       ),
     );
     _reports.forEach((key, value) {
+      dynamic uid = key;
       value.forEach((key, value) {
         final reportLatLng = value['p5_lastSeenLoc'];
+        final reportVerification = value['status'];
+        value['keyUid'] = '${key}__$uid';
         final lastSeenLocList = extractDoubles(reportLatLng);
         final lastSeenLocLat = lastSeenLocList[0];
         final lastSeenLocLong = lastSeenLocList[1];
         final lastSeenLocLatLng = LatLng(lastSeenLocLat, lastSeenLocLong);
-        markers.add(
-          Marker(
-            markerId: MarkerId(key),
-            position: lastSeenLocLatLng,
-          ),
-        );
-        print('Marker position: $lastSeenLocLatLng');
+        if (reportVerification == 'Verified') {
+          markers.add(
+            Marker(
+              markerId: MarkerId(value['keyUid']),
+              position: lastSeenLocLatLng,
+              icon: yellowPin,
+            ),
+          );
+          // print('[marker added] Marker position: $lastSeenLocLatLng');
+        } else {
+          // print(
+          // '[marker not added] ${value['keyUid']} status: ${value['status']}');
+        }
       });
     });
+    timesWidgetBuilt += 1;
+    print(
+        '[widget built times] $timesWidgetBuilt'); // count the times the widget rebuilds (does not consume download quota)
     return markers;
   }
 }
