@@ -17,13 +17,21 @@ class _NearbyMainState extends State<NearbyMain> {
   final Completer<GoogleMapController> _controller = Completer();
   late StreamSubscription<LocationData> _locationSubscription;
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
-
+  final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
+  late dynamic _reports = {};
   LatLng sourceLocation = const LatLng(37.33500926, -122.03272188);
   LocationData? currentLocation;
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
+
+  Future<void> _fetchData() async {
+    final snapshot = await dbRef2.once();
+    setState(() {
+      _reports = snapshot.snapshot.value ?? {};
+    });
+  }
 
   List<double> extractDoubles(String input) {
     RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
@@ -88,6 +96,7 @@ class _NearbyMainState extends State<NearbyMain> {
     super.initState();
     getCurrentLocation();
     setCustomMarkerIcon();
+    _fetchData();
   }
 
   @override
@@ -99,7 +108,7 @@ class _NearbyMainState extends State<NearbyMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currentLocation == null
+      body: (_reports.isEmpty || _reports == null)
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const <Widget>[
@@ -123,74 +132,15 @@ class _NearbyMainState extends State<NearbyMain> {
                 )
               ],
             )
-          : FutureBuilder(
-              future: dbRef.once(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Error');
-                } else {
-                  dynamic values = snapshot.data?.snapshot.value;
-                  // print(values);
-                  if (values != null) {
-                    Map<dynamic, dynamic> reports = values;
-                    List<dynamic> latLngList = [];
-                    reports.forEach((key, value) {
-                      value.forEach((key, value) {
-                        var reportLatLng = value['p5_lastSeenLoc'];
-                        List<double> lastSeenLocList =
-                            extractDoubles(reportLatLng);
-                        double lastSeenLocLat = lastSeenLocList[0];
-                        double lastSeenLocLong = lastSeenLocList[1];
-                        LatLng lastSeenLocLatLng =
-                            LatLng(lastSeenLocLat, lastSeenLocLong);
-                        print(lastSeenLocLatLng);
-                        latLngList.add(lastSeenLocLatLng);
-                        // print(value[])
-                      });
-                    });
-                    return GoogleMap(
-                      onMapCreated: (mapController) =>
-                          _controller.complete(mapController),
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(currentLocation!.latitude!,
-                            currentLocation!.longitude!),
-                        zoom: 20,
-                      ),
-                      markers: {
-                        Marker(
-                          markerId: const MarkerId('currentLocation'),
-                          position: LatLng(currentLocation!.latitude!,
-                              currentLocation!.longitude!),
-                          // icon: currentLocationIcon,
-                        )
-                      },
-                    );
-                  } else {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const <Widget>[
-                        Center(child: Text('Google maps is loading...')),
-                        Center(
-                          child: Padding(
-                            padding: EdgeInsets.only(bottom: 15.0),
-                            child: Text(
-                              'Getting Reports . . . ',
-                              textAlign: TextAlign.center,
-                              textScaleFactor: 0.67,
-                            ),
-                          ),
-                        ),
-                        Center(
-                          child: SpinKitCubeGrid(
-                            color: Palette.indigo,
-                            size: 25.0,
-                          ),
-                        )
-                      ],
-                    );
-                  }
-                }
-              }),
+          : GoogleMap(
+              markers: _buildMarkers(),
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                    currentLocation!.latitude!, currentLocation!.longitude!),
+                zoom: 20,
+              ),
+              onMapCreated: (controller) => _controller.complete(controller),
+            ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'nearbyMain',
         onPressed: () {
@@ -198,7 +148,35 @@ class _NearbyMainState extends State<NearbyMain> {
         },
         child: const Icon(Icons.my_location),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
     );
+  }
+
+  Set<Marker> _buildMarkers() {
+    final Set<Marker> markers = {};
+    markers.add(
+      Marker(
+        markerId: MarkerId('currentLocation'),
+        position:
+            LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+      ),
+    );
+    _reports.forEach((key, value) {
+      value.forEach((key, value) {
+        final reportLatLng = value['p5_lastSeenLoc'];
+        final lastSeenLocList = extractDoubles(reportLatLng);
+        final lastSeenLocLat = lastSeenLocList[0];
+        final lastSeenLocLong = lastSeenLocList[1];
+        final lastSeenLocLatLng = LatLng(lastSeenLocLat, lastSeenLocLong);
+        markers.add(
+          Marker(
+            markerId: MarkerId(key),
+            position: lastSeenLocLatLng,
+          ),
+        );
+        print('Marker position: $lastSeenLocLatLng');
+      });
+    });
+    return markers;
   }
 }
