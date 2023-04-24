@@ -65,8 +65,8 @@ class _NavRailViewState extends State<NavRailView> {
           label: Text('Archived Reports'),
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.checklist_rtl_rounded),
-          selectedIcon: Icon(Icons.checklist_rtl_outlined),
+          icon: Icon(Icons.verified_outlined),
+          selectedIcon: Icon(Icons.verified_rounded),
           label: Text('Already Found'),
         ),
       ],
