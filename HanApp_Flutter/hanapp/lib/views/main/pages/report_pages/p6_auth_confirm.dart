@@ -35,6 +35,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference mainUsersRef = FirebaseDatabase.instance.ref("Main Users");
   DatabaseReference reportsRef = FirebaseDatabase.instance.ref("Reports");
+  DatabaseReference reportsIMG = FirebaseDatabase.instance.ref("Report Images");
   late String? reportCount = '';
   final user = FirebaseAuth.instance.currentUser;
   Map<String, dynamic> prefsDict = {};
@@ -614,12 +615,11 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     // prefsDict['p6_reporteeSignature'] = signaturePhotoString;
     if (reportCount != null) {
       String reportChildName = "report_${reportCount!}";
-      prefsDict['status'] = 'pending';
+      prefsDict['status'] = 'Pending';
       await reportsRef.child(user!.uid).child(reportChildName).set(prefsDict);
-      await reportsRef
+      await reportsIMG
           .child(user!.uid)
           .child(reportChildName)
-          .child('images')
           .set(prefsImageDict);
       var reportsRefInt = int.parse(reportCount!);
       reportsRefInt = reportsRefInt + 1;
