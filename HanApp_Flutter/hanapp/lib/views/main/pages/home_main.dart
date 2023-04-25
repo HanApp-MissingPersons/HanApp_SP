@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/nearby_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/views/main/pages/update_main.dart';
@@ -112,7 +113,7 @@ class _HomeMainState extends State<HomeMain> {
                                   height: 90,
                                   width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: const Color(0xFFFF781D),
                                     borderRadius: BorderRadius.circular(10),
                                     boxShadow: const [
                                       BoxShadow(
@@ -122,7 +123,7 @@ class _HomeMainState extends State<HomeMain> {
                                       ),
                                     ],
                                   ),
-                                  child: const Text('REPORT PLACEHOLDER'),
+                                  child: Image.asset('assets/images/reportCont.png'),
                                 ),
                               ),
                             ),
@@ -140,7 +141,7 @@ class _HomeMainState extends State<HomeMain> {
                                 height: 90,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  color: Palette.indigo,
                                   borderRadius: BorderRadius.circular(10),
                                   boxShadow: const [
                                     BoxShadow(
@@ -150,7 +151,7 @@ class _HomeMainState extends State<HomeMain> {
                                     ),
                                   ],
                                 ),
-                                child: const Text('NEARBY PLACEHOLDER'),
+                                child: Image.asset('assets/images/NearbyCont.png'),
                               ),
                             ),
                           ],
