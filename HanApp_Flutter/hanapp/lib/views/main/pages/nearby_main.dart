@@ -20,7 +20,7 @@ class _NearbyMainState extends State<NearbyMain> {
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
   late dynamic _reports = {};
   int timesWidgetBuilt = 0;
-  LatLng sourceLocation = const LatLng(37.33500926, -122.03272188);
+  LatLng? sourceLocation;
   LocationData? currentLocation;
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
@@ -53,20 +53,22 @@ class _NearbyMainState extends State<NearbyMain> {
   void getCurrentLocation() async {
     Location location = Location();
 
-    location.getLocation().then((location) {
+    await location.getLocation().then((location) {
       setState(() {
         currentLocation = location;
         sourceLocation =
             LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
       });
     });
-    _locationSubscription = location.onLocationChanged.listen((newLocation) {
-      setState(() {
-        currentLocation = newLocation;
-        sourceLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+    if (currentLocation != null) {
+      _locationSubscription = location.onLocationChanged.listen((newLocation) {
+        setState(() {
+          currentLocation = newLocation;
+          sourceLocation =
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+        });
       });
-    });
+    }
   }
 
   void recenterToUser() async {
@@ -115,7 +117,7 @@ class _NearbyMainState extends State<NearbyMain> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: (_reports.isEmpty || _reports == null)
+      body: (_reports.isEmpty || _reports == null || currentLocation == null)
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: const <Widget>[
@@ -161,42 +163,44 @@ class _NearbyMainState extends State<NearbyMain> {
 
   Set<Marker> _buildMarkers() {
     final Set<Marker> markers = {};
-    markers.add(
-      Marker(
-        markerId: MarkerId('currentLocation'),
-        position:
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-        icon: greenPin,
-      ),
-    );
+    if (currentLocation != null) {
+      markers.add(
+        Marker(
+          markerId: MarkerId('currentLocation'),
+          position:
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        ),
+      );
+    }
     _reports.forEach((key, value) {
       dynamic uid = key;
       value.forEach((key, value) {
-        final reportLatLng = value['p5_lastSeenLoc'];
-        final reportVerification = value['status'];
-        value['keyUid'] = '${key}__$uid';
-        final lastSeenLocList = extractDoubles(reportLatLng);
-        final lastSeenLocLat = lastSeenLocList[0];
-        final lastSeenLocLong = lastSeenLocList[1];
-        final lastSeenLocLatLng = LatLng(lastSeenLocLat, lastSeenLocLong);
-        if (reportVerification == 'Verified') {
-          markers.add(
-            Marker(
-              markerId: MarkerId(value['keyUid']),
-              position: lastSeenLocLatLng,
-              icon: yellowPin,
+        final report = value as Map<dynamic, dynamic>;
+        if (report['status'] == 'Verified') {
+          final reportID = '${uid}_$key';
+          final location = report['p5_lastSeenLoc'] ?? '';
+          final description = report['p5_incidentDetails'] ?? '';
+          final coordinates = extractDoubles(location.toString());
+          final reportLocation = LatLng(coordinates[0], coordinates[1]);
+          final marker = Marker(
+            markerId: MarkerId(reportID),
+            position: reportLocation,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueYellow),
+            infoWindow: InfoWindow(
+              title: 'Report #$reportID',
+              snippet: description,
+              onTap: () {
+                print('tapping on marker $reportID');
+              },
             ),
           );
-          // print('[marker added] Marker position: $lastSeenLocLatLng');
-        } else {
-          // print(
-          // '[marker not added] ${value['keyUid']} status: ${value['status']}');
+          markers.add(marker);
         }
       });
     });
-    timesWidgetBuilt += 1;
-    print(
-        '[widget built times] $timesWidgetBuilt'); // count the times the widget rebuilds (does not consume download quota)
     return markers;
   }
 }
