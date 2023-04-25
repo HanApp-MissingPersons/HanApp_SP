@@ -166,11 +166,14 @@ class _NearbyMainState extends State<NearbyMain> {
     if (currentLocation != null) {
       markers.add(
         Marker(
-          markerId: MarkerId('currentLocation'),
+          markerId: const MarkerId('currentLocation'),
           position:
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
           icon:
               BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          infoWindow: const InfoWindow(
+            title: 'You',
+          ),
         ),
       );
     }
