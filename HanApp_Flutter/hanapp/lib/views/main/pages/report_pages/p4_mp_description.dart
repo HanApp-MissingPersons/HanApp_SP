@@ -170,7 +170,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   // get images from shared preference
   Future<void> _getImages(String photoType) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 30);
     if (pickedFile != null) {
       final imageBytes = await pickedFile.readAsBytes();
       setState(() {
