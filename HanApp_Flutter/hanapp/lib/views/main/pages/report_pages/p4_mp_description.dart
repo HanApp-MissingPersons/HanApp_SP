@@ -7,10 +7,13 @@
 
 /* IMPORTS */
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 /* SHARED PREFERENCE */
 late SharedPreferences _prefs;
@@ -36,8 +39,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   static const TextStyle headingStyle = TextStyle(
       fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
 
+  final userUID = FirebaseAuth.instance.currentUser!.uid;
+  Reference reportRef = FirebaseStorage.instance.ref().child('Reports');
   /* VARIABLES */
   // MP Appearance
+  String mpImageURL = '';
   String? mp_scars;
   String? mp_marks;
   String? mp_tattoos;
@@ -171,8 +177,27 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   Future<void> _getImages(String photoType) async {
     final picker = ImagePicker();
     final pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 30);
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 75);
     if (pickedFile != null) {
+      try {
+        final file = File(pickedFile.path);
+        await reportRef
+            .child(userUID.toString())
+            .putFile(file)
+            .whenComplete(() async {
+          await reportRef
+              .child(userUID.toString())
+              .getDownloadURL()
+              .then((value) {
+            setState(() {
+              mpImageURL = value;
+            });
+          });
+        });
+        print('image URL: $mpImageURL');
+      } catch (e) {
+        print('[ERROR] $e');
+      }
       final imageBytes = await pickedFile.readAsBytes();
       setState(() {
         if (photoType == 'mp_recent_photo') {
