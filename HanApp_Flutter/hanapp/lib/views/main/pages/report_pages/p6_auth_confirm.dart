@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hanapp/main.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
@@ -316,12 +317,32 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         height: 200,
-                        child: SfSignaturePad(
-                          key: signaturePadKey,
-                          minimumStrokeWidth: 2,
-                          maximumStrokeWidth: 2,
-                          strokeColor: Colors.black,
-                          backgroundColor: Color.fromARGB(255, 221, 214, 214),
+                        child: Stack(
+                          children: [
+                            SfSignaturePad(
+                              key: signaturePadKey,
+                              minimumStrokeWidth: 2,
+                              maximumStrokeWidth: 2,
+                              strokeColor: Colors.black,
+                              backgroundColor:
+                                  Color.fromARGB(255, 221, 214, 214),
+                            ),
+                            _isUploading
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Center(
+                                        child: SpinKitChasingDots(
+                                            color: Colors.indigo, size: 50),
+                                      ),
+                                      Text('Uploading Signature...',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey)),
+                                    ],
+                                  )
+                                : Container(),
+                          ],
                         ),
                       ),
                       // clear signaturepad button using clear() method
@@ -554,16 +575,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                 ),
               ],
             ),
-            _isUploading
-                ? Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.black,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : Container(),
           ]),
     );
   }
