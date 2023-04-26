@@ -28,6 +28,8 @@ class _MapDialogState extends State<MapDialog> {
   late GoogleMapController mapController;
   late LatLng _center = LatLng(999999999, 999999999);
   bool isMarkerPresent = false;
+  bool isBtnDisabled = false;
+  bool _showProgressIndicator = false;
 
   Set<Marker> _markers = {};
   Uint8List? _mapSnapshot;
@@ -80,6 +82,10 @@ class _MapDialogState extends State<MapDialog> {
     XFile? imageFile;
     try {
       // await mapController.moveCamera(_center as CameraUpdate);
+      setState(() {
+        isBtnDisabled = true;
+        _showProgressIndicator = true;
+      });
       await mapController.moveCamera(CameraUpdate.newLatLng(_center));
       await mapController.takeSnapshot().then((image) {
         setState(() {
@@ -145,19 +151,54 @@ class _MapDialogState extends State<MapDialog> {
               height: MediaQuery.of(context).size.height * 0.5,
               width: MediaQuery.of(context).size.width * 0.5,
               child: Stack(
+                fit: StackFit.expand,
+                clipBehavior: Clip.none,
                 children: [
-                  GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    onTap: _onMapTap,
-                    initialCameraPosition: CameraPosition(
-                      target: _center,
-                      zoom: 14,
-                    ),
-                    markers: _markers,
+                  Stack(
+                    children: [
+                      GoogleMap(
+                        onMapCreated: _onMapCreated,
+                        onTap: _onMapTap,
+                        initialCameraPosition: CameraPosition(
+                          target: _center,
+                          zoom: 14,
+                        ),
+                        markers: _markers,
+                      ),
+                      if (_mapSnapshot != null)
+                        Positioned.fill(
+                          child: Image.memory(_mapSnapshot!, fit: BoxFit.cover),
+                        ),
+                    ],
                   ),
-                  if (_mapSnapshot != null)
-                    Positioned.fill(
-                      child: Image.memory(_mapSnapshot!, fit: BoxFit.cover),
+                  if (_showProgressIndicator)
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SpinKitFadingCircle(
+                            color: Palette.indigo,
+                            size: 60,
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white.withOpacity(0.8),
+                              // backgroundBlendMode: BlendMode.darken,
+                            ),
+                            child: const Text(
+                              'Uploading selected location...',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                 ],
               ),
@@ -192,13 +233,13 @@ class _MapDialogState extends State<MapDialog> {
             ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: !isBtnDisabled ? () => Navigator.of(context).pop() : null,
           child: const Text('Cancel'),
         ),
         Padding(
           padding: const EdgeInsets.only(right: 10),
           child: ElevatedButton(
-            onPressed: isMarkerPresent
+            onPressed: isMarkerPresent && !isBtnDisabled
                 ? () => _onConfirmPressed(context, uid, reportCount)
                 : null,
             style: ElevatedButton.styleFrom(

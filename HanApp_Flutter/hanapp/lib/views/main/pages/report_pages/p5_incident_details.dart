@@ -541,6 +541,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                     Map<String, dynamic>? result;
                     reportCount != 'NONE'
                         ? result = await showDialog<Map<String, dynamic>?>(
+                            barrierDismissible: false,
                             context: context,
                             builder: (BuildContext context) {
                               print('User UID: $userUID');
