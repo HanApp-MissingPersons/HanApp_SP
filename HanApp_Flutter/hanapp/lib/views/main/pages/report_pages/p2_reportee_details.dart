@@ -1,6 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hanapp/main.dart';
@@ -94,6 +98,7 @@ late SharedPreferences _prefs;
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   PlatformFile? pickedFile;
   Uint8List? pickedFileBytes;
+  String userUID = FirebaseAuth.instance.currentUser!.uid;
 
   Uint8List? reportee_ID_Photo;
   Uint8List? singlePhoto_face;
@@ -152,16 +157,72 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     }
   }
 
-  Future<void> getImages() async {
+  late String reportCount;
+  retrieveUserData() async {
+    _prefs = await SharedPreferences.getInstance();
+    await FirebaseDatabase.instance
+        .ref("Main Users")
+        .child(userUID)
+        .get()
+        .then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> userDict = snapshot.value as Map<dynamic, dynamic>;
+      print('${userDict['firstName']} ${userDict['lastName']}');
+      reportCount = userDict['reportCount'];
+    });
+    print('[REPORT COUNT] report count: $reportCount');
+  }
+
+  Future<void> getImages(String photoType) async {
+    dynamic imgURL;
+    dynamic pickedFile;
     final picker = ImagePicker();
-    final pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 30);
+    if (photoType == 'singlePhoto_face') {
+      pickedFile =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 75);
+    } else {
+      pickedFile =
+          await picker.pickImage(source: ImageSource.gallery, imageQuality: 75);
+    }
     if (pickedFile != null) {
+      try {
+        final file = File(pickedFile.path);
+        await FirebaseStorage.instance
+            .ref()
+            .child('Reports')
+            .child(userUID.toString())
+            .child('report_$reportCount')
+            .child(photoType)
+            .putFile(file)
+            .whenComplete(() async {
+          await FirebaseStorage.instance
+              .ref()
+              .child('Reports')
+              .child(userUID.toString())
+              .child('report_$reportCount')
+              .child(photoType)
+              .getDownloadURL()
+              .then((value) {
+            setState(() {
+              imgURL = value;
+              _writeToPrefs('p2_${photoType}_LINK', value);
+            });
+          });
+        });
+        print('image URL: $imgURL');
+      } catch (e) {
+        print('[ERROR] $e');
+      }
       final imageBytes = await pickedFile.readAsBytes();
-      setState(() {
-        reportee_ID_Photo = imageBytes;
-      });
-      await saveImages();
+      if (photoType == 'reportee_ID_Photo') {
+        setState(() {
+          reportee_ID_Photo = imageBytes;
+        });
+      } else if (photoType == 'singlePhoto_face') {
+        setState(() {
+          singlePhoto_face = imageBytes;
+        });
+      }
+      await saveImages(); // this is to save the image to shared preference when the user picks an image
     }
   }
 
@@ -406,6 +467,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteeRelationshipToMissingPerson = TextEditingController();
     _dateOfBirthController = TextEditingController();
     getReporteeInfo();
+    retrieveUserData();
     super.initState();
   }
 
@@ -1114,7 +1176,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(
                       onPressed: () {
-                        getImages();
+                        getImages('reportee_ID_Photo');
                       },
                       child: const Text("Upload ID")),
                 ),
@@ -1147,7 +1209,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(
                       onPressed: () {
-                        getImageFace();
+                        getImages('singlePhoto_face');
                       },
                       child: const Text("Take Selfie")),
                 ),
