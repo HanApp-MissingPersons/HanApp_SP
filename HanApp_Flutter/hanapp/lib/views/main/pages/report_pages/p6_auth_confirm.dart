@@ -1,10 +1,13 @@
 /* IMPORTS */
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hanapp/main.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
@@ -38,8 +41,10 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   DatabaseReference reportsIMG = FirebaseDatabase.instance.ref("Report Images");
   late String? reportCount = '';
   final user = FirebaseAuth.instance.currentUser;
+  String userUID = FirebaseAuth.instance.currentUser!.uid;
   Map<String, dynamic> prefsDict = {};
   Map<String, String> prefsImageDict = {};
+  bool _isUploading = false;
 
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
@@ -61,11 +66,54 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
   // save user signature to shared preferences
   Future<void> _saveSignature() async {
+    print('[BUTTON] BUTTON TAPPED');
+    setState(() {
+      _isUploading = true; // set _isUploading to true when starting to upload
+    });
+    print('_isUploading: $_isUploading');
+    XFile? imageFile;
     if (signaturePhoto != null) {
+      imageFile = XFile.fromData(signaturePhoto!);
+      try {
+        final bytes = await imageFile.readAsBytes();
+        final file = File('${(await getTemporaryDirectory()).path}/image.png');
+        await file.writeAsBytes(bytes);
+        await FirebaseStorage.instance
+            .ref()
+            .child('Reports')
+            .child(userUID)
+            .child('report_$reportCount')
+            .child('signature')
+            .putFile(file)
+            .whenComplete(() async {
+          await FirebaseStorage.instance
+              .ref()
+              .child('Reports')
+              .child(userUID)
+              .child('report_$reportCount')
+              .child('signature')
+              .getDownloadURL()
+              .then((value) {
+            print('GOT VALUE: $value');
+            setState(() {
+              prefs.setString('p6_reporteeSignature_LINK', value);
+            });
+          });
+        });
+        print('[SIGNATURE] Signature uploaded');
+      } catch (e) {
+        print('[ERROR] $e');
+      }
+
       String signaturePhotoString = base64Encode(signaturePhoto!);
       prefs.setString('p6_reporteeSignature', signaturePhotoString);
     }
+    setState(() {
+      _isUploading = false; // set _isUploading to true when ending upload
+    });
+    print('_isUploading: $_isUploading');
   }
+  // save signature end
 
   // load user signature from shared preferences
   Future<void> _loadSignature() async {
@@ -150,353 +198,374 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         }
       }
     });
-    print('[IMGPREF] $prefsImageDict');
   }
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<SfSignaturePadState> signaturePadKey = GlobalKey();
 
-    return Stack(children: [
-      Positioned(
-        top: MediaQuery.of(context).size.height / 8,
-        left: 20,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+    return Container(
+      margin: EdgeInsets.only(
+          top: MediaQuery.of(context).size.height / 15,
+          left: MediaQuery.of(context).size.width / 50),
+      child: Stack(
+          fit: StackFit.expand,
+          alignment: AlignmentDirectional.center,
+          clipBehavior: Clip.none,
           children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'Page 6 of 6: Confirmation and Authorization',
-                style: optionStyle,
-              ),
-            ),
-            _verticalPadding,
-            // text saying "By affixing my signature below"
-            _verticalPadding,
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: const Text(
-                'By affixing my signature below:',
-                style: TextStyle(fontSize: 14),
-              ),
-            ),
-            _verticalPadding,
-            // show all the authorization and confirmation texts, each with their leading check mark
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 40,
-              child: Column(
-                children: [
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          _correctInfo,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ],
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: Text(
+                    'Page 6 of 6: Confirmation and Authorization | $_isUploading',
+                    style: optionStyle,
                   ),
-                  _verticalPadding,
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          _authorization_PNP_upload,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ],
+                ),
+                _verticalPadding,
+                // text saying "By affixing my signature below"
+                _verticalPadding,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: const Text(
+                    'By affixing my signature below:',
+                    style: TextStyle(fontSize: 14),
                   ),
-                  _verticalPadding,
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          _hanapp_upload,
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ],
-                  ),
-                  _verticalPadding,
-                  Row(
-                    children: const [
-                      Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          _dataPrivacy,
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ],
-                  ),
-                  _verticalPadding,
-                  // Signature hint text
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: const Text(
-                      'Draw your signature here:',
-                      style:
-                          TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                  // signature pad
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    height: 200,
-                    child: SfSignaturePad(
-                      key: signaturePadKey,
-                      minimumStrokeWidth: 2,
-                      maximumStrokeWidth: 2,
-                      strokeColor: Colors.black,
-                      backgroundColor: Color.fromARGB(255, 221, 214, 214),
-                    ),
-                  ),
-                  // clear signaturepad button using clear() method
-                  Row(
+                ),
+                _verticalPadding,
+                // show all the authorization and confirmation texts, each with their leading check mark
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 40,
+                  child: Column(
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        margin: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width * 0.03,
-                            right: MediaQuery.of(context).size.width * 0.03),
-                        child: ElevatedButton(
-                          // button color here
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white60,
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.check,
+                            color: Colors.green,
                           ),
-                          onPressed: () async {
-                            signaturePadKey.currentState!.clear();
-                          },
-                          child: const Text(
-                            'Clear',
-                            style: TextStyle(color: Colors.black87),
-                            textAlign: TextAlign.center,
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              _correctInfo,
+                              style: const TextStyle(fontSize: 14),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                       _verticalPadding,
-                      // save signature button
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        child: ElevatedButton(
-                          // button color here
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Palette.indigo,
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.check,
+                            color: Colors.green,
                           ),
-                          onPressed: () async {
-                            ui.Image image =
-                                await signaturePadKey.currentState!.toImage();
-                            await _getSignature(image);
-                            await _saveSignature();
-                            await retrievePrefsData();
-                            await retrievePrefsData();
-                            // pop-up showing preview of signature
-                            // ignore: use_build_context_synchronously
-                            await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text(
-                                        'Preview of Saved Signature'),
-                                    content: Image.memory(signaturePhoto!),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('Close'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                });
-                          },
-                          child: const Text('Save'),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              _authorization_PNP_upload,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                      _verticalPadding,
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.check,
+                            color: Colors.green,
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              _hanapp_upload,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                      _verticalPadding,
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.check,
+                            color: Colors.green,
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              _dataPrivacy,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                        ],
+                      ),
+                      _verticalPadding,
+                      // Signature hint text
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: const Text(
+                          'Draw your signature here:',
+                          style: TextStyle(
+                              fontSize: 14, fontStyle: FontStyle.italic),
                         ),
                       ),
-                    ],
-                  ),
-                  // text saying: no signature saved yet if signaturePhoto is null
-                  // signaturePhoto == null
-                  //     ? const Text(
-                  //         'No signature saved yet.',
-                  //         style: TextStyle(fontSize: 14),
-                  //       )
-                  //     : const Text(
-                  //         'Signature saved.',
-                  //         style: TextStyle(fontSize: 14),
-                  //       ),
-                  // button to show preview of signature
-                  prefs.getString('p6_reporteeSignature') != null
-                      ? SizedBox(
-                          width: MediaQuery.of(context).size.width - 40,
-                          child: TextButton(
-                            // button color here
-                            onPressed: () async {
-                              // pop-up showing preview of signature
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                          'Preview of Saved Signature'),
-                                      content: signaturePhoto != null
-                                          ? Image.memory(signaturePhoto!)
-                                          : const Text(
-                                              'No signature saved yet.'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: const Text('Close'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            foregroundColor: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              // set p6_reporteeSignature to null
-                                              signaturePhoto = null;
-                                              try {
-                                                prefs.remove(
-                                                    'p6_reporteeSignature');
-                                              } catch (e) {
-                                                print(e);
-                                              }
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('Delete Signature'),
-                                        )
-                                      ],
-                                    );
-                                  });
-                            },
-                            child: const Text('View Saved Signature'),
+                      // signature pad
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        height: 200,
+                        child: SfSignaturePad(
+                          key: signaturePadKey,
+                          minimumStrokeWidth: 2,
+                          maximumStrokeWidth: 2,
+                          strokeColor: Colors.black,
+                          backgroundColor: Color.fromARGB(255, 221, 214, 214),
+                        ),
+                      ),
+                      // clear signaturepad button using clear() method
+                      Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            margin: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.03,
+                                right:
+                                    MediaQuery.of(context).size.width * 0.03),
+                            child: ElevatedButton(
+                              // button color here
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white60,
+                              ),
+                              onPressed: () async {
+                                signaturePadKey.currentState!.clear();
+                              },
+                              child: const Text(
+                                'Clear',
+                                style: TextStyle(color: Colors.black87),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                           ),
-                        )
-                      : const Text('No signature submitted'),
-                  _verticalPadding,
-                  // SUBMIT BUTTON
-                  prefs.getString('p6_reporteeSignature') != null
-                      ? SizedBox(
-                          width: MediaQuery.of(context).size.width - 40,
-                          child: ElevatedButton(
-                            child: const Text('Submit Report'),
-                            onPressed: () async {
-                              // show popup dialog asking to confirm submission
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Confirm Submission'),
-                                      content: const Text(
-                                          'Are you sure you want to submit this report?'),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: const Text('Cancel'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 10, right: 20),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Palette.indigo,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                              ),
-                                            ),
-                                            child: const Text('Submit'),
-                                            onPressed: () async {
-                                              checkReportValidity()
-                                                  ? submitReport()
-                                                  : await showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return AlertDialog(
-                                                          title: const Text(
-                                                              'Incomplete form'),
-                                                          content: Text(
-                                                              formErrorMessage()),
-                                                          actions: <Widget>[
-                                                            TextButton(
-                                                              child: const Text(
-                                                                  'Close'),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                          ],
-                                                        );
-                                                      });
+                          _verticalPadding,
+                          // save signature button
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: ElevatedButton(
+                              // button color here
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Palette.indigo,
+                              ),
+                              onPressed: () async {
+                                ui.Image image = await signaturePadKey
+                                    .currentState!
+                                    .toImage();
+                                await _getSignature(image);
+                                await _saveSignature();
+                                await retrievePrefsData();
+                                await retrievePrefsData();
+                                // pop-up showing preview of signature
+                                // ignore: use_build_context_synchronously
+                                await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            'Preview of Saved Signature'),
+                                        content: Image.memory(signaturePhoto!),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('Close'),
+                                            onPressed: () {
                                               Navigator.of(context).pop();
                                             },
                                           ),
-                                        )
-                                      ],
-                                    );
-                                  });
-                            },
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: const Text('Save'),
+                            ),
+                          ),
+                        ],
+                      ),
+                      // text saying: no signature saved yet if signaturePhoto is null
+                      // signaturePhoto == null
+                      //     ? const Text(
+                      //         'No signature saved yet.',
+                      //         style: TextStyle(fontSize: 14),
+                      //       )
+                      //     : const Text(
+                      //         'Signature saved.',
+                      //         style: TextStyle(fontSize: 14),
+                      //       ),
+                      // button to show preview of signature
+                      prefs.getString('p6_reporteeSignature') != null
+                          ? SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: TextButton(
+                                // button color here
+                                onPressed: () async {
+                                  // pop-up showing preview of signature
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Preview of Saved Signature'),
+                                          content: signaturePhoto != null
+                                              ? Image.memory(signaturePhoto!)
+                                              : const Text(
+                                                  'No signature saved yet.'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Close'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  // set p6_reporteeSignature to null
+                                                  signaturePhoto = null;
+                                                  try {
+                                                    prefs.remove(
+                                                        'p6_reporteeSignature');
+                                                  } catch (e) {
+                                                    print(e);
+                                                  }
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: const Text(
+                                                  'Delete Signature'),
+                                            )
+                                          ],
+                                        );
+                                      });
+                                },
+                                child: const Text('View Saved Signature'),
+                              ),
+                            )
+                          : const Text('No signature submitted'),
+                      _verticalPadding,
+                      // SUBMIT BUTTON
+                      prefs.getString('p6_reporteeSignature') != null
+                          ? SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: ElevatedButton(
+                                child: const Text('Submit Report'),
+                                onPressed: () async {
+                                  // show popup dialog asking to confirm submission
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title:
+                                              const Text('Confirm Submission'),
+                                          content: const Text(
+                                              'Are you sure you want to submit this report?'),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Cancel'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 10, right: 20),
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Palette.indigo,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0),
+                                                  ),
+                                                ),
+                                                child: const Text('Submit'),
+                                                onPressed: () async {
+                                                  checkReportValidity()
+                                                      ? submitReport()
+                                                      : await showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              title: const Text(
+                                                                  'Incomplete form'),
+                                                              content: Text(
+                                                                  formErrorMessage()),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  child: const Text(
+                                                                      'Close'),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            );
+                                                          });
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      });
+                                },
 
-                            // use sharedpreferences getAll() method to get all the data
-                          ),
-                        )
-                      : // show a submit button that is grayed out
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width - 40,
-                          child: const ElevatedButton(
-                            onPressed: null,
-                            child: Text('Submit Report'),
-                          ),
-                        ),
-                  // print all sharedpreferences data
-                  TextButton(
-                    onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      print(prefs.getKeys());
-                      // preview of saved signature in a popup dialog
-                    },
-                    child: const Text('Print Shared Preferences'),
+                                // use sharedpreferences getAll() method to get all the data
+                              ),
+                            )
+                          : // show a submit button that is grayed out
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: const ElevatedButton(
+                                onPressed: null,
+                                child: Text('Submit Report'),
+                              ),
+                            ),
+                      // print all sharedpreferences data
+                      TextButton(
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          print(prefs.getKeys());
+                          // preview of saved signature in a popup dialog
+                        },
+                        child: const Text('Print Shared Preferences'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ]);
+            _isUploading
+                ? Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.black,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                : Container(),
+          ]),
+    );
   }
 
   List<String> dialogMessage = ['none'];
