@@ -87,16 +87,16 @@ class _NearbyMainState extends State<NearbyMain> {
   void setCustomMarkerIcon() {
     // temporary images, just to show that it is possible
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(20, 20)),
-            'assets/images/register.png')
+            const ImageConfiguration(size: Size(20, 20)),   //decrease if too large
+            'assets/images/mp_marker.png')
         .then((icon) => sourceIcon = icon);
+    // BitmapDescriptor.fromAssetImage(
+    //         const ImageConfiguration(size: Size(20, 20)),
+    //         'assets/images/login.png')
+    //     .then((icon) => destinationIcon = icon);
     BitmapDescriptor.fromAssetImage(
             const ImageConfiguration(size: Size(20, 20)),
-            'assets/images/login.png')
-        .then((icon) => destinationIcon = icon);
-    BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(20, 20)),
-            'assets/images/verify-email_2.png')
+            'assets/images/position_marker.png')
         .then((icon) => currentLocationIcon = icon);
   }
 
@@ -169,8 +169,7 @@ class _NearbyMainState extends State<NearbyMain> {
           markerId: const MarkerId('currentLocation'),
           position:
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          icon: currentLocationIcon,
           infoWindow: const InfoWindow(
             title: 'You',
           ),
@@ -190,8 +189,7 @@ class _NearbyMainState extends State<NearbyMain> {
           final marker = Marker(
             markerId: MarkerId(reportID),
             position: reportLocation,
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueYellow),
+            icon: sourceIcon,
             infoWindow: InfoWindow(
               title: 'Report #$reportID',
               snippet: description,
