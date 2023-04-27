@@ -128,6 +128,63 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     }
   }
 
+  uploadImages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> imagePaths = [
+      'p6_reporteeSignature_PATH',
+      'p2_singlePhoto_face_PATH',
+      'p2_reportee_ID_Photo_PATH',
+      'p4_mp_recent_photo_PATH',
+      'p4_mp_dental_record_photo_PATH',
+      'p4_mp_finger_print_record_photo_PATH',
+      'p5_locSnapshot_PATH',
+      'p6_reporteeSignature_PATH'
+    ];
+
+    List<String> namePaths = [
+      'p6_reporteeSignature',
+      'p2_singlePhoto_face',
+      'p2_reportee_ID_Photo',
+      'p4_mp_recent_photo',
+      'p4_mp_dental_record_photo',
+      'p4_mp_finger_print_record_photo',
+      'p5_locSnapshot',
+      'p6_reporteeSignature'
+    ];
+
+    for (int i = 0; i < imagePaths.length; i += 1) {
+      print('imagePaths[$i]: ${imagePaths[i]}');
+
+      if (prefs.getString(imagePaths[i]) != null) {
+        String filePath = prefs.getString(imagePaths[i])!;
+        final file = File(filePath);
+        await FirebaseStorage.instance
+            .ref()
+            .child('Reports')
+            .child(userUID)
+            .child('report_$reportCount')
+            .child('signature')
+            .putFile(file)
+            .whenComplete(() async {
+          await FirebaseStorage.instance
+              .ref()
+              .child('Reports')
+              .child(userUID)
+              .child('report_$reportCount')
+              .child('signature')
+              .getDownloadURL()
+              .then((value) {
+            print('UPLOADED: ${imagePaths[i]}');
+            setState(() {
+              prefs.setString('${namePaths[i]}_LINK', value);
+            });
+          });
+        });
+      }
+    }
+    print('[UPLOAD DONE] images uploaded');
+  }
+
   // getSignature Future function
   Future<void> _getSignature(image) async {
     final data = await image.toByteData(format: ImageByteFormat.png);
@@ -700,10 +757,10 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       String reportChildName = "report_${reportCount!}";
       prefsDict['status'] = 'Pending';
       await reportsRef.child(user!.uid).child(reportChildName).set(prefsDict);
-      await reportsIMG
-          .child(user!.uid)
-          .child(reportChildName)
-          .set(prefsImageDict);
+      // await reportsIMG
+      //     .child(user!.uid)
+      //     .child(reportChildName)
+      //     .set(prefsImageDict);
       var reportsRefInt = int.parse(reportCount!);
       reportsRefInt = reportsRefInt + 1;
       await mainUsersRef.child(user!.uid).update({
@@ -713,5 +770,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     } else {
       print('[unsuccessful] Report count is null.');
     }
+    uploadImages();
   }
 }
