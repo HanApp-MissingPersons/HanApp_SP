@@ -67,44 +67,40 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
   // save user signature to shared preferences
   Future<void> _saveSignature() async {
-    print('[BUTTON] BUTTON TAPPED');
-    setState(() {
-      _isUploading = true; // set _isUploading to true when starting to upload
-    });
-    print('_isUploading: $_isUploading');
     XFile? imageFile;
     if (signaturePhoto != null) {
       imageFile = XFile.fromData(signaturePhoto!);
       try {
         final bytes = await imageFile.readAsBytes();
-        final file = File('${(await getTemporaryDirectory()).path}/image.png');
+        final file =
+            File('${(await getTemporaryDirectory()).path}/image_signature.png');
         await file.writeAsBytes(bytes);
         setState(() {
           prefs.setString('p6_reporteeSignature_PATH', file.path);
         });
-        await FirebaseStorage.instance
-            .ref()
-            .child('Reports')
-            .child(userUID)
-            .child('report_$reportCount')
-            .child('signature')
-            .putFile(file)
-            .whenComplete(() async {
-          await FirebaseStorage.instance
-              .ref()
-              .child('Reports')
-              .child(userUID)
-              .child('report_$reportCount')
-              .child('signature')
-              .getDownloadURL()
-              .then((value) {
-            print('GOT VALUE: $value');
-            setState(() {
-              prefs.setString('p6_reporteeSignature_LINK', value);
-            });
-          });
-        });
-        print('[SIGNATURE] Signature uploaded');
+        //   await FirebaseStorage.instance
+        //       .ref()
+        //       .child('Reports')
+        //       .child(userUID)
+        //       .child('report_$reportCount')
+        //       .child('signature')
+        //       .putFile(file)
+        //       .whenComplete(() async {
+        //     await FirebaseStorage.instance
+        //         .ref()
+        //         .child('Reports')
+        //         .child(userUID)
+        //         .child('report_$reportCount')
+        //         .child('signature')
+        //         .getDownloadURL()
+        //         .then((value) {
+        //       print('GOT VALUE: $value');
+        //       setState(() {
+        //         prefs.setString('p6_reporteeSignature_LINK', value);
+        //       });
+        //     });
+        //   });
+        //   print('[SIGNATURE] Signature uploaded');
       } catch (e) {
         print('[ERROR] $e');
       }
@@ -112,10 +108,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       String signaturePhotoString = base64Encode(signaturePhoto!);
       prefs.setString('p6_reporteeSignature', signaturePhotoString);
     }
-    setState(() {
-      _isUploading = false; // set _isUploading to true when ending upload
-    });
-    print('_isUploading: $_isUploading');
   }
   // save signature end
 
@@ -138,23 +130,20 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       'p4_mp_dental_record_photo_PATH',
       'p4_mp_finger_print_record_photo_PATH',
       'p5_locSnapshot_PATH',
-      'p6_reporteeSignature_PATH'
     ];
 
     List<String> namePaths = [
-      'p6_reporteeSignature',
-      'p2_singlePhoto_face',
-      'p2_reportee_ID_Photo',
-      'p4_mp_recent_photo',
-      'p4_mp_dental_record_photo',
-      'p4_mp_finger_print_record_photo',
-      'p5_locSnapshot',
-      'p6_reporteeSignature'
+      'reportee_Signature',
+      'reportee_Selfie',
+      'reportee_ID_Photo',
+      'mp_recentPhoto',
+      'mp_dentalRecord',
+      'mp_fingerPrintRecord',
+      'mp_locationSnapshot',
     ];
 
     for (int i = 0; i < imagePaths.length; i += 1) {
       print('imagePaths[$i]: ${imagePaths[i]}');
-
       if (prefs.getString(imagePaths[i]) != null) {
         String filePath = prefs.getString(imagePaths[i])!;
         final file = File(filePath);
@@ -163,7 +152,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
             .child('Reports')
             .child(userUID)
             .child('report_$reportCount')
-            .child('signature')
+            .child(namePaths[i])
             .putFile(file)
             .whenComplete(() async {
           await FirebaseStorage.instance
@@ -171,12 +160,13 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
               .child('Reports')
               .child(userUID)
               .child('report_$reportCount')
-              .child('signature')
+              .child(namePaths[i])
               .getDownloadURL()
               .then((value) {
             print('UPLOADED: ${imagePaths[i]}');
             setState(() {
               prefs.setString('${namePaths[i]}_LINK', value);
+              print('LINK: ${prefs.getString('${namePaths[i]}_LINK')}');
             });
           });
         });
@@ -200,7 +190,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   void initState() {
     super.initState();
     _loadSignature();
-    print('[bwahaha] ${mainUsersRef.child(user!.uid)}');
     retrievePrefsData();
     retrieveUserData();
   }
@@ -280,7 +269,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: Text(
-                    'Page 6 of 6: Confirmation and Authorization | $_isUploading',
+                    'Page 6 of 6: Confirmation and Authorization',
                     style: optionStyle,
                   ),
                 ),
@@ -544,6 +533,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                 onPressed: () async {
                                   // show popup dialog asking to confirm submission
                                   showDialog(
+                                      barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
@@ -643,8 +633,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   checkReportValidity() {
     List<String> keysList = prefs.getKeys().toList();
     bool returnval = true;
-    print('[KEYSLIST] $keysList');
-    print('[PREFSDICT] $prefsDict');
     // // p2 required values
     // if (!(keysList.contains('p2_citizenship') &&
     //     keysList.contains('p2_civil_status') &&
@@ -756,6 +744,9 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     if (reportCount != null) {
       String reportChildName = "report_${reportCount!}";
       prefsDict['status'] = 'Pending';
+      await uploadImages();
+      await retrievePrefsData();
+      prefsDict.removeWhere((key, value) => key.endsWith('_PATH'));
       await reportsRef.child(user!.uid).child(reportChildName).set(prefsDict);
       // await reportsIMG
       //     .child(user!.uid)
@@ -770,6 +761,5 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     } else {
       print('[unsuccessful] Report count is null.');
     }
-    uploadImages();
   }
 }

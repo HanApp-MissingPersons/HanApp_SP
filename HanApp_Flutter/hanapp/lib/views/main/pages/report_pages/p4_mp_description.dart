@@ -201,29 +201,29 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         setState(() {
           _writeToPrefs('p4_${photoType}_PATH', file.path);
         });
-        await FirebaseStorage.instance
-            .ref()
-            .child('Reports')
-            .child(userUID.toString())
-            .child('report_$reportCount')
-            .child(photoType)
-            .putFile(file)
-            .whenComplete(() async {
-          await FirebaseStorage.instance
-              .ref()
-              .child('Reports')
-              .child(userUID.toString())
-              .child('report_$reportCount')
-              .child(photoType)
-              .getDownloadURL()
-              .then((value) {
-            setState(() {
-              mpImageURL = value;
-              _writeToPrefs('p4_${photoType}_LINK', value);
-            });
-          });
-        });
-        print('image URL: $mpImageURL');
+        //   await FirebaseStorage.instance
+        //       .ref()
+        //       .child('Reports')
+        //       .child(userUID.toString())
+        //       .child('report_$reportCount')
+        //       .child(photoType)
+        //       .putFile(file)
+        //       .whenComplete(() async {
+        //     await FirebaseStorage.instance
+        //         .ref()
+        //         .child('Reports')
+        //         .child(userUID.toString())
+        //         .child('report_$reportCount')
+        //         .child(photoType)
+        //         .getDownloadURL()
+        //         .then((value) {
+        //       setState(() {
+        //         mpImageURL = value;
+        //         _writeToPrefs('p4_${photoType}_LINK', value);
+        //       });
+        //     });
+        //   });
+        //   print('image URL: $mpImageURL');
       } catch (e) {
         print('[ERROR] $e');
       }

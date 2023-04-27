@@ -82,10 +82,10 @@ class _MapDialogState extends State<MapDialog> {
     XFile? imageFile;
     try {
       // await mapController.moveCamera(_center as CameraUpdate);
-      setState(() {
-        isBtnDisabled = true;
-        _showProgressIndicator = true;
-      });
+      // setState(() {
+      //   // isBtnDisabled = true;
+      //   // _showProgressIndicator = true;
+      // });
       await mapController.moveCamera(CameraUpdate.newLatLng(_center));
       await mapController.takeSnapshot().then((image) {
         setState(() {
@@ -102,29 +102,29 @@ class _MapDialogState extends State<MapDialog> {
           setState(() {
             prefs.setString('p5_locSnapshot_PATH', file.path);
           });
-          await FirebaseStorage.instance
-              .ref()
-              .child('Reports')
-              .child(uid)
-              .child('report_$reportCount')
-              .child('locSnapshot')
-              .putFile(file)
-              .whenComplete(() async {
-            await FirebaseStorage.instance
-                .ref()
-                .child('Reports')
-                .child(uid)
-                .child('report_$reportCount')
-                .child('locSnapshot')
-                .getDownloadURL()
-                .then((value) {
-              print('GOT VALUE: $value');
-              setState(() {
-                prefs.setString('p5_locSnapshot_LINK', value);
-              });
-            });
-          });
-          print('[LOC SNAPSHOT] snapshot uploaded');
+          //   await FirebaseStorage.instance
+          //       .ref()
+          //       .child('Reports')
+          //       .child(uid)
+          //       .child('report_$reportCount')
+          //       .child('locSnapshot')
+          //       .putFile(file)
+          //       .whenComplete(() async {
+          //     await FirebaseStorage.instance
+          //         .ref()
+          //         .child('Reports')
+          //         .child(uid)
+          //         .child('report_$reportCount')
+          //         .child('locSnapshot')
+          //         .getDownloadURL()
+          //         .then((value) {
+          //       print('GOT VALUE: $value');
+          //       setState(() {
+          //         prefs.setString('p5_locSnapshot_LINK', value);
+          //       });
+          //     });
+          //   });
+          //   print('[LOC SNAPSHOT] snapshot uploaded');
         } catch (e) {
           print('[ERROR] $e');
         }
