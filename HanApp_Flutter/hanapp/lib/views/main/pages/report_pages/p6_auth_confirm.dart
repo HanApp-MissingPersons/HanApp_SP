@@ -539,141 +539,110 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                       barrierDismissible: false,
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return Stack(
-                                          children: [
-                                            AlertDialog(
-                                              title: const Text(
-                                                  'Confirm Submission'),
-                                              content: const Text(
-                                                  'Are you sure you want to submit this report?'),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          15)),
-                                              actions: <Widget>[
-                                                StatefulBuilder(
-                                                  builder: (BuildContext
-                                                          context,
-                                                      StateSetter setState) {
-                                                    return TextButton(
-                                                      onPressed:
-                                                          areImageUploading
-                                                              ? null
-                                                              : () {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                },
-                                                      child: areImageUploading
-                                                          ? Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                const Text(
-                                                                    'Uploading Report... '),
-                                                                const SizedBox(
-                                                                  width: 16.0,
-                                                                  height: 16.0,
-                                                                  child:
-                                                                      CircularProgressIndicator(
-                                                                    strokeWidth:
-                                                                        2.0,
-                                                                    color: Colors
-                                                                        .grey,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          : const Text(
-                                                              'Cancel'),
-                                                    );
-                                                  },
-                                                ),
-                                                Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 10,
-                                                            right: 20),
-                                                    child: StatefulBuilder(
-                                                      builder:
-                                                          (BuildContext context,
-                                                              StateSetter
-                                                                  setState) {
-                                                        return ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Palette.indigo,
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5.0),
-                                                            ),
+                                        return AlertDialog(
+                                          title:
+                                              const Text('Confirm Submission'),
+                                          content: const Text(
+                                              'Are you sure you want to submit this report?'),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          actions: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 10, right: 20),
+                                              child: StatefulBuilder(
+                                                builder: (BuildContext context,
+                                                    StateSetter setState) {
+                                                  return Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      areImageUploading
+                                                          ? Text(
+                                                              'Uploading Report...')
+                                                          : TextButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .pop();
+                                                              },
+                                                              child: Text(
+                                                                  'Cancel')),
+                                                      Container(
+                                                        width: 10,
+                                                      ),
+                                                      ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          backgroundColor:
+                                                              Palette.indigo,
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5.0),
                                                           ),
-                                                          onPressed:
-                                                              areImageUploading
-                                                                  ? null
-                                                                  : () async {
-                                                                      setState(
-                                                                          () {
-                                                                        areImageUploading =
-                                                                            true;
-                                                                      });
-                                                                      checkReportValidity()
-                                                                          ? await submitReport().then((value) =>
-                                                                              Navigator.of(context).pop())
-                                                                          : await showDialog(
-                                                                              context: context,
-                                                                              builder: (BuildContext context) {
-                                                                                return AlertDialog(
-                                                                                  title: const Text('Incomplete form'),
-                                                                                  content: Text(formErrorMessage()),
-                                                                                  actions: <Widget>[
-                                                                                    TextButton(
-                                                                                      child: const Text('Close'),
-                                                                                      onPressed: () {
-                                                                                        Navigator.of(context).pop();
-                                                                                      },
-                                                                                    ),
-                                                                                  ],
-                                                                                );
-                                                                              },
-                                                                            );
-                                                                    },
-                                                          child: areImageUploading
-                                                              ? const SizedBox(
-                                                                  height: 24.0,
-                                                                  width: 50.0,
+                                                        ),
+                                                        onPressed:
+                                                            areImageUploading
+                                                                ? null
+                                                                : () async {
+                                                                    setState(
+                                                                        () {
+                                                                      areImageUploading =
+                                                                          true;
+                                                                    });
+                                                                    checkReportValidity()
+                                                                        ? await submitReport().then((value) =>
+                                                                            Navigator.of(context).pop())
+                                                                        : await showDialog(
+                                                                            context:
+                                                                                context,
+                                                                            builder:
+                                                                                (BuildContext context) {
+                                                                              return AlertDialog(
+                                                                                title: const Text('Incomplete form'),
+                                                                                content: Text(formErrorMessage()),
+                                                                                actions: <Widget>[
+                                                                                  TextButton(
+                                                                                    child: const Text('Close'),
+                                                                                    onPressed: () {
+                                                                                      Navigator.of(context).pop();
+                                                                                    },
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            },
+                                                                          );
+                                                                  },
+                                                        child: areImageUploading
+                                                            ? const SizedBox(
+                                                                height: 24.0,
+                                                                width: 50.0,
+                                                                child: SizedBox(
+                                                                  width: 24,
                                                                   child:
-                                                                      SizedBox(
-                                                                    width: 24,
-                                                                    child: SpinKitChasingDots(
-                                                                        size:
-                                                                            24,
-                                                                        color: Colors
-                                                                            .white),
+                                                                      SpinKitChasingDots(
+                                                                    size: 24,
+                                                                    color: Colors
+                                                                        .white,
                                                                   ),
-                                                                )
-                                                              : const SizedBox(
-                                                                  width: 50.0,
-                                                                  child: Text(
-                                                                      'Submit'),
                                                                 ),
-                                                        );
-                                                      },
-                                                    ))
-                                              ],
+                                                              )
+                                                            : const SizedBox(
+                                                                width: 50.0,
+                                                                child: Text(
+                                                                    'Submit'),
+                                                              ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              ),
                                             ),
-                                            areImageUploading
-                                                ? Center(
-                                                    child: SpinKitChasingDots(
-                                                    size: 20,
-                                                    color: Colors.indigo,
-                                                  ))
-                                                : Container(),
                                           ],
                                         );
                                       });
