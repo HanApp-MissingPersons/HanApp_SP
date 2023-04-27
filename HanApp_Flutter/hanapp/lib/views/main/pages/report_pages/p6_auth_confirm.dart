@@ -79,6 +79,9 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         final bytes = await imageFile.readAsBytes();
         final file = File('${(await getTemporaryDirectory()).path}/image.png');
         await file.writeAsBytes(bytes);
+        setState(() {
+          prefs.setString('p6_reporteeSignature_PATH', file.path);
+        });
         await FirebaseStorage.instance
             .ref()
             .child('Reports')

@@ -99,6 +99,9 @@ class _MapDialogState extends State<MapDialog> {
           final file =
               File('${(await getTemporaryDirectory()).path}/image.png');
           await file.writeAsBytes(bytes!);
+          setState(() {
+            prefs.setString('p5_locSnapshot_PATH', file.path);
+          });
           await FirebaseStorage.instance
               .ref()
               .child('Reports')

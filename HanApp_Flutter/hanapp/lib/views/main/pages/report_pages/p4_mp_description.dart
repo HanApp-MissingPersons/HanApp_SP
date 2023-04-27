@@ -198,6 +198,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     if (pickedFile != null) {
       try {
         final file = File(pickedFile.path);
+        setState(() {
+          _writeToPrefs('p4_${photoType}_PATH', file.path);
+        });
         await FirebaseStorage.instance
             .ref()
             .child('Reports')

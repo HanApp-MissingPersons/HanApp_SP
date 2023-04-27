@@ -186,6 +186,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     if (pickedFile != null) {
       try {
         final file = File(pickedFile.path);
+        setState(() {
+          _prefs.setString('p2_${photoType}_PATH', file.path);
+        });
         await FirebaseStorage.instance
             .ref()
             .child('Reports')
@@ -223,19 +226,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
         });
       }
       await saveImages(); // this is to save the image to shared preference when the user picks an image
-    }
-  }
-
-  Future<void> getImageFace() async {
-    final pickerFace = ImagePicker();
-    final pickedFileFace = await pickerFace.pickImage(
-        source: ImageSource.camera, imageQuality: 30);
-    if (pickedFileFace != null) {
-      final imageBytesFace = await pickedFileFace.readAsBytes();
-      setState(() {
-        singlePhoto_face = imageBytesFace;
-      });
-      await saveImages();
     }
   }
 
