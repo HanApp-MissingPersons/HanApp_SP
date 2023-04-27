@@ -11,6 +11,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:pnphanapp/main.dart';
+import 'package:image_network/image_network.dart';
 
 class reportsPNP extends StatefulWidget {
   final List<String> filterValue;
@@ -276,7 +277,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         //     borderRadius: BorderRadius.all(Radius.circular(20))
                         // ),
                         child: mp_recentPhoto_LINK.isNotEmpty
-                            ? Image.network(mp_recentPhoto_LINK)
+                            ? ImageNetwork(
+                                image: mp_recentPhoto_LINK,
+                                height: 50,
+                                width: 50,
+                                onLoading: const SpinKitChasingDots(
+                                    color: Colors.indigoAccent))
+                            // Image.network(mp_recentPhoto_LINK)
                             : const Icon(Icons.person),
                       ),
                       Column(
@@ -1045,12 +1052,21 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.topCenter,
                         margin: const EdgeInsets.all(20),
-                        child: Image.network(
-                          report['mp_recentPhoto_LINK'],
+                        child: ImageNetwork(
+                          image: report['mp_recentPhoto_LINK'],
+                          height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width * .4 > 200
                               ? MediaQuery.of(context).size.width * .25
                               : MediaQuery.of(context).size.width * .4,
+                          onLoading: const SpinKitChasingDots(
+                              color: Colors.indigoAccent),
                         ),
+                        // Image.network(
+                        //   report['mp_recentPhoto_LINK'],
+                        //   width: MediaQuery.of(context).size.width * .4 > 200
+                        //       ? MediaQuery.of(context).size.width * .25
+                        //       : MediaQuery.of(context).size.width * .4,
+                        // ),
                       ),
                       Container(
                           margin: EdgeInsets.only(bottom: 20),
@@ -1382,7 +1398,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         margin: const EdgeInsets.all(20),
                         width: MediaQuery.of(context).size.width * 0.25,
                         child:
-                            Image.network(report['mp_locationSnapshot_LINK']),
+                            // Image.network(report['mp_locationSnapshot_LINK']),
+                            ImageNetwork(
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                image: report['mp_locationSnapshot_LINK'],
+                                onLoading: const SpinKitChasingDots(
+                                    color: Colors.indigoAccent)),
                       ),
                       Text("NEAREST LANDMARK",
                           style: TextStyle(
