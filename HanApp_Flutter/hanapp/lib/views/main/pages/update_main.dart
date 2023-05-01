@@ -39,8 +39,40 @@ class _UpdateMainState extends State<UpdateMain> {
       case 'Rejected':
         containerColor = Colors.deepOrange;
         break;
+      case 'Already Found':
+        containerColor = Colors.yellow;
+        break;
       default:
         containerColor = Colors.grey;
+        break;
+    }
+
+    Text statusChange;
+    switch(status) {
+      case 'Pending':
+        statusChange = const Text('Received',
+          style: TextStyle(color: Colors.white),
+          textAlign: TextAlign.center);
+        break;
+      case 'Verified':
+        statusChange = const Text('Verified',
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center);
+        break;
+      case 'Rejected':
+        statusChange = const Text('Rejected',
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center);
+        break;
+      case 'Already Found':
+        statusChange = const Text('Found',
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center);
+        break;
+      default:
+        statusChange = const Text('No Status',
+            style: TextStyle(color: Colors.white),
+            textAlign: TextAlign.center);
         break;
     }
 
@@ -67,9 +99,7 @@ class _UpdateMainState extends State<UpdateMain> {
                 color: containerColor
               ),
               //Retrieve the status here
-              child: Text(status=='Pending'?'Received':status,
-                style: const TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,),
+              child: statusChange,
             ),
             // Text(report['p5_reportDate'],
             //   style: TextStyle(fontSize: 10),),
