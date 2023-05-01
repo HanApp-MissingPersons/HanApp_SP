@@ -54,6 +54,7 @@ dependencies:
   geocoding: ^2.1.0
   path_provider: ^2.0.14
   firebase_messaging: ^14.4.1
+  flutter_local_notifications: ^14.0.0+1
 
 dev_dependencies:
   flutter_test:
