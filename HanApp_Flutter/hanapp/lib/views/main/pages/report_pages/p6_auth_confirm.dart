@@ -1,16 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
-
 /* IMPORTS */
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hanapp/main.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
@@ -37,18 +31,14 @@ class Page6AuthConfirm extends StatefulWidget {
 }
 
 class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
-  bool areImageUploading = false;
   // Firebase Realtime Database initialize
   FirebaseDatabase database = FirebaseDatabase.instance;
   DatabaseReference mainUsersRef = FirebaseDatabase.instance.ref("Main Users");
   DatabaseReference reportsRef = FirebaseDatabase.instance.ref("Reports");
-  DatabaseReference reportsIMG = FirebaseDatabase.instance.ref("Report Images");
   late String? reportCount = '';
   final user = FirebaseAuth.instance.currentUser;
-  String userUID = FirebaseAuth.instance.currentUser!.uid;
   Map<String, dynamic> prefsDict = {};
   Map<String, String> prefsImageDict = {};
-  bool _isUploading = false;
 
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
@@ -70,49 +60,11 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
   // save user signature to shared preferences
   Future<void> _saveSignature() async {
-    XFile? imageFile;
     if (signaturePhoto != null) {
-      imageFile = XFile.fromData(signaturePhoto!);
-      try {
-        final bytes = await imageFile.readAsBytes();
-        final file =
-            File('${(await getTemporaryDirectory()).path}/image_signature.png');
-        await file.writeAsBytes(bytes);
-        setState(() {
-          prefs.setString('p6_reporteeSignature_PATH', file.path);
-        });
-        //   await FirebaseStorage.instance
-        //       .ref()
-        //       .child('Reports')
-        //       .child(userUID)
-        //       .child('report_$reportCount')
-        //       .child('signature')
-        //       .putFile(file)
-        //       .whenComplete(() async {
-        //     await FirebaseStorage.instance
-        //         .ref()
-        //         .child('Reports')
-        //         .child(userUID)
-        //         .child('report_$reportCount')
-        //         .child('signature')
-        //         .getDownloadURL()
-        //         .then((value) {
-        //       print('GOT VALUE: $value');
-        //       setState(() {
-        //         prefs.setString('p6_reporteeSignature_LINK', value);
-        //       });
-        //     });
-        //   });
-        //   print('[SIGNATURE] Signature uploaded');
-      } catch (e) {
-        print('[ERROR] $e');
-      }
-
       String signaturePhotoString = base64Encode(signaturePhoto!);
       prefs.setString('p6_reporteeSignature', signaturePhotoString);
     }
   }
-  // save signature end
 
   // load user signature from shared preferences
   Future<void> _loadSignature() async {
@@ -121,61 +73,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       String signaturePhotoString = prefs.getString('p6_reporteeSignature')!;
       signaturePhoto = base64Decode(signaturePhotoString);
     }
-  }
-
-  uploadImages() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> imagePaths = [
-      'p6_reporteeSignature_PATH',
-      'p2_singlePhoto_face_PATH',
-      'p2_reportee_ID_Photo_PATH',
-      'p4_mp_recent_photo_PATH',
-      'p4_mp_dental_record_photo_PATH',
-      'p4_mp_finger_print_record_photo_PATH',
-      'p5_locSnapshot_PATH',
-    ];
-
-    List<String> namePaths = [
-      'reportee_Signature',
-      'reportee_Selfie',
-      'reportee_ID_Photo',
-      'mp_recentPhoto',
-      'mp_dentalRecord',
-      'mp_fingerPrintRecord',
-      'mp_locationSnapshot',
-    ];
-
-    for (int i = 0; i < imagePaths.length; i += 1) {
-      print('imagePaths[$i]: ${imagePaths[i]}');
-      if (prefs.getString(imagePaths[i]) != null) {
-        String filePath = prefs.getString(imagePaths[i])!;
-        final file = File(filePath);
-        await FirebaseStorage.instance
-            .ref()
-            .child('Reports')
-            .child(userUID)
-            .child('report_$reportCount')
-            .child(namePaths[i])
-            .putFile(file)
-            .whenComplete(() async {
-          await FirebaseStorage.instance
-              .ref()
-              .child('Reports')
-              .child(userUID)
-              .child('report_$reportCount')
-              .child(namePaths[i])
-              .getDownloadURL()
-              .then((value) {
-            print('UPLOADED: ${imagePaths[i]}');
-            setState(() {
-              prefs.setString('${namePaths[i]}_LINK', value);
-              print('LINK: ${prefs.getString('${namePaths[i]}_LINK')}');
-            });
-          });
-        });
-      }
-    }
-    print('[UPLOAD DONE] images uploaded');
   }
 
   // getSignature Future function
@@ -193,6 +90,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   void initState() {
     super.initState();
     _loadSignature();
+    print('[bwahaha] ${mainUsersRef.child(user!.uid)}');
     retrievePrefsData();
     retrieveUserData();
   }
@@ -251,436 +149,361 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         }
       }
     });
+    print('[IMGPREF] $prefsImageDict');
   }
 
   @override
   Widget build(BuildContext context) {
     GlobalKey<SfSignaturePadState> signaturePadKey = GlobalKey();
 
-    return Container(
-      margin: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height / 15,
-          left: MediaQuery.of(context).size.width / 50),
-      child: Stack(
-          fit: StackFit.expand,
-          alignment: AlignmentDirectional.center,
-          clipBehavior: Clip.none,
+    return Stack(children: [
+      Positioned(
+        top: MediaQuery.of(context).size.height / 8,
+        left: 20,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 40,
-                  child: Text(
-                    'Page 6 of 6: Confirmation and Authorization',
-                    style: optionStyle,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'Page 6 of 6: Confirmation and Authorization',
+                style: optionStyle,
+              ),
+            ),
+            _verticalPadding,
+            // text saying "By affixing my signature below"
+            _verticalPadding,
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: const Text(
+                'By affixing my signature below:',
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            _verticalPadding,
+            // show all the authorization and confirmation texts, each with their leading check mark
+            SizedBox(
+              width: MediaQuery.of(context).size.width - 40,
+              child: Column(
+                children: [
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _correctInfo,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                _verticalPadding,
-                // text saying "By affixing my signature below"
-                _verticalPadding,
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 40,
-                  child: const Text(
-                    'By affixing my signature below:',
-                    style: TextStyle(fontSize: 14),
+                  _verticalPadding,
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _authorization_PNP_upload,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                _verticalPadding,
-                // show all the authorization and confirmation texts, each with their leading check mark
-                SizedBox(
-                  width: MediaQuery.of(context).size.width - 40,
-                  child: Column(
+                  _verticalPadding,
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _hanapp_upload,
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                  _verticalPadding,
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _dataPrivacy,
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ],
+                  ),
+                  _verticalPadding,
+                  // Signature hint text
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: const Text(
+                      'Draw your signature here:',
+                      style:
+                          TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  // signature pad
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    height: 200,
+                    child: SfSignaturePad(
+                      key: signaturePadKey,
+                      minimumStrokeWidth: 2,
+                      maximumStrokeWidth: 2,
+                      strokeColor: Colors.black,
+                      backgroundColor: Color.fromARGB(255, 221, 214, 214),
+                    ),
+                  ),
+                  // clear signaturepad button using clear() method
+                  Row(
                     children: [
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.check,
-                            color: Colors.green,
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        margin: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 0.03,
+                            right: MediaQuery.of(context).size.width * 0.03),
+                        child: ElevatedButton(
+                          // button color here
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white60,
                           ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              _correctInfo,
-                              style: const TextStyle(fontSize: 14),
-                            ),
+                          onPressed: () async {
+                            signaturePadKey.currentState!.clear();
+                          },
+                          child: const Text(
+                            'Clear',
+                            style: TextStyle(color: Colors.black87),
+                            textAlign: TextAlign.center,
                           ),
-                        ],
-                      ),
-                      _verticalPadding,
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.check,
-                            color: Colors.green,
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              _authorization_PNP_upload,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _verticalPadding,
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.check,
-                            color: Colors.green,
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              _hanapp_upload,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _verticalPadding,
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.check,
-                            color: Colors.green,
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              _dataPrivacy,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
-                        ],
-                      ),
-                      _verticalPadding,
-                      // Signature hint text
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width - 40,
-                        child: const Text(
-                          'Draw your signature here:',
-                          style: TextStyle(
-                              fontSize: 14, fontStyle: FontStyle.italic),
                         ),
                       ),
-                      // signature pad
+                      _verticalPadding,
+                      // save signature button
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 40,
-                        height: 200,
-                        child: Stack(
-                          children: [
-                            SfSignaturePad(
-                              key: signaturePadKey,
-                              minimumStrokeWidth: 2,
-                              maximumStrokeWidth: 2,
-                              strokeColor: Colors.black,
-                              backgroundColor:
-                                  Color.fromARGB(255, 221, 214, 214),
-                            ),
-                            _isUploading
-                                ? Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Center(
-                                        child: SpinKitChasingDots(
-                                            color: Colors.indigo, size: 50),
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ElevatedButton(
+                          // button color here
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Palette.indigo,
+                          ),
+                          onPressed: () async {
+                            ui.Image image =
+                                await signaturePadKey.currentState!.toImage();
+                            await _getSignature(image);
+                            await _saveSignature();
+                            await retrievePrefsData();
+                            await retrievePrefsData();
+                            // pop-up showing preview of signature
+                            // ignore: use_build_context_synchronously
+                            await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text(
+                                        'Preview of Saved Signature'),
+                                    content: Image.memory(signaturePhoto!),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('Close'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
                                       ),
-                                      Text('Uploading Signature...',
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color: Colors.grey)),
                                     ],
-                                  )
-                                : Container(),
-                          ],
+                                  );
+                                });
+                          },
+                          child: const Text('Save'),
                         ),
                       ),
-                      // clear signaturepad button using clear() method
-                      Row(
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            margin: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width * 0.03,
-                                right:
-                                    MediaQuery.of(context).size.width * 0.03),
-                            child: ElevatedButton(
-                              // button color here
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white60,
-                              ),
-                              onPressed: () async {
-                                signaturePadKey.currentState!.clear();
-                              },
-                              child: const Text(
-                                'Clear',
-                                style: TextStyle(color: Colors.black87),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                          _verticalPadding,
-                          // save signature button
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: ElevatedButton(
-                              // button color here
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Palette.indigo,
-                              ),
-                              onPressed: () async {
-                                ui.Image image = await signaturePadKey
-                                    .currentState!
-                                    .toImage();
-                                await _getSignature(image);
-                                await _saveSignature();
-                                await retrievePrefsData();
-                                await retrievePrefsData();
-                                // pop-up showing preview of signature
-                                // ignore: use_build_context_synchronously
-                                await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Preview of Saved Signature'),
-                                        content: Image.memory(signaturePhoto!),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: const Text('Close'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
+                    ],
+                  ),
+                  // text saying: no signature saved yet if signaturePhoto is null
+                  // signaturePhoto == null
+                  //     ? const Text(
+                  //         'No signature saved yet.',
+                  //         style: TextStyle(fontSize: 14),
+                  //       )
+                  //     : const Text(
+                  //         'Signature saved.',
+                  //         style: TextStyle(fontSize: 14),
+                  //       ),
+                  // button to show preview of signature
+                  prefs.getString('p6_reporteeSignature') != null
+                      ? SizedBox(
+                          width: MediaQuery.of(context).size.width - 40,
+                          child: TextButton(
+                            // button color here
+                            onPressed: () async {
+                              // pop-up showing preview of signature
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                          'Preview of Saved Signature'),
+                                      content: signaturePhoto != null
+                                          ? Image.memory(signaturePhoto!)
+                                          : const Text(
+                                              'No signature saved yet.'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('Close'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: Colors.red,
                                           ),
-                                        ],
-                                      );
-                                    });
-                              },
-                              child: const Text('Save'),
-                            ),
+                                          onPressed: () {
+                                            setState(() {
+                                              // set p6_reporteeSignature to null
+                                              signaturePhoto = null;
+                                              try {
+                                                prefs.remove(
+                                                    'p6_reporteeSignature');
+                                              } catch (e) {
+                                                print(e);
+                                              }
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: const Text('Delete Signature'),
+                                        )
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: const Text('View Saved Signature'),
                           ),
-                        ],
-                      ),
-                      // text saying: no signature saved yet if signaturePhoto is null
-                      // signaturePhoto == null
-                      //     ? const Text(
-                      //         'No signature saved yet.',
-                      //         style: TextStyle(fontSize: 14),
-                      //       )
-                      //     : const Text(
-                      //         'Signature saved.',
-                      //         style: TextStyle(fontSize: 14),
-                      //       ),
-                      // button to show preview of signature
-                      prefs.getString('p6_reporteeSignature') != null
-                          ? SizedBox(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: TextButton(
-                                // button color here
-                                onPressed: () async {
-                                  // pop-up showing preview of signature
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                              'Preview of Saved Signature'),
-                                          content: signaturePhoto != null
-                                              ? Image.memory(signaturePhoto!)
-                                              : const Text(
-                                                  'No signature saved yet.'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('Close'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            TextButton(
-                                              style: TextButton.styleFrom(
-                                                foregroundColor: Colors.red,
+                        )
+                      : const Text('No signature submitted'),
+                  _verticalPadding,
+                  // SUBMIT BUTTON
+                  prefs.getString('p6_reporteeSignature') != null
+                      ? SizedBox(
+                          width: MediaQuery.of(context).size.width - 40,
+                          child: ElevatedButton(
+                            child: const Text('Submit Report'),
+                            onPressed: () async {
+                              // show popup dialog asking to confirm submission
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Confirm Submission'),
+                                      content: const Text(
+                                          'Are you sure you want to submit this report?'),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('Cancel'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 10, right: 20),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Palette.indigo,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5.0),
                                               ),
-                                              onPressed: () {
-                                                setState(() {
-                                                  // set p6_reporteeSignature to null
-                                                  signaturePhoto = null;
-                                                  try {
-                                                    prefs.remove(
-                                                        'p6_reporteeSignature');
-                                                  } catch (e) {
-                                                    print(e);
-                                                  }
-                                                });
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: const Text(
-                                                  'Delete Signature'),
-                                            )
-                                          ],
-                                        );
-                                      });
-                                },
-                                child: const Text('View Saved Signature'),
-                              ),
-                            )
-                          : const Text('No signature submitted'),
-                      _verticalPadding,
-                      // SUBMIT BUTTON
-                      prefs.getString('p6_reporteeSignature') != null
-                          ? SizedBox(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: ElevatedButton(
-                                child: const Text('Submit Report'),
-                                onPressed: () async {
-                                  // show popup dialog asking to confirm submission
-                                  showDialog(
-                                      barrierDismissible: false,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title:
-                                              const Text('Confirm Submission'),
-                                          content: const Text(
-                                              'Are you sure you want to submit this report?'),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                          ),
-                                          actions: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 10, right: 20),
-                                              child: StatefulBuilder(
-                                                builder: (BuildContext context,
-                                                    StateSetter setState) {
-                                                  return Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      areImageUploading
-                                                          ? Text(
-                                                              'Uploading Report...')
-                                                          : TextButton(
+                                            ),
+                                            child: const Text('Submit'),
+                                            onPressed: () async {
+                                              checkReportValidity()
+                                                  ? submitReport()
+                                                  : await showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AlertDialog(
+                                                          title: const Text(
+                                                              'Incomplete form'),
+                                                          content: Text(
+                                                              formErrorMessage()),
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                              child: const Text(
+                                                                  'Close'),
                                                               onPressed: () {
                                                                 Navigator.of(
                                                                         context)
                                                                     .pop();
                                                               },
-                                                              child: Text(
-                                                                  'Cancel')),
-                                                      Container(
-                                                        width: 10,
-                                                      ),
-                                                      ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                          backgroundColor:
-                                                              Palette.indigo,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5.0),
-                                                          ),
-                                                        ),
-                                                        onPressed:
-                                                            areImageUploading
-                                                                ? null
-                                                                : () async {
-                                                                    setState(
-                                                                        () {
-                                                                      areImageUploading =
-                                                                          true;
-                                                                    });
-                                                                    checkReportValidity()
-                                                                        ? await submitReport().then((value) =>
-                                                                            Navigator.of(context).pop())
-                                                                        : await showDialog(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
-                                                                                (BuildContext context) {
-                                                                              return AlertDialog(
-                                                                                title: const Text('Incomplete form'),
-                                                                                content: Text(formErrorMessage()),
-                                                                                actions: <Widget>[
-                                                                                  TextButton(
-                                                                                    child: const Text('Close'),
-                                                                                    onPressed: () {
-                                                                                      Navigator.of(context).pop();
-                                                                                    },
-                                                                                  ),
-                                                                                ],
-                                                                              );
-                                                                            },
-                                                                          );
-                                                                  },
-                                                        child: areImageUploading
-                                                            ? const SizedBox(
-                                                                height: 24.0,
-                                                                width: 50.0,
-                                                                child: SizedBox(
-                                                                  width: 24,
-                                                                  child:
-                                                                      SpinKitChasingDots(
-                                                                    size: 24,
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                            : const SizedBox(
-                                                                width: 50.0,
-                                                                child: Text(
-                                                                    'Submit'),
-                                                              ),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                },
+                                                            ),
+                                                          ],
+                                                        );
+                                                      });
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  });
+                            },
 
-                                // use sharedpreferences getAll() method to get all the data
-                              ),
-                            )
-                          : // show a submit button that is grayed out
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: const ElevatedButton(
-                                onPressed: null,
-                                child: Text('Submit Report'),
-                              ),
-                            ),
-                      // print all sharedpreferences data
-                      TextButton(
-                        onPressed: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          print(prefs.getKeys());
-                          // preview of saved signature in a popup dialog
-                        },
-                        child: const Text('Print Shared Preferences'),
-                      ),
-                    ],
+                            // use sharedpreferences getAll() method to get all the data
+                          ),
+                        )
+                      : // show a submit button that is grayed out
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width - 40,
+                          child: const ElevatedButton(
+                            onPressed: null,
+                            child: Text('Submit Report'),
+                          ),
+                        ),
+                  // print all sharedpreferences data
+                  TextButton(
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      print(prefs.getKeys());
+                      // preview of saved signature in a popup dialog
+                    },
+                    child: const Text('Print Shared Preferences'),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ]),
-    );
+          ],
+        ),
+      ),
+    ]);
   }
 
   List<String> dialogMessage = ['none'];
   checkReportValidity() {
     List<String> keysList = prefs.getKeys().toList();
     bool returnval = true;
+    print('[KEYSLIST] $keysList');
+    print('[PREFSDICT] $prefsDict');
     // // p2 required values
     // if (!(keysList.contains('p2_citizenship') &&
     //     keysList.contains('p2_civil_status') &&
@@ -786,20 +609,18 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     return returnVal;
   }
 
-  Future submitReport() async {
+  submitReport() async {
     // String signaturePhotoString = base64Encode(signaturePhoto!);
     // prefsDict['p6_reporteeSignature'] = signaturePhotoString;
     if (reportCount != null) {
       String reportChildName = "report_${reportCount!}";
-      prefsDict['status'] = 'Pending';
-      await uploadImages();
-      await retrievePrefsData();
-      prefsDict.removeWhere((key, value) => key.endsWith('_PATH'));
+      prefsDict['status'] = 'pending';
       await reportsRef.child(user!.uid).child(reportChildName).set(prefsDict);
-      // await reportsIMG
-      //     .child(user!.uid)
-      //     .child(reportChildName)
-      //     .set(prefsImageDict);
+      await reportsRef
+          .child(user!.uid)
+          .child(reportChildName)
+          .child('images')
+          .set(prefsImageDict);
       var reportsRefInt = int.parse(reportCount!);
       reportsRefInt = reportsRefInt + 1;
       await mainUsersRef.child(user!.uid).update({
@@ -809,8 +630,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     } else {
       print('[unsuccessful] Report count is null.');
     }
-    setState(() {
-      areImageUploading = false;
-    });
+    clearPrefs();
   }
 }

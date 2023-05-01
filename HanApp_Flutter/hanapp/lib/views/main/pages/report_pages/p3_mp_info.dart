@@ -432,6 +432,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   child: TextFormField(
                     controller: _mp_nickname,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Nickname / Known Aliases",
                         hintText: "Nickname / Known Aliases",
@@ -502,6 +503,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   child: TextFormField(
                     controller: _mp_nationalityEthnicity,
                     keyboardType: TextInputType.name,
+                    textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Nationality/Ethnicity*",
                         hintText: "Asian, Hispanic, Latino, etc.",
@@ -536,7 +538,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   width: MediaQuery.of(context).size.width * .4,
                   child: RadioListTile(
                     title: const Text("Male"),
-                    value: "male",
+                    value: "Male",
                     groupValue: sexValue,
                     onChanged: (value) {
                       setState(() {
@@ -552,7 +554,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   width: MediaQuery.of(context).size.width * .4,
                   child: RadioListTile(
                     title: const Text("Female"),
-                    value: "female",
+                    value: "Female",
                     groupValue: sexValue,
                     onChanged: (value) {
                       setState(() {
@@ -720,7 +722,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Home Phone/Landline*",
-                  hintText: "432-1234",
+                  hintText: "XXX-XXXX",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_homePhone', value);
@@ -745,7 +747,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Mobile Phone*",
-                  hintText: "09231234567",
+                  hintText: "09XXXXXXXXX",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_mobilePhone', value);
@@ -764,7 +766,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Alternate Mobile Phone",
-                  hintText: "09231234567",
+                  hintText: "09XXXXXXXXX",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_mobilePhone_alt', value);
@@ -813,7 +815,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Region*",
-                  hintText: "Region",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_region', value);
@@ -833,7 +834,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Province*",
-                  hintText: "Province*",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_province', value);
@@ -852,8 +852,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "City/Town*",
-                  hintText: "City/Town*",
+                  labelText: "Municipality/City*",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_city', value);
@@ -873,7 +872,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Barangay*",
-                  hintText: "Barangay",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_barangay', value);
@@ -892,8 +890,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Village/Sitio",
-                  hintText: "Village/Sitio",
+                  labelText: "Village, Sitio, Subdivision",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_villageSitio', value);
@@ -913,7 +910,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Street/House Number*",
-                  hintText: "Street/House Number*",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_streetHouseNum', value);
@@ -968,7 +964,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Region",
-                        hintText: "Region",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_address_region_alt', value);
@@ -989,7 +984,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Province",
-                        hintText: "Province",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_address_province_alt', value);
@@ -1009,8 +1003,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        labelText: "City/Town",
-                        hintText: "City/Town",
+                        labelText: "Municipality/City",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_address_city_alt', value);
@@ -1031,7 +1024,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Barangay",
-                        hintText: "Barangay",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_address_barangay_alt', value);
@@ -1051,8 +1043,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        labelText: "Village/Sitio",
-                        hintText: "Village/Sitio",
+                        labelText: "Village, Sitio, Subdivision",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_address_villageSitio_alt', value);
@@ -1073,7 +1064,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Street/House Number",
-                        hintText: "Street/House Number",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_address_streetHouseNum_alt', value);
@@ -1207,7 +1197,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Region",
-                        hintText: "Region",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_workSchool_region', value);
@@ -1228,7 +1217,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Province",
-                        hintText: "Province",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_workSchool_province', value);
@@ -1248,8 +1236,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        labelText: "City/Town",
-                        hintText: "City/Town",
+                        labelText: "Municipality/City",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_workSchool_city', value);
@@ -1270,7 +1257,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Barangay",
-                        hintText: "Barangay",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_workSchool_barangay', value);
@@ -1290,8 +1276,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        labelText: "Village/Sitio",
-                        hintText: "Village/Sitio",
+                        labelText: "Village, Sitio, Subdivision",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_workSchool_villageSitio', value);
@@ -1312,7 +1297,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Street/House Number",
-                        hintText: "Street/House Number",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_workSchool_streetHouseNum', value);
@@ -1333,7 +1317,6 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         labelText: "Work/School Name",
-                        hintText: "Work/School Name",
                       ),
                       onChanged: (value) {
                         // _prefs.setString('p3_mp_workSchool_name', value);

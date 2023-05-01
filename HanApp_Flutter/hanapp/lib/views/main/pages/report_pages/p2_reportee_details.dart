@@ -1,10 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hanapp/main.dart';
@@ -98,7 +94,6 @@ late SharedPreferences _prefs;
 class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   PlatformFile? pickedFile;
   Uint8List? pickedFileBytes;
-  String userUID = FirebaseAuth.instance.currentUser!.uid;
 
   Uint8List? reportee_ID_Photo;
   Uint8List? singlePhoto_face;
@@ -157,75 +152,28 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     }
   }
 
-  late String reportCount;
-  retrieveUserData() async {
-    _prefs = await SharedPreferences.getInstance();
-    await FirebaseDatabase.instance
-        .ref("Main Users")
-        .child(userUID)
-        .get()
-        .then((DataSnapshot snapshot) {
-      Map<dynamic, dynamic> userDict = snapshot.value as Map<dynamic, dynamic>;
-      print('${userDict['firstName']} ${userDict['lastName']}');
-      reportCount = userDict['reportCount'];
-    });
-    print('[REPORT COUNT] report count: $reportCount');
+  Future<void> getImages() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final imageBytes = await pickedFile.readAsBytes();
+      setState(() {
+        reportee_ID_Photo = imageBytes;
+      });
+      await saveImages();
+    }
   }
 
-  Future<void> getImages(String photoType) async {
-    dynamic imgURL;
-    dynamic pickedFile;
-    final picker = ImagePicker();
-    if (photoType == 'singlePhoto_face') {
-      pickedFile =
-          await picker.pickImage(source: ImageSource.camera, imageQuality: 75);
-    } else {
-      pickedFile =
-          await picker.pickImage(source: ImageSource.gallery, imageQuality: 75);
-    }
-    if (pickedFile != null) {
-      try {
-        final file = File(pickedFile.path);
-        setState(() {
-          _prefs.setString('p2_${photoType}_PATH', file.path);
-        });
-        //   await FirebaseStorage.instance
-        //       .ref()
-        //       .child('Reports')
-        //       .child(userUID.toString())
-        //       .child('report_$reportCount')
-        //       .child(photoType)
-        //       .putFile(file)
-        //       .whenComplete(() async {
-        //     await FirebaseStorage.instance
-        //         .ref()
-        //         .child('Reports')
-        //         .child(userUID.toString())
-        //         .child('report_$reportCount')
-        //         .child(photoType)
-        //         .getDownloadURL()
-        //         .then((value) {
-        //       setState(() {
-        //         imgURL = value;
-        //         _writeToPrefs('p2_${photoType}_LINK', value);
-        //       });
-        //     });
-        //   });
-        //   print('image URL: $imgURL');
-      } catch (e) {
-        print('[ERROR] $e');
-      }
-      final imageBytes = await pickedFile.readAsBytes();
-      if (photoType == 'reportee_ID_Photo') {
-        setState(() {
-          reportee_ID_Photo = imageBytes;
-        });
-      } else if (photoType == 'singlePhoto_face') {
-        setState(() {
-          singlePhoto_face = imageBytes;
-        });
-      }
-      await saveImages(); // this is to save the image to shared preference when the user picks an image
+  Future<void> getImageFace() async {
+    final pickerFace = ImagePicker();
+    final pickedFileFace =
+        await pickerFace.pickImage(source: ImageSource.camera);
+    if (pickedFileFace != null) {
+      final imageBytesFace = await pickedFileFace.readAsBytes();
+      setState(() {
+        singlePhoto_face = imageBytesFace;
+      });
+      await saveImages();
     }
   }
 
@@ -457,7 +405,6 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     _reporteeRelationshipToMissingPerson = TextEditingController();
     _dateOfBirthController = TextEditingController();
     getReporteeInfo();
-    retrieveUserData();
     super.initState();
   }
 
@@ -623,8 +570,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 // text to display when no value is selected
                 hint: const Text("Select Civil Status"),
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
                 value: _civilStatusValue,
                 icon: const Icon(Icons.arrow_drop_down),
@@ -679,10 +626,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       });
                     },
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                        border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Home Phone/Landline*',
-                      hintText: '432-1234',
+                      hintText: 'XXX-XXXX',
                     ),
                   ),
                 ),
@@ -712,7 +659,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Mobile Phone*',
-                      hintText: '09231234567',
+                      hintText: '09XXXXXXXXX',
                     ),
                   ),
                 ),
@@ -733,7 +680,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Alternate Mobile Phone',
-                      hintText: '09231234567',
+                      hintText: '09XXXXXXXXX',
                     ),
                   ),
                 ),
@@ -765,8 +712,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Region*',
                     ),
                   ),
@@ -785,8 +731,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Province*',
                     ),
                   ),
@@ -805,9 +750,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Town/City*',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      labelText: 'Municipality/City*',
                     ),
                   ),
                 ),
@@ -825,8 +769,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Barangay*',
                     ),
                   ),
@@ -845,9 +788,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Village/Sitio',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      labelText: 'Village, Sitio, Subdivision',
                     ),
                   ),
                 ),
@@ -865,8 +807,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'House Number/Street*',
                     ),
                   ),
@@ -890,6 +831,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     });
                   },
                 ),
+
                 const Text(
                   'Do you have another house location/address?',
                   style: TextStyle(fontSize: 12, color: Colors.black54),
@@ -918,9 +860,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             labelText: 'Region',
                           ),
                         ),
@@ -939,9 +879,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             labelText: 'Province',
                           ),
                         ),
@@ -960,10 +898,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            labelText: 'Town/City',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Municipality/City',
                           ),
                         ),
                       ),
@@ -981,9 +917,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             labelText: 'Barangay',
                           ),
                         ),
@@ -1002,10 +936,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            labelText: 'Village/Sitio',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            labelText: 'Village, Sitio, Subdivision',
                           ),
                         ),
                       ),
@@ -1023,9 +955,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             labelText: 'House Number/Street',
                           ),
                         ),
@@ -1077,8 +1007,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   child: DropdownButtonFormField(
                     value: _highestEduc,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                     ),
                     items: <String>[
                       'Elementary',
@@ -1128,8 +1057,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Occupation',
                     ),
                   ),
@@ -1161,12 +1089,13 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 if (reportee_ID_Photo != null)
                   SizedBox(
                       width: MediaQuery.of(context).size.width * .9,
-                      child: Image.memory(reportee_ID_Photo!)), // show image
+                      child:
+                          Image.memory(reportee_ID_Photo!)), // show image
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(
                       onPressed: () {
-                        getImages('reportee_ID_Photo');
+                        getImages();
                       },
                       child: const Text("Upload ID")),
                 ),
@@ -1199,7 +1128,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(
                       onPressed: () {
-                        getImages('singlePhoto_face');
+                        getImageFace();
                       },
                       child: const Text("Take Selfie")),
                 ),

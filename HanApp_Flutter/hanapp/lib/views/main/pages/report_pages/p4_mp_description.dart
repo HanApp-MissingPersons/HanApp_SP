@@ -377,9 +377,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
                           controller: _mp_scars,
+                          textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
                             labelText: 'Scars',
-                            hintText: 'Scars',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -398,9 +398,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
                           controller: _mp_marks,
+                          textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
                             labelText: 'Marks',
-                            hintText: 'Marks',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -419,9 +419,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
                           controller: _mp_tattoos,
+                          textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
                             labelText: 'Tattoos',
-                            hintText: 'Tattoos',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -447,6 +447,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
                           controller: _mp_hair_color,
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
                             hintText: 'Hair Color',
                             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -506,8 +507,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
                           controller: _mp_eye_color,
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            labelText: 'Eye Color',
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
                             hintText: 'Eye Color',
                             border: OutlineInputBorder(
                                 borderRadius:
@@ -623,6 +625,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
                           controller: _mp_last_clothing,
+                          textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
                             hintText: 'Clothing and Accessories',
                             floatingLabelBehavior: FloatingLabelBehavior.never,

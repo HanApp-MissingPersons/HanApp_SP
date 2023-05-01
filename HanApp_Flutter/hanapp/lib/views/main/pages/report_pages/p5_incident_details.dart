@@ -667,7 +667,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
-                  'Incident Details',
+                  'Incident Details*',
                   style: headingStyle,
                 ),
               ),
@@ -690,10 +690,11 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 child: TextField(
                   controller: TextEditingController(text: incidentDetails),
                   maxLines: 5,
+                  textCapitalization: TextCapitalization.sentences,
                   decoration: const InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
-                    labelText: 'Incident Details*',
                   ),
                   onChanged: (value) {
                     incidentDetails = value;
