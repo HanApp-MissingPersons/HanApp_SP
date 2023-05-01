@@ -6,6 +6,7 @@ import 'package:hanapp/views/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hanapp/views/main/navigation_view_main.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   // initialize firebase
@@ -16,8 +17,20 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await notificationSettings();
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    if (kDebugMode) {
+      print('[FOREGROUND MESSAGE] onMessage: ${message.data}');
+      if (message.notification != null) {
+        print('[FOREGROUND NOTIFICATION] onMessage: ${message.notification}');
+      }
+    }
+  });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
+
+FirebaseMessaging messaging = FirebaseMessaging.instance;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -52,6 +65,30 @@ Future<void> loadUser() async {
   }
   if (kDebugMode) {
     print('[LOGGED IN STATUS] $isUserSignedIn');
+  }
+}
+
+Future<void> notificationSettings() async {
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+  if (kDebugMode) {
+    print('[NOTIFICATION SETTINGS] ${settings.authorizationStatus}');
+  }
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (kDebugMode) {
+    print('[BACKGROUND MESSAGE] onMessage: ${message.data}');
+    if (message.notification != null) {
+      print('[BACKGROUND NOTIFICATION] onMessage: ${message.notification}');
+    }
   }
 }
 
