@@ -87,7 +87,7 @@ class _NearbyMainState extends State<NearbyMain> {
   void setCustomMarkerIcon() {
     // temporary images, just to show that it is possible
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(20, 20)),   //decrease if too large
+            const ImageConfiguration(size: Size(10, 10)),   //decrease if too large
             'assets/images/mp_marker.png')
         .then((icon) => sourceIcon = icon);
     // BitmapDescriptor.fromAssetImage(
@@ -95,7 +95,7 @@ class _NearbyMainState extends State<NearbyMain> {
     //         'assets/images/login.png')
     //     .then((icon) => destinationIcon = icon);
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(20, 20)),
+            const ImageConfiguration(size: Size(10, 10)),
             'assets/images/position_marker.png')
         .then((icon) => currentLocationIcon = icon);
   }
@@ -148,7 +148,8 @@ class _NearbyMainState extends State<NearbyMain> {
                     currentLocation!.latitude!, currentLocation!.longitude!),
                 zoom: 20,
               ),
-              onMapCreated: (controller) => _controller.complete(controller),
+              onMapCreated: (controller) => {_controller.complete(controller),
+              controller.setMapStyle(Utils.mapStyle)},
             ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'nearbyMain',
@@ -181,9 +182,18 @@ class _NearbyMainState extends State<NearbyMain> {
       value.forEach((key, value) {
         final report = value as Map<dynamic, dynamic>;
         if (report['status'] == 'Verified') {
+          final firstName = report['p3_mp_firstName'] ?? '';
+          final lastName = report['p3_mp_lastName'] ?? '';
           final reportID = '${uid}_$key';
           final location = report['p5_lastSeenLoc'] ?? '';
+
+          // Snippet
+          final heightFeet = report['p4_mp_height_inches'] ?? '';
+          final heightInches = report['p4_mp_height_feet'] ?? '';
+          final sex = report['p3_mp_sex'] ?? '';
+          final clothing = report['p4_mp_last_clothing'] ?? '';
           final description = report['p5_incidentDetails'] ?? '';
+
           final coordinates = extractDoubles(location.toString());
           final reportLocation = LatLng(coordinates[0], coordinates[1]);
           final marker = Marker(
@@ -191,8 +201,9 @@ class _NearbyMainState extends State<NearbyMain> {
             position: reportLocation,
             icon: sourceIcon,
             infoWindow: InfoWindow(
-              title: 'Report #$reportID',
-              snippet: description,
+              title: '$firstName $lastName',
+              snippet:
+              "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
               onTap: () {
                 print('tapping on marker $reportID');
               },
@@ -204,4 +215,278 @@ class _NearbyMainState extends State<NearbyMain> {
     });
     return markers;
   }
+}
+
+class Utils {
+  static String mapStyle = '''
+[
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#f5f5f5"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.land_parcel",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#bdbdbd"
+      }
+    ]
+  },
+  {
+    "featureType": "landscape.man_made",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.attraction",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.business",
+    "stylers": [
+      {
+        "color": "#79919d"
+      },
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.government",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.government",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "visibility": "on"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.medical",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.place_of_worship",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "visibility": "on"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.school",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "road.arterial",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#757575"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#dadada"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#616161"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.line",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#e5e5e5"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#eeeeee"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "stylers": [
+      {
+        "visibility": "simplified"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#c9c9c9"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9e9e9e"
+      }
+    ]
+  }
+]
+  ''';
 }

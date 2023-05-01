@@ -23,9 +23,19 @@ class _MapDialogState extends State<MapDialog> {
   Set<Marker> _markers = {};
   Uint8List? _mapSnapshot;
 
+  BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
+
+  void setCustomMarkerIcon() {
+    BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(4, 4)),
+        'assets/images/currect_marker.png')
+        .then((icon) => currentLocationIcon = icon);
+  }
+
   @override
   void initState() {
     super.initState();
+    setCustomMarkerIcon();
     _getCurrentLocation();
   }
 
@@ -47,6 +57,7 @@ class _MapDialogState extends State<MapDialog> {
     Marker marker = Marker(
       markerId: MarkerId(position.toString()),
       position: position,
+      icon: currentLocationIcon,
     );
     setState(() {
       _markers = Set<Marker>.of([marker]);

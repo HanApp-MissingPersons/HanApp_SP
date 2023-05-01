@@ -630,5 +630,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     } else {
       print('[unsuccessful] Report count is null.');
     }
+    clearPrefs();
   }
 }
