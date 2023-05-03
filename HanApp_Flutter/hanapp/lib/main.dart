@@ -43,6 +43,32 @@ void main() async {
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
+  // send firebase message on current device
+  // await FirebaseMessaging.instance.getToken().then((token) {
+  //   if (kDebugMode) {
+  //     print('[DEVICE TOKEN] $token');
+  //   }
+  // });
+  // send message on device token
+  // await FirebaseMessaging.instance
+  //     .subscribeToTopic('all')
+  //     .then((value) => print('[SUBSCRIBED TO TOPIC] all'));
+  // await FirebaseMessaging.instance
+  //     .subscribeToTopic('android')
+  //     .then((value) => print('[SUBSCRIBED TO TOPIC] android'));
+  // await FirebaseMessaging.instance
+  //     .subscribeToTopic('ios')
+  //     .then((value) => print('[SUBSCRIBED TO TOPIC] ios'));
+  // await FirebaseMessaging.instance
+  //     .subscribeToTopic('web')
+  //     .then((value) => print('[SUBSCRIBED TO TOPIC] web'));
+  // await FirebaseMessaging.instance
+  //     .subscribeToTopic('flutter')
+  //     .then((value) => print('[SUBSCRIBED TO TOPIC] flutter'));
+  // await FirebaseMessaging.instance
+  //     .subscribeToTopic('hanapp')
+  //     .then((value) => print('[SUBSCRIBED TO TOPIC] hanapp'));
+
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
