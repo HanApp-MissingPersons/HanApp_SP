@@ -18,15 +18,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await notificationSettings();
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   if (kDebugMode) {
-  //     print('[FOREGROUND MESSAGE] onMessage: ${message}');
-  //     if (message.notification != null) {
-  //       print('[FOREGROUND NOTIFICATION] onMessage: ${message.notification}');
-  //     }
-  //   }
-  // });
+  // get user notification on app load
+  // await notificationSettings();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel', // id
@@ -42,32 +35,6 @@ void main() async {
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
-
-  // send firebase message on current device
-  // await FirebaseMessaging.instance.getToken().then((token) {
-  //   if (kDebugMode) {
-  //     print('[DEVICE TOKEN] $token');
-  //   }
-  // });
-  // send message on device token
-  // await FirebaseMessaging.instance
-  //     .subscribeToTopic('all')
-  //     .then((value) => print('[SUBSCRIBED TO TOPIC] all'));
-  // await FirebaseMessaging.instance
-  //     .subscribeToTopic('android')
-  //     .then((value) => print('[SUBSCRIBED TO TOPIC] android'));
-  // await FirebaseMessaging.instance
-  //     .subscribeToTopic('ios')
-  //     .then((value) => print('[SUBSCRIBED TO TOPIC] ios'));
-  // await FirebaseMessaging.instance
-  //     .subscribeToTopic('web')
-  //     .then((value) => print('[SUBSCRIBED TO TOPIC] web'));
-  // await FirebaseMessaging.instance
-  //     .subscribeToTopic('flutter')
-  //     .then((value) => print('[SUBSCRIBED TO TOPIC] flutter'));
-  // await FirebaseMessaging.instance
-  //     .subscribeToTopic('hanapp')
-  //     .then((value) => print('[SUBSCRIBED TO TOPIC] hanapp'));
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     RemoteNotification? notification = message.notification;
@@ -132,20 +99,20 @@ Future<void> loadUser() async {
   }
 }
 
-Future<void> notificationSettings() async {
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
-  if (kDebugMode) {
-    print('[NOTIFICATION SETTINGS] ${settings.authorizationStatus}');
-  }
-}
+// Future<void> notificationSettings() async {
+//   NotificationSettings settings = await messaging.requestPermission(
+//     alert: true,
+//     announcement: false,
+//     badge: true,
+//     carPlay: false,
+//     criticalAlert: false,
+//     provisional: false,
+//     sound: true,
+//   );
+//   if (kDebugMode) {
+//     print('[NOTIFICATION SETTINGS] ${settings.authorizationStatus}');
+//   }
+// }
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (kDebugMode) {
