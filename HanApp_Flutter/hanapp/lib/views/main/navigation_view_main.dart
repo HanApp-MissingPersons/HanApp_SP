@@ -12,7 +12,7 @@ import '../../firebase_options.dart';
 import 'pages/home_main.dart';
 import 'pages/report_main.dart';
 import 'pages/nearby_main.dart';
-import 'pages/companion_main.dart';
+import 'pages/notification_main.dart';
 import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
@@ -189,7 +189,7 @@ class _NavigationFieldState extends State<NavigationField> {
       const HomeMain(),
       const ReportMain(),
       const NearbyMain(),
-      CompanionMain(
+      NotificationMain(
         reportLen: reportLen.toString(),
       ),
       const UpdateMain(),

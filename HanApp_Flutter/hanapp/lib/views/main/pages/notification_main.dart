@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-class CompanionMain extends StatefulWidget {
+class NotificationMain extends StatefulWidget {
   final String reportLen;
-  const CompanionMain({super.key, required this.reportLen});
+  const NotificationMain({super.key, required this.reportLen});
 
   @override
-  State<CompanionMain> createState() => _CompanionMain();
+  State<NotificationMain> createState() => _NotificationMain();
 }
 
-class _CompanionMain extends State<CompanionMain> {
+class _NotificationMain extends State<NotificationMain> {
   LocationData? currentLocation;
   LatLng? sourceLocation;
   late StreamSubscription<LocationData> _locationSubscription;
