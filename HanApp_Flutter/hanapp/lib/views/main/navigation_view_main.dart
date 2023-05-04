@@ -48,19 +48,19 @@ class _NavigationFieldState extends State<NavigationField> {
     final snapshot = await dbRef2.once();
     setState(() {
       _reports = snapshot.snapshot.value ?? {};
-    });
-    print(
-        '[DATA FETCHED] reports: ${_reports.length}'); // print number of reports
+    }); // print number of reports
     _reportsSubscription = dbRef2.onValue.listen((event) {
       setState(() {
         _reports = event.snapshot.value ?? {};
       });
       Map<dynamic, dynamic> reps = _reports;
-      print('[DATA UPDATED] reports: ${reps.keys}');
       reportLen = _reports.length; // print number of reports
     });
+    int reportCount = 0;
+    int verifiedReportCount = 0;
     if (sourceLocation != null) {
       _reports.forEach((key, value) {
+        reportCount += 1;
         var userUid = key;
         value.forEach((key2, value2) {
           List latlng;
@@ -74,11 +74,14 @@ class _NavigationFieldState extends State<NavigationField> {
                 sourceLocation!, reportLatLng);
             print('$reportKey distance from you: $distance');
             if (distance <= 1000) {
+              verifiedReportCount += 1;
               nearbyVerifiedReports[reportKey] = value2;
             }
           }
         });
       });
+      print('[DATA FETCHED] Total reports: $reportCount');
+      print('[DATA FETCHED] Nearby verified reports: $verifiedReportCount');
     }
   }
 
@@ -190,7 +193,7 @@ class _NavigationFieldState extends State<NavigationField> {
       const ReportMain(),
       const NearbyMain(),
       NotificationMain(
-        reportLen: reportLen.toString(),
+        reports: nearbyVerifiedReports,
       ),
       const UpdateMain(),
     ];
@@ -288,7 +291,7 @@ class _NavigationFieldState extends State<NavigationField> {
               icon: Icon(Icons.near_me_outlined),
               activeIcon: Icon(Icons.near_me_rounded),
               label: 'Nearby'),
-          reportLen != 0
+          nearbyVerifiedReports.isNotEmpty
               ? const BottomNavigationBarItem(
                   icon: Icon(Icons.notification_important_outlined),
                   activeIcon: Icon(Icons.notification_important),

@@ -6,8 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class NotificationMain extends StatefulWidget {
-  final String reportLen;
-  const NotificationMain({super.key, required this.reportLen});
+  final Map<dynamic, dynamic> reports;
+  const NotificationMain({super.key, required this.reports});
 
   @override
   State<NotificationMain> createState() => _NotificationMain();
@@ -61,14 +61,10 @@ class _NotificationMain extends State<NotificationMain> {
     setState(() {
       _reports = snapshot.snapshot.value ?? {};
     });
-    print(
-        '[DATA FETCHED] reports: ${_reports.length}'); // print number of reports
     _reportsSubscription = dbRef2.onValue.listen((event) {
       setState(() {
         _reports = event.snapshot.value ?? {};
-      });
-      print(
-          '[DATA UPDATED] reports: ${_reports.length}'); // print number of reports
+      }); // print number of reports
     });
   }
 
@@ -79,7 +75,7 @@ class _NotificationMain extends State<NotificationMain> {
   Widget build(BuildContext context) {
     return currentLocation != null
         ? Text(
-            'Index 3: Report Len ${widget.reportLen}',
+            'Index 3: Report Len ${widget.reports}',
             style: optionStyle,
           )
         : SpinKitCubeGrid(
