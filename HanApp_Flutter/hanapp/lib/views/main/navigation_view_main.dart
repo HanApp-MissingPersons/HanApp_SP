@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -27,6 +28,26 @@ class _NavigationFieldState extends State<NavigationField> {
   LocationData? currentLocation;
   LatLng? sourceLocation;
   late StreamSubscription<LocationData> _locationSubscription;
+  final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
+  late dynamic _reports = {};
+  int reportLen = 0;
+  late StreamSubscription _reportsSubscription;
+
+  Future<void> _fetchData() async {
+    final snapshot = await dbRef2.once();
+    setState(() {
+      _reports = snapshot.snapshot.value ?? {};
+    });
+    print(
+        '[DATA FETCHED] reports: ${_reports.length}'); // print number of reports
+    _reportsSubscription = dbRef2.onValue.listen((event) {
+      setState(() {
+        _reports = event.snapshot.value ?? {};
+      });
+      print('[DATA UPDATED] reports: ${_reports.length}');
+      reportLen = _reports.length; // print number of reports
+    });
+  }
 
   void getCurrentLocation() async {
     Location location = Location();
@@ -133,6 +154,7 @@ class _NavigationFieldState extends State<NavigationField> {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     getCurrentLocation();
+    _fetchData();
     super.initState();
   }
 
@@ -218,25 +240,30 @@ class _NavigationFieldState extends State<NavigationField> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home_rounded),
               label: 'Home'),
           //backgroundColor: Colors.white),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
               icon: Icon(Icons.summarize_outlined),
               activeIcon: Icon(Icons.summarize_rounded),
               label: 'Report'),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
               icon: Icon(Icons.near_me_outlined),
               activeIcon: Icon(Icons.near_me_rounded),
               label: 'Nearby'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.diversity_1_outlined),
-              activeIcon: Icon(Icons.diversity_1_rounded),
-              label: 'Companion'),
-          BottomNavigationBarItem(
+          reportLen != 0
+              ? const BottomNavigationBarItem(
+                  icon: Icon(Icons.notification_important_outlined),
+                  activeIcon: Icon(Icons.notification_important),
+                  label: 'Notifications')
+              : const BottomNavigationBarItem(
+                  icon: Icon(Icons.notifications_paused_outlined),
+                  activeIcon: Icon(Icons.notifications_paused),
+                  label: 'Notifications'),
+          const BottomNavigationBarItem(
               icon: Icon(Icons.tips_and_updates_outlined),
               activeIcon: Icon(Icons.tips_and_updates_rounded),
               label: 'Updates'),
