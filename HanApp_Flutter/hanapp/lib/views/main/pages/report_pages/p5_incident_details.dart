@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'mapDialog.dart';
 
@@ -85,10 +87,12 @@ class Page5IncidentDetails extends StatefulWidget {
 
 DateTime now = DateTime.now();
 DateTime dateNow = DateTime(now.year, now.month, now.day);
-
+String userUID = FirebaseAuth.instance.currentUser!.uid;
 late SharedPreferences prefs;
 
 class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
+  String reportCount = 'NONE';
+
   // font style for the text
   static const TextStyle optionStyle = TextStyle(
       fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black87);
@@ -114,6 +118,20 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   String? nearestLandmark;
   String? cityName;
   String? brgyName;
+
+  retrieveUserData() async {
+    prefs = await SharedPreferences.getInstance();
+    await FirebaseDatabase.instance
+        .ref("Main Users")
+        .child(userUID)
+        .get()
+        .then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> userDict = snapshot.value as Map<dynamic, dynamic>;
+      print('${userDict['firstName']} ${userDict['lastName']}');
+      reportCount = userDict['reportCount'];
+    });
+    print('[REPORT COUNT] report count: $reportCount');
+  }
 
   // time
   DateTime? _selectedTime;
@@ -201,7 +219,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
     List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng);
     // print placemarks to see what is available
     for (var placemark in placemarks) {
-      print('placemark = $placemark');
+      // print('placemark = $placemark');
     }
 
     setState(() {
@@ -266,13 +284,14 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
 
   @override
   void initState() {
+    getSharedPrefs();
     try {
       print(prefs.getKeys());
     } catch (e) {
       print('[P5] prefs not initialized yet');
     }
     super.initState();
-    getSharedPrefs();
+    retrieveUserData();
     // calculateHoursSinceLastSeen();
   }
 
@@ -519,13 +538,25 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 alignment: Alignment.center,
                 child: ElevatedButton(
                   onPressed: () async {
-                    Map<String, dynamic>? result =
-                        await showDialog<Map<String, dynamic>?>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const MapDialog();
-                      },
-                    );
+                    Map<String, dynamic>? result;
+                    reportCount != 'NONE'
+                        ? result = await showDialog<Map<String, dynamic>?>(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              print('User UID: $userUID');
+                              print('Report Count: $reportCount');
+                              return MapDialog(
+                                  uid: userUID, reportCount: reportCount);
+                            },
+                          )
+                        : // show snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Retrieving user data is taking longer than usual'),
+                            ),
+                          );
                     if (result != null) {
                       LatLng location = result['location'];
                       Uint8List? image;

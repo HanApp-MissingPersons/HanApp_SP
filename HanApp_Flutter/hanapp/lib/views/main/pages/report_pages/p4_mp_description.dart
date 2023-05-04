@@ -7,10 +7,15 @@
 
 /* IMPORTS */
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart';
 
 /* SHARED PREFERENCE */
 late SharedPreferences _prefs;
@@ -36,8 +41,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   static const TextStyle headingStyle = TextStyle(
       fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black54);
 
+  String userUID = FirebaseAuth.instance.currentUser!.uid;
+  Reference reportRef = FirebaseStorage.instance.ref().child('Reports');
   /* VARIABLES */
   // MP Appearance
+  String mpImageURL = '';
   String? mp_scars;
   String? mp_marks;
   String? mp_tattoos;
@@ -148,6 +156,21 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   //   });
   // }
 
+  late String reportCount;
+  retrieveUserData() async {
+    _prefs = await SharedPreferences.getInstance();
+    await FirebaseDatabase.instance
+        .ref("Main Users")
+        .child(userUID)
+        .get()
+        .then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> userDict = snapshot.value as Map<dynamic, dynamic>;
+      print('${userDict['firstName']} ${userDict['lastName']}');
+      reportCount = userDict['reportCount'];
+    });
+    print('[REPORT COUNT] report count: $reportCount');
+  }
+
   // save images to shared preference
   Future<void> _saveImages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -170,8 +193,40 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   // get images from shared preference
   Future<void> _getImages(String photoType) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 75);
     if (pickedFile != null) {
+      try {
+        final file = File(pickedFile.path);
+        setState(() {
+          _writeToPrefs('p4_${photoType}_PATH', file.path);
+        });
+        //   await FirebaseStorage.instance
+        //       .ref()
+        //       .child('Reports')
+        //       .child(userUID.toString())
+        //       .child('report_$reportCount')
+        //       .child(photoType)
+        //       .putFile(file)
+        //       .whenComplete(() async {
+        //     await FirebaseStorage.instance
+        //         .ref()
+        //         .child('Reports')
+        //         .child(userUID.toString())
+        //         .child('report_$reportCount')
+        //         .child(photoType)
+        //         .getDownloadURL()
+        //         .then((value) {
+        //       setState(() {
+        //         mpImageURL = value;
+        //         _writeToPrefs('p4_${photoType}_LINK', value);
+        //       });
+        //     });
+        //   });
+        //   print('image URL: $mpImageURL');
+      } catch (e) {
+        print('[ERROR] $e');
+      }
       final imageBytes = await pickedFile.readAsBytes();
       setState(() {
         if (photoType == 'mp_recent_photo') {
@@ -267,6 +322,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
       });
     });
     getBoolChoices();
+    retrieveUserData();
   }
 
   /* BUILD WIDGET */

@@ -11,6 +11,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:pnphanapp/main.dart';
+import 'package:image_network/image_network.dart';
 
 class reportsPNP extends StatefulWidget {
   final List<String> filterValue;
@@ -21,6 +22,7 @@ class reportsPNP extends StatefulWidget {
 }
 
 class _reportsPNPState extends State<reportsPNP> {
+  String cors_anywhere = 'https://cors-anywhere.herokuapp.com/';
   final user = FirebaseAuth.instance.currentUser;
   DatabaseReference pnpAccountsRef =
       FirebaseDatabase.instance.ref('PNP Accounts');
@@ -28,7 +30,6 @@ class _reportsPNPState extends State<reportsPNP> {
       FirebaseDatabase.instance.ref('Reports');
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   List<Map>? reportList = [];
-  Uint8List lastSeenLocSnapshot = Uint8List(0);
 
   // REPORT DETAILS
   String firstName = '';
@@ -66,9 +67,14 @@ class _reportsPNPState extends State<reportsPNP> {
   String hairColor = '';
   String eyeColor = '';
   String prosthetics = '';
-  String birthDefects= '';
-  String clothingAccessories= '';
+  String birthDefects = '';
+  String clothingAccessories = '';
 
+  // imgs
+  String mp_locationSnapshot_LINK = '';
+  String mp_recentPhoto_LINK = '';
+  String reportee_ID_Photo_LINK = '';
+  String reportee_Signature_LINK = '';
 
   var userLat;
   var userLong;
@@ -122,21 +128,18 @@ class _reportsPNPState extends State<reportsPNP> {
   }
 
   Widget listItem({required Map report}) {
-    // ignore: unused_local_variable
-    Map reportImages = {};
-    if (report.containsKey('images')) {
-      reportImages = report['images'];
-    }
-
     String importanceString = '';
     String lastSeenLoc = report['p5_lastSeenLoc'] ?? '';
     String lastSeenDate = report['p5_lastSeenDate'] ?? '';
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
-    String missingPersonImageString = reportImages['p4_mp_recent_photo'] ?? '';
-    String lastSeenLocSnapshotString = reportImages['p5_locSnapshot'] ?? '';
     String nearestLandmark = report['p5_nearestLandmark'] ?? '';
-    Uint8List missingPersonImageBytes;
+
+    // img links
+    mp_locationSnapshot_LINK = report['mp_locSnapshot_LINK'] ?? '';
+    mp_recentPhoto_LINK = report['mp_recentPhoto_LINK'] ?? '';
+    reportee_ID_Photo_LINK = report['reportee_ID_Photo_LINK '] ?? '';
+    reportee_Signature_LINK = report['reportee_Signature_LINK'] ?? '';
 
     firstName = report['p3_mp_firstName'] ?? '';
     lastName = report['p3_mp_lastName'] ?? '';
@@ -171,7 +174,6 @@ class _reportsPNPState extends State<reportsPNP> {
     pinnedLocCityMun = report['p5_cityName'] ?? '';
     pinnedLocBarangay = report['p5_brgyName'] ?? '';
     incidentDetails = report['p5_incidentDetails'] ?? '';
-
 
     num distance = 0;
 
@@ -217,18 +219,18 @@ class _reportsPNPState extends State<reportsPNP> {
     report['importanceTags'] = importanceString;
 
     // mp recent photo
-    if (missingPersonImageString.isNotEmpty) {
-      missingPersonImageBytes = base64Decode(missingPersonImageString);
-    } else {
-      missingPersonImageBytes = Uint8List(0);
-    }
+    // if (missingPersonImageString.isNotEmpty) {
+    //   missingPersonImageBytes = base64Decode(missingPersonImageString);
+    // } else {
+    //   missingPersonImageBytes = Uint8List(0);
+    // }
 
     // mp last seen location snapshot
-    if (lastSeenLocSnapshotString.isNotEmpty) {
-      lastSeenLocSnapshot = base64Decode(lastSeenLocSnapshotString);
-    } else {
-      lastSeenLocSnapshot = Uint8List(0);
-    }
+    // if (lastSeenLocSnapshotString.isNotEmpty) {
+    //   lastSeenLocSnapshot = base64Decode(lastSeenLocSnapshotString);
+    // } else {
+    //   lastSeenLocSnapshot = Uint8List(0);
+    // }
 
     var statusValue;
     return SingleChildScrollView(
@@ -259,7 +261,7 @@ class _reportsPNPState extends State<reportsPNP> {
                     //   // print('\n[aye] ${i.keys} ${i.runtimeType}');
                     // }
                     if (dateReported.isNotEmpty) {
-                      displayReportDialog(context, report, reportImages);
+                      displayReportDialog(context, report);
                     }
                   },
                   child: Row(
@@ -274,8 +276,14 @@ class _reportsPNPState extends State<reportsPNP> {
                         //     color: Colors.grey,
                         //     borderRadius: BorderRadius.all(Radius.circular(20))
                         // ),
-                        child: missingPersonImageString.isNotEmpty
-                            ? Image.memory(missingPersonImageBytes)
+                        child: mp_recentPhoto_LINK.isNotEmpty
+                            ? ImageNetwork(
+                                image: mp_recentPhoto_LINK,
+                                height: 50,
+                                width: 50,
+                                onLoading: const SpinKitChasingDots(
+                                    color: Colors.indigoAccent))
+                            // Image.network(mp_recentPhoto_LINK)
                             : const Icon(Icons.person),
                       ),
                       Column(
@@ -418,17 +426,17 @@ class _reportsPNPState extends State<reportsPNP> {
                     builder: (BuildContext context) {
                       String? newStatusValue = statusValue;
                       return AlertDialog(
-                        title: Text('Change Report Status of $firstName $lastName'),
+                        title: Text(
+                            'Change Report Status of $firstName $lastName'),
                         shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0))),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                                'Are you sure you want to change the report status of this missing person?',
-                              style: TextStyle(
-                                fontSize: 12
-                              ),
+                              'Are you sure you want to change the report status of this missing person?',
+                              style: TextStyle(fontSize: 12),
                             ),
                             const SizedBox(height: 16),
                             DropdownButtonFormField<String>(
@@ -476,7 +484,8 @@ class _reportsPNPState extends State<reportsPNP> {
                             padding: const EdgeInsets.all(15),
                             child: TextButton(
                               style: TextButton.styleFrom(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0)),
                                 backgroundColor: Palette.indigo,
                                 foregroundColor: Colors.white,
                               ),
@@ -565,7 +574,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         ),
                         onPressed: () {
                           if (dateReported.isNotEmpty) {
-                            displayReportDialog(context, report, reportImages);
+                            displayReportDialog(context, report);
                           }
                         })
                   ],
@@ -584,7 +593,7 @@ class _reportsPNPState extends State<reportsPNP> {
     );
   }
 
-  void displayReportDialog(BuildContext context, Map report, Map reportImages) {
+  void displayReportDialog(BuildContext context, Map report) {
     String lastSeenDate = report['p5_lastSeenDate'] ?? '';
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
@@ -598,10 +607,6 @@ class _reportsPNPState extends State<reportsPNP> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: AlertDialog(
-            // title: Text(
-            //   "Report Details",
-            //   textAlign: TextAlign.center,
-            // ),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
             content: SingleChildScrollView(
@@ -703,10 +708,10 @@ class _reportsPNPState extends State<reportsPNP> {
                               Container(
                                 alignment: Alignment.centerLeft,
                                 margin:
-                                const EdgeInsets.only(top: 5, bottom: 15),
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(15),
                                 width:
-                                MediaQuery.of(context).size.width * 0.115,
+                                    MediaQuery.of(context).size.width * 0.115,
                                 //height: MediaQuery.of(context).size.height * 0.05,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
@@ -733,12 +738,12 @@ class _reportsPNPState extends State<reportsPNP> {
                               Container(
                                 alignment: Alignment.centerLeft,
                                 margin:
-                                const EdgeInsets.only(top: 5, bottom: 15),
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(15),
                                 constraints: BoxConstraints(
                                     minWidth: 100, maxWidth: 200),
                                 width:
-                                MediaQuery.of(context).size.width * 0.115,
+                                    MediaQuery.of(context).size.width * 0.115,
                                 //height: MediaQuery.of(context).size.height * 0.05,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
@@ -1009,7 +1014,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           prosthetics,
                           textAlign: TextAlign.center,
@@ -1047,12 +1052,21 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.topCenter,
                         margin: const EdgeInsets.all(20),
-                        child: Image.memory(
-                          base64Decode(reportImages['p4_mp_recent_photo']),
+                        child: ImageNetwork(
+                          image: report['mp_recentPhoto_LINK'],
+                          height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width * .4 > 200
                               ? MediaQuery.of(context).size.width * .25
                               : MediaQuery.of(context).size.width * .4,
+                          onLoading: const SpinKitChasingDots(
+                              color: Colors.indigoAccent),
                         ),
+                        // Image.network(
+                        //   report['mp_recentPhoto_LINK'],
+                        //   width: MediaQuery.of(context).size.width * .4 > 200
+                        //       ? MediaQuery.of(context).size.width * .25
+                        //       : MediaQuery.of(context).size.width * .4,
+                        // ),
                       ),
                       Container(
                           margin: EdgeInsets.only(bottom: 20),
@@ -1082,7 +1096,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.08,
                                 decoration: BoxDecoration(
@@ -1110,7 +1125,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.08,
                                 decoration: BoxDecoration(
@@ -1143,7 +1159,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.08,
                                 decoration: BoxDecoration(
@@ -1171,7 +1188,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.08,
                                 decoration: BoxDecoration(
@@ -1202,7 +1220,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.08,
                                 decoration: BoxDecoration(
@@ -1230,7 +1249,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.08,
                                 decoration: BoxDecoration(
@@ -1264,8 +1284,8 @@ class _reportsPNPState extends State<reportsPNP> {
                             width: MediaQuery.of(context).size.width * 0.17,
                             decoration: BoxDecoration(
                                 border: Border.all(width: 0.5),
-                                borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(15))),
                             child: Text(
                               birthDate,
                               textAlign: TextAlign.center,
@@ -1291,8 +1311,8 @@ class _reportsPNPState extends State<reportsPNP> {
                             width: MediaQuery.of(context).size.width * 0.17,
                             decoration: BoxDecoration(
                                 border: Border.all(width: 0.5),
-                                borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(15))),
                             child: Text(
                               '$streetHouseNum, $villageSitio, Brgy. $barangay, $city, $province, Region $region',
                               textAlign: TextAlign.left,
@@ -1312,7 +1332,6 @@ class _reportsPNPState extends State<reportsPNP> {
                                   fontWeight: FontWeight.w900,
                                 )),
                           ),
-
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -1324,13 +1343,14 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.17,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(15))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
                                 child: Text(
                                   mobilePhone,
                                   textAlign: TextAlign.center,
@@ -1339,7 +1359,6 @@ class _reportsPNPState extends State<reportsPNP> {
                               ),
                             ],
                           ),
-
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -1351,13 +1370,14 @@ class _reportsPNPState extends State<reportsPNP> {
                                       color: Colors.black54)),
                               Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                margin:
+                                    const EdgeInsets.only(top: 5, bottom: 15),
                                 padding: const EdgeInsets.all(10),
                                 width: MediaQuery.of(context).size.width * 0.17,
                                 decoration: BoxDecoration(
                                     border: Border.all(width: 0.5),
-                                    borderRadius:
-                                    const BorderRadius.all(Radius.circular(15))),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(15))),
                                 child: Text(
                                   homePhone,
                                   textAlign: TextAlign.center,
@@ -1377,9 +1397,15 @@ class _reportsPNPState extends State<reportsPNP> {
                         color: Palette.indigo,
                         margin: const EdgeInsets.all(20),
                         width: MediaQuery.of(context).size.width * 0.25,
-                        child: Image.memory(lastSeenLocSnapshot),
+                        child:
+                            // Image.network(report['mp_locationSnapshot_LINK']),
+                            ImageNetwork(
+                                height: MediaQuery.of(context).size.height,
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                image: report['mp_locationSnapshot_LINK'],
+                                onLoading: const SpinKitChasingDots(
+                                    color: Colors.indigoAccent)),
                       ),
-
                       Text("NEAREST LANDMARK",
                           style: TextStyle(
                               fontWeight: FontWeight.w900,
@@ -1394,14 +1420,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           nearestLandmark,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15.0),
                         ),
                       ),
-
                       Text("CITY/MUNICIPALITY",
                           style: TextStyle(
                               fontWeight: FontWeight.w900,
@@ -1416,14 +1441,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           pinnedLocCityMun,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15.0),
                         ),
                       ),
-
                       Text("BARANGAY/DISTRICT",
                           style: TextStyle(
                               fontWeight: FontWeight.w900,
@@ -1438,14 +1462,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           pinnedLocBarangay,
                           textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 15.0),
                         ),
                       ),
-
                       const Padding(
                         padding: EdgeInsets.only(top: 30, bottom: 10),
                         child: Text("Incident Details",
@@ -1454,7 +1477,6 @@ class _reportsPNPState extends State<reportsPNP> {
                               fontWeight: FontWeight.w900,
                             )),
                       ),
-
                       Container(
                         alignment: Alignment.centerLeft,
                         margin: const EdgeInsets.only(top: 5, bottom: 15),
@@ -1463,14 +1485,13 @@ class _reportsPNPState extends State<reportsPNP> {
                         decoration: BoxDecoration(
                             border: Border.all(width: 0.5),
                             borderRadius:
-                            const BorderRadius.all(Radius.circular(15))),
+                                const BorderRadius.all(Radius.circular(15))),
                         child: Text(
                           incidentDetails,
                           textAlign: TextAlign.left,
                           style: const TextStyle(fontSize: 15.0),
                         ),
                       ),
-
                     ],
                   ),
                 ],
@@ -1518,6 +1539,7 @@ class _reportsPNPState extends State<reportsPNP> {
                 value['uid'] = uid;
                 var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
                 var status = value['status'] ?? '';
+                print('status: $status');
                 if (lastSeenLoc != '' && filterValueLocal.contains(status)) {
                   if (userLatLng.latitude == 999999 &&
                       userLatLng.longitude == 999999) {

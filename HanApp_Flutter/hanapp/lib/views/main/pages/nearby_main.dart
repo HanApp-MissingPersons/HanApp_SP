@@ -87,7 +87,7 @@ class _NearbyMainState extends State<NearbyMain> {
   void setCustomMarkerIcon() {
     // temporary images, just to show that it is possible
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(10, 10)),   //decrease if too large
+            const ImageConfiguration(size: Size(6, 6)),   //decrease if too large
             'assets/images/mp_marker.png')
         .then((icon) => sourceIcon = icon);
     // BitmapDescriptor.fromAssetImage(

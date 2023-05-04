@@ -13,7 +13,7 @@ class _NavRailViewState extends State<NavRailView> {
   int _selectedIndex = 0;
   // final List<dynamic> _destinations = ['Home', 'Calendar', 'Email', reportsPNP];
   static const List<Widget> _destinations = <Widget>[
-    reportsPNP(filterValue: ['pending']), //first page
+    reportsPNP(filterValue: ['Pending']), //first page
     reportsPNP(filterValue: ['Verified']), //second page
     reportsPNP(filterValue: ['Incomplete Details', 'Rejected']),
     reportsPNP(filterValue: ['Already Found']), // fourth page
