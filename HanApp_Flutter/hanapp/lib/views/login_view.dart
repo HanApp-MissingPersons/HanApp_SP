@@ -390,7 +390,7 @@ class _LoginViewState extends State<LoginView> {
                           TextButton(
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const GmapsTest()));
+                                    builder: (context) => const SendNotif()));
                               },
                               child: const Text('Google Maps Test')),
                           // for testing only

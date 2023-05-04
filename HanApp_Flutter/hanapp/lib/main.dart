@@ -1,11 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/firebase_options.dart';
 import 'package:hanapp/views/login_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:hanapp/views/main/navigation_view_main.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   // initialize firebase
@@ -16,8 +18,50 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // get user notification on app load
+  // await notificationSettings();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    'high_importance_channel', // id
+    'High Importance Notifications', // title
+    description:
+        'This channel is used for important notifications.', // description
+    importance: Importance.max,
+  );
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    // If `onMessage` is triggered with a notification, construct our own
+    // local notification to show to users using the created channel.
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+          notification.hashCode,
+          notification.title,
+          notification.body,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              channelDescription: channel.description,
+              icon: 'launch_background', // needs to change
+              // other properties...
+            ),
+          ));
+    }
+  });
   runApp(const MyApp());
 }
+
+FirebaseMessaging messaging = FirebaseMessaging.instance;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -52,6 +96,30 @@ Future<void> loadUser() async {
   }
   if (kDebugMode) {
     print('[LOGGED IN STATUS] $isUserSignedIn');
+  }
+}
+
+// Future<void> notificationSettings() async {
+//   NotificationSettings settings = await messaging.requestPermission(
+//     alert: true,
+//     announcement: false,
+//     badge: true,
+//     carPlay: false,
+//     criticalAlert: false,
+//     provisional: false,
+//     sound: true,
+//   );
+//   if (kDebugMode) {
+//     print('[NOTIFICATION SETTINGS] ${settings.authorizationStatus}');
+//   }
+// }
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (kDebugMode) {
+    print('[BACKGROUND MESSAGE] onMessage: ${message.data}');
+    if (message.notification != null) {
+      print('[BACKGROUND NOTIFICATION] onMessage: ${message.notification}');
+    }
   }
 }
 
