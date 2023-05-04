@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
+import 'package:location/location.dart';
 import '../../firebase_options.dart';
 import 'pages/home_main.dart';
 import 'pages/report_main.dart';
@@ -20,6 +24,31 @@ class NavigationField extends StatefulWidget {
 }
 
 class _NavigationFieldState extends State<NavigationField> {
+  LocationData? currentLocation;
+  LatLng? sourceLocation;
+  late StreamSubscription<LocationData> _locationSubscription;
+
+  void getCurrentLocation() async {
+    Location location = Location();
+
+    await location.getLocation().then((location) {
+      setState(() {
+        currentLocation = location;
+        sourceLocation =
+            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+      });
+    });
+    if (currentLocation != null) {
+      _locationSubscription = location.onLocationChanged.listen((newLocation) {
+        setState(() {
+          currentLocation = newLocation;
+          sourceLocation =
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+        });
+      });
+    }
+  }
+
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomeMain(),
@@ -34,10 +63,18 @@ class _NavigationFieldState extends State<NavigationField> {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
-          title: const Text('Discard Report', style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),),
-          content: const Text('Are you sure? You will lose all the progress of your report', style: TextStyle(fontSize: 15.0,),),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)),
+          title: const Text(
+            'Discard Report',
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
+          ),
+          content: const Text(
+            'Are you sure? You will lose all the progress of your report',
+            style: TextStyle(
+              fontSize: 15.0,
+            ),
+          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           actions: [
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
@@ -57,8 +94,8 @@ class _NavigationFieldState extends State<NavigationField> {
                       decoration: BoxDecoration(
                           color: Palette.indigo,
                           border: Border.all(width: 0.5),
-                          borderRadius: const BorderRadius.all(Radius.circular(5))
-                      ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(5))),
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -69,7 +106,10 @@ class _NavigationFieldState extends State<NavigationField> {
                           // clear the prefs
                           clearPrefs();
                         },
-                        child: const Text('Discard', style: TextStyle(color: Colors.white),),
+                        child: const Text(
+                          'Discard',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),
@@ -92,6 +132,7 @@ class _NavigationFieldState extends State<NavigationField> {
     _firebaseInit = Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    getCurrentLocation();
     super.initState();
   }
 
