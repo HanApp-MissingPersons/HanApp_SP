@@ -152,14 +152,14 @@ class _NavigationFieldState extends State<NavigationField> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _widgetOptions = <Widget>[
-      HomeMain(),
-      ReportMain(),
-      NearbyMain(),
+    final List<Widget> widgetOptions = <Widget>[
+      const HomeMain(),
+      const ReportMain(),
+      const NearbyMain(),
       CompanionMain(
         reportLen: reportLen.toString(),
       ),
-      UpdateMain(),
+      const UpdateMain(),
     ];
     return Scaffold(
       body: FutureBuilder(
@@ -204,10 +204,10 @@ class _NavigationFieldState extends State<NavigationField> {
                           child: _selectedIndex != 2
                               ? Center(
                                   child: SingleChildScrollView(
-                                      child: _widgetOptions
+                                      child: widgetOptions
                                           .elementAt(_selectedIndex)))
                               // else if maps, do not place in singlechildscroll view
-                              : _widgetOptions.elementAt(_selectedIndex)),
+                              : widgetOptions.elementAt(_selectedIndex)),
                     ),
                     Positioned(
                       // position the user profile button
