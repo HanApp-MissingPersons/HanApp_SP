@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
@@ -16,6 +15,7 @@ import 'pages/nearby_main.dart';
 import 'pages/companion_main.dart';
 import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
@@ -30,8 +30,19 @@ class _NavigationFieldState extends State<NavigationField> {
   late StreamSubscription<LocationData> _locationSubscription;
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
   late dynamic _reports = {};
+  late Map<dynamic, dynamic> closeReports = {};
   int reportLen = 0;
   late StreamSubscription _reportsSubscription;
+
+  List<double> extractDoubles(String input) {
+    RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
+    List<double> doubles = [];
+    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+    for (RegExpMatch match in matches) {
+      doubles.add(double.parse(match.group(0)!));
+    }
+    return doubles;
+  }
 
   Future<void> _fetchData() async {
     final snapshot = await dbRef2.once();
@@ -44,9 +55,28 @@ class _NavigationFieldState extends State<NavigationField> {
       setState(() {
         _reports = event.snapshot.value ?? {};
       });
-      print('[DATA UPDATED] reports: ${_reports.length}');
+      Map<dynamic, dynamic> reps = _reports;
+      print('[DATA UPDATED] reports: ${reps.keys}');
       reportLen = _reports.length; // print number of reports
     });
+    if (sourceLocation != null) {
+      _reports.forEach((key, value) {
+        var userUid = key;
+        value.forEach((key2, value2) {
+          List latlng;
+          var reportKey = '${key2}_$userUid';
+          var lastSeenLoc = value2['p5_lastSeenLoc'] ?? '';
+          var reportValidity = value2['status'] ?? '';
+          if (lastSeenLoc != '' && reportValidity == 'Verified') {
+            latlng = extractDoubles(lastSeenLoc);
+            LatLng reportLatLng = LatLng(latlng[0], latlng[1]);
+            num distance = SphericalUtil.computeDistanceBetween(
+                sourceLocation!, reportLatLng);
+            print('$reportKey distance from you: $distance');
+          }
+        });
+      });
+    }
   }
 
   void getCurrentLocation() async {
