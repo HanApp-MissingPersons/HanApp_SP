@@ -253,6 +253,16 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     });
   }
 
+  void popAndShowSnackbar(context) {
+    Navigator.pop(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Report submitted!'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     GlobalKey<SfSignaturePadState> signaturePadKey = GlobalKey();
@@ -597,7 +607,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                                                     });
                                                                     checkReportValidity()
                                                                         ? await submitReport().then((value) =>
-                                                                            Navigator.of(context).pop())
+                                                                            popAndShowSnackbar(context))
                                                                         : await showDialog(
                                                                             context:
                                                                                 context,

@@ -30,7 +30,7 @@ class _NavigationFieldState extends State<NavigationField> {
   late StreamSubscription<LocationData> _locationSubscription;
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
   late dynamic _reports = {};
-  late Map<dynamic, dynamic> closeReports = {};
+  late Map<dynamic, dynamic> nearbyVerifiedReports = {};
   int reportLen = 0;
   late StreamSubscription _reportsSubscription;
 
@@ -73,13 +73,16 @@ class _NavigationFieldState extends State<NavigationField> {
             num distance = SphericalUtil.computeDistanceBetween(
                 sourceLocation!, reportLatLng);
             print('$reportKey distance from you: $distance');
+            if (distance <= 1000) {
+              nearbyVerifiedReports[reportKey] = value2;
+            }
           }
         });
       });
     }
   }
 
-  void getCurrentLocation() async {
+  getCurrentLocation() async {
     Location location = Location();
 
     await location.getLocation().then((location) {
