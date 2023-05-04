@@ -6,7 +6,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class CompanionMain extends StatefulWidget {
-  const CompanionMain({super.key});
+  final String reportLen;
+  const CompanionMain({super.key, required this.reportLen});
 
   @override
   State<CompanionMain> createState() => _CompanionMain();
@@ -78,7 +79,7 @@ class _CompanionMain extends State<CompanionMain> {
   Widget build(BuildContext context) {
     return currentLocation != null
         ? Text(
-            'Index 3: Companion',
+            'Index 3: Report Len ${widget.reportLen}',
             style: optionStyle,
           )
         : SpinKitCubeGrid(

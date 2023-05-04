@@ -71,14 +71,6 @@ class _NavigationFieldState extends State<NavigationField> {
   }
 
   int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeMain(),
-    ReportMain(),
-    NearbyMain(),
-    CompanionMain(),
-    UpdateMain(),
-  ];
-
   void _onItemTapped(int index) {
     if (_selectedIndex == 1 && index != 1) {
       showDialog(
@@ -160,6 +152,15 @@ class _NavigationFieldState extends State<NavigationField> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _widgetOptions = <Widget>[
+      HomeMain(),
+      ReportMain(),
+      NearbyMain(),
+      CompanionMain(
+        reportLen: reportLen.toString(),
+      ),
+      UpdateMain(),
+    ];
     return Scaffold(
       body: FutureBuilder(
         future: _firebaseInit,
