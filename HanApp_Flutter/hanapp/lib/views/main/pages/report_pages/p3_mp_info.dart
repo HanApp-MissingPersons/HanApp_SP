@@ -1337,20 +1337,20 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 style: TextStyle(fontSize: 12, color: Colors.black54),
               ),
             ),
-            TextButton(
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                print(prefs.getKeys());
-                print(prefs.getString('p3_mp_birthDate'));
-                print(prefs.getString('p3_mp_sex'));
-                print(prefs.getString('p3_mp_civilStatus'));
-                print(prefs.getString('p3_mp_age'));
-                print(prefs.getString('p3_mp_education'));
-                print(prefs.getString('p3_mp_firstName'));
-                print(prefs.getBool('p1_isMinor'));
-              },
-              child: const Text('Print Shared Preferences'),
-            ),
+            // TextButton(
+            //   onPressed: () async {
+            //     final prefs = await SharedPreferences.getInstance();
+            //     print(prefs.getKeys());
+            //     print(prefs.getString('p3_mp_birthDate'));
+            //     print(prefs.getString('p3_mp_sex'));
+            //     print(prefs.getString('p3_mp_civilStatus'));
+            //     print(prefs.getString('p3_mp_age'));
+            //     print(prefs.getString('p3_mp_education'));
+            //     print(prefs.getString('p3_mp_firstName'));
+            //     print(prefs.getBool('p1_isMinor'));
+            //   },
+            //   child: const Text('Print Shared Preferences'),
+            // ),
           ]))
     ]);
   }

@@ -712,22 +712,22 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 ),
               ),
               // DEBUG TOOL: SHARED PREF PRINTER
-              TextButton(
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  print(prefs.getKeys());
-                  print(prefs.getString('p5_lastSeenDate'));
-                  print(prefs.getString('p5_lastSeenTime'));
-                  // print p5_totalHoursSinceLastSeen
-                  print(prefs.getString('p5_totalHoursSinceLastSeen'));
-                  print('Address Details:');
-                  print(prefs.getString('p5_placeName'));
-                  print(prefs.getString('p5_nearestLandmark'));
-                  print(prefs.getString('p5_cityName'));
-                  print(prefs.getString('p5_brgyName'));
-                },
-                child: const Text('Print Shared Preferences'),
-              ),
+              // TextButton(
+              //   onPressed: () async {
+              //     final prefs = await SharedPreferences.getInstance();
+              //     print(prefs.getKeys());
+              //     print(prefs.getString('p5_lastSeenDate'));
+              //     print(prefs.getString('p5_lastSeenTime'));
+              //     // print p5_totalHoursSinceLastSeen
+              //     print(prefs.getString('p5_totalHoursSinceLastSeen'));
+              //     print('Address Details:');
+              //     print(prefs.getString('p5_placeName'));
+              //     print(prefs.getString('p5_nearestLandmark'));
+              //     print(prefs.getString('p5_cityName'));
+              //     print(prefs.getString('p5_brgyName'));
+              //   },
+              //   child: const Text('Print Shared Preferences'),
+              // ),
             ],
           ),
         ),

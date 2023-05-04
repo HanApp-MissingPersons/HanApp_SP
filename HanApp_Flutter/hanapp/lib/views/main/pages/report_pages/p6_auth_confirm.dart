@@ -670,14 +670,14 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                               ),
                             ),
                       // print all sharedpreferences data
-                      TextButton(
-                        onPressed: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          print(prefs.getKeys());
-                          // preview of saved signature in a popup dialog
-                        },
-                        child: const Text('Print Shared Preferences'),
-                      ),
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     final prefs = await SharedPreferences.getInstance();
+                      //     print(prefs.getKeys());
+                      //     // preview of saved signature in a popup dialog
+                      //   },
+                      //   child: const Text('Print Shared Preferences'),
+                      // ),
                     ],
                   ),
                 ),

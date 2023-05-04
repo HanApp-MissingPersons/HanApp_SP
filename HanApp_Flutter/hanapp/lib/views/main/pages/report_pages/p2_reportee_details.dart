@@ -1144,14 +1144,14 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ),
             ),
             // DEBUG TOOL: SHARED PREF PRINTER
-            TextButton(
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                print(prefs.getKeys());
-                print(prefs.getString('p2_highestEduc'));
-              },
-              child: const Text('Print Shared Preferences'),
-            ),
+            // TextButton(
+            //   onPressed: () async {
+            //     final prefs = await SharedPreferences.getInstance();
+            //     print(prefs.getKeys());
+            //     print(prefs.getString('p2_highestEduc'));
+            //   },
+            //   child: const Text('Print Shared Preferences'),
+            // ),
           ],
         ),
       ),
