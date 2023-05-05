@@ -382,7 +382,7 @@ class _LoginViewState extends State<LoginView> {
                             child: Text(
                               'New to Hanapp? Register',
                               style: GoogleFonts.inter(
-                                fontSize: 12,
+                                fontSize: 12, color: Colors.black54
                               ),
                             ),
                           ),

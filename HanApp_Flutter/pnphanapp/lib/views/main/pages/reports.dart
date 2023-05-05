@@ -1058,7 +1058,7 @@ class _reportsPNPState extends State<reportsPNP> {
                           width: MediaQuery.of(context).size.width * .4 > 200
                               ? MediaQuery.of(context).size.width * .25
                               : MediaQuery.of(context).size.width * .4,
-                          onLoading: const SpinKitChasingDots(
+                          onLoading: const SpinKitCubeGrid(
                               color: Colors.indigoAccent),
                         ),
                         // Image.network(
@@ -1401,9 +1401,9 @@ class _reportsPNPState extends State<reportsPNP> {
                             // Image.network(report['mp_locationSnapshot_LINK']),
                             ImageNetwork(
                                 height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.25,
                                 image: report['mp_locationSnapshot_LINK'],
-                                onLoading: const SpinKitChasingDots(
+                                onLoading: const SpinKitCubeGrid(
                                     color: Colors.indigoAccent)),
                       ),
                       Text("NEAREST LANDMARK",

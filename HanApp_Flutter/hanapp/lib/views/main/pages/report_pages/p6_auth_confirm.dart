@@ -394,7 +394,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Center(
-                                        child: SpinKitChasingDots(
+                                        child: SpinKitCubeGrid(
                                             color: Colors.indigo, size: 50),
                                       ),
                                       Text('Uploading Signature...',
@@ -635,7 +635,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                                                 child: SizedBox(
                                                                   width: 24,
                                                                   child:
-                                                                      SpinKitChasingDots(
+                                                                      SpinKitCubeGrid(
                                                                     size: 24,
                                                                     color: Colors
                                                                         .white,
