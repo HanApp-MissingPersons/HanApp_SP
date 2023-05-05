@@ -394,7 +394,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Center(
-                                        child: SpinKitChasingDots(
+                                        child: SpinKitCubeGrid(
                                             color: Colors.indigo, size: 50),
                                       ),
                                       Text('Uploading Signature...',
@@ -635,7 +635,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                                                 child: SizedBox(
                                                                   width: 24,
                                                                   child:
-                                                                      SpinKitChasingDots(
+                                                                      SpinKitCubeGrid(
                                                                     size: 24,
                                                                     color: Colors
                                                                         .white,
@@ -670,14 +670,14 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                               ),
                             ),
                       // print all sharedpreferences data
-                      TextButton(
-                        onPressed: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          print(prefs.getKeys());
-                          // preview of saved signature in a popup dialog
-                        },
-                        child: const Text('Print Shared Preferences'),
-                      ),
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     final prefs = await SharedPreferences.getInstance();
+                      //     print(prefs.getKeys());
+                      //     // preview of saved signature in a popup dialog
+                      //   },
+                      //   child: const Text('Print Shared Preferences'),
+                      // ),
                     ],
                   ),
                 ),

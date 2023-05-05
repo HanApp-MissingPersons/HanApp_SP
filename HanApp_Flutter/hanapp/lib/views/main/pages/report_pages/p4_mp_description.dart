@@ -1086,20 +1086,20 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         ),
                       ),
                       // DEBUG TOOL: SHARED PREF PRINTER
-                      TextButton(
-                        onPressed: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          // print(prefs.getKeys());
-                          // print(prefs.getString('p4_mp_scars'));
-                          // print(prefs.getString('p4_mp_marks'));
-                          // print(prefs.getString('p4_mp_blood_type'));
-                          // print(prefs.getString('p4_mp_socmed_facebook_username'));
-                          // print bools for hair and eye
-                          print(prefs.getBool('p4_mp_hair_color_natural'));
-                          print(prefs.getBool('p4_mp_eye_color_natural'));
-                        },
-                        child: const Text('Print Shared Preferences'),
-                      ),
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     final prefs = await SharedPreferences.getInstance();
+                      //     // print(prefs.getKeys());
+                      //     // print(prefs.getString('p4_mp_scars'));
+                      //     // print(prefs.getString('p4_mp_marks'));
+                      //     // print(prefs.getString('p4_mp_blood_type'));
+                      //     // print(prefs.getString('p4_mp_socmed_facebook_username'));
+                      //     // print bools for hair and eye
+                      //     print(prefs.getBool('p4_mp_hair_color_natural'));
+                      //     print(prefs.getBool('p4_mp_eye_color_natural'));
+                      //   },
+                      //   child: const Text('Print Shared Preferences'),
+                      // ),
                     ]))
           ])
         : // Circular loading icon
