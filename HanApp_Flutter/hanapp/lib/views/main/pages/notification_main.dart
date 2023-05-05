@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:maps_toolkit/maps_toolkit.dart';
 
 class NotificationMain extends StatefulWidget {
   final Map<dynamic, dynamic> reports;
@@ -14,58 +14,21 @@ class NotificationMain extends StatefulWidget {
 }
 
 class _NotificationMain extends State<NotificationMain> {
-  LocationData? currentLocation;
-  LatLng? sourceLocation;
-  late StreamSubscription<LocationData> _locationSubscription;
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
-  late dynamic _reports = {};
-  late StreamSubscription _reportsSubscription;
 
   @override
   void initState() {
     super.initState();
-    getCurrentLocation();
-    _fetchData();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _locationSubscription.cancel();
-    _reportsSubscription.cancel();
-  }
-
-  void getCurrentLocation() async {
-    Location location = Location();
-
-    await location.getLocation().then((location) {
-      setState(() {
-        currentLocation = location;
-        sourceLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-      });
-    });
-    if (currentLocation != null) {
-      _locationSubscription = location.onLocationChanged.listen((newLocation) {
-        setState(() {
-          currentLocation = newLocation;
-          sourceLocation =
-              LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-        });
-      });
+  List<double> extractDoubles(String input) {
+    RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
+    List<double> doubles = [];
+    Iterable<RegExpMatch> matches = regExp.allMatches(input);
+    for (RegExpMatch match in matches) {
+      doubles.add(double.parse(match.group(0)!));
     }
-  }
-
-  Future<void> _fetchData() async {
-    final snapshot = await dbRef2.once();
-    setState(() {
-      _reports = snapshot.snapshot.value ?? {};
-    });
-    _reportsSubscription = dbRef2.onValue.listen((event) {
-      setState(() {
-        _reports = event.snapshot.value ?? {};
-      }); // print number of reports
-    });
+    return doubles;
   }
 
   // optionStyle is for the text, we can remove this when actualy doing menu contents
@@ -73,14 +36,29 @@ class _NotificationMain extends State<NotificationMain> {
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
   @override
   Widget build(BuildContext context) {
-    return currentLocation != null
-        ? Text(
-            'Index 3: Report Len ${widget.reports}',
-            style: optionStyle,
+    return widget.reports.isNotEmpty
+        ? Center(
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.8,
+              margin: const EdgeInsets.only(top: 100.0),
+              child: ListView.builder(
+                itemCount: widget.reports.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: const Text('Missing persons last seen in your area'),
+                    subtitle:
+                        const Text('Check Nearby Reports for more details'),
+                    onTap: () {
+                      // Handle tap event here
+                    },
+                  );
+                },
+              ),
+            ),
           )
-        : SpinKitCubeGrid(
-            color: Colors.indigo,
-            size: 50.0,
+        : const Text(
+            'No missing persons last seen in your area',
+            style: optionStyle,
           );
   }
 }

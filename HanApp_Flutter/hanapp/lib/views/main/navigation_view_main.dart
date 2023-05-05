@@ -17,6 +17,9 @@ import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
+int REPORT_RETRIEVAL_INTERVAL = 30;
+int REPORT_RETRIEVAL_RADIUS = 1000;
+
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
 
@@ -56,32 +59,43 @@ class _NavigationFieldState extends State<NavigationField> {
       Map<dynamic, dynamic> reps = _reports;
       reportLen = _reports.length; // print number of reports
     });
-    int reportCount = 0;
-    int verifiedReportCount = 0;
-    if (sourceLocation != null) {
-      _reports.forEach((key, value) {
-        reportCount += 1;
-        var userUid = key;
-        value.forEach((key2, value2) {
-          List latlng;
-          var reportKey = '${key2}_$userUid';
-          var lastSeenLoc = value2['p5_lastSeenLoc'] ?? '';
-          var reportValidity = value2['status'] ?? '';
-          if (lastSeenLoc != '' && reportValidity == 'Verified') {
-            latlng = extractDoubles(lastSeenLoc);
-            LatLng reportLatLng = LatLng(latlng[0], latlng[1]);
-            num distance = SphericalUtil.computeDistanceBetween(
-                sourceLocation!, reportLatLng);
-            print('$reportKey distance from you: $distance');
-            if (distance <= 1000) {
-              verifiedReportCount += 1;
-              nearbyVerifiedReports[reportKey] = value2;
+
+    while (true) {
+      await Future.delayed(Duration(
+          seconds:
+              REPORT_RETRIEVAL_INTERVAL)); // Wait for 1 second between each fetch
+      final snapshot = await dbRef2.once();
+      setState(() {
+        _reports = snapshot.snapshot.value ?? {};
+      }); // print number of reports
+
+      int reportCount = 0;
+      int verifiedReportCount = 0;
+      if (sourceLocation != null) {
+        _reports.forEach((key, value) {
+          reportCount += 1;
+          var userUid = key;
+          value.forEach((key2, value2) {
+            List latlng;
+            var reportKey = '${key2}_$userUid';
+            var lastSeenLoc = value2['p5_lastSeenLoc'] ?? '';
+            var reportValidity = value2['status'] ?? '';
+            if (lastSeenLoc != '' && reportValidity == 'Verified') {
+              latlng = extractDoubles(lastSeenLoc);
+              LatLng reportLatLng = LatLng(latlng[0], latlng[1]);
+              num distance = SphericalUtil.computeDistanceBetween(
+                  sourceLocation!, reportLatLng);
+              print('$reportKey distance from you: $distance');
+              if (distance <= REPORT_RETRIEVAL_RADIUS) {
+                verifiedReportCount += 1;
+                nearbyVerifiedReports[reportKey] = value2;
+              }
             }
-          }
+          });
         });
-      });
-      print('[DATA FETCHED] Total reports: $reportCount');
-      print('[DATA FETCHED] Nearby verified reports: $verifiedReportCount');
+        print(
+            '[DATA FETCHED] Total reports: $reportCount, Nearby verified reports: $verifiedReportCount, interval: ${REPORT_RETRIEVAL_INTERVAL}s, radius: ${REPORT_RETRIEVAL_RADIUS}m');
+      }
     }
   }
 
