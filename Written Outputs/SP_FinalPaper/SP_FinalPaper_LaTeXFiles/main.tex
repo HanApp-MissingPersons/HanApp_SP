@@ -10,9 +10,14 @@
 \setstretch{1.15}
 \begin{document}
 \include{title_page}      %includes LaTeX source file for the Title Page 
-\include{abstract}        %includes the the Abstract page
+
 \pagenumbering{roman}   %number pages as i, ii, iii, etc...
 \setcounter{page}{2}
+\include{approval}
+\include{declaration}
+\include{dedication}
+\include{acknowledgment}
+\include{abstract}        %includes the the Abstract page
 \tableofcontents                  %generate the Table of Contents
 \newpage
 \listoffigures                    %generate List of Figures
@@ -24,17 +29,14 @@
 \include{chapter_1}               %LaTeX source file for Chapter 1: Introduction
 \include{chapter_2}               %LaTeX source file for Chapter 2: Review of Related Literature
 \include{chapter_3}               %LaTeX source file for Chapter 3: Methodology
-\include{chapter_4}               %LaTeX source file for Chapter 4: Preliminary Results/System Prototype
+\include{chapter_4}               %LaTeX source file for Chapter 4: Results and Discussions
+\include{chapter_5}                %Chapter 5: conclusion and recommendations
+\include{chapter_6}             %Chapter 6: references
 
-% removed appendix, no content
-%\appendix                         %specify appendices
-%\include{appendix_A}              %LaTeX source file for Appendix A
-%\include{appendix_B}              %LaTeX source file for Appendix B
 
-\bibliographystyle{apacite}       %-- specified APA style for bibliograpy
-                                				% www.ctan.org/tex-archive/biblio/bibtex/contrib/apacite/
- 				                                 %-- bibliographic entries are handled via bibtex; refer to www.bibtex.org for more details
-\bibliography{myreferences}       %-- the file "myreferences.bib" is a sample bibliography 
+\appendix                         %specify appendices
+\include{appendix_A}              %LaTeX source file for Appendix A
+\include{appendix_B}              %LaTeX source file for Appendix B
 
 \end{document}
 
