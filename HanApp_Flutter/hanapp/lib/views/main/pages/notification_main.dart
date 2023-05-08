@@ -24,14 +24,14 @@ class _NotificationMain extends State<NotificationMain> {
   @override
   void initState() {
     super.initState();
-    retrieveHiddenReports();
+    // retrieveHiddenReports();
   }
 
-  retrieveHiddenReports() async {
-    final snapshot = await notificationRef.child(userUid).once();
-    hiddenReports = snapshot.snapshot.key ?? {};
-    print('PRINT HIDDEN: $hiddenReports');
-  }
+  // retrieveHiddenReports() async {
+  //   final snapshot = await notificationRef.child(userUid).once();
+  //   hiddenReports = snapshot.snapshot.value ?? {};
+  //   print('PRINT HIDDEN: ${hiddenReports.keys.toList()}');
+  // }
 
   List<double> extractDoubles(String input) {
     RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
@@ -48,6 +48,14 @@ class _NotificationMain extends State<NotificationMain> {
       fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black54);
   @override
   Widget build(BuildContext context) {
+    // Map<dynamic, dynamic> reportsUnclean = widget.reports;
+    // Map<dynamic, dynamic> reportsClean =
+    //     Map.from(reportsUnclean); // make a copy of reportsUnclean
+
+    // for (var key in hiddenReports.keys.toList()) {
+    //   reportsClean.remove(key);
+    // }
+
     return widget.reports.isNotEmpty
         ? Center(
             child: Container(
@@ -57,7 +65,12 @@ class _NotificationMain extends State<NotificationMain> {
               child: ListView.builder(
                 itemCount: widget.reports.length,
                 itemBuilder: (context, index) {
+                  dynamic currentReportValues =
+                      widget.reports[widget.reports.keys.elementAt(index)];
+                  dynamic currentReportKey =
+                      widget.reports.keys.elementAt(index);
                   return ListTile(
+                    isThreeLine: true,
                     dense: true,
                     leading: const Icon(Icons.person_search_outlined),
                     trailing: GestureDetector(
@@ -77,8 +90,6 @@ class _NotificationMain extends State<NotificationMain> {
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  print(
-                                      'hiding notification ${widget.reports.values}');
                                   await FirebaseDatabase.instance
                                       .ref('Notifications')
                                       .child(userUid)
@@ -88,6 +99,7 @@ class _NotificationMain extends State<NotificationMain> {
                                       .set('hidden');
                                   // ignore: use_build_context_synchronously
                                   Navigator.of(context).pop();
+                                  setState(() {});
                                 },
                                 child: const Text("Yes"),
                               ),
@@ -102,8 +114,8 @@ class _NotificationMain extends State<NotificationMain> {
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     title: const Text('Missing persons last seen in your area'),
-                    subtitle:
-                        const Text('Check Nearby Reports for more details'),
+                    subtitle: Text(
+                        'Check Nearby Reports for more details, current Report: ${currentReportKey}'),
                     onTap: () {
                       showDialog(
                         context: context,
