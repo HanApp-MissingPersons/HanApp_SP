@@ -30,7 +30,8 @@ void clearPrefs() async {
 }
 
 class Page6AuthConfirm extends StatefulWidget {
-  const Page6AuthConfirm({super.key});
+  final VoidCallback onReportSubmissionDone;
+  const Page6AuthConfirm({super.key, required this.onReportSubmissionDone});
 
   @override
   State<Page6AuthConfirm> createState() => _Page6AuthConfirmState();
@@ -258,7 +259,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Report submitted!'),
-        duration: Duration(seconds: 2),
+        duration: Duration(seconds: 5),
       ),
     );
   }
@@ -823,5 +824,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       areImageUploading = false;
     });
     clearPrefs();
+    widget.onReportSubmissionDone();
   }
 }

@@ -13,14 +13,14 @@ import 'package:hanapp/views/main/pages/report_pages/p6_auth_confirm.dart';
  */
 
 class ReportMain extends StatefulWidget {
-  const ReportMain({super.key});
+  final VoidCallback onReportSubmissionDone;
+  const ReportMain({super.key, required this.onReportSubmissionDone});
 
   @override
   State<ReportMain> createState() => _ReportMainState();
 }
 
 class _ReportMainState extends State<ReportMain> {
-
   // initialize controller for PageView
   final PageController _pageController = PageController(initialPage: 0);
 
@@ -28,14 +28,6 @@ class _ReportMainState extends State<ReportMain> {
 
   //Create list holding all the pages
   // ignore: non_constant_identifier_names
-  final List<Widget> _ReportPages = [
-    const Page1Classifier(),
-    const Page2ReporteeDetails(),
-    const Page3MPDetails(),
-    const Page4MPDesc(),
-    const Page5IncidentDetails(),
-    const Page6AuthConfirm()
-  ];
 
   // dispose the controller, this is needed to avoid memory leak
   @override
@@ -47,6 +39,16 @@ class _ReportMainState extends State<ReportMain> {
   // build the page view
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _ReportPages = [
+      const Page1Classifier(),
+      const Page2ReporteeDetails(),
+      const Page3MPDetails(),
+      const Page4MPDesc(),
+      const Page5IncidentDetails(),
+      Page6AuthConfirm(
+        onReportSubmissionDone: widget.onReportSubmissionDone,
+      )
+    ];
     //use stack and sizedbox to make the pageview full screen
     return Stack(
       children: [
