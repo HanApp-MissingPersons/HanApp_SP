@@ -277,13 +277,14 @@ class _reportsPNPState extends State<reportsPNP> {
                         //     borderRadius: BorderRadius.all(Radius.circular(20))
                         // ),
                         child: mp_recentPhoto_LINK.isNotEmpty
-                            ? ImageNetwork(
-                                image: mp_recentPhoto_LINK,
-                                height: 50,
-                                width: 50,
-                                onLoading: const SpinKitChasingDots(
-                                    color: Colors.indigoAccent))
-                            // Image.network(mp_recentPhoto_LINK)
+                            ?
+                            // ImageNetwork(
+                            //     image: mp_recentPhoto_LINK,
+                            //     height: 50,
+                            //     width: 50,
+                            //     onLoading: const SpinKitChasingDots(
+                            //         color: Colors.indigoAccent))
+                            Image.network(mp_recentPhoto_LINK)
                             : const Icon(Icons.person),
                       ),
                       Column(
@@ -1052,21 +1053,22 @@ class _reportsPNPState extends State<reportsPNP> {
                       Container(
                         alignment: Alignment.topCenter,
                         margin: const EdgeInsets.all(20),
-                        child: ImageNetwork(
-                          image: report['mp_recentPhoto_LINK'],
-                          height: MediaQuery.of(context).size.height,
+                        child:
+                            // ImageNetwork(
+                            //   image: report['mp_recentPhoto_LINK'],
+                            //   height: MediaQuery.of(context).size.height,
+                            //   width: MediaQuery.of(context).size.width * .4 > 200
+                            //       ? MediaQuery.of(context).size.width * .25
+                            //       : MediaQuery.of(context).size.width * .4,
+                            //   onLoading: const SpinKitCubeGrid(
+                            //       color: Colors.indigoAccent),
+                            // ),
+                            Image.network(
+                          report['mp_recentPhoto_LINK'],
                           width: MediaQuery.of(context).size.width * .4 > 200
                               ? MediaQuery.of(context).size.width * .25
                               : MediaQuery.of(context).size.width * .4,
-                          onLoading: const SpinKitCubeGrid(
-                              color: Colors.indigoAccent),
                         ),
-                        // Image.network(
-                        //   report['mp_recentPhoto_LINK'],
-                        //   width: MediaQuery.of(context).size.width * .4 > 200
-                        //       ? MediaQuery.of(context).size.width * .25
-                        //       : MediaQuery.of(context).size.width * .4,
-                        // ),
                       ),
                       Container(
                           margin: EdgeInsets.only(bottom: 20),
