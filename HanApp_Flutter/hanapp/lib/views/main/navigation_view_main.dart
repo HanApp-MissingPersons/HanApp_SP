@@ -18,7 +18,8 @@ import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
 int REPORT_RETRIEVAL_INTERVAL = 30;
-int REPORT_RETRIEVAL_RADIUS = 1000;
+int REPORT_RETRIEVAL_RADIUS = 5000;
+bool firstRetrieve = true;
 
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
@@ -56,23 +57,15 @@ class _NavigationFieldState extends State<NavigationField> {
   }
 
   Future<void> _fetchData() async {
-    final snapshot = await dbRef2.once();
-    setState(() {
-      _reports = snapshot.snapshot.value ?? {};
-    }); // print number of reports
-    _reportsSubscription = dbRef2.onValue.listen((event) {
-      setState(() {
-        _reports = event.snapshot.value ?? {};
-      });
-      Map<dynamic, dynamic> reps = _reports;
-      reportLen = _reports.length; // print number of reports
-    });
-
     while (true) {
-      await Future.delayed(Duration(
-          seconds:
-              REPORT_RETRIEVAL_INTERVAL)); // Wait for 1 second between each fetch
       final snapshot = await dbRef2.once();
+      if (!firstRetrieve) {
+        await Future.delayed(Duration(seconds: REPORT_RETRIEVAL_INTERVAL));
+      } else {
+        await Future.delayed(const Duration(seconds: 5));
+        print('PRINTED IN 5 SECONDS');
+        firstRetrieve = false;
+      }
       setState(() {
         _reports = snapshot.snapshot.value ?? {};
       }); // print number of reports
@@ -232,6 +225,11 @@ class _NavigationFieldState extends State<NavigationField> {
       const NearbyMain(),
       NotificationMain(
         reports: nearbyVerifiedReports,
+        missingPersonTap: () {
+          setState(() {
+            selectedIndex = 2;
+          });
+        },
       ),
       const UpdateMain(),
     ];
