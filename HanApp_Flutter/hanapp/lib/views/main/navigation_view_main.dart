@@ -27,7 +27,15 @@ class NavigationField extends StatefulWidget {
   State<NavigationField> createState() => _NavigationFieldState();
 }
 
+int selectedIndex = 0;
+
 class _NavigationFieldState extends State<NavigationField> {
+  void navigateToProfile() {
+    setState(() {
+      selectedIndex = 1;
+    });
+  }
+
   LocationData? currentLocation;
   LatLng? sourceLocation;
   late StreamSubscription<LocationData> _locationSubscription;
@@ -120,9 +128,8 @@ class _NavigationFieldState extends State<NavigationField> {
     }
   }
 
-  int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    if (_selectedIndex == 1 && index != 1) {
+    if (selectedIndex == 1 && index != 1) {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -163,7 +170,7 @@ class _NavigationFieldState extends State<NavigationField> {
                         onPressed: () {
                           Navigator.of(context).pop();
                           setState(() {
-                            _selectedIndex = index;
+                            selectedIndex = index;
                           });
                           // if user is on report page and wants to navigate away
                           // clear the prefs
@@ -184,7 +191,7 @@ class _NavigationFieldState extends State<NavigationField> {
       );
     } else {
       setState(() {
-        _selectedIndex = index;
+        selectedIndex = index;
       });
     }
   } // end onItemTapped
@@ -203,7 +210,18 @@ class _NavigationFieldState extends State<NavigationField> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
-      const HomeMain(),
+      HomeMain(
+        onReportPressed: () {
+          setState(() {
+            selectedIndex = 1;
+          });
+        },
+        onNearbyPressed: () {
+          setState(() {
+            selectedIndex = 2;
+          });
+        },
+      ),
       const ReportMain(),
       const NearbyMain(),
       NotificationMain(
@@ -251,13 +269,13 @@ class _NavigationFieldState extends State<NavigationField> {
                       child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height,
-                          child: _selectedIndex != 2
+                          child: selectedIndex != 2
                               ? Center(
                                   child: SingleChildScrollView(
                                       child: widgetOptions
-                                          .elementAt(_selectedIndex)))
+                                          .elementAt(selectedIndex)))
                               // else if maps, do not place in singlechildscroll view
-                              : widgetOptions.elementAt(_selectedIndex)),
+                              : widgetOptions.elementAt(selectedIndex)),
                     ),
                     Positioned(
                       // position the user profile button
@@ -319,7 +337,7 @@ class _NavigationFieldState extends State<NavigationField> {
               activeIcon: Icon(Icons.tips_and_updates_rounded),
               label: 'Updates'),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: selectedIndex,
         selectedFontSize: 9,
         selectedItemColor: Palette.indigo,
         unselectedItemColor: Colors.black26,
