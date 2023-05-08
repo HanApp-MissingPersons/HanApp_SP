@@ -17,7 +17,7 @@ import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
-int REPORT_RETRIEVAL_INTERVAL = 30;
+int REPORT_RETRIEVAL_INTERVAL = 1;
 int REPORT_RETRIEVAL_RADIUS = 5000;
 bool firstRetrieve = true;
 
@@ -57,7 +57,8 @@ class _NavigationFieldState extends State<NavigationField> {
   }
 
   Future<void> _fetchData() async {
-    while (true) {
+    while (selectedIndex != 1) {
+      print('SELECTED INDEX: $selectedIndex');
       final snapshot = await dbRef2.once();
       if (!firstRetrieve) {
         await Future.delayed(Duration(seconds: REPORT_RETRIEVAL_INTERVAL));
