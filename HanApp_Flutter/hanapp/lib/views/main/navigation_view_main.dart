@@ -17,7 +17,7 @@ import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
-int REPORT_RETRIEVAL_INTERVAL = 30;
+int REPORT_RETRIEVAL_INTERVAL = 1;
 int REPORT_RETRIEVAL_RADIUS = 5000;
 bool firstRetrieve = true;
 
@@ -31,6 +31,8 @@ class NavigationField extends StatefulWidget {
 int selectedIndex = 0;
 
 class _NavigationFieldState extends State<NavigationField> {
+  final notificationRef = FirebaseDatabase.instance.ref('Notifications');
+  final userUid = FirebaseAuth.instance.currentUser!.uid;
   void navigateToProfile() {
     setState(() {
       selectedIndex = 1;
@@ -45,6 +47,7 @@ class _NavigationFieldState extends State<NavigationField> {
   late Map<dynamic, dynamic> nearbyVerifiedReports = {};
   int reportLen = 0;
   late StreamSubscription _reportsSubscription;
+  dynamic hiddenReports = {};
 
   List<double> extractDoubles(String input) {
     RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
@@ -56,8 +59,15 @@ class _NavigationFieldState extends State<NavigationField> {
     return doubles;
   }
 
+  retrieveHiddenReports() async {
+    final snapshot = await notificationRef.child(userUid).once();
+    hiddenReports = snapshot.snapshot.value ?? {};
+    print('PRINT HIDDEN: ${hiddenReports.keys.toList()}');
+  }
+
   Future<void> _fetchData() async {
     while (selectedIndex != 1) {
+      await retrieveHiddenReports();
       final snapshot = await dbRef2.once();
       if (!firstRetrieve) {
         await Future.delayed(Duration(seconds: REPORT_RETRIEVAL_INTERVAL));
@@ -202,6 +212,12 @@ class _NavigationFieldState extends State<NavigationField> {
 
   @override
   Widget build(BuildContext context) {
+    Map<dynamic, dynamic> reportsClean =
+        Map.from(nearbyVerifiedReports); // make a copy of reportsUnclean
+
+    for (var key in hiddenReports.keys.toList()) {
+      reportsClean.remove(key);
+    }
     final List<Widget> widgetOptions = <Widget>[
       HomeMain(
         onReportPressed: () {
@@ -224,7 +240,7 @@ class _NavigationFieldState extends State<NavigationField> {
       ),
       const NearbyMain(),
       NotificationMain(
-        reports: nearbyVerifiedReports,
+        reports: reportsClean,
         missingPersonTap: () {
           setState(() {
             selectedIndex = 2;
@@ -327,7 +343,7 @@ class _NavigationFieldState extends State<NavigationField> {
               icon: Icon(Icons.near_me_outlined),
               activeIcon: Icon(Icons.near_me_rounded),
               label: 'Nearby'),
-          nearbyVerifiedReports.isNotEmpty
+          reportsClean.isNotEmpty
               ? const BottomNavigationBarItem(
                   icon: Icon(Icons.notification_important_outlined),
                   activeIcon: Icon(Icons.notification_important),
