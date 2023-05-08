@@ -222,7 +222,13 @@ class _NavigationFieldState extends State<NavigationField> {
           });
         },
       ),
-      const ReportMain(),
+      ReportMain(
+        onReportSubmissionDone: () {
+          setState(() {
+            selectedIndex = 0;
+          });
+        },
+      ),
       const NearbyMain(),
       NotificationMain(
         reports: nearbyVerifiedReports,
