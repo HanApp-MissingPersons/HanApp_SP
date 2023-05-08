@@ -7,7 +7,12 @@ import 'package:hanapp/views/main/pages/update_main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeMain extends StatefulWidget {
-  const HomeMain({super.key});
+  final VoidCallback onReportPressed;
+  final VoidCallback onNearbyPressed;
+  const HomeMain(
+      {super.key,
+      required this.onReportPressed,
+      required this.onNearbyPressed});
 
   @override
   State<HomeMain> createState() => _HomeMainState();
@@ -102,12 +107,7 @@ class _HomeMainState extends State<HomeMain> {
                               padding: const EdgeInsets.only(bottom: 20),
                               child: InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const UpdateMain(),
-                                    ),
-                                  );
+                                  widget.onReportPressed();
                                 },
                                 child: Container(
                                   height: 90,
@@ -123,19 +123,15 @@ class _HomeMainState extends State<HomeMain> {
                                       ),
                                     ],
                                   ),
-                                  child: Image.asset('assets/images/reportCont.png'),
+                                  child: Image.asset(
+                                      'assets/images/reportCont.png'),
                                 ),
                               ),
                             ),
 
                             InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const NearbyMain(),
-                                  ),
-                                );
+                                widget.onNearbyPressed();
                               },
                               child: Container(
                                 height: 90,
@@ -151,7 +147,8 @@ class _HomeMainState extends State<HomeMain> {
                                     ),
                                   ],
                                 ),
-                                child: Image.asset('assets/images/NearbyCont.png'),
+                                child:
+                                    Image.asset('assets/images/NearbyCont.png'),
                               ),
                             ),
                           ],
