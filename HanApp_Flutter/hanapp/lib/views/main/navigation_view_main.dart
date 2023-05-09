@@ -274,15 +274,13 @@ class _NavigationFieldState extends State<NavigationField> {
                     case ConnectionState.waiting:
                       return Center(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
-                            //const Text('Loading . . .'),
-                            const Center(
-                              child: SpinKitCubeGrid(
-                                color: Palette.indigo,
-                                size: 50.0,
-                              ),
-                            ),
+                            const SpinKitChasingDots(
+                                color: Colors.indigoAccent, size: 50),
+                            const Center(child: Text('Nearly there...')),
                           ],
                         ),
                       );
@@ -351,11 +349,16 @@ class _NavigationFieldState extends State<NavigationField> {
                     icon: Icon(Icons.near_me_outlined),
                     activeIcon: Icon(Icons.near_me_rounded),
                     label: 'Nearby'),
-                reportsClean!.isNotEmpty
-                    ? const BottomNavigationBarItem(
-                        icon: Icon(Icons.notification_important_outlined),
-                        activeIcon: Icon(Icons.notification_important),
-                        label: 'Notifications')
+                (reportsClean != null)
+                    ? (reportsClean!.isNotEmpty)
+                        ? const BottomNavigationBarItem(
+                            icon: Icon(Icons.notification_important_outlined),
+                            activeIcon: Icon(Icons.notification_important),
+                            label: 'Notifications')
+                        : const BottomNavigationBarItem(
+                            icon: Icon(Icons.notifications_paused_outlined),
+                            activeIcon: Icon(Icons.notifications_paused),
+                            label: 'Notifications')
                     : const BottomNavigationBarItem(
                         icon: Icon(Icons.notifications_paused_outlined),
                         activeIcon: Icon(Icons.notifications_paused),
@@ -373,13 +376,41 @@ class _NavigationFieldState extends State<NavigationField> {
               onTap: _onItemTapped,
             ),
           )
-        : const Scaffold(
+        : Scaffold(
             body: Center(
-              child: SpinKitChasingDots(
-                color: Colors.indigoAccent,
-                size: 50,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  SpinKitChasingDots(
+                    color: Colors.indigoAccent,
+                    size: 50,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Setting things up...'),
+                  ),
+                ],
               ),
             ),
-          );
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.white,
+              onTap: null,
+              items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined), label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.summarize_outlined), label: 'Reports'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.near_me_outlined), label: 'Near Me'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.notifications_paused_outlined),
+                    label: 'Notifications'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.tips_and_updates_outlined),
+                    label: 'Updates'),
+              ],
+            ));
   }
 }
