@@ -629,7 +629,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Home Phone/Landline*',
-                      hintText: '432-1234',
+                      hintText: 'XXX-XXXX',
                     ),
                   ),
                 ),
@@ -659,7 +659,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Mobile Phone*',
-                      hintText: '09231234567',
+                      hintText: '09XXXXXXXXX',
                     ),
                   ),
                 ),
@@ -680,7 +680,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Alternate Mobile Phone',
-                      hintText: '09231234567',
+                      hintText: '09XXXXXXXXX',
                     ),
                   ),
                 ),
@@ -751,7 +751,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Town/City*',
+                      labelText: 'Municipality/City*',
                     ),
                   ),
                 ),
@@ -789,7 +789,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Village/Sitio',
+                      labelText: 'Village, Sitio, Subdivision',
                     ),
                   ),
                 ),
@@ -899,7 +899,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                            labelText: 'Town/City',
+                            labelText: 'Municipality/City',
                           ),
                         ),
                       ),
@@ -937,7 +937,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                            labelText: 'Village/Sitio',
+                            labelText: 'Village, Sitio, Subdivision',
                           ),
                         ),
                       ),
@@ -1144,14 +1144,14 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               ),
             ),
             // DEBUG TOOL: SHARED PREF PRINTER
-            TextButton(
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                print(prefs.getKeys());
-                print(prefs.getString('p2_highestEduc'));
-              },
-              child: const Text('Print Shared Preferences'),
-            ),
+            // TextButton(
+            //   onPressed: () async {
+            //     final prefs = await SharedPreferences.getInstance();
+            //     print(prefs.getKeys());
+            //     print(prefs.getString('p2_highestEduc'));
+            //   },
+            //   child: const Text('Print Shared Preferences'),
+            // ),
           ],
         ),
       ),

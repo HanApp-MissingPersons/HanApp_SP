@@ -356,30 +356,30 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width / 6),
-                    child: TextButton(
-                      onPressed: () async {
-                        final prefs = await SharedPreferences.getInstance();
-                        print(prefs.getKeys());
-                        print(prefs.get('p1_isMinor'));
-                        //print p3_mp_age from shared preferences if not null
-                        if (prefs.get('p3_mp_age') != null) {
-                          print(prefs.get('p3_mp_age'));
-                        } else {
-                          print("No age supplied yet");
-                        }
-                        //print p5_totalHoursSinceLastSeen from shared preferences if not null
-                        if (prefs.get('p5_totalHoursSinceLastSeen') != null) {
-                          print(prefs.get('p5_totalHoursSinceLastSeen'));
-                        } else {
-                          print("No hours supplied yet");
-                        }
-                      },
-                      child: const Text('Print Shared Preferences'),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(
+                  //       left: MediaQuery.of(context).size.width / 6),
+                  //   child: TextButton(
+                  //     onPressed: () async {
+                  //       final prefs = await SharedPreferences.getInstance();
+                  //       print(prefs.getKeys());
+                  //       print(prefs.get('p1_isMinor'));
+                  //       //print p3_mp_age from shared preferences if not null
+                  //       if (prefs.get('p3_mp_age') != null) {
+                  //         print(prefs.get('p3_mp_age'));
+                  //       } else {
+                  //         print("No age supplied yet");
+                  //       }
+                  //       //print p5_totalHoursSinceLastSeen from shared preferences if not null
+                  //       if (prefs.get('p5_totalHoursSinceLastSeen') != null) {
+                  //         print(prefs.get('p5_totalHoursSinceLastSeen'));
+                  //       } else {
+                  //         print("No hours supplied yet");
+                  //       }
+                  //     },
+                  //     child: const Text('Print Shared Preferences'),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

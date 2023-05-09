@@ -382,7 +382,7 @@ class _LoginViewState extends State<LoginView> {
                             child: Text(
                               'New to Hanapp? Register',
                               style: GoogleFonts.inter(
-                                fontSize: 12,
+                                fontSize: 12, color: Colors.black54
                               ),
                             ),
                           ),
@@ -390,7 +390,7 @@ class _LoginViewState extends State<LoginView> {
                           TextButton(
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const GmapsTest()));
+                                    builder: (context) => const SendNotif()));
                               },
                               child: const Text('Google Maps Test')),
                           // for testing only
