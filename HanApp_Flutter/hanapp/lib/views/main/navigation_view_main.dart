@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -17,8 +17,9 @@ import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
-int REPORT_RETRIEVAL_INTERVAL = 30;
-int REPORT_RETRIEVAL_RADIUS = 1000;
+int REPORT_RETRIEVAL_INTERVAL = 1;
+int REPORT_RETRIEVAL_RADIUS = 5000;
+bool firstRetrieve = true;
 
 class NavigationField extends StatefulWidget {
   const NavigationField({super.key});
@@ -27,7 +28,17 @@ class NavigationField extends StatefulWidget {
   State<NavigationField> createState() => _NavigationFieldState();
 }
 
+int selectedIndex = 0;
+
 class _NavigationFieldState extends State<NavigationField> {
+  final notificationRef = FirebaseDatabase.instance.ref('Notifications');
+  final userUid = FirebaseAuth.instance.currentUser!.uid;
+  void navigateToProfile() {
+    setState(() {
+      selectedIndex = 1;
+    });
+  }
+
   LocationData? currentLocation;
   LatLng? sourceLocation;
   late StreamSubscription<LocationData> _locationSubscription;
@@ -36,6 +47,8 @@ class _NavigationFieldState extends State<NavigationField> {
   late Map<dynamic, dynamic> nearbyVerifiedReports = {};
   int reportLen = 0;
   late StreamSubscription _reportsSubscription;
+  dynamic hiddenReports = {};
+  Map<dynamic, dynamic>? reportsClean;
 
   List<double> extractDoubles(String input) {
     RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
@@ -47,56 +60,64 @@ class _NavigationFieldState extends State<NavigationField> {
     return doubles;
   }
 
+  retrieveHiddenReports() async {
+    final snapshot = await notificationRef.child(userUid).once();
+    hiddenReports = snapshot.snapshot.value ?? {};
+    print('PRINT HIDDEN: ${hiddenReports.keys.toList()}');
+  }
+
   Future<void> _fetchData() async {
-    final snapshot = await dbRef2.once();
-    setState(() {
-      _reports = snapshot.snapshot.value ?? {};
-    }); // print number of reports
-    _reportsSubscription = dbRef2.onValue.listen((event) {
-      setState(() {
-        _reports = event.snapshot.value ?? {};
-      });
-      Map<dynamic, dynamic> reps = _reports;
-      reportLen = _reports.length; // print number of reports
-    });
-
-    while (true) {
-      await Future.delayed(Duration(
-          seconds:
-              REPORT_RETRIEVAL_INTERVAL)); // Wait for 1 second between each fetch
-      final snapshot = await dbRef2.once();
-      setState(() {
-        _reports = snapshot.snapshot.value ?? {};
-      }); // print number of reports
-
-      int reportCount = 0;
-      int verifiedReportCount = 0;
-      if (sourceLocation != null) {
-        _reports.forEach((key, value) {
-          reportCount += 1;
-          var userUid = key;
-          value.forEach((key2, value2) {
-            List latlng;
-            var reportKey = '${key2}_$userUid';
-            var lastSeenLoc = value2['p5_lastSeenLoc'] ?? '';
-            var reportValidity = value2['status'] ?? '';
-            if (lastSeenLoc != '' && reportValidity == 'Verified') {
-              latlng = extractDoubles(lastSeenLoc);
-              LatLng reportLatLng = LatLng(latlng[0], latlng[1]);
-              num distance = SphericalUtil.computeDistanceBetween(
-                  sourceLocation!, reportLatLng);
-              print('$reportKey distance from you: $distance');
-              if (distance <= REPORT_RETRIEVAL_RADIUS) {
-                verifiedReportCount += 1;
-                nearbyVerifiedReports[reportKey] = value2;
-              }
-            }
-          });
+    final reportsStream = dbRef2.onValue;
+    final notificationsStream = notificationRef.onValue;
+    await getCurrentLocation();
+    StreamGroup.merge([reportsStream, notificationsStream])
+        .listen((event) async {
+      if (event.snapshot.ref.path == dbRef2.ref.path) {
+        print('Snapshot came from dbRef2');
+        setState(() {
+          _reports = event.snapshot.value ?? {};
         });
-        print(
-            '[DATA FETCHED] Total reports: $reportCount, Nearby verified reports: $verifiedReportCount, interval: ${REPORT_RETRIEVAL_INTERVAL}s, radius: ${REPORT_RETRIEVAL_RADIUS}m');
+        // print number of reports
+        int reportCount = 0;
+        int verifiedReportCount = 0;
+        if (sourceLocation != null) {
+          _reports.forEach((key, value) {
+            reportCount += 1;
+            var userUid = key;
+            value.forEach((key2, value2) {
+              List latlng;
+              var reportKey = '${key2}_$userUid';
+              var lastSeenLoc = value2['p5_lastSeenLoc'] ?? '';
+              var reportValidity = value2['status'] ?? '';
+              if (lastSeenLoc != '' && reportValidity == 'Verified') {
+                latlng = extractDoubles(lastSeenLoc);
+                LatLng reportLatLng = LatLng(latlng[0], latlng[1]);
+                num distance = SphericalUtil.computeDistanceBetween(
+                    sourceLocation!, reportLatLng);
+                print('$reportKey distance from you: $distance');
+                if (distance <= REPORT_RETRIEVAL_RADIUS) {
+                  verifiedReportCount += 1;
+                  nearbyVerifiedReports[reportKey] = value2;
+                }
+              }
+            });
+          });
+          print(
+              '[DATA FETCHED] Total reports: $reportCount, Nearby verified reports: $verifiedReportCount, radius: ${REPORT_RETRIEVAL_RADIUS}m');
+        }
+      } else if (event.snapshot.ref.path == notificationRef.ref.path) {
+        print('Snapshot came from notificationRef');
+        await retrieveHiddenReports();
+        reportsClean =
+            Map.from(nearbyVerifiedReports); // make a copy of reportsUnclean
+
+        for (var key in hiddenReports.keys.toList()) {
+          reportsClean!.remove(key);
+        }
+      } else {
+        print('Nonee');
       }
-    }
+    });
   }
 
   getCurrentLocation() async {
@@ -120,9 +141,8 @@ class _NavigationFieldState extends State<NavigationField> {
     }
   }
 
-  int _selectedIndex = 0;
   void _onItemTapped(int index) {
-    if (_selectedIndex == 1 && index != 1) {
+    if (selectedIndex == 1 && index != 1) {
       showDialog(
         context: context,
         builder: (_) => AlertDialog(
@@ -163,7 +183,7 @@ class _NavigationFieldState extends State<NavigationField> {
                         onPressed: () {
                           Navigator.of(context).pop();
                           setState(() {
-                            _selectedIndex = index;
+                            selectedIndex = index;
                           });
                           // if user is on report page and wants to navigate away
                           // clear the prefs
@@ -184,7 +204,7 @@ class _NavigationFieldState extends State<NavigationField> {
       );
     } else {
       setState(() {
-        _selectedIndex = index;
+        selectedIndex = index;
       });
     }
   } // end onItemTapped
@@ -202,130 +222,195 @@ class _NavigationFieldState extends State<NavigationField> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> widgetOptions = <Widget>[
-      const HomeMain(),
-      const ReportMain(),
-      const NearbyMain(),
-      NotificationMain(
-        reports: nearbyVerifiedReports,
-      ),
-      const UpdateMain(),
-    ];
-    return Scaffold(
-      body: FutureBuilder(
-        future: _firebaseInit,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else {
-            switch (snapshot.connectionState) {
-              // if there is no connection, return a text widget
-              case ConnectionState.none:
-                return const Center(child: Text('None oh no'));
-              // if there is a connection, return a text widget
-              case ConnectionState.waiting:
-                return Center(
-                  child: Column(
-                    // ignore: prefer_const_literals_to_create_immutables
-                    children: [
-                      //const Text('Loading . . .'),
-                      const Center(
-                        child: SpinKitCubeGrid(
-                          color: Palette.indigo,
-                          size: 50.0,
+    List<Widget>? widgetOptions;
+    if (reportsClean != null) {
+      widgetOptions = <Widget>[
+        HomeMain(
+          onReportPressed: () {
+            setState(() {
+              selectedIndex = 1;
+            });
+          },
+          onNearbyPressed: () {
+            setState(() {
+              selectedIndex = 2;
+            });
+          },
+        ),
+        ReportMain(
+          onReportSubmissionDone: () {
+            setState(() {
+              selectedIndex = 0;
+            });
+          },
+        ),
+        const NearbyMain(),
+        NotificationMain(
+          reports: reportsClean!,
+          missingPersonTap: () {
+            setState(() {
+              selectedIndex = 2;
+            });
+          },
+        ),
+        const UpdateMain(),
+      ];
+    }
+    return (reportsClean != null && widgetOptions != null)
+        ? Scaffold(
+            body: FutureBuilder(
+              future: _firebaseInit,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else {
+                  switch (snapshot.connectionState) {
+                    // if there is no connection, return a text widget
+                    case ConnectionState.none:
+                      return const Center(child: Text('None oh no'));
+                    // if there is a connection, return a text widget
+                    case ConnectionState.waiting:
+                      return Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            const SpinKitChasingDots(
+                                color: Colors.indigoAccent, size: 50),
+                            const Center(child: Text('Nearly there...')),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              // if the connection is active, return a text widget
-              case ConnectionState.active:
-                return const Center(child: Text('App loading in...'));
-              // if the connection is done, return a text widget
-              case ConnectionState.done:
-                return Stack(
-                  children: [
-                    Positioned(
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: _selectedIndex != 2
-                              ? Center(
-                                  child: SingleChildScrollView(
-                                      child: widgetOptions
-                                          .elementAt(_selectedIndex)))
-                              // else if maps, do not place in singlechildscroll view
-                              : widgetOptions.elementAt(_selectedIndex)),
-                    ),
-                    Positioned(
-                      // position the user profile button
-                      top: MediaQuery.of(context).size.height * .090,
-                      right: MediaQuery.of(context).size.width * .080,
-                      child: FloatingActionButton(
-                        onPressed: () {
-                          // sign out the user
-                          // FirebaseAuth.instance.signOut();
-                          // navigate to the login page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileMain(),
+                      );
+                    // if the connection is active, return a text widget
+                    case ConnectionState.active:
+                      return const Center(child: Text('App loading in...'));
+                    // if the connection is done, return a text widget
+                    case ConnectionState.done:
+                      return Stack(
+                        children: [
+                          Positioned(
+                            child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: selectedIndex != 2
+                                    ? Center(
+                                        child: SingleChildScrollView(
+                                            child: widgetOptions!
+                                                .elementAt(selectedIndex)))
+                                    // else if maps, do not place in singlechildscroll view
+                                    : widgetOptions!.elementAt(selectedIndex)),
+                          ),
+                          Positioned(
+                            // position the user profile button
+                            top: MediaQuery.of(context).size.height * .090,
+                            right: MediaQuery.of(context).size.width * .080,
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                // sign out the user
+                                // FirebaseAuth.instance.signOut();
+                                // navigate to the login page
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProfileMain(),
+                                  ),
+                                );
+                              },
+                              shape: const CircleBorder(),
+                              clipBehavior: Clip.antiAlias,
+                              child: const Icon(Icons.person_outline_rounded),
                             ),
-                          );
-                        },
-                        shape: const CircleBorder(),
-                        clipBehavior: Clip.antiAlias,
-                        child: const Icon(Icons.person_outline_rounded),
-                      ),
-                    ),
-                    // _widgetOptions.elementAt(_selectedIndex)
-                  ],
-                );
-              // : const NearbyMain();
-            }
-          }
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home_rounded),
-              label: 'Home'),
-          //backgroundColor: Colors.white),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.summarize_outlined),
-              activeIcon: Icon(Icons.summarize_rounded),
-              label: 'Report'),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.near_me_outlined),
-              activeIcon: Icon(Icons.near_me_rounded),
-              label: 'Nearby'),
-          nearbyVerifiedReports.isNotEmpty
-              ? const BottomNavigationBarItem(
-                  icon: Icon(Icons.notification_important_outlined),
-                  activeIcon: Icon(Icons.notification_important),
-                  label: 'Notifications')
-              : const BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications_paused_outlined),
-                  activeIcon: Icon(Icons.notifications_paused),
-                  label: 'Notifications'),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.tips_and_updates_outlined),
-              activeIcon: Icon(Icons.tips_and_updates_rounded),
-              label: 'Updates'),
-        ],
-        currentIndex: _selectedIndex,
-        selectedFontSize: 9,
-        selectedItemColor: Palette.indigo,
-        unselectedItemColor: Colors.black26,
-        showUnselectedLabels: false,
-        onTap: _onItemTapped,
-      ),
-    );
+                          ),
+                          // _widgetOptions.elementAt(_selectedIndex)
+                        ],
+                      );
+                    // : const NearbyMain();
+                  }
+                }
+              },
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.white,
+              items: <BottomNavigationBarItem>[
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    activeIcon: Icon(Icons.home_rounded),
+                    label: 'Home'),
+                //backgroundColor: Colors.white),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.summarize_outlined),
+                    activeIcon: Icon(Icons.summarize_rounded),
+                    label: 'Report'),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.near_me_outlined),
+                    activeIcon: Icon(Icons.near_me_rounded),
+                    label: 'Nearby'),
+                (reportsClean != null)
+                    ? (reportsClean!.isNotEmpty)
+                        ? const BottomNavigationBarItem(
+                            icon: Icon(Icons.notification_important_outlined),
+                            activeIcon: Icon(Icons.notification_important),
+                            label: 'Notifications')
+                        : const BottomNavigationBarItem(
+                            icon: Icon(Icons.notifications_paused_outlined),
+                            activeIcon: Icon(Icons.notifications_paused),
+                            label: 'Notifications')
+                    : const BottomNavigationBarItem(
+                        icon: Icon(Icons.notifications_paused_outlined),
+                        activeIcon: Icon(Icons.notifications_paused),
+                        label: 'Notifications'),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.tips_and_updates_outlined),
+                    activeIcon: Icon(Icons.tips_and_updates_rounded),
+                    label: 'Updates'),
+              ],
+              currentIndex: selectedIndex,
+              selectedFontSize: 9,
+              selectedItemColor: Palette.indigo,
+              unselectedItemColor: Colors.black26,
+              showUnselectedLabels: false,
+              onTap: _onItemTapped,
+            ),
+          )
+        : Scaffold(
+            body: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  SpinKitChasingDots(
+                    color: Colors.indigoAccent,
+                    size: 50,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Setting things up...'),
+                  ),
+                ],
+              ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.white,
+              onTap: null,
+              items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined), label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.summarize_outlined), label: 'Reports'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.near_me_outlined), label: 'Near Me'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.notifications_paused_outlined),
+                    label: 'Notifications'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.tips_and_updates_outlined),
+                    label: 'Updates'),
+              ],
+            ));
   }
 }
