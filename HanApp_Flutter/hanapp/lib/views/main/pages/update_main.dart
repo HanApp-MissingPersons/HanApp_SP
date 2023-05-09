@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hanapp/views/main/pages/profile_main.dart';
 
 import '../../../main.dart';
 
@@ -70,7 +71,7 @@ class _UpdateMainState extends State<UpdateMain> {
             textAlign: TextAlign.center);
         break;
       default:
-        statusChange = const Text('No Status',
+        statusChange = const Text('Incomplete',
             style: TextStyle(color: Colors.white),
             textAlign: TextAlign.center);
         break;
@@ -118,8 +119,40 @@ class _UpdateMainState extends State<UpdateMain> {
       child: Column(
         //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const BackButton(),
+              Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width / 5,
+                    right: MediaQuery.of(context).size.width / 5),
+                child: const Text(
+                  'Updates',
+                  style: TextStyle(
+                      fontSize: 18.0, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.account_circle_outlined, size: 30),
+                selectedIcon: Icon(Icons.account_circle, size: 30),
+                onPressed: () {
+                  // sign out the user
+                  // FirebaseAuth.instance.signOut();
+                  // navigate to the login page
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileMain(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
           Container(
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1, bottom: 20),
+            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .05, bottom: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -137,7 +170,7 @@ class _UpdateMainState extends State<UpdateMain> {
 
           Container(
             //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
-            height: MediaQuery.of(context).size.height * .7,
+            height: MediaQuery.of(context).size.height * .65,
             width: MediaQuery.of(context).size.width * .85,
             child: StreamBuilder(
               stream: dbRef.onValue,
@@ -146,7 +179,7 @@ class _UpdateMainState extends State<UpdateMain> {
                 if (!snapshot.hasData) {
                   return const SpinKitCubeGrid(
                     color: Palette.indigo,
-                    size: 40.0,
+                    size: 30.0,
                   );
                 }
                 reportList.clear();
