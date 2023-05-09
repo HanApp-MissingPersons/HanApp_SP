@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:async/async.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -66,48 +66,51 @@ class _NavigationFieldState extends State<NavigationField> {
   }
 
   Future<void> _fetchData() async {
-    while (selectedIndex != 1) {
-      await retrieveHiddenReports();
-      final snapshot = await dbRef2.once();
-      if (!firstRetrieve) {
-        await Future.delayed(Duration(seconds: REPORT_RETRIEVAL_INTERVAL));
-      } else {
-        await Future.delayed(const Duration(seconds: 5));
-        print('PRINTED IN 5 SECONDS');
-        firstRetrieve = false;
-      }
-      setState(() {
-        _reports = snapshot.snapshot.value ?? {};
-      }); // print number of reports
-
-      int reportCount = 0;
-      int verifiedReportCount = 0;
-      if (sourceLocation != null) {
-        _reports.forEach((key, value) {
-          reportCount += 1;
-          var userUid = key;
-          value.forEach((key2, value2) {
-            List latlng;
-            var reportKey = '${key2}_$userUid';
-            var lastSeenLoc = value2['p5_lastSeenLoc'] ?? '';
-            var reportValidity = value2['status'] ?? '';
-            if (lastSeenLoc != '' && reportValidity == 'Verified') {
-              latlng = extractDoubles(lastSeenLoc);
-              LatLng reportLatLng = LatLng(latlng[0], latlng[1]);
-              num distance = SphericalUtil.computeDistanceBetween(
-                  sourceLocation!, reportLatLng);
-              print('$reportKey distance from you: $distance');
-              if (distance <= REPORT_RETRIEVAL_RADIUS) {
-                verifiedReportCount += 1;
-                nearbyVerifiedReports[reportKey] = value2;
-              }
-            }
-          });
+    final reportsStream = dbRef2.onValue;
+    final notificationsStream = notificationRef.onValue;
+    await getCurrentLocation();
+    StreamGroup.merge([reportsStream, notificationsStream])
+        .listen((event) async {
+      if (event.snapshot.ref.path == dbRef2.ref.path) {
+        print('Snapshot came from dbRef2');
+        setState(() {
+          _reports = event.snapshot.value ?? {};
         });
-        print(
-            '[DATA FETCHED] Total reports: $reportCount, Nearby verified reports: $verifiedReportCount, interval: ${REPORT_RETRIEVAL_INTERVAL}s, radius: ${REPORT_RETRIEVAL_RADIUS}m');
+        // print number of reports
+        int reportCount = 0;
+        int verifiedReportCount = 0;
+        if (sourceLocation != null) {
+          _reports.forEach((key, value) {
+            reportCount += 1;
+            var userUid = key;
+            value.forEach((key2, value2) {
+              List latlng;
+              var reportKey = '${key2}_$userUid';
+              var lastSeenLoc = value2['p5_lastSeenLoc'] ?? '';
+              var reportValidity = value2['status'] ?? '';
+              if (lastSeenLoc != '' && reportValidity == 'Verified') {
+                latlng = extractDoubles(lastSeenLoc);
+                LatLng reportLatLng = LatLng(latlng[0], latlng[1]);
+                num distance = SphericalUtil.computeDistanceBetween(
+                    sourceLocation!, reportLatLng);
+                print('$reportKey distance from you: $distance');
+                if (distance <= REPORT_RETRIEVAL_RADIUS) {
+                  verifiedReportCount += 1;
+                  nearbyVerifiedReports[reportKey] = value2;
+                }
+              }
+            });
+          });
+          print(
+              '[DATA FETCHED] Total reports: $reportCount, Nearby verified reports: $verifiedReportCount, radius: ${REPORT_RETRIEVAL_RADIUS}m');
+        }
+      } else if (event.snapshot.ref.path == notificationRef.ref.path) {
+        print('Snapshot came from notificationRef');
+        await retrieveHiddenReports();
+      } else {
+        print('Nonee');
       }
-    }
+    });
   }
 
   getCurrentLocation() async {
