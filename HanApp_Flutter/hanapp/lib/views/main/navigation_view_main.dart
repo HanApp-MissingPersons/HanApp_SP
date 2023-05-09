@@ -48,6 +48,7 @@ class _NavigationFieldState extends State<NavigationField> {
   int reportLen = 0;
   late StreamSubscription _reportsSubscription;
   dynamic hiddenReports = {};
+  Map<dynamic, dynamic>? reportsClean;
 
   List<double> extractDoubles(String input) {
     RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
@@ -107,6 +108,12 @@ class _NavigationFieldState extends State<NavigationField> {
       } else if (event.snapshot.ref.path == notificationRef.ref.path) {
         print('Snapshot came from notificationRef');
         await retrieveHiddenReports();
+        reportsClean =
+            Map.from(nearbyVerifiedReports); // make a copy of reportsUnclean
+
+        for (var key in hiddenReports.keys.toList()) {
+          reportsClean!.remove(key);
+        }
       } else {
         print('Nonee');
       }
@@ -215,158 +222,164 @@ class _NavigationFieldState extends State<NavigationField> {
 
   @override
   Widget build(BuildContext context) {
-    Map<dynamic, dynamic> reportsClean =
-        Map.from(nearbyVerifiedReports); // make a copy of reportsUnclean
-
-    for (var key in hiddenReports.keys.toList()) {
-      reportsClean.remove(key);
+    List<Widget>? widgetOptions;
+    if (reportsClean != null) {
+      widgetOptions = <Widget>[
+        HomeMain(
+          onReportPressed: () {
+            setState(() {
+              selectedIndex = 1;
+            });
+          },
+          onNearbyPressed: () {
+            setState(() {
+              selectedIndex = 2;
+            });
+          },
+        ),
+        ReportMain(
+          onReportSubmissionDone: () {
+            setState(() {
+              selectedIndex = 0;
+            });
+          },
+        ),
+        const NearbyMain(),
+        NotificationMain(
+          reports: reportsClean!,
+          missingPersonTap: () {
+            setState(() {
+              selectedIndex = 2;
+            });
+          },
+        ),
+        const UpdateMain(),
+      ];
     }
-    final List<Widget> widgetOptions = <Widget>[
-      HomeMain(
-        onReportPressed: () {
-          setState(() {
-            selectedIndex = 1;
-          });
-        },
-        onNearbyPressed: () {
-          setState(() {
-            selectedIndex = 2;
-          });
-        },
-      ),
-      ReportMain(
-        onReportSubmissionDone: () {
-          setState(() {
-            selectedIndex = 0;
-          });
-        },
-      ),
-      const NearbyMain(),
-      NotificationMain(
-        reports: reportsClean,
-        missingPersonTap: () {
-          setState(() {
-            selectedIndex = 2;
-          });
-        },
-      ),
-      const UpdateMain(),
-    ];
-    return Scaffold(
-      body: FutureBuilder(
-        future: _firebaseInit,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else {
-            switch (snapshot.connectionState) {
-              // if there is no connection, return a text widget
-              case ConnectionState.none:
-                return const Center(child: Text('None oh no'));
-              // if there is a connection, return a text widget
-              case ConnectionState.waiting:
-                return Center(
-                  child: Column(
-                    // ignore: prefer_const_literals_to_create_immutables
-                    children: [
-                      //const Text('Loading . . .'),
-                      const Center(
-                        child: SpinKitCubeGrid(
-                          color: Palette.indigo,
-                          size: 50.0,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              // if the connection is active, return a text widget
-              case ConnectionState.active:
-                return const Center(child: Text('App loading in...'));
-              // if the connection is done, return a text widget
-              case ConnectionState.done:
-                return Stack(
-                  children: [
-                    Positioned(
-                      child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: selectedIndex != 2
-                              ? Center(
-                                  child: SingleChildScrollView(
-                                      child: widgetOptions
-                                          .elementAt(selectedIndex)))
-                              // else if maps, do not place in singlechildscroll view
-                              : widgetOptions.elementAt(selectedIndex)),
-                    ),
-                    Positioned(
-                      // position the user profile button
-                      top: MediaQuery.of(context).size.height * .090,
-                      right: MediaQuery.of(context).size.width * .080,
-                      child: FloatingActionButton(
-                        onPressed: () {
-                          // sign out the user
-                          // FirebaseAuth.instance.signOut();
-                          // navigate to the login page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileMain(),
+    return (reportsClean != null && widgetOptions != null)
+        ? Scaffold(
+            body: FutureBuilder(
+              future: _firebaseInit,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else {
+                  switch (snapshot.connectionState) {
+                    // if there is no connection, return a text widget
+                    case ConnectionState.none:
+                      return const Center(child: Text('None oh no'));
+                    // if there is a connection, return a text widget
+                    case ConnectionState.waiting:
+                      return Center(
+                        child: Column(
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: [
+                            //const Text('Loading . . .'),
+                            const Center(
+                              child: SpinKitCubeGrid(
+                                color: Palette.indigo,
+                                size: 50.0,
+                              ),
                             ),
-                          );
-                        },
-                        shape: const CircleBorder(),
-                        clipBehavior: Clip.antiAlias,
-                        child: const Icon(Icons.person_outline_rounded),
-                      ),
-                    ),
-                    // _widgetOptions.elementAt(_selectedIndex)
-                  ],
-                );
-              // : const NearbyMain();
-            }
-          }
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        items: <BottomNavigationBarItem>[
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home_rounded),
-              label: 'Home'),
-          //backgroundColor: Colors.white),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.summarize_outlined),
-              activeIcon: Icon(Icons.summarize_rounded),
-              label: 'Report'),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.near_me_outlined),
-              activeIcon: Icon(Icons.near_me_rounded),
-              label: 'Nearby'),
-          reportsClean.isNotEmpty
-              ? const BottomNavigationBarItem(
-                  icon: Icon(Icons.notification_important_outlined),
-                  activeIcon: Icon(Icons.notification_important),
-                  label: 'Notifications')
-              : const BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications_paused_outlined),
-                  activeIcon: Icon(Icons.notifications_paused),
-                  label: 'Notifications'),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.tips_and_updates_outlined),
-              activeIcon: Icon(Icons.tips_and_updates_rounded),
-              label: 'Updates'),
-        ],
-        currentIndex: selectedIndex,
-        selectedFontSize: 9,
-        selectedItemColor: Palette.indigo,
-        unselectedItemColor: Colors.black26,
-        showUnselectedLabels: false,
-        onTap: _onItemTapped,
-      ),
-    );
+                          ],
+                        ),
+                      );
+                    // if the connection is active, return a text widget
+                    case ConnectionState.active:
+                      return const Center(child: Text('App loading in...'));
+                    // if the connection is done, return a text widget
+                    case ConnectionState.done:
+                      return Stack(
+                        children: [
+                          Positioned(
+                            child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: selectedIndex != 2
+                                    ? Center(
+                                        child: SingleChildScrollView(
+                                            child: widgetOptions!
+                                                .elementAt(selectedIndex)))
+                                    // else if maps, do not place in singlechildscroll view
+                                    : widgetOptions!.elementAt(selectedIndex)),
+                          ),
+                          Positioned(
+                            // position the user profile button
+                            top: MediaQuery.of(context).size.height * .090,
+                            right: MediaQuery.of(context).size.width * .080,
+                            child: FloatingActionButton(
+                              onPressed: () {
+                                // sign out the user
+                                // FirebaseAuth.instance.signOut();
+                                // navigate to the login page
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProfileMain(),
+                                  ),
+                                );
+                              },
+                              shape: const CircleBorder(),
+                              clipBehavior: Clip.antiAlias,
+                              child: const Icon(Icons.person_outline_rounded),
+                            ),
+                          ),
+                          // _widgetOptions.elementAt(_selectedIndex)
+                        ],
+                      );
+                    // : const NearbyMain();
+                  }
+                }
+              },
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.white,
+              items: <BottomNavigationBarItem>[
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    activeIcon: Icon(Icons.home_rounded),
+                    label: 'Home'),
+                //backgroundColor: Colors.white),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.summarize_outlined),
+                    activeIcon: Icon(Icons.summarize_rounded),
+                    label: 'Report'),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.near_me_outlined),
+                    activeIcon: Icon(Icons.near_me_rounded),
+                    label: 'Nearby'),
+                reportsClean!.isNotEmpty
+                    ? const BottomNavigationBarItem(
+                        icon: Icon(Icons.notification_important_outlined),
+                        activeIcon: Icon(Icons.notification_important),
+                        label: 'Notifications')
+                    : const BottomNavigationBarItem(
+                        icon: Icon(Icons.notifications_paused_outlined),
+                        activeIcon: Icon(Icons.notifications_paused),
+                        label: 'Notifications'),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.tips_and_updates_outlined),
+                    activeIcon: Icon(Icons.tips_and_updates_rounded),
+                    label: 'Updates'),
+              ],
+              currentIndex: selectedIndex,
+              selectedFontSize: 9,
+              selectedItemColor: Palette.indigo,
+              unselectedItemColor: Colors.black26,
+              showUnselectedLabels: false,
+              onTap: _onItemTapped,
+            ),
+          )
+        : const Scaffold(
+            body: Center(
+              child: SpinKitChasingDots(
+                color: Colors.indigoAccent,
+                size: 50,
+              ),
+            ),
+          );
   }
 }
