@@ -21,6 +21,7 @@ import 'p4_mp_description.dart';
 import 'p5_incident_details.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:ui';
+import 'package:url_launcher/url_launcher.dart';
 
 /* SHARED PREFERENCE */
 late SharedPreferences _prefs;
@@ -62,7 +63,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   static const String _authorization_PNP_upload =
       '“I hereby provide my consent and authorize the PNP to record and upload the information and photograph of the absent/missing person”. See full authorization text here (link).';
   static const String _hanapp_upload =
-      '“I hereby provide my consent to have the information and photograph of the absent/missing person to be posted in HanApp’s “Missing Persons Near Me” page once the report is verified by the PNP”. See full authorization text here (link).';
+      '“I hereby provide my consent to have the information and photograph of the absent/missing person to be posted in HanApp’s “Missing Persons Near Me” page once the report is verified by the PNP”.';
   static const String _dataPrivacy =
       '"I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case." See full Data Privacy Act text here (link).';
 
@@ -313,7 +314,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                           Expanded(
                             child: Text(
                               _correctInfo,
-                              style: const TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                         ],
@@ -329,7 +330,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                           Expanded(
                             child: Text(
                               _authorization_PNP_upload,
-                              style: const TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                         ],
