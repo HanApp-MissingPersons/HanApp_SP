@@ -87,7 +87,7 @@ class _NearbyMainState extends State<NearbyMain> {
   void setCustomMarkerIcon() {
     // temporary images, just to show that it is possible
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(6, 6)),   //decrease if too large
+            const ImageConfiguration(size: Size(6, 6)), //decrease if too large
             'assets/images/mp_marker.png')
         .then((icon) => sourceIcon = icon);
     // BitmapDescriptor.fromAssetImage(
@@ -148,8 +148,10 @@ class _NearbyMainState extends State<NearbyMain> {
                     currentLocation!.latitude!, currentLocation!.longitude!),
                 zoom: 20,
               ),
-              onMapCreated: (controller) => {_controller.complete(controller),
-              controller.setMapStyle(Utils.mapStyle)},
+              onMapCreated: (controller) => {
+                _controller.complete(controller),
+                controller.setMapStyle(Utils.mapStyle)
+              },
             ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'nearbyMain',
@@ -179,39 +181,43 @@ class _NearbyMainState extends State<NearbyMain> {
     }
     _reports.forEach((key, value) {
       dynamic uid = key;
-      value.forEach((key, value) {
-        final report = value as Map<dynamic, dynamic>;
-        if (report['status'] == 'Verified') {
-          final firstName = report['p3_mp_firstName'] ?? '';
-          final lastName = report['p3_mp_lastName'] ?? '';
-          final reportID = '${uid}_$key';
-          final location = report['p5_lastSeenLoc'] ?? '';
+      try {
+        value.forEach((key, value) {
+          final report = value as Map<dynamic, dynamic>;
+          if (report['status'] == 'Verified') {
+            final firstName = report['p3_mp_firstName'] ?? '';
+            final lastName = report['p3_mp_lastName'] ?? '';
+            final reportID = '${uid}_$key';
+            final location = report['p5_lastSeenLoc'] ?? '';
 
-          // Snippet
-          final heightFeet = report['p4_mp_height_inches'] ?? '';
-          final heightInches = report['p4_mp_height_feet'] ?? '';
-          final sex = report['p3_mp_sex'] ?? '';
-          final clothing = report['p4_mp_last_clothing'] ?? '';
-          final description = report['p5_incidentDetails'] ?? '';
+            // Snippet
+            final heightFeet = report['p4_mp_height_inches'] ?? '';
+            final heightInches = report['p4_mp_height_feet'] ?? '';
+            final sex = report['p3_mp_sex'] ?? '';
+            final clothing = report['p4_mp_last_clothing'] ?? '';
+            final description = report['p5_incidentDetails'] ?? '';
 
-          final coordinates = extractDoubles(location.toString());
-          final reportLocation = LatLng(coordinates[0], coordinates[1]);
-          final marker = Marker(
-            markerId: MarkerId(reportID),
-            position: reportLocation,
-            icon: sourceIcon,
-            infoWindow: InfoWindow(
-              title: '$firstName $lastName',
-              snippet:
-              "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
-              onTap: () {
-                print('tapping on marker $reportID');
-              },
-            ),
-          );
-          markers.add(marker);
-        }
-      });
+            final coordinates = extractDoubles(location.toString());
+            final reportLocation = LatLng(coordinates[0], coordinates[1]);
+            final marker = Marker(
+              markerId: MarkerId(reportID),
+              position: reportLocation,
+              icon: sourceIcon,
+              infoWindow: InfoWindow(
+                title: '$firstName $lastName',
+                snippet:
+                    "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
+                onTap: () {
+                  print('tapping on marker $reportID');
+                },
+              ),
+            );
+            markers.add(marker);
+          }
+        });
+      } catch (e) {
+        print('[NEARBY ERROR] $e');
+      }
     });
     return markers;
   }

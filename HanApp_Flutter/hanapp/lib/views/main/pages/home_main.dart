@@ -3,11 +3,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/nearby_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:hanapp/views/main/pages/update_main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeMain extends StatefulWidget {
-  const HomeMain({super.key});
+  final VoidCallback onReportPressed;
+  final VoidCallback onNearbyPressed;
+  const HomeMain(
+      {super.key,
+      required this.onReportPressed,
+      required this.onNearbyPressed});
 
   @override
   State<HomeMain> createState() => _HomeMainState();
@@ -47,31 +53,40 @@ class _HomeMainState extends State<HomeMain> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                right: MediaQuery.of(context).size.width / 2.5),
-                            child: const IconButton(
-                              icon: Icon(Icons.info_outline_rounded, size: 30),
+                      Padding(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  right: MediaQuery.of(context).size.width / 2.5),
+                              child: const IconButton(
+                                icon: Icon(Icons.info_outline_rounded, size: 35),
+                                onPressed: null,
+                              ),
+                            ),
+                            const IconButton(
+                              icon: Icon(Icons.notifications_outlined, size: 35),
                               onPressed: null,
                             ),
-                          ),
-                          const IconButton(
-                            icon: Icon(Icons.notifications_outlined, size: 30),
-                            iconSize: 30,
-                            onPressed: null,
-                          ),
-                          const IconButton(
-                            icon: Icon(Icons.account_circle_outlined, size: 30),
-                            onPressed: null,
-                          ),
-                        ],
+                            IconButton(
+                              icon: Icon(Icons.account_circle_outlined, size: 35),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const ProfileMain(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 40),
+                        padding: const EdgeInsets.only(top: 50),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -93,7 +108,7 @@ class _HomeMainState extends State<HomeMain> {
                               ),
                             ),
                             Padding(
-                              padding: new EdgeInsets.only(top: 50, bottom: 10),
+                              padding: new EdgeInsets.only(top: 20, bottom: 10),
                               child: Image.asset('assets/images/home.png',
                                   height:
                                       MediaQuery.of(context).size.width * .4),
@@ -102,12 +117,7 @@ class _HomeMainState extends State<HomeMain> {
                               padding: const EdgeInsets.only(bottom: 20),
                               child: InkWell(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const UpdateMain(),
-                                    ),
-                                  );
+                                  widget.onReportPressed();
                                 },
                                 child: Container(
                                   height: 90,
@@ -123,19 +133,15 @@ class _HomeMainState extends State<HomeMain> {
                                       ),
                                     ],
                                   ),
-                                  child: Image.asset('assets/images/reportCont.png'),
+                                  child: Image.asset(
+                                      'assets/images/reportCont.png'),
                                 ),
                               ),
                             ),
 
                             InkWell(
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const NearbyMain(),
-                                  ),
-                                );
+                                widget.onNearbyPressed();
                               },
                               child: Container(
                                 height: 90,
@@ -151,7 +157,8 @@ class _HomeMainState extends State<HomeMain> {
                                     ),
                                   ],
                                 ),
-                                child: Image.asset('assets/images/NearbyCont.png'),
+                                child:
+                                    Image.asset('assets/images/NearbyCont.png'),
                               ),
                             ),
                           ],
@@ -166,8 +173,8 @@ class _HomeMainState extends State<HomeMain> {
           // if user deets are still being retrieved.
           const Center(
               child: SpinKitCubeGrid(
-                color: Colors.blue,
-                size: 50.0,
+                color: Palette.indigo,
+                size: 40.0,
               ),
             );
     });
