@@ -16,6 +16,7 @@ import 'pages/notification_main.dart';
 import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 int REPORT_RETRIEVAL_INTERVAL = 1;
 int REPORT_RETRIEVAL_RADIUS = 5000;
@@ -113,6 +114,39 @@ class _NavigationFieldState extends State<NavigationField> {
 
         for (var key in hiddenReports.keys.toList()) {
           reportsClean!.remove(key);
+        }
+        if (reportsClean != null) {
+          widgetOptions = <Widget>[
+            HomeMain(
+              onReportPressed: () {
+                setState(() {
+                  selectedIndex = 1;
+                });
+              },
+              onNearbyPressed: () {
+                setState(() {
+                  selectedIndex = 2;
+                });
+              },
+            ),
+            ReportMain(
+              onReportSubmissionDone: () {
+                setState(() {
+                  selectedIndex = 0;
+                });
+              },
+            ),
+            const NearbyMain(),
+            NotificationMain(
+              reports: reportsClean!,
+              missingPersonTap: () {
+                setState(() {
+                  selectedIndex = 2;
+                });
+              },
+            ),
+            const UpdateMain(),
+          ];
         }
       } else {
         print('Nonee');
@@ -220,42 +254,11 @@ class _NavigationFieldState extends State<NavigationField> {
     super.initState();
   }
 
+  List<Widget>? widgetOptions;
   @override
   Widget build(BuildContext context) {
-    List<Widget>? widgetOptions;
-    if (reportsClean != null) {
-      widgetOptions = <Widget>[
-        HomeMain(
-          onReportPressed: () {
-            setState(() {
-              selectedIndex = 1;
-            });
-          },
-          onNearbyPressed: () {
-            setState(() {
-              selectedIndex = 2;
-            });
-          },
-        ),
-        ReportMain(
-          onReportSubmissionDone: () {
-            setState(() {
-              selectedIndex = 0;
-            });
-          },
-        ),
-        const NearbyMain(),
-        NotificationMain(
-          reports: reportsClean!,
-          missingPersonTap: () {
-            setState(() {
-              selectedIndex = 2;
-            });
-          },
-        ),
-        const UpdateMain(),
-      ];
-    }
+    print('reportsClean length: ${reportsClean?.length}');
+    print('widgetOptions length: ${widgetOptions?.length}');
     return (reportsClean != null && widgetOptions != null)
         ? Scaffold(
             body: FutureBuilder(
@@ -280,6 +283,7 @@ class _NavigationFieldState extends State<NavigationField> {
                           children: [
                             const SpinKitCubeGrid(
                                 color: Palette.indigo, size: 70),
+                            const SizedBox(height: 50),
                             const Center(child: Text('Nearly there...')),
                             const SizedBox(height: 50),
                           ],
