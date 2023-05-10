@@ -31,9 +31,9 @@ class _NavRailViewState extends State<NavRailView> {
         });
       },
       leading: Container(
-        width: 40,
-        height: 40,
-        color: Palette.indigo,
+        width: 50,
+        height: 50,
+        child: Image.asset('assets/images/hanappLogo.png'),
       ),
       trailing: Padding(
         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2.5),

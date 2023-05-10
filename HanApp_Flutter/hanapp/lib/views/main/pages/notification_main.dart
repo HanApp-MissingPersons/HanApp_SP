@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 
@@ -58,92 +59,141 @@ class _NotificationMain extends State<NotificationMain> {
 
     return widget.reports.isNotEmpty
         ? Center(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.8,
-              width: MediaQuery.of(context).size.width * 0.9,
-              margin: const EdgeInsets.only(top: 100.0),
-              child: ListView.builder(
-                itemCount: widget.reports.length,
-                itemBuilder: (context, index) {
-                  dynamic currentReportValues =
-                      widget.reports[widget.reports.keys.elementAt(index)];
-                  dynamic currentReportKey =
-                      widget.reports.keys.elementAt(index);
-                  return ListTile(
-                    isThreeLine: true,
-                    dense: true,
-                    leading: const Icon(Icons.person_search_outlined),
-                    trailing: GestureDetector(
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text("Hide notification?"),
-                            content: const Text(
-                                "Are you sure you want to hide this notification?"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text("No"),
-                              ),
-                              TextButton(
-                                onPressed: () async {
-                                  await FirebaseDatabase.instance
-                                      .ref('Notifications')
-                                      .child(userUid)
-                                      .child(widget.reports.keys
-                                          .elementAt(index)
-                                          .toString())
-                                      .set('hidden');
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.of(context).pop();
-                                  setState(() {});
-                                },
-                                child: const Text("Yes"),
-                              ),
-                            ],
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const BackButton(),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width / 6.7,
+                            right: MediaQuery.of(context).size.width / 6.7),
+                        child: const Text(
+                          'Notifications',
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.account_circle_outlined, size: 30),
+                        selectedIcon: Icon(Icons.account_circle, size: 30),
+                        onPressed: () {
+                          // sign out the user
+                          // FirebaseAuth.instance.signOut();
+                          // navigate to the login page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProfileMain(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                // NOTIFICATIONS LIST
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  margin: const EdgeInsets.only(top: 30.0),
+                  child: ListView.builder(
+                    itemCount: widget.reports.length,
+                    itemBuilder: (context, index) {
+                      dynamic currentReportValues =
+                          widget.reports[widget.reports.keys.elementAt(index)];
+                      dynamic currentReportKey =
+                          widget.reports.keys.elementAt(index);
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0)),
+                          elevation: 3,
+                          child: ListTile(
+                            isThreeLine: true,
+                            dense: true,
+                            leading: const Icon(Icons.person_search_outlined),
+                            trailing: GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    title: const Text("Hide notification?"),
+                                    content: const Text(
+                                        "Are you sure you want to hide this notification?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text("No"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          await FirebaseDatabase.instance
+                                              .ref('Notifications')
+                                              .child(userUid)
+                                              .child(widget.reports.keys
+                                                  .elementAt(index)
+                                                  .toString())
+                                              .set('hidden');
+                                          // ignore: use_build_context_synchronously
+                                          Navigator.of(context).pop();
+                                          setState(() {});
+                                        },
+                                        child: const Text("Yes"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              child: const Icon(Icons.remove_red_eye_outlined),
+                            ),
+                            tileColor: Colors.grey[200],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            title: const Text('Missing persons last seen in your area'),
+                            subtitle: Text(
+                                'Check Nearby Reports for more details, current Report: ${currentReportKey}'),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text("Navigate to Nearby Reports?"),
+                                  content: const Text(
+                                      "Are you sure you want to navigate to the Nearby Reports screen?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("No"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        widget.missingPersonTap();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text("Yes"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                      child: const Icon(Icons.remove_red_eye_outlined),
-                    ),
-                    tileColor: Colors.grey[200],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    title: const Text('Missing persons last seen in your area'),
-                    subtitle: Text(
-                        'Check Nearby Reports for more details, current Report: ${currentReportKey}'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          title: const Text("Navigate to Nearby Reports?"),
-                          content: const Text(
-                              "Are you sure you want to navigate to the Nearby Reports screen?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("No"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                widget.missingPersonTap();
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("Yes"),
-                            ),
-                          ],
                         ),
                       );
                     },
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
           )
         : Center(
