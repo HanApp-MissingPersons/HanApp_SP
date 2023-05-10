@@ -290,3 +290,8 @@ HanApp_Flutter/hanapp/macos/Flutter/GeneratedPluginRegistrant.swift
 HanApp_Flutter/hanapp/windows/flutter/generated_plugin_registrant.cc
 HanApp_Flutter/hanapp/windows/flutter/generated_plugins.cmake
 .DS_Store
+HanApp_Flutter/hanapp/linux/flutter/generated_plugin_registrant.cc
+HanApp_Flutter/hanapp/linux/flutter/generated_plugins.cmake
+HanApp_Flutter/hanapp/macos/Flutter/GeneratedPluginRegistrant.swift
+HanApp_Flutter/hanapp/windows/flutter/generated_plugin_registrant.cc
+HanApp_Flutter/hanapp/windows/flutter/generated_plugins.cmake

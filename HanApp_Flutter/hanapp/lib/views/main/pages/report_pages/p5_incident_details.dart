@@ -577,10 +577,23 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         lastSeenLoc_lat = location.latitude.toString();
                         lastSeenLoc_lng = location.longitude.toString();
                         _getAddress();
-                        _writeToPrefs('p5_placeName', placeName!);
-                        _writeToPrefs('p5_nearestLandmark', nearestLandmark!);
-                        _writeToPrefs('p5_cityName', cityName!);
-                        _writeToPrefs('p5_brgyName', brgyName!);
+                        placeName != null
+                            ? _writeToPrefs('p5_placeName', placeName!)
+                            : _writeToPrefs('p5_placeName', 'No Place Name');
+
+                        nearestLandmark != null
+                            ? _writeToPrefs(
+                                'p5_nearestLandmark', nearestLandmark!)
+                            : _writeToPrefs(
+                                'p5_nearestLandmark', 'No Landmark');
+
+                        cityName != null
+                            ? _writeToPrefs('p5_cityName', cityName!)
+                            : _writeToPrefs('p5_cityName', 'No City Name');
+
+                        brgyName != null
+                            ? _writeToPrefs('p5_brgyName', brgyName!)
+                            : _writeToPrefs('p5_brgyName', 'No Barangay name');
                       });
                       _getAddress;
                       // set lastSeenLoc_lat and lastSeenLoc_long

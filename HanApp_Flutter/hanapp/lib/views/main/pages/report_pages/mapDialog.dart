@@ -13,6 +13,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 class MapDialog extends StatefulWidget {
   final String uid;
@@ -26,7 +28,7 @@ class MapDialog extends StatefulWidget {
 
 class _MapDialogState extends State<MapDialog> {
   late GoogleMapController mapController;
-  late LatLng _center = LatLng(999999999, 999999999);
+  late LatLng _center = const LatLng(999999999, 999999999);
   bool isMarkerPresent = false;
   bool isBtnDisabled = false;
   bool _showProgressIndicator = false;
@@ -37,17 +39,26 @@ class _MapDialogState extends State<MapDialog> {
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
 
   void setCustomMarkerIcon() {
-    BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(size: Size(4, 4)),
-        'assets/images/currect_marker.png')
+    BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(4, 4)),
+            'assets/images/currect_marker.png')
         .then((icon) => currentLocationIcon = icon);
   }
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    WidgetsFlutterBinding.ensureInitialized();
+    final platform = MethodChannel('flutter/platform_views');
     super.initState();
     setCustomMarkerIcon();
     _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    mapController.dispose();
+    super.dispose();
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -87,16 +98,14 @@ class _MapDialogState extends State<MapDialog> {
     await mapController.animateCamera(CameraUpdate.newLatLng(_center));
   }
 
-  void _onConfirmPressed(
-      BuildContext context, String uid, String reportCount) async {
+  void _onConfirmPressed(BuildContext context) async {
+    setState(() {
+      isBtnDisabled = true; // Disable the button
+    });
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     XFile? imageFile;
     try {
-      // await mapController.moveCamera(_center as CameraUpdate);
-      // setState(() {
-      //   // isBtnDisabled = true;
-      //   // _showProgressIndicator = true;
-      // });
       await mapController.moveCamera(CameraUpdate.newLatLng(_center));
       await mapController.takeSnapshot().then((image) {
         setState(() {
@@ -113,29 +122,6 @@ class _MapDialogState extends State<MapDialog> {
           setState(() {
             prefs.setString('p5_locSnapshot_PATH', file.path);
           });
-          //   await FirebaseStorage.instance
-          //       .ref()
-          //       .child('Reports')
-          //       .child(uid)
-          //       .child('report_$reportCount')
-          //       .child('locSnapshot')
-          //       .putFile(file)
-          //       .whenComplete(() async {
-          //     await FirebaseStorage.instance
-          //         .ref()
-          //         .child('Reports')
-          //         .child(uid)
-          //         .child('report_$reportCount')
-          //         .child('locSnapshot')
-          //         .getDownloadURL()
-          //         .then((value) {
-          //       print('GOT VALUE: $value');
-          //       setState(() {
-          //         prefs.setString('p5_locSnapshot_LINK', value);
-          //       });
-          //     });
-          //   });
-          //   print('[LOC SNAPSHOT] snapshot uploaded');
         } catch (e) {
           print('[ERROR] $e');
         }
@@ -147,17 +133,15 @@ class _MapDialogState extends State<MapDialog> {
       print('[takeSnapshot error] $e');
     }
 
+    await Future.delayed(const Duration(milliseconds: 200));
     Navigator.of(context).pop({
       'location': _center,
       'image': _mapSnapshot,
     });
   }
-  // _onconfirmpressed end
 
   @override
   Widget build(BuildContext context) {
-    String uid = widget.uid;
-    String reportCount = widget.reportCount;
     return AlertDialog(
       title: const Text('Select Location'),
       content: _center != const LatLng(999999999, 999999999)
@@ -185,35 +169,6 @@ class _MapDialogState extends State<MapDialog> {
                         ),
                     ],
                   ),
-                  if (_showProgressIndicator)
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SpinKitFadingCircle(
-                            color: Palette.indigo,
-                            size: 60,
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white.withOpacity(0.8),
-                              // backgroundBlendMode: BlendMode.darken,
-                            ),
-                            child: const Text(
-                              'Uploading selected location...',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                 ],
               ),
             )
@@ -254,7 +209,7 @@ class _MapDialogState extends State<MapDialog> {
           padding: const EdgeInsets.only(right: 10),
           child: ElevatedButton(
             onPressed: isMarkerPresent && !isBtnDisabled
-                ? () => _onConfirmPressed(context, uid, reportCount)
+                ? () => _onConfirmPressed(context)
                 : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: Palette.indigo,
