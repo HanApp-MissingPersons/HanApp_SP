@@ -378,24 +378,45 @@ class _NavigationFieldState extends State<NavigationField> {
           )
         : Scaffold(
             body: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  SpinKitCubeGrid(
-                    color: Palette.indigo,
-                    size: 30,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Setting things up...'),
-                  ),
-                ],
+              child: Container(
+                width: MediaQuery.of(context).size.width * .75,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    SpinKitChasingDots(
+                      color: Colors.indigoAccent,
+                      size: 70,
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Text(
+                      'Setting things up...',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    Text(
+                      '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    Text(
+                      '\nMake sure location is turned on',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey),
+                    )
+                  ],
+                ),
               ),
             ),
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.white,
+              showUnselectedLabels: false,
               onTap: null,
               items: const [
                 BottomNavigationBarItem(

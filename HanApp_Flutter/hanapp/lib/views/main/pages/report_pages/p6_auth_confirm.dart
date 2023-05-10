@@ -21,6 +21,8 @@ import 'p4_mp_description.dart';
 import 'p5_incident_details.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:ui';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/gestures.dart';
 
 /* SHARED PREFERENCE */
 late SharedPreferences _prefs;
@@ -59,12 +61,30 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   // authorization and confirmation texts
   static const String _correctInfo =
       'I hereby certify to the correctness of the foregoing to the best of my knowledge and belief';
-  static const String _authorization_PNP_upload =
-      '“I hereby provide my consent and authorize the PNP to record and upload the information and photograph of the absent/missing person”. See full authorization text here (link).';
+  // static const String _authorization_PNP_upload =
+  //     '“I hereby provide my consent and authorize the PNP to record and upload the information and photograph of the absent/missing person”. See full authorization text here (link).';
   static const String _hanapp_upload =
-      '“I hereby provide my consent to have the information and photograph of the absent/missing person to be posted in HanApp’s “Missing Persons Near Me” page once the report is verified by the PNP”. See full authorization text here (link).';
-  static const String _dataPrivacy =
-      '"I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case." See full Data Privacy Act text here (link).';
+      '“I hereby provide my consent to have the information and photograph of the absent/missing person to be posted in HanApp’s “Missing Persons Near Me” page once the report is verified by the PNP”.';
+  // static const String _dataPrivacy =
+  //     '"I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case." See full Data Privacy Act text here (link).';
+
+  final Uri URL_pnpUploadAuth = Uri.parse(
+      'https://www.didm.pnp.gov.ph/index.php/2-uncategorised/55-4th-police-expert-dispatch');
+
+  Future<void> _launchURL_PNP() async {
+    if (!await launchUrl(URL_pnpUploadAuth)) {
+      throw 'Could not launch $URL_pnpUploadAuth';
+    }
+  }
+
+  final Uri URL_dataPrivacy =
+      Uri.parse('https://www.privacy.gov.ph/data-privacy-act/');
+
+  Future<void> _launchURL_dataPrivacy() async {
+    if (!await launchUrl(URL_dataPrivacy)) {
+      throw 'Could not launch $URL_dataPrivacy';
+    }
+  }
 
   // store user signature as Uint8List
   Uint8List? signaturePhoto;
@@ -313,25 +333,45 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                           Expanded(
                             child: Text(
                               _correctInfo,
-                              style: const TextStyle(fontSize: 14),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                         ],
                       ),
                       _verticalPadding,
                       Row(
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.check,
                             color: Colors.green,
                           ),
                           SizedBox(width: 10),
                           Expanded(
-                            child: Text(
-                              _authorization_PNP_upload,
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ),
+                              // child: Text(
+                              //   _authorization_PNP_upload,
+                              //   style: TextStyle(fontSize: 14),
+                              // ),
+                              child: RichText(
+                            text: TextSpan(children: [
+                              const TextSpan(
+                                text:
+                                    "I hereby provide my consent and authorize the PNP to record and upload the information and photograph of the absent/missing person”. For more details, download and view ",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              TextSpan(
+                                  text: "PNP Memorandum Circular 2016-033",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = _launchURL_PNP),
+                            ]),
+                          )),
                         ],
                       ),
                       _verticalPadding,
@@ -352,18 +392,38 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                       ),
                       _verticalPadding,
                       Row(
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.check,
                             color: Colors.green,
                           ),
                           SizedBox(width: 10),
                           Expanded(
-                            child: Text(
-                              _dataPrivacy,
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ),
+                              // child: Text(
+                              //   _authorization_PNP_upload,
+                              //   style: TextStyle(fontSize: 14),
+                              // ),
+                              child: RichText(
+                            text: TextSpan(children: [
+                              const TextSpan(
+                                text:
+                                    '"I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case." For more details, see ',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              TextSpan(
+                                  text: "Data Privacy Act (RA 10173)",
+                                  style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 14,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = _launchURL_dataPrivacy),
+                            ]),
+                          )),
                         ],
                       ),
                       _verticalPadding,
