@@ -62,11 +62,15 @@ class _NotificationMain extends State<NotificationMain> {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height / 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const BackButton(),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .15,
+                      ),
                       Padding(
                         padding: EdgeInsets.only(
                             left: MediaQuery.of(context).size.width / 6.7,
@@ -159,14 +163,16 @@ class _NotificationMain extends State<NotificationMain> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            title: const Text('Missing persons last seen in your area'),
+                            title: const Text(
+                                'Missing persons last seen in your area'),
                             subtitle: Text(
                                 'Check Nearby Reports for more details, current Report: ${currentReportKey}'),
                             onTap: () {
                               showDialog(
                                 context: context,
                                 builder: (_) => AlertDialog(
-                                  title: const Text("Navigate to Nearby Reports?"),
+                                  title:
+                                      const Text("Navigate to Nearby Reports?"),
                                   content: const Text(
                                       "Are you sure you want to navigate to the Nearby Reports screen?"),
                                   actions: [

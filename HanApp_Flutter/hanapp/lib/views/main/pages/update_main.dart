@@ -30,7 +30,7 @@ class _UpdateMainState extends State<UpdateMain> {
     String status = report['status'];
 
     Color containerColor;
-    switch(status) {
+    switch (status) {
       case 'Pending':
         containerColor = Palette.indigo;
         break;
@@ -49,39 +49,33 @@ class _UpdateMainState extends State<UpdateMain> {
     }
 
     Text statusChange;
-    switch(status) {
+    switch (status) {
       case 'Pending':
         statusChange = const Text('Received',
-          style: TextStyle(color: Colors.white),
-          textAlign: TextAlign.center);
+            style: TextStyle(color: Colors.white), textAlign: TextAlign.center);
         break;
       case 'Verified':
         statusChange = const Text('Verified',
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center);
+            style: TextStyle(color: Colors.white), textAlign: TextAlign.center);
         break;
       case 'Rejected':
         statusChange = const Text('Rejected',
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center);
+            style: TextStyle(color: Colors.white), textAlign: TextAlign.center);
         break;
       case 'Already Found':
         statusChange = const Text('Found',
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center);
+            style: TextStyle(color: Colors.white), textAlign: TextAlign.center);
         break;
       default:
         statusChange = const Text('Incomplete',
-            style: TextStyle(color: Colors.white),
-            textAlign: TextAlign.center);
+            style: TextStyle(color: Colors.white), textAlign: TextAlign.center);
         break;
     }
 
     print(report['status']);
     print(report.keys);
     return Card(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 3,
       child: ListTile(
         title: Text(reportName),
@@ -96,9 +90,8 @@ class _UpdateMainState extends State<UpdateMain> {
               width: MediaQuery.of(context).size.width * 0.25,
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: containerColor
-              ),
+                  borderRadius: BorderRadius.circular(15),
+                  color: containerColor),
               //Retrieve the status here
               child: statusChange,
             ),
@@ -121,16 +114,18 @@ class _UpdateMainState extends State<UpdateMain> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const BackButton(),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * .15,
+              ),
               Padding(
                 padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width / 5,
                     right: MediaQuery.of(context).size.width / 5),
                 child: const Text(
                   'Updates',
-                  style: TextStyle(
-                      fontSize: 18.0, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -152,22 +147,22 @@ class _UpdateMainState extends State<UpdateMain> {
             ],
           ),
           Container(
-            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .05, bottom: 10),
+            margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * .05, bottom: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  margin: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.1),
+                  margin: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.1),
                   child: Text('Reports',
-                  style: GoogleFonts.inter(
-                      textStyle: TextStyle(
-                        fontWeight: FontWeight.w900,
-                      fontSize: 24))),
+                      style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.w900, fontSize: 24))),
                 ),
               ],
             ),
           ),
-
           Container(
             //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
             height: MediaQuery.of(context).size.height * .65,
@@ -203,13 +198,15 @@ class _UpdateMainState extends State<UpdateMain> {
                   if (reportList.isEmpty) {
                     return Container(
                       alignment: Alignment.center,
-                      child: const Text('There are currently no submitted reports'),
+                      child: const Text(
+                          'There are currently no submitted reports'),
                     );
                   }
                 } else {
                   return Container(
                     alignment: Alignment.center,
-                    child: const Text('There are currently no submitted reports'),
+                    child:
+                        const Text('There are currently no submitted reports'),
                   );
                 }
                 return ListView.builder(

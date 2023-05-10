@@ -279,8 +279,9 @@ class _NavigationFieldState extends State<NavigationField> {
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
                             const SpinKitCubeGrid(
-                                color: Palette.indigo, size: 30),
+                                color: Palette.indigo, size: 70),
                             const Center(child: Text('Nearly there...')),
+                            const SizedBox(height: 50),
                           ],
                         ),
                       );
@@ -384,10 +385,7 @@ class _NavigationFieldState extends State<NavigationField> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    SizedBox(
-                      height: 50,
-                    ),
-                    SpinKitChasingDots(
+                    SpinKitCubeGrid(
                       color: Colors.indigoAccent,
                       size: 70,
                     ),
