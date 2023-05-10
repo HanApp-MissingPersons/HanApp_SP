@@ -179,7 +179,7 @@ class _ReportMainState extends State<ReportMain> {
         : const Center(
             child: SpinKitCubeGrid(
             color: Colors.indigo,
-            size: 50.0,
+            size: 40.0,
           )); // Stack
   }
 }

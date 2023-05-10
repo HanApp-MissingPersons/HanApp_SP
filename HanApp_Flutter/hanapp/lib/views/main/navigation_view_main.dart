@@ -278,8 +278,8 @@ class _NavigationFieldState extends State<NavigationField> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
-                            const SpinKitChasingDots(
-                                color: Colors.indigoAccent, size: 50),
+                            const SpinKitCubeGrid(
+                                color: Palette.indigo, size: 30),
                             const Center(child: Text('Nearly there...')),
                           ],
                         ),
@@ -303,27 +303,27 @@ class _NavigationFieldState extends State<NavigationField> {
                                     // else if maps, do not place in singlechildscroll view
                                     : widgetOptions!.elementAt(selectedIndex)),
                           ),
-                          Positioned(
-                            // position the user profile button
-                            top: MediaQuery.of(context).size.height * .090,
-                            right: MediaQuery.of(context).size.width * .080,
-                            child: FloatingActionButton(
-                              onPressed: () {
-                                // sign out the user
-                                // FirebaseAuth.instance.signOut();
-                                // navigate to the login page
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const ProfileMain(),
-                                  ),
-                                );
-                              },
-                              shape: const CircleBorder(),
-                              clipBehavior: Clip.antiAlias,
-                              child: const Icon(Icons.person_outline_rounded),
-                            ),
-                          ),
+                          // Positioned(
+                          //   // position the user profile button
+                          //   top: MediaQuery.of(context).size.height * .090,
+                          //   right: MediaQuery.of(context).size.width * .080,
+                          //   child: FloatingActionButton(
+                          //     onPressed: () {
+                          //       // sign out the user
+                          //       // FirebaseAuth.instance.signOut();
+                          //       // navigate to the login page
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //           builder: (context) => const ProfileMain(),
+                          //         ),
+                          //       );
+                          //     },
+                          //     shape: const CircleBorder(),
+                          //     clipBehavior: Clip.antiAlias,
+                          //     child: const Icon(Icons.person_outline_rounded),
+                          //   ),
+                          // ),
                           // _widgetOptions.elementAt(_selectedIndex)
                         ],
                       );
