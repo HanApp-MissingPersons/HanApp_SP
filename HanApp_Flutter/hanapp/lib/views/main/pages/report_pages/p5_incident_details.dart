@@ -230,17 +230,19 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
       _writeToPrefs('p5_placeName', placeName!);
       // for landmark
       nearestLandmark = placemarks.isNotEmpty
-          ?
-          // this should be the nearest non-Plus Code name
-          placemarks
+          ? placemarks
                   .firstWhere((element) =>
-                      false == element.name!.contains('+') ||
-                      // or is only a number
-                      int.tryParse(element.name!) != null)
+                          !element.name!.contains('+') && // is NOT a plus code
+                          int.tryParse(element.name!.trim()) ==
+                              null && // is not only a number
+                          (!RegExp(r'^\d+([-+*/]\d+)*$').hasMatch(element.name!
+                              .trim())) // does not contain only numbers and symbols
+                      )
                   .name ??
               'Landmark not found.'
           : 'Landmark not found.';
       _writeToPrefs('p5_nearestLandmark', nearestLandmark!);
+
       // for city
       cityName = placemarks.isNotEmpty
           ? placemarks.first.locality ?? 'City not found.'
