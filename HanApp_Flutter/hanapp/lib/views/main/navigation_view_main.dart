@@ -257,8 +257,8 @@ class _NavigationFieldState extends State<NavigationField> {
   List<Widget>? widgetOptions;
   @override
   Widget build(BuildContext context) {
-    print('reportsClean length: ${reportsClean?.length}');
-    print('widgetOptions length: ${widgetOptions?.length}');
+    // print('reportsClean length: ${reportsClean?.length}');
+    // print('widgetOptions length: ${widgetOptions?.length}');
     return (reportsClean != null && widgetOptions != null)
         ? Scaffold(
             body: FutureBuilder(
