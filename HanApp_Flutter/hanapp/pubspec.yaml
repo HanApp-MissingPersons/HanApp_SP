@@ -59,6 +59,7 @@ dependencies:
   url_launcher: ^6.1.11
   
   flutter_launcher_icons: ^0.13.1
+  custom_info_window: ^1.0.1
 
 dev_dependencies:
   flutter_lints: ^2.0.1

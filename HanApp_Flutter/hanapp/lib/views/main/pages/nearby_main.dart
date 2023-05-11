@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hanapp/main.dart';
 import 'package:location/location.dart';
@@ -150,9 +152,10 @@ class _NearbyMainState extends State<NearbyMain> {
               ),
               onMapCreated: (controller) => {
                 _controller.complete(controller),
-                controller.setMapStyle(Utils.mapStyle)
+                controller.setMapStyle(Utils.mapStyle),
               },
             ),
+
       floatingActionButton: FloatingActionButton(
         heroTag: 'nearbyMain',
         onPressed: () {
@@ -189,13 +192,27 @@ class _NearbyMainState extends State<NearbyMain> {
             final lastName = report['p3_mp_lastName'] ?? '';
             final reportID = '${uid}_$key';
             final location = report['p5_lastSeenLoc'] ?? '';
+            final dateReported = report['p5_reportDate'] ?? '';
+            final lastSeenLoc = report['p5_nearestLandmark'] ?? '';
 
-            // Snippet
+            // Info window
+            final mp_recentPhoto_LINK = report['mp_recentPhoto_LINK'];
             final heightFeet = report['p4_mp_height_inches'] ?? '';
             final heightInches = report['p4_mp_height_feet'] ?? '';
             final sex = report['p3_mp_sex'] ?? '';
-            final clothing = report['p4_mp_last_clothing'] ?? '';
+            final age = report['p3_mp_age'] ?? '';
+            final weight = report['p4_mp_weight'] ?? '';
+            final scars = report['p4_mp_scars'] ?? '';
+            final marks = report['p4_mp_marks'] ?? '';
+            final tattoos = report['p4_mp_tattoos'] ?? '';
+            final hairColor = report['p4_mp_hair_color'] ?? '';
+            final eyeColor = report['p4_mp_eye_color'] ?? '';
+            final prosthetics = report['p4_mp_prosthetics'] ?? '';
+            final birthDefects = report['p4_mp_birth_defects'] ?? '';
+            final clothingAccessories = report['p4_mp_last_clothing'] ?? '';
             final description = report['p5_incidentDetails'] ?? '';
+            final lastSeenDate = report['p5_lastSeenDate'] ?? '';
+            final lastSeenTime = report['p5_lastSeenTime'] ?? '';
 
             final coordinates = extractDoubles(location.toString());
             final reportLocation = LatLng(coordinates[0], coordinates[1]);
@@ -205,12 +222,517 @@ class _NearbyMainState extends State<NearbyMain> {
               icon: sourceIcon,
               infoWindow: InfoWindow(
                 title: '$firstName $lastName',
-                snippet:
-                    "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
-                onTap: () {
-                  print('tapping on marker $reportID');
-                },
+                snippet: 'Last Seen: $lastSeenDate, $lastSeenTime',
               ),
+              onTap: () {
+                print('tapping on marker $reportID');
+                showModalBottomSheet(
+                    context: context,
+                    barrierColor: Colors.black12,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    builder: (BuildContext context) {
+                      return DraggableScrollableSheet(
+                        initialChildSize: 1,
+                        minChildSize: 0.98,
+                        maxChildSize: 1,
+                        snap: true,
+                        builder: (context, scrollController) {
+                          return SingleChildScrollView(
+                            controller: scrollController,
+                            child: Padding(
+                              padding: const EdgeInsets.all(30.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                          width: 50,
+                                          height: 50,
+                                          color: Colors.white,
+                                          child: Image.network(
+                                              mp_recentPhoto_LINK)
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment
+                                            .start,
+                                        children: [
+                                          Text('$firstName $lastName',
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 20),),
+                                          Text(
+                                            'Date Reported: $dateReported',
+                                            style: GoogleFonts.inter(fontSize: 12,
+                                                color: Colors.black54),),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Divider(color: Colors.black12,
+                                    height: 25,
+                                    thickness: 1,
+                                    indent: 10,
+                                    endIndent: 10,),
+
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("LAST SEEN DATE",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: 10,
+                                              letterSpacing: 2,
+                                              color: Colors.black54)),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                        padding: const EdgeInsets.all(15),
+                                        width: MediaQuery.of(context).size.width * 0.7,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(width: 0.5),
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(15))),
+                                        child: Text(
+                                          lastSeenDate,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontSize: 12.0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("LAST SEEN TIME",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: 10,
+                                              letterSpacing: 2,
+                                              color: Colors.black54)),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                        padding: const EdgeInsets.all(15),
+                                        width: MediaQuery.of(context).size.width * 0.7,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(width: 0.5),
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(15))),
+                                        child: Text(
+                                          lastSeenTime,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontSize: 12.0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("LAST TRACKED LOCATION",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: 10,
+                                              letterSpacing: 2,
+                                              color: Colors.black54)),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                        padding: const EdgeInsets.all(15),
+                                        width: MediaQuery.of(context).size.width * 0.7,
+                                        decoration: BoxDecoration(
+                                            border: Border.all(width: 0.5),
+                                            borderRadius: const BorderRadius.all(
+                                                Radius.circular(15))),
+                                        child: Text(
+                                          lastSeenLoc,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontSize: 12.0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  ExpansionTile(
+                                    title: Text('Physical Descriptions'),
+                                    expandedAlignment: Alignment.centerLeft,
+                                    //subtitle: Text('Missing person'),
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("HEIGHT",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 10,
+                                                      letterSpacing: 2,
+                                                      color: Colors.black54)),
+                                              Container(
+                                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                                padding: const EdgeInsets.all(10),
+                                                width: MediaQuery.of(context).size.width * 0.32,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(width: 0.5),
+                                                    borderRadius: const BorderRadius.all(
+                                                        Radius.circular(15))),
+                                                child: Text(
+                                                  "$heightFeet'$heightInches",
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(fontSize: 12.0),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("WEIGHT",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 10,
+                                                      letterSpacing: 2,
+                                                      color: Colors.black54)),
+                                              Container(
+                                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                                padding: const EdgeInsets.all(10),
+                                                width: MediaQuery.of(context).size.width * 0.32,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(width: 0.5),
+                                                    borderRadius: const BorderRadius.all(
+                                                        Radius.circular(15))),
+                                                child: Text(
+                                                  '$weight kg',
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(fontSize: 12.0),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("SEX",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 10,
+                                                      letterSpacing: 2,
+                                                      color: Colors.black54)),
+                                              Container(
+                                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                                padding: const EdgeInsets.all(10),
+                                                width: MediaQuery.of(context).size.width * 0.32,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(width: 0.5),
+                                                    borderRadius: const BorderRadius.all(
+                                                        Radius.circular(15))),
+                                                child: Text(
+                                                  sex,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(fontSize: 12.0),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text("AGE",
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.w900,
+                                                      fontSize: 10,
+                                                      letterSpacing: 2,
+                                                      color: Colors.black54)),
+                                              Container(
+                                                margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                                padding: const EdgeInsets.all(10),
+                                                width: MediaQuery.of(context).size.width * 0.32,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(width: 0.5),
+                                                    borderRadius: const BorderRadius.all(
+                                                        Radius.circular(15))),
+                                                child: Text(
+                                                  age,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(fontSize: 12.0),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("SCARS",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              scars,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("MARKS",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              marks,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("TATTOOS",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              tattoos,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("HAIR COLOR",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              hairColor,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("EYE COLOR",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              eyeColor,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("BIRTH DEFECTS",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              birthDefects,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("PROSTHETICS",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              prosthetics,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("CLOTHING AND ACCESSORIES",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.7,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              clothingAccessories,
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(top:10, bottom:5),
+                                    child: Text("Incident Details",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w900,
+                                        )),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                    padding: const EdgeInsets.all(18),
+                                    width: MediaQuery.of(context).size.width * 0.7,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(width: 0.5),
+                                        borderRadius:
+                                        const BorderRadius.all(Radius.circular(15))),
+                                    child: Text(
+                                      description,
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(fontSize: 12.0),
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                );
+              },
             );
             markers.add(marker);
           }
@@ -221,6 +743,10 @@ class _NearbyMainState extends State<NearbyMain> {
     });
     return markers;
   }
+}
+
+showDetails() {
+
 }
 
 class Utils {

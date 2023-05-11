@@ -282,7 +282,7 @@ class _NavigationFieldState extends State<NavigationField> {
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
                             const SpinKitCubeGrid(
-                                color: Palette.indigo, size: 70),
+                                color: Palette.indigo, size: 40),
                             const SizedBox(height: 50),
                             const Center(child: Text('Nearly there...')),
                             const SizedBox(height: 50),
@@ -390,8 +390,8 @@ class _NavigationFieldState extends State<NavigationField> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
                     SpinKitCubeGrid(
-                      color: Colors.indigoAccent,
-                      size: 70,
+                      color: Palette.indigo,
+                      size: 40,
                     ),
                     SizedBox(
                       height: 50,
@@ -399,17 +399,17 @@ class _NavigationFieldState extends State<NavigationField> {
                     Text(
                       'Setting things up...',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.black45),
                     ),
                     Text(
                       '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.black45),
                     ),
                     Text(
-                      '\nMake sure location is turned on',
+                      '\nMake sure your location service is turned on',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(color: Colors.black45),
                     )
                   ],
                 ),
