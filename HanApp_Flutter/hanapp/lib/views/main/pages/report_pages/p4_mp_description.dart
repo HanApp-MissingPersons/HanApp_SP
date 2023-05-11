@@ -190,6 +190,46 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     }
   }
 
+  Future<void> getMPDescInfo() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      mp_blood_type = _prefs.getString('p4_mp_blood_type') ?? 'Unknown';
+      // scars, marks, tattoos
+      _mp_scars.text = _prefs.getString('p4_mp_scars') ?? '';
+      _mp_marks.text = _prefs.getString('p4_mp_marks') ?? '';
+      _mp_tattoos.text = _prefs.getString('p4_mp_tattoos') ?? '';
+      // hair, eye color
+      _mp_hair_color.text = _prefs.getString('p4_mp_hair_color') ?? '';
+      _mp_eye_color.text = _prefs.getString('p4_mp_eye_color') ?? '';
+      // boolean for hair and eye color
+      // mp_hair_color_natural = _prefs.getBool('p4_mp_hair_natural') ?? false;
+      // mp_eye_color_natural = _prefs.getBool('p4_mp_eye_natural') ?? false;
+      // prosthetics, birth defects, last clothing
+      _mp_prosthetics.text = _prefs.getString('p4_mp_prosthetics') ?? '';
+      _mp_birth_defects.text = _prefs.getString('p4_mp_birth_defects') ?? '';
+      _mp_last_clothing.text = _prefs.getString('p4_mp_last_clothing') ?? '';
+      // MP medical details
+      _mp_height_feet.text = _prefs.getString('p4_mp_height_feet') ?? '';
+      _mp_height_inches.text = _prefs.getString('p4_mp_height_inches') ?? '';
+      _mp_weight.text = _prefs.getString('p4_mp_weight') ?? '';
+      _mp_blood_type.text = _prefs.getString('p4_mp_blood_type') ?? '';
+      _mp_medications.text = _prefs.getString('p4_mp_medications') ?? '';
+      // MP socmed details
+      _mp_facebook.text =
+          _prefs.getString('p4_mp_socmed_facebook_username') ?? '';
+      _mp_twitter.text =
+          _prefs.getString('p4_mp_socmed_twitter_username') ?? '';
+      _mp_instagram.text =
+          _prefs.getString('p4_mp_socmed_instagram_username') ?? '';
+      _mp_socmed_other_platform.text =
+          _prefs.getString('p4_mp_socmed_other_platform') ?? '';
+      _mp_socmed_other_username.text =
+          _prefs.getString('p4_mp_socmed_other_username') ?? '';
+      // for bloodTypeValue
+      mp_blood_type = _prefs.getString('p4_mp_blood_type') ?? '';
+    });
+  }
+
   // get images from shared preference
   Future<void> _getImages(String photoType) async {
     final picker = ImagePicker();
@@ -285,42 +325,45 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     super.initState();
     // _getUserChoices(); // this is to get the text and boolean values from shared preference when the page is loaded
     _loadImages(); // this is to load the images from shared preference when the page is loaded
-    SharedPreferences.getInstance().then((prefs) {
-      setState(() {
-        _prefs = prefs;
-        // scars, marks, tattoos
-        _mp_scars.text = _prefs.getString('p4_mp_scars') ?? '';
-        _mp_marks.text = _prefs.getString('p4_mp_marks') ?? '';
-        _mp_tattoos.text = _prefs.getString('p4_mp_tattoos') ?? '';
-        // hair, eye color
-        _mp_hair_color.text = _prefs.getString('p4_mp_hair_color') ?? '';
-        _mp_eye_color.text = _prefs.getString('p4_mp_eye_color') ?? '';
-        // boolean for hair and eye color
-        // mp_hair_color_natural = _prefs.getBool('p4_mp_hair_natural') ?? false;
-        // mp_eye_color_natural = _prefs.getBool('p4_mp_eye_natural') ?? false;
-        // prosthetics, birth defects, last clothing
-        _mp_prosthetics.text = _prefs.getString('p4_mp_prosthetics') ?? '';
-        _mp_birth_defects.text = _prefs.getString('p4_mp_birth_defects') ?? '';
-        _mp_last_clothing.text = _prefs.getString('p4_mp_last_clothing') ?? '';
-        // MP medical details
-        _mp_height_feet.text = _prefs.getString('p4_mp_height_feet') ?? '';
-        _mp_height_inches.text = _prefs.getString('p4_mp_height_inches') ?? '';
-        _mp_weight.text = _prefs.getString('p4_mp_weight') ?? '';
-        _mp_blood_type.text = _prefs.getString('p4_mp_blood_type') ?? '';
-        _mp_medications.text = _prefs.getString('p4_mp_medications') ?? '';
-        // MP socmed details
-        _mp_facebook.text =
-            _prefs.getString('p4_mp_socmed_facebook_username') ?? '';
-        _mp_twitter.text =
-            _prefs.getString('p4_mp_socmed_twitter_username') ?? '';
-        _mp_instagram.text =
-            _prefs.getString('p4_mp_socmed_instagram_username') ?? '';
-        _mp_socmed_other_platform.text =
-            _prefs.getString('p4_mp_socmed_other_platform') ?? '';
-        _mp_socmed_other_username.text =
-            _prefs.getString('p4_mp_socmed_other_username') ?? '';
-      });
-    });
+    // SharedPreferences.getInstance().then((prefs) {
+    //   setState(() {
+    //     _prefs = prefs;
+    //     // scars, marks, tattoos
+    //     _mp_scars.text = _prefs.getString('p4_mp_scars') ?? '';
+    //     _mp_marks.text = _prefs.getString('p4_mp_marks') ?? '';
+    //     _mp_tattoos.text = _prefs.getString('p4_mp_tattoos') ?? '';
+    //     // hair, eye color
+    //     _mp_hair_color.text = _prefs.getString('p4_mp_hair_color') ?? '';
+    //     _mp_eye_color.text = _prefs.getString('p4_mp_eye_color') ?? '';
+    //     // boolean for hair and eye color
+    //     // mp_hair_color_natural = _prefs.getBool('p4_mp_hair_natural') ?? false;
+    //     // mp_eye_color_natural = _prefs.getBool('p4_mp_eye_natural') ?? false;
+    //     // prosthetics, birth defects, last clothing
+    //     _mp_prosthetics.text = _prefs.getString('p4_mp_prosthetics') ?? '';
+    //     _mp_birth_defects.text = _prefs.getString('p4_mp_birth_defects') ?? '';
+    //     _mp_last_clothing.text = _prefs.getString('p4_mp_last_clothing') ?? '';
+    //     // MP medical details
+    //     _mp_height_feet.text = _prefs.getString('p4_mp_height_feet') ?? '';
+    //     _mp_height_inches.text = _prefs.getString('p4_mp_height_inches') ?? '';
+    //     _mp_weight.text = _prefs.getString('p4_mp_weight') ?? '';
+    //     _mp_blood_type.text = _prefs.getString('p4_mp_blood_type') ?? '';
+    //     _mp_medications.text = _prefs.getString('p4_mp_medications') ?? '';
+    //     // MP socmed details
+    //     _mp_facebook.text =
+    //         _prefs.getString('p4_mp_socmed_facebook_username') ?? '';
+    //     _mp_twitter.text =
+    //         _prefs.getString('p4_mp_socmed_twitter_username') ?? '';
+    //     _mp_instagram.text =
+    //         _prefs.getString('p4_mp_socmed_instagram_username') ?? '';
+    //     _mp_socmed_other_platform.text =
+    //         _prefs.getString('p4_mp_socmed_other_platform') ?? '';
+    //     _mp_socmed_other_username.text =
+    //         _prefs.getString('p4_mp_socmed_other_username') ?? '';
+    //     // for bloodTypeValue
+    //     mp_blood_type = _prefs.getString('p4_mp_blood_type') ?? '';
+    //   });
+    // });
+    getMPDescInfo();
     getBoolChoices();
     retrieveUserData();
   }
