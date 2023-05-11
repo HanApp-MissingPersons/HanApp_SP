@@ -47,7 +47,7 @@ class _MapDialogState extends State<MapDialog> {
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     WidgetsFlutterBinding.ensureInitialized();
     final platform = MethodChannel('flutter/platform_views');
     super.initState();
