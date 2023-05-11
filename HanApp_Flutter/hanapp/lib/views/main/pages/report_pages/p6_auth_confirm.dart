@@ -231,6 +231,9 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
 
   retrievePrefsData() async {
     prefs = await SharedPreferences.getInstance();
+    // save reportReason and dateFound to shared preferences (both empty strings)
+    prefs.setString('pnp_rejectReason', '');
+    prefs.setString('pnp_dateFound', '');
     List<String> keyList = prefs.getKeys().toList();
     List<String> imagesList = [
       'p2_reportee_ID_Photo',
@@ -248,7 +251,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
           ? 'p4_mp_finger_print_record_photo'
           : '',
     ];
-    print('[keulist in retrieve] $keyList');
+    print('[keylist in retrieve] $keyList');
 
     await Future.forEach(keyList, (key) async {
       if (imagesList.contains(key)) {

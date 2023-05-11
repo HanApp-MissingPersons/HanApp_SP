@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -108,11 +107,15 @@ class _NearbyMainState extends State<NearbyMain> {
     getCurrentLocation();
     setCustomMarkerIcon();
     _fetchData();
+    _buildMarkers();
   }
 
   @override
   void dispose() {
     _locationSubscription.cancel();
+    _controller.future.then((controller) {
+      controller.dispose();
+    });
     super.dispose();
   }
 
@@ -152,10 +155,9 @@ class _NearbyMainState extends State<NearbyMain> {
               ),
               onMapCreated: (controller) => {
                 _controller.complete(controller),
-                controller.setMapStyle(Utils.mapStyle),
+                controller.setMapStyle(Utils.mapStyle)
               },
             ),
-
       floatingActionButton: FloatingActionButton(
         heroTag: 'nearbyMain',
         onPressed: () {
@@ -735,6 +737,41 @@ class _NearbyMainState extends State<NearbyMain> {
               },
             );
             markers.add(marker);
+            try {
+              final firstName = report['p3_mp_firstName'] ?? '';
+              final lastName = report['p3_mp_lastName'] ?? '';
+              final reportID = '${uid}_$key';
+              final location = report['p5_lastSeenLoc'] ?? '';
+              print('[TEST REPORT] $reportID NAME HERE CLEAR');
+              // Snippet
+              final heightFeet = report['p4_mp_height_inches'] ?? '';
+              final heightInches = report['p4_mp_height_feet'] ?? '';
+              final sex = report['p3_mp_sex'] ?? '';
+              final clothing = report['p4_mp_last_clothing'] ?? '';
+              final description = report['p5_incidentDetails'] ?? '';
+              print('[TEST REPORT] $reportID SNIPPET HERE CLEAR');
+              print('[TEST REPORT] $reportID LOCATION: $location');
+              final coordinates = extractDoubles(location.toString());
+              final reportLocation = LatLng(coordinates[0], coordinates[1]);
+              print('[TEST REPORT] $reportID LOCATION HERE CLEAR');
+
+              final marker = Marker(
+                markerId: MarkerId(reportID),
+                position: reportLocation,
+                icon: sourceIcon,
+                infoWindow: InfoWindow(
+                  title: '$firstName $lastName',
+                  snippet:
+                      "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
+                  onTap: () {
+                    print('tapping on marker $reportID');
+                  },
+                ),
+              );
+              markers.add(marker);
+            } catch (e) {
+              print('[NEARBY LOOP ERROR] $e');
+            }
           }
         });
       } catch (e) {
@@ -743,10 +780,6 @@ class _NearbyMainState extends State<NearbyMain> {
     });
     return markers;
   }
-}
-
-showDetails() {
-
 }
 
 class Utils {

@@ -257,8 +257,8 @@ class _NavigationFieldState extends State<NavigationField> {
   List<Widget>? widgetOptions;
   @override
   Widget build(BuildContext context) {
-    print('reportsClean length: ${reportsClean?.length}');
-    print('widgetOptions length: ${widgetOptions?.length}');
+    // print('reportsClean length: ${reportsClean?.length}');
+    // print('widgetOptions length: ${widgetOptions?.length}');
     return (reportsClean != null && widgetOptions != null)
         ? Scaffold(
             body: FutureBuilder(
@@ -300,13 +300,16 @@ class _NavigationFieldState extends State<NavigationField> {
                             child: SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.height,
-                                child: selectedIndex != 2
-                                    ? Center(
-                                        child: SingleChildScrollView(
-                                            child: widgetOptions!
-                                                .elementAt(selectedIndex)))
+                                child: selectedIndex == 2
+                                    ? widgetOptions!.elementAt(selectedIndex)
                                     // else if maps, do not place in singlechildscroll view
-                                    : widgetOptions!.elementAt(selectedIndex)),
+                                    : selectedIndex == 1
+                                        ? widgetOptions!
+                                            .elementAt(selectedIndex)
+                                        : Center(
+                                            child: SingleChildScrollView(
+                                                child: widgetOptions!.elementAt(
+                                                    selectedIndex)))),
                           ),
                           // Positioned(
                           //   // position the user profile button
