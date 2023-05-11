@@ -106,6 +106,7 @@ class _NearbyMainState extends State<NearbyMain> {
     getCurrentLocation();
     setCustomMarkerIcon();
     _fetchData();
+    _buildMarkers();
   }
 
   @override
@@ -185,34 +186,41 @@ class _NearbyMainState extends State<NearbyMain> {
         value.forEach((key, value) {
           final report = value as Map<dynamic, dynamic>;
           if (report['status'] == 'Verified') {
-            final firstName = report['p3_mp_firstName'] ?? '';
-            final lastName = report['p3_mp_lastName'] ?? '';
-            final reportID = '${uid}_$key';
-            final location = report['p5_lastSeenLoc'] ?? '';
+            try {
+              final firstName = report['p3_mp_firstName'] ?? '';
+              final lastName = report['p3_mp_lastName'] ?? '';
+              final reportID = '${uid}_$key';
+              final location = report['p5_lastSeenLoc'] ?? '';
+              print('[TEST REPORT] $reportID NAME HERE CLEAR');
+              // Snippet
+              final heightFeet = report['p4_mp_height_inches'] ?? '';
+              final heightInches = report['p4_mp_height_feet'] ?? '';
+              final sex = report['p3_mp_sex'] ?? '';
+              final clothing = report['p4_mp_last_clothing'] ?? '';
+              final description = report['p5_incidentDetails'] ?? '';
+              print('[TEST REPORT] $reportID SNIPPET HERE CLEAR');
+              print('[TEST REPORT] $reportID LOCATION: $location');
+              final coordinates = extractDoubles(location.toString());
+              final reportLocation = LatLng(coordinates[0], coordinates[1]);
+              print('[TEST REPORT] $reportID LOCATION HERE CLEAR');
 
-            // Snippet
-            final heightFeet = report['p4_mp_height_inches'] ?? '';
-            final heightInches = report['p4_mp_height_feet'] ?? '';
-            final sex = report['p3_mp_sex'] ?? '';
-            final clothing = report['p4_mp_last_clothing'] ?? '';
-            final description = report['p5_incidentDetails'] ?? '';
-
-            final coordinates = extractDoubles(location.toString());
-            final reportLocation = LatLng(coordinates[0], coordinates[1]);
-            final marker = Marker(
-              markerId: MarkerId(reportID),
-              position: reportLocation,
-              icon: sourceIcon,
-              infoWindow: InfoWindow(
-                title: '$firstName $lastName',
-                snippet:
-                    "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
-                onTap: () {
-                  print('tapping on marker $reportID');
-                },
-              ),
-            );
-            markers.add(marker);
+              final marker = Marker(
+                markerId: MarkerId(reportID),
+                position: reportLocation,
+                icon: sourceIcon,
+                infoWindow: InfoWindow(
+                  title: '$firstName $lastName',
+                  snippet:
+                      "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
+                  onTap: () {
+                    print('tapping on marker $reportID');
+                  },
+                ),
+              );
+              markers.add(marker);
+            } catch (e) {
+              print('[NEARBY LOOP ERROR] $e');
+            }
           }
         });
       } catch (e) {
