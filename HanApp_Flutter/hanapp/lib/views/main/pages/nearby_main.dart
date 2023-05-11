@@ -112,6 +112,9 @@ class _NearbyMainState extends State<NearbyMain> {
   @override
   void dispose() {
     _locationSubscription.cancel();
+    _controller.future.then((controller) {
+      controller.dispose();
+    });
     super.dispose();
   }
 
