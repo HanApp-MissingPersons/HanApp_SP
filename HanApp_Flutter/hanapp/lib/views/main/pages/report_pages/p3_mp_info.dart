@@ -73,7 +73,9 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
 
 /* PAGE 3 */
 class Page3MPDetails extends StatefulWidget {
-  const Page3MPDetails({super.key});
+  final VoidCallback addHeightParent;
+  final VoidCallback subtractHeightParent;
+  const Page3MPDetails({super.key, required this.addHeightParent, required this.subtractHeightParent});
 
   @override
   State<Page3MPDetails> createState() => _Page3MPDetailsState();
@@ -936,6 +938,11 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   onChanged: (bool? value) {
                     setState(() {
                       mp_hasAltAddress = value!;
+                      if(value == true){
+                        widget.addHeightParent();
+                      } else {
+                        widget.subtractHeightParent();
+                      }
                     });
                   },
                 ),
@@ -1168,6 +1175,11 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   onChanged: (bool? value) {
                     setState(() {
                       mp_hasSchoolWorkAddress = value!;
+                      if(value == true){
+                        widget.addHeightParent();
+                      } else {
+                        widget.subtractHeightParent();
+                      }
                     });
                   },
                 ),

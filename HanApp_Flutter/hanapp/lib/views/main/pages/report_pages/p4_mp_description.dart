@@ -25,7 +25,9 @@ void clearPrefs() {
 
 /* PAGE 4 */
 class Page4MPDesc extends StatefulWidget {
-  const Page4MPDesc({super.key});
+  final VoidCallback addHeightParent;
+  final VoidCallback subtractHeightParent;
+  const Page4MPDesc({super.key, required this.addHeightParent, required this.subtractHeightParent});
 
   @override
   State<Page4MPDesc> createState() => _Page4MPDescState();
@@ -473,10 +475,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               onChanged: (bool? value) {
                                 setState(() {
                                   mp_hair_color_natural = value;
-                                  // if (value == false) {
-                                  //   _prefs.remove('p4_mp_hair_natural');
-                                  // }
-                                  // write to shared preferences
                                 });
                                 _prefs.setBool(
                                     'p4_mp_hair_color_natural', value!);
@@ -957,6 +955,21 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         ),
                       ),
                       _verticalPadding,
+                      // show recent photo in sizedbox
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        //height: 200,
+                        child: mp_recent_photo != null
+                            ? Image.memory(mp_recent_photo!, height: 300,)
+                            : Center(child: Column(
+                              children: [
+                                Icon(Icons.drive_folder_upload, size: 250, color: Colors.grey[200],),
+                                Text('No photo uploaded', style: TextStyle(color: Colors.grey),),
+                              ],
+                            )),
+                      ),
+
+                      _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: ElevatedButton(
@@ -966,16 +979,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           child: const Text('Upload Photo'),
                         ),
                       ),
-                      _verticalPadding,
-                      // show recent photo in sizedbox
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width - 40,
-                        //height: 200,
-                        child: mp_recent_photo != null
-                            ? Image.memory(mp_recent_photo!)
-                            : const Center(child: Text('No image selected.')),
-                      ),
-                      _verticalPadding,
+
                       _verticalPadding,
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
@@ -1000,6 +1004,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             onChanged: (value) {
                               setState(() {
                                 mp_dental_available = value!;
+                                if(value == true){
+                                  widget.addHeightParent();
+                                } else {
+                                  widget.subtractHeightParent();
+                                }
                               });
                             },
                           ),
@@ -1009,6 +1018,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             onChanged: (value) {
                               setState(() {
                                 mp_fingerprints_available = value!;
+                                if(value == true){
+                                  widget.addHeightParent();
+                                } else {
+                                  widget.subtractHeightParent();
+                                }
                               });
                             },
                           ),
@@ -1026,6 +1040,21 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                                 style: headingStyle,
                               ),
                             ),
+                            // show dental record photo in sizedbox
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: mp_dental_record_photo != null
+                                  ? Image.memory(mp_dental_record_photo!, height: 200,)
+                                  : Center(
+                                      child: Column(
+                                        children: [
+                                          Icon(Icons.newspaper_rounded , size: 200, color: Colors.grey[200],),
+                                          Text('No image selected.'),
+                                          SizedBox(height: 20,)
+                                        ],
+                                      )),
+                            ),
+                            _verticalPadding,
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
                               child: ElevatedButton(
@@ -1035,15 +1064,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                                 child: const Text('Upload'),
                               ),
                             ),
-                            _verticalPadding,
-                            // show dental record photo in sizedbox
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: mp_dental_record_photo != null
-                                  ? Image.memory(mp_dental_record_photo!)
-                                  : const Center(
-                                      child: Text('No image selected.')),
-                            ),
+
                           ],
                         ),
                       // if mp_finger_print_records_available is true, show ask to upload finger print record photo
@@ -1058,6 +1079,21 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                                 style: headingStyle,
                               ),
                             ),
+                            _verticalPadding,
+                            // show finger print record photo in sizedbox
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: mp_finger_print_record_photo != null
+                                  ? Image.memory(mp_finger_print_record_photo!, height: 200,)
+                                  : Center(child: Column(
+                                    children: [
+                                      Icon(Icons.fingerprint_rounded , size: 200, color: Colors.grey[200],),
+                                      Text('No image selected.'),
+                                      SizedBox(height: 20,)
+                                    ],
+                                  )),
+                            ),
+                            _verticalPadding,
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
                               child: ElevatedButton(
@@ -1066,14 +1102,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                                 },
                                 child: const Text('Upload'),
                               ),
-                            ),
-                            _verticalPadding,
-                            // show finger print record photo in sizedbox
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: mp_finger_print_record_photo != null
-                                  ? Image.memory(mp_finger_print_record_photo!)
-                                  : const Text('No image selected.'),
                             ),
                           ],
                         ),

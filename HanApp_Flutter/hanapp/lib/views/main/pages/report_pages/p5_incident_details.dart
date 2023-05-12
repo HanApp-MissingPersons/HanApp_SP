@@ -528,11 +528,18 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         left: MediaQuery.of(context).size.width * .05),
                     width: MediaQuery.of(context).size.width * .8,
                     child: locSnapshot == null
-                        ? const Text('No location selected')
+                        ? Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height * .1,),
+                            Icon(Icons.not_listed_location_outlined, size: MediaQuery.of(context).size.width * .8, color: Colors.grey[200],),
+                            const Text('No location selected'),
+                            SizedBox(height: MediaQuery.of(context).size.height * .1,),
+                          ],
+                        )
                         : locSnapshot.runtimeType.toString() != 'Uint8List?'
-                            ? Image.memory(locSnapshot!)
+                            ? Image.memory(locSnapshot!, fit: BoxFit.cover)
                             : Image.memory(
-                                base64Decode(locSnapshot!.toString()))),
+                                base64Decode(locSnapshot!.toString()), fit: BoxFit.cover)),
               ),
               _verticalPadding,
               Container(
