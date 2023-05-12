@@ -1086,11 +1086,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (reportee_ID_Photo != null)
+                reportee_ID_Photo != null ?
                   SizedBox(
                       width: MediaQuery.of(context).size.width * .9,
                       child:
-                          Image.memory(reportee_ID_Photo!)), // show image
+                          Image.memory(reportee_ID_Photo!, height: 200,)) : Column(
+                            children: [
+                              Icon(Icons.perm_identity, size: 200, color: Colors.grey[200],),
+                              Text("No ID Selected", style: TextStyle(color: Colors.grey)),
+                              SizedBox(height: 20,)
+                            ],
+                          ), // show image
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(
@@ -1115,15 +1121,18 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (singlePhoto_face != null)
+                singlePhoto_face != null ?
                   Center(
                       child: Container(
-                          color: Colors.red,
-                          alignment: Alignment.center,
-                          child: SizedBox(
-                              width: MediaQuery.of(context).size.width * .9,
-                              child: Image.memory(
-                                  singlePhoto_face!)))), // show image
+                          margin: const EdgeInsets.only(top: 10),
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: Image.memory(
+                              singlePhoto_face!, height: 300,))) : Container(margin: const EdgeInsets.only(top: 40, bottom: 20),child: Column(
+                                children: [
+                                  Icon(Icons.camera_front_outlined, size: 200, color: Colors.grey[200],),
+                                  const Text('No selfie taken', style: TextStyle(color: Colors.grey))
+                                ],
+                              )), // show image
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(
