@@ -405,7 +405,7 @@ class _reportsPNPState extends State<reportsPNP> {
             ),
 
             const SizedBox(width: 20),
-
+            // CHANGE REPORT STATUS POPUP
             SizedBox(
               width: 160,
               height: 50,
@@ -422,9 +422,11 @@ class _reportsPNPState extends State<reportsPNP> {
                   ),
                 ),
                 onPressed: () {
+                  // final currentContext = context;
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
+                      // String? oldStatusValue = statusValue;
                       String? newStatusValue = statusValue;
                       return AlertDialog(
                         title: Text(
@@ -463,9 +465,8 @@ class _reportsPNPState extends State<reportsPNP> {
                               items: <String>[
                                 'Verified',
                                 'Already Found',
-                                // 'Incomplete Details',
+                                // 'Incomplete Details', -- this can be under "Rejected"
                                 'Rejected',
-                                'Pending', // remove this later
                               ].map<DropdownMenuItem<String>>((statusValue) {
                                 return DropdownMenuItem<String>(
                                   value: statusValue,
@@ -498,11 +499,13 @@ class _reportsPNPState extends State<reportsPNP> {
                                     .child(report['uid'])
                                     .child(report['key'])
                                     .update({"status": "$statusValue"});
-                                // if status is "Rejected" show a dialogue box that prompts to enter reason for rejection (and write in pnp_rejectReason into RTDB)
+                                // IF REJECTED, PROMPT FOR REASON
                                 if (statusValue == "Rejected") {
                                   // Show a dialog box asking for reason for rejection
                                   String? rejectReason;
+                                  // ignore: use_build_context_synchronously
                                   await showDialog(
+                                    // context: currentContext,
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
@@ -522,14 +525,22 @@ class _reportsPNPState extends State<reportsPNP> {
                                           ),
                                         ),
                                         actions: <Widget>[
+                                          // TextButton(
+                                          //   child: Text('Cancel'),
+                                          //   onPressed: () async {
+                                          //     // revert back to previous status
+                                          //     report['status'] = oldStatusValue;
+                                          //     await databaseReportsReference
+                                          //         .child(report['uid'])
+                                          //         .child(report['key'])
+                                          //         .update({
+                                          //       "status": "$oldStatusValue"
+                                          //     });
+                                          //     Navigator.of(context).pop();
+                                          //   },
+                                          // ),
                                           TextButton(
-                                            child: Text('Cancel'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: Text('Confirm'),
+                                            child: Text('Save Reason'),
                                             onPressed: () async {
                                               report['pnp_rejectReason'] =
                                                   rejectReason;
@@ -548,11 +559,94 @@ class _reportsPNPState extends State<reportsPNP> {
                                       );
                                     },
                                   );
+                                } else {
+                                  // Navigator.of(context).pop();
                                 }
+                                // end of Rejection reason dialogue box
+                                // IF ALREADY FOUND, PROMPT FOR DATE
+                                // if (statusValue == "Already Found") {
+                                //   // Show a dialog box asking for date found
+                                //   String? dateFound;
+                                //   // ignore: use_build_context_synchronously
+                                //   await showDialog(
+                                //     // context: currentContext,
+                                //     context: context,
+                                //     builder: (BuildContext context) {
+                                //       return AlertDialog(
+                                //         title: Text('Enter Date Found'),
+                                //         content:
+                                //             // CHANGE THIS TO DATE PICKER
+                                //             TextFormField(
+                                //           onChanged: (value) {
+                                //             dateFound = value;
+                                //           },
+                                //           maxLines: 3,
+                                //           decoration: InputDecoration(
+                                //             hintText: 'Type date here',
+                                //             border: OutlineInputBorder(
+                                //               borderRadius:
+                                //                   BorderRadius.circular(10.0),
+                                //             ),
+                                //           ),
+                                //         ),
+                                //         // END OF "CHANGE THIS TO DATE PICKER"
+                                //         actions: <Widget>[
+                                //           // TextButton(
+                                //           //   child: Text('Cancel'),
+                                //           //   onPressed: () {
+                                //           //     // revert back to previous status
+                                //           //     oldStatusValue = report['status'];
+                                //           //     Navigator.of(context).pop();
+                                //           //   },
+                                //           // ),
+                                //           TextButton(
+                                //             child: Text('Save Date'),
+                                //             onPressed: () async {
+                                //               report['pnp_dateFound'] =
+                                //                   dateFound;
+                                //               await databaseReportsReference
+                                //                   .child(report['uid'])
+                                //                   .child(report['key'])
+                                //                   .update({
+                                //                 'pnp_dateFound': dateFound,
+                                //               });
 
-                                // end of Rejection dialogue box
+                                //               Navigator.of(context).pop();
+                                //             },
+                                //           ),
+                                //         ],
+                                //       );
+                                //     },
+                                //   );
+                                // } else {
+                                //   // Navigator.of(context).pop();
+                                // }
+                                if (statusValue == "Already Found") {
+                                  // Show a dialog box asking for date found
+                                  DateTime? selectedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime.now(),
+                                  );
 
-                                // if status if "Already Found" show a dialogue or alert box that prompts datepicker
+                                  if (selectedDate != null) {
+                                    // Format the selected date as MM/dd/YYYY
+                                    String dateFound =
+                                        '${selectedDate.month.toString().padLeft(2, '0')}/'
+                                        '${selectedDate.day.toString().padLeft(2, '0')}/'
+                                        '${selectedDate.year.toString()}';
+
+                                    report['pnp_dateFound'] = dateFound;
+                                    await databaseReportsReference
+                                        .child(report['uid'])
+                                        .child(report['key'])
+                                        .update({
+                                      'pnp_dateFound': dateFound,
+                                    });
+                                  }
+                                }
+                                // end of Date Found dialogue box
                                 print(
                                     '[changed status] ${report['keyUid']} to $statusValue');
                                 Navigator.of(context).pop();
@@ -582,6 +676,62 @@ class _reportsPNPState extends State<reportsPNP> {
                 ),
               ),
             ),
+
+            // if status == rejected, show text button to "View Reject Reason" that shows a dialog box with the reason and allows it to be edited
+            if (report['status'] == 'Rejected')
+              TextButton(
+                onPressed: () {
+                  String? rejectReason;
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Reason for Rejection'),
+                        content: TextFormField(
+                          initialValue: report['pnp_rejectReason'],
+                          onChanged: (value) {
+                            rejectReason = value;
+                          },
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            hintText: 'Type reason here',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Close'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              report['pnp_rejectReason'] = rejectReason;
+                              await databaseReportsReference
+                                  .child(report['uid'])
+                                  .child(report['key'])
+                                  .update({
+                                'pnp_rejectReason': rejectReason,
+                              });
+
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Save'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                child: const Text('View Reject Reason'),
+              ),
+
+            // if status == already found, show text "Date Found: " and the date found
+            if (report['status'] == 'Already Found')
+              Text('Date Found: ${report['pnp_dateFound']}'),
 
             SizedBox(width: 20),
 

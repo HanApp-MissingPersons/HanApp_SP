@@ -11,7 +11,6 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'mapDialog.dart';
 
 // datepicker stuff
@@ -366,7 +365,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               _verticalPadding,
               // Last Seen Date (using date picker widget)
               _verticalPadding,
-              // date picker widget
+              // DATE PICKER WIDGET
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -449,8 +448,9 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                   ),
                 ],
               ),
+              // END OF DATE PICKER WIDGET
               _verticalPadding,
-              // Last Seen Time Text
+              // TIME PICKER WIDGET (for last seen time)
               if (lastSeenDate != null)
                 Column(
                   children: [
