@@ -25,7 +25,9 @@ void clearPrefs() {
 
 /* PAGE 4 */
 class Page4MPDesc extends StatefulWidget {
-  const Page4MPDesc({super.key});
+  final VoidCallback addHeightParent;
+  final VoidCallback subtractHeightParent;
+  const Page4MPDesc({super.key, required this.addHeightParent, required this.subtractHeightParent});
 
   @override
   State<Page4MPDesc> createState() => _Page4MPDescState();
@@ -473,10 +475,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                               onChanged: (bool? value) {
                                 setState(() {
                                   mp_hair_color_natural = value;
-                                  // if (value == false) {
-                                  //   _prefs.remove('p4_mp_hair_natural');
-                                  // }
-                                  // write to shared preferences
                                 });
                                 _prefs.setBool(
                                     'p4_mp_hair_color_natural', value!);
@@ -1006,6 +1004,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             onChanged: (value) {
                               setState(() {
                                 mp_dental_available = value!;
+                                if(value == true){
+                                  widget.addHeightParent();
+                                } else {
+                                  widget.subtractHeightParent();
+                                }
                               });
                             },
                           ),
@@ -1015,6 +1018,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             onChanged: (value) {
                               setState(() {
                                 mp_fingerprints_available = value!;
+                                if(value == true){
+                                  widget.addHeightParent();
+                                } else {
+                                  widget.subtractHeightParent();
+                                }
                               });
                             },
                           ),
