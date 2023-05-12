@@ -435,7 +435,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
+                            const Text(
                               'Are you sure you want to change the report status of this missing person?',
                               style: TextStyle(fontSize: 12),
                             ),
@@ -463,8 +463,9 @@ class _reportsPNPState extends State<reportsPNP> {
                               items: <String>[
                                 'Verified',
                                 'Already Found',
-                                'Incomplete Details',
+                                // 'Incomplete Details',
                                 'Rejected',
+                                'Pending', // remove this later
                               ].map<DropdownMenuItem<String>>((statusValue) {
                                 return DropdownMenuItem<String>(
                                   value: statusValue,
@@ -497,7 +498,61 @@ class _reportsPNPState extends State<reportsPNP> {
                                     .child(report['uid'])
                                     .child(report['key'])
                                     .update({"status": "$statusValue"});
+                                // if status is "Rejected" show a dialogue box that prompts to enter reason for rejection (and write in pnp_rejectReason into RTDB)
+                                if (statusValue == "Rejected") {
+                                  // Show a dialog box asking for reason for rejection
+                                  String? rejectReason;
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title:
+                                            Text('Enter Reason for Rejection'),
+                                        content: TextFormField(
+                                          onChanged: (value) {
+                                            rejectReason = value;
+                                          },
+                                          maxLines: 3,
+                                          decoration: InputDecoration(
+                                            hintText: 'Type reason here',
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: Text('Confirm'),
+                                            onPressed: () async {
+                                              report['pnp_rejectReason'] =
+                                                  rejectReason;
+                                              await databaseReportsReference
+                                                  .child(report['uid'])
+                                                  .child(report['key'])
+                                                  .update({
+                                                'pnp_rejectReason':
+                                                    rejectReason,
+                                              });
 
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+
+                                // end of Rejection dialogue box
+
+                                // if status if "Already Found" show a dialogue or alert box that prompts datepicker
                                 print(
                                     '[changed status] ${report['keyUid']} to $statusValue');
                                 Navigator.of(context).pop();
