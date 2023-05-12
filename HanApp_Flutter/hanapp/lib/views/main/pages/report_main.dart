@@ -43,17 +43,32 @@ class _ReportMainState extends State<ReportMain> {
   void initState() {
     super.initState();
   }
+  double p3height = 2400;
+  void increaseP3Height() {
+    setState(() {
+      p3height = p3height + 500;
+    });
+  }
+
+  void returnP3Height() {
+    setState(() {
+      p3height = p3height - 500;
+    });
+  }
+
 
   // build the page view
   @override
   Widget build(BuildContext context) {
+
+    print('BUILT');
     return SingleChildScrollView(
           child: Container(
             margin: const EdgeInsets.only(top: 60),
             child: ExpandablePageView(children: [
               const SizedBox(height: 600, child: Page1Classifier()), // okay
               const SizedBox(height: 2250,child: Page2ReporteeDetails()), // change image display height
-               const SizedBox(height: 2400, child: Page3MPDetails()), // okay
+              SizedBox(height: p3height, child: Page3MPDetails(rebuildParent: increaseP3Height, returnParent: returnP3Height,)),
               const SizedBox(height: 2700, child: Page4MPDesc()), // change image display height
               const SizedBox(height: 1600, child: Page5IncidentDetails()),
               Container(margin: const EdgeInsets.only(top: 40), height: 950,
