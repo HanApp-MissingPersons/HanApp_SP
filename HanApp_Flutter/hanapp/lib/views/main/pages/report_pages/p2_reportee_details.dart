@@ -83,7 +83,13 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
 
 /* Stateful Widget Class */
 class Page2ReporteeDetails extends StatefulWidget {
-  const Page2ReporteeDetails({Key? key}) : super(key: key);
+  // const Page2ReporteeDetails({Key? key, required void Function() addHeightParent, required void Function() subtractHeightParent}) : super(key: key);
+  final VoidCallback addHeightParent;
+  final VoidCallback subtractHeightParent;
+  const Page2ReporteeDetails(
+      {super.key,
+      required this.addHeightParent,
+      required this.subtractHeightParent});
 
   @override
   State<Page2ReporteeDetails> createState() => _Page2ReporteeDetailsState();
@@ -182,6 +188,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     loadImages();
     loadImage_face();
     setState(() {
+      reportee_hasAltAddress = _prefs.getBool('p2_hasAltAddress') ?? false;
       _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Common Law';
       _highestEduc = _prefs.getString('p2_highestEduc') ?? 'Unknown';
       relationshipToMP = _prefs.getString('p2_relationshipToMP');
@@ -570,8 +577,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 // text to display when no value is selected
                 hint: const Text("Select Civil Status"),
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
                 value: _civilStatusValue,
                 icon: const Icon(Icons.arrow_drop_down),
@@ -626,8 +633,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       });
                     },
                     decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Home Phone/Landline*',
                       hintText: 'XXX-XXXX',
                     ),
@@ -712,7 +719,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Region*',
                     ),
                   ),
@@ -731,7 +739,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Province*',
                     ),
                   ),
@@ -750,7 +759,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Municipality/City*',
                     ),
                   ),
@@ -769,7 +779,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Barangay*',
                     ),
                   ),
@@ -788,7 +799,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Village, Sitio, Subdivision',
                     ),
                   ),
@@ -807,7 +819,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'House Number/Street*',
                     ),
                   ),
@@ -828,10 +841,16 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   onChanged: (bool? value) {
                     setState(() {
                       reportee_hasAltAddress = value!;
+                      if (value == true) {
+                        widget.addHeightParent();
+                      } else {
+                        widget.subtractHeightParent();
+                      }
+                      // set bool in prefs
+                      _prefs.setBool('p2_hasAltAddress', value);
                     });
                   },
                 ),
-
                 const Text(
                   'Do you have another house location/address?',
                   style: TextStyle(fontSize: 12, color: Colors.black54),
@@ -860,7 +879,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             labelText: 'Region',
                           ),
                         ),
@@ -879,7 +900,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             labelText: 'Province',
                           ),
                         ),
@@ -898,7 +921,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             labelText: 'Municipality/City',
                           ),
                         ),
@@ -917,7 +942,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             labelText: 'Barangay',
                           ),
                         ),
@@ -936,7 +963,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             labelText: 'Village, Sitio, Subdivision',
                           ),
                         ),
@@ -955,7 +984,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
                             labelText: 'House Number/Street',
                           ),
                         ),
@@ -1007,7 +1038,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   child: DropdownButtonFormField(
                     value: _highestEduc,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                     ),
                     items: <String>[
                       'Elementary',
@@ -1057,7 +1089,8 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Occupation',
                     ),
                   ),
@@ -1086,17 +1119,27 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                reportee_ID_Photo != null ?
-                  SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child:
-                          Image.memory(reportee_ID_Photo!, height: 200,)) : Column(
-                            children: [
-                              Icon(Icons.perm_identity, size: 200, color: Colors.grey[200],),
-                              Text("No ID Selected", style: TextStyle(color: Colors.grey)),
-                              SizedBox(height: 20,)
-                            ],
-                          ), // show image
+                reportee_ID_Photo != null
+                    ? SizedBox(
+                        width: MediaQuery.of(context).size.width * .9,
+                        child: Image.memory(
+                          reportee_ID_Photo!,
+                          height: 200,
+                        ))
+                    : Column(
+                        children: [
+                          Icon(
+                            Icons.perm_identity,
+                            size: 200,
+                            color: Colors.grey[200],
+                          ),
+                          Text("No ID Selected",
+                              style: TextStyle(color: Colors.grey)),
+                          SizedBox(
+                            height: 20,
+                          )
+                        ],
+                      ), // show image
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(
@@ -1121,18 +1164,28 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                singlePhoto_face != null ?
-                  Center(
-                      child: Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          width: MediaQuery.of(context).size.width * .9,
-                          child: Image.memory(
-                              singlePhoto_face!, height: 300,))) : Container(margin: const EdgeInsets.only(top: 40, bottom: 20),child: Column(
-                                children: [
-                                  Icon(Icons.camera_front_outlined, size: 200, color: Colors.grey[200],),
-                                  const Text('No selfie taken', style: TextStyle(color: Colors.grey))
-                                ],
-                              )), // show image
+                singlePhoto_face != null
+                    ? Center(
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: Image.memory(
+                              singlePhoto_face!,
+                              height: 300,
+                            )))
+                    : Container(
+                        margin: const EdgeInsets.only(top: 40, bottom: 20),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.camera_front_outlined,
+                              size: 200,
+                              color: Colors.grey[200],
+                            ),
+                            const Text('No selfie taken',
+                                style: TextStyle(color: Colors.grey))
+                          ],
+                        )), // show image
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: ElevatedButton(

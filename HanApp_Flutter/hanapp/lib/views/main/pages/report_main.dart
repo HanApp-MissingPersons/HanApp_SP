@@ -44,8 +44,23 @@ class _ReportMainState extends State<ReportMain> {
     super.initState();
   }
 
+  // set page default heights
+  double p2height = 2250;
   double p3height = 2400;
   double p4height = 2400;
+
+  // functions to increase and return page heights
+  void increaseP2Height() {
+    setState(() {
+      p2height = p3height + 500;
+    });
+  }
+
+  void returnP2Height() {
+    setState(() {
+      p2height = p3height - 500;
+    });
+  }
 
   void increaseP3Height() {
     setState(() {
@@ -80,22 +95,30 @@ class _ReportMainState extends State<ReportMain> {
         margin: const EdgeInsets.only(top: 60),
         child: ExpandablePageView(children: [
           const SizedBox(height: 600, child: Page1Classifier()), // okay
-          const SizedBox(
-              height: 2250,
-              child: Page2ReporteeDetails()), // change image display height
+          // page 2
+          SizedBox(
+              height: p2height,
+              child: Page2ReporteeDetails(
+                addHeightParent: increaseP2Height,
+                subtractHeightParent: returnP2Height,
+              )), // change image display height
+          // page 3
           SizedBox(
               height: p3height,
               child: Page3MPDetails(
                 addHeightParent: increaseP3Height,
                 subtractHeightParent: returnP3Height,
               )),
+          // page 4
           SizedBox(
               height: p4height,
               child: Page4MPDesc(
                 addHeightParent: increaseP4Height,
                 subtractHeightParent: returnP4Height,
               )), // change image display height
+          // page 5
           const SizedBox(height: 1600, child: Page5IncidentDetails()),
+          // page 6
           Container(
             margin: const EdgeInsets.only(top: 40),
             height: 950,
