@@ -7,6 +7,7 @@ import 'package:hanapp/views/main/pages/report_pages/p3_mp_info.dart';
 import 'package:hanapp/views/main/pages/report_pages/p4_mp_description.dart';
 import 'package:hanapp/views/main/pages/report_pages/p5_incident_details.dart';
 import 'package:hanapp/views/main/pages/report_pages/p6_auth_confirm.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 
 /* REQUIREMENTS:
 1. Need to have adaptive height to content for scrolling (currently hardcoded mediquery height) (find: NOTE1)
@@ -37,149 +38,31 @@ class _ReportMainState extends State<ReportMain> {
     super.dispose();
   }
 
-  List<Widget>? _ReportPages;
+  // List<Widget>? _ReportPages;
   @override
   void initState() {
-    _ReportPages = [
-      const Page1Classifier(),
-      const Page2ReporteeDetails(),
-      const Page3MPDetails(),
-      const Page4MPDesc(),
-      const Page5IncidentDetails(),
-      Page6AuthConfirm(
-        onReportSubmissionDone: widget.onReportSubmissionDone,
-      )
-    ];
     super.initState();
   }
 
   // build the page view
   @override
   Widget build(BuildContext context) {
-    //use stack and sizedbox to make the pageview full screen
-    return _ReportPages != null
-        ? Stack(
-            children: [
-              // Stack for PageView
-              Positioned(
-                child: SingleChildScrollView(
-                  child: Container(
-                      margin: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height / 8),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height *
-                          4, // NOTE1: NEED TO CHANGE THIS to be adaptive instead of hardcoded
-                      child: PageView.builder(
-                          controller: _pageController,
-                          onPageChanged: (int index) {
-                            setState(() {
-                              _activePage = index;
-                            });
-                          }, // onPageChanged
-                          itemCount: _ReportPages!.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return _ReportPages![index];
-                          } // itemBuilder
-                          ) // Container
-                      ),
-                ), // SizedBox
-              ), // Center for Pageview
-
-              // Bottom Indicator
-              Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: 40,
-                  child: Container(
-                    color: Colors.black12,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List<Widget>.generate(
-                          _ReportPages!.length,
-                          (index) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: InkWell(
-                                  onTap: () {
-                                    _pageController.animateToPage(index,
-                                        duration:
-                                            const Duration(milliseconds: 200),
-                                        curve: Curves.easeIn);
-                                  },
-                                  child: CircleAvatar(
-                                    radius: 5,
-                                    // check if a dot is connected to the current page
-                                    // if true, give it a different color
-                                    backgroundColor: _activePage == index
-                                        ? Colors.indigo
-                                        : Colors.white30,
-                                  ), // CircleAvatar
-                                ), // InkWell
-                              )), // Padding
-                    ), // Row
-                  ) // Container
-                  ), // Positioned
-
-              // Next Page Button
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 0, right: 20),
-                  child: FloatingActionButton(
-                    heroTag: 'btn1',
-                    onPressed: () {
-                      _pageController.nextPage(
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeIn);
-                    },
-                    // removes Icon circle if on first page
-                    backgroundColor: _activePage == _ReportPages!.length - 1
-                        ? Colors.transparent
-                        : Colors.indigo,
-                    // removes icon shadow if on first page
-                    elevation: _activePage == _ReportPages!.length - 1 ? 0 : 6,
-                    // removes button if on first page
-                    child: _activePage == _ReportPages!.length - 1
-                        ? null
-                        : const Icon(Icons.arrow_forward),
-                  ), // FloatingActionButton
-                ), // Container
-              ), // Positioned for Next Page Button
-
-              // Previous Page Button
-              Positioned(
-                bottom: 0,
-                left: 0,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 0, left: 20),
-                  child: FloatingActionButton(
-                    heroTag: 'btn2',
-                    onPressed: () {
-                      _pageController.previousPage(
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeIn);
-                    },
-                    // removes Icon circle if on first page
-                    backgroundColor:
-                        _activePage == 0 ? Colors.transparent : Colors.indigo,
-                    // removes icon shadow if on first page
-                    elevation: _activePage == 0 ? 0 : 6,
-                    // removes button if on first page
-                    child:
-                        _activePage == 0 ? null : const Icon(Icons.arrow_back),
-
-                    // removes shadow if on first page
-                  ), // FloatingActionButton
-                ), // Container
-              ), // Positioned for Previous Page Button
-            ], // children for Stack
-          )
-        : const Center(
-            child: SpinKitCubeGrid(
-            color: Colors.indigo,
-            size: 40.0,
-          )); // Stack
+    return SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.only(top: 60),
+            child: ExpandablePageView(children: [
+              const SizedBox(height: 600, child: Page1Classifier()), // okay
+              const SizedBox(height: 2250,child: Page2ReporteeDetails()), // change image display height
+               const SizedBox(height: 2400, child: Page3MPDetails()), // okay
+              const SizedBox(height: 2700, child: Page4MPDesc()), // change image display height
+              const SizedBox(height: 1600, child: Page5IncidentDetails()),
+              Container(margin: const EdgeInsets.only(top: 40), height: 950,
+                child: Page6AuthConfirm(
+                  onReportSubmissionDone: widget.onReportSubmissionDone,
+                ),
+              )
+            ]),
+          ),
+        ); // Stack
   }
 }
