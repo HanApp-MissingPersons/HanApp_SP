@@ -43,6 +43,7 @@ class _ReportMainState extends State<ReportMain> {
   void initState() {
     super.initState();
   }
+
   double p3height = 2400;
   double p4height = 2400;
 
@@ -70,28 +71,40 @@ class _ReportMainState extends State<ReportMain> {
     });
   }
 
-
   // build the page view
   @override
   Widget build(BuildContext context) {
-
     print('BUILT');
     return SingleChildScrollView(
-          child: Container(
-            margin: const EdgeInsets.only(top: 60),
-            child: ExpandablePageView(children: [
-              const SizedBox(height: 600, child: Page1Classifier()), // okay
-              const SizedBox(height: 2250,child: Page2ReporteeDetails()), // change image display height
-              SizedBox(height: p3height, child: Page3MPDetails(addHeightParent: increaseP3Height, subtractHeightParent: returnP3Height,)),
-              SizedBox(height: p4height, child: Page4MPDesc(addHeightParent: increaseP4Height, subtractHeightParent: returnP4Height,)), // change image display height
-              const SizedBox(height: 1600, child: Page5IncidentDetails()),
-              Container(margin: const EdgeInsets.only(top: 40), height: 950,
-                child: Page6AuthConfirm(
-                  onReportSubmissionDone: widget.onReportSubmissionDone,
-                ),
-              )
-            ]),
-          ),
-        ); // Stack
+      child: Container(
+        margin: const EdgeInsets.only(top: 60),
+        child: ExpandablePageView(children: [
+          const SizedBox(height: 600, child: Page1Classifier()), // okay
+          const SizedBox(
+              height: 2250,
+              child: Page2ReporteeDetails()), // change image display height
+          SizedBox(
+              height: p3height,
+              child: Page3MPDetails(
+                addHeightParent: increaseP3Height,
+                subtractHeightParent: returnP3Height,
+              )),
+          SizedBox(
+              height: p4height,
+              child: Page4MPDesc(
+                addHeightParent: increaseP4Height,
+                subtractHeightParent: returnP4Height,
+              )), // change image display height
+          const SizedBox(height: 1600, child: Page5IncidentDetails()),
+          Container(
+            margin: const EdgeInsets.only(top: 40),
+            height: 950,
+            child: Page6AuthConfirm(
+              onReportSubmissionDone: widget.onReportSubmissionDone,
+            ),
+          )
+        ]),
+      ),
+    ); // Stack
   }
 }

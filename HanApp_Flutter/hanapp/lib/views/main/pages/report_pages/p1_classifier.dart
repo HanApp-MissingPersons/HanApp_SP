@@ -53,8 +53,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
           _prefs.getBool('p1_isVictimNaturalCalamity') ?? false;
 
       // isMinor depends on p3_mp_age
-      if (_prefs.getString('p3_mp_age') == null) {
-        isMinor = false;
+      if (_prefs.getString('p3_mp_age') == null ||
+          _prefs.getString('p3_mp_age') == '') {
+        // isMinor = false;
+        isMinor = _prefs.getBool('p1_isMinor') ?? false;
       } else {
         // if p3_mp_age is not null, check if it is less than 18
         ageFromMPBirthDate = int.parse(_prefs.getString('p3_mp_age')!);
@@ -67,8 +69,9 @@ class _Page1ClassifierState extends State<Page1Classifier> {
 
       // isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
       // isMissing24Hours depends on p5_totalHoursSinceLastSeen
-      if (_prefs.getString('p5_totalHoursSinceLastSeen') == null) {
-        isMissing24Hours = false;
+      if (_prefs.getString('p5_totalHoursSinceLastSeen') == null ||
+          _prefs.getString('p5_totalHoursSinceLastSeen') == '') {
+        isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
       } else {
         // if p5_totalHoursSinceLastSeen is not null, check if it is less than 24
         hoursSinceLastSeenFromP5 =
@@ -98,7 +101,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
       'The person is missing due to natural calamity/disaster (typhoons, earthquakes, landslides), or accident';
   static const String minorText =
       // 'Is the absent/missing person a minor (under the age of 18)?';
-      'The person is still a minor (under the age of 18)';
+      'The person is still a minor (under the age of 18).';
   static const String missing24HoursText =
       'The person has been missing for more than 24 hours since they were last seen';
   static const String victimCrimeText =

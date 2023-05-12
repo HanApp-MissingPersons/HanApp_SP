@@ -118,6 +118,8 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   String? nearestLandmark;
   String? cityName;
   String? brgyName;
+  //
+  TimeOfDay? picked_time = null;
 
   retrieveUserData() async {
     prefs = await SharedPreferences.getInstance();
@@ -408,6 +410,40 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                             _writeToPrefs('p5_lastSeenDate', lastSeenDate!);
                           });
                         }
+                        // add hour calculator code from last seen time here as well
+                        if (lastSeenDate != null && lastSeenTime != null) {
+                          setState(() {
+                            _selectedTime = DateTime(
+                                now.year,
+                                now.month,
+                                now.day,
+                                picked_time!.hour,
+                                picked_time!.minute);
+                            lastSeenTime =
+                                DateFormat('hh:mm a').format(_selectedTime!);
+                            // prefs.setString('p5_lastSeenTime', lastSeenTime!);
+                            _writeToPrefs('p5_lastSeenTime', lastSeenTime!);
+                            // calculate hours since last seen from last seen date and time
+                            // print lastSeenDate and lastSeenTime in one string
+                            print('DateTime: $lastSeenDate $lastSeenTime');
+                            DateFormat inputFormat =
+                                DateFormat('MMMM d, y hh:mm a');
+                            DateTime lastSeenDateAndTime = inputFormat
+                                .parse('$lastSeenDate $lastSeenTime');
+                            print('LastSeenDateTime: $lastSeenDateAndTime');
+                            DateTime currentDateAndTime = DateTime.now();
+                            print('CurrentDateTime: $currentDateAndTime');
+                            Duration timeDifference = currentDateAndTime
+                                .difference(lastSeenDateAndTime);
+                            print('TimeDifference: $timeDifference');
+                            int hoursSinceLastSeen = timeDifference.inHours;
+                            print('HoursSinceLastSeen: $hoursSinceLastSeen');
+                            totalHoursSinceLastSeen =
+                                hoursSinceLastSeen.toString();
+                            _writeToPrefs('p5_totalHoursSinceLastSeen',
+                                totalHoursSinceLastSeen!);
+                          });
+                        }
                       },
                     ),
                   ),
@@ -442,6 +478,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                           );
                           if (picked != null) {
                             setState(() {
+                              picked_time = picked;
                               _selectedTime = DateTime(now.year, now.month,
                                   now.day, picked.hour, picked.minute);
                               lastSeenTime =
@@ -529,17 +566,26 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                     width: MediaQuery.of(context).size.width * .8,
                     child: locSnapshot == null
                         ? Column(
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height * .1,),
-                            Icon(Icons.not_listed_location_outlined, size: MediaQuery.of(context).size.width * .8, color: Colors.grey[200],),
-                            const Text('No location selected'),
-                            SizedBox(height: MediaQuery.of(context).size.height * .1,),
-                          ],
-                        )
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * .1,
+                              ),
+                              Icon(
+                                Icons.not_listed_location_outlined,
+                                size: MediaQuery.of(context).size.width * .8,
+                                color: Colors.grey[200],
+                              ),
+                              const Text('No location selected'),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * .1,
+                              ),
+                            ],
+                          )
                         : locSnapshot.runtimeType.toString() != 'Uint8List?'
                             ? Image.memory(locSnapshot!, fit: BoxFit.cover)
                             : Image.memory(
-                                base64Decode(locSnapshot!.toString()), fit: BoxFit.cover)),
+                                base64Decode(locSnapshot!.toString()),
+                                fit: BoxFit.cover)),
               ),
               _verticalPadding,
               Container(
