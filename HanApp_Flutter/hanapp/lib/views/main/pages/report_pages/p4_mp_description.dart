@@ -27,7 +27,10 @@ void clearPrefs() {
 class Page4MPDesc extends StatefulWidget {
   final VoidCallback addHeightParent;
   final VoidCallback subtractHeightParent;
-  const Page4MPDesc({super.key, required this.addHeightParent, required this.subtractHeightParent});
+  const Page4MPDesc(
+      {super.key,
+      required this.addHeightParent,
+      required this.subtractHeightParent});
 
   @override
   State<Page4MPDesc> createState() => _Page4MPDescState();
@@ -321,6 +324,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             _prefs.getString('p4_mp_socmed_other_platform') ?? '';
         _mp_socmed_other_username.text =
             _prefs.getString('p4_mp_socmed_other_username') ?? '';
+        // bool for mp_dental_available and mp_fingerprints_available
+        mp_dental_available = _prefs.getBool('p4_mp_dental_available') ?? false;
+        mp_fingerprints_available =
+            _prefs.getBool('p4_mp_fingerprints_available') ?? false;
       });
     });
     getBoolChoices();
@@ -960,13 +967,24 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         //height: 200,
                         child: mp_recent_photo != null
-                            ? Image.memory(mp_recent_photo!, height: 300,)
-                            : Center(child: Column(
-                              children: [
-                                Icon(Icons.drive_folder_upload, size: 250, color: Colors.grey[200],),
-                                Text('No photo uploaded', style: TextStyle(color: Colors.grey),),
-                              ],
-                            )),
+                            ? Image.memory(
+                                mp_recent_photo!,
+                                height: 300,
+                              )
+                            : Center(
+                                child: Column(
+                                children: [
+                                  Icon(
+                                    Icons.drive_folder_upload,
+                                    size: 250,
+                                    color: Colors.grey[200],
+                                  ),
+                                  Text(
+                                    'No photo uploaded',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              )),
                       ),
 
                       _verticalPadding,
@@ -1004,11 +1022,13 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             onChanged: (value) {
                               setState(() {
                                 mp_dental_available = value!;
-                                if(value == true){
+                                if (value == true) {
                                   widget.addHeightParent();
                                 } else {
                                   widget.subtractHeightParent();
                                 }
+                                // set bool in prefs
+                                _prefs.setBool('p4_mp_dental_available', value);
                               });
                             },
                           ),
@@ -1018,11 +1038,14 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             onChanged: (value) {
                               setState(() {
                                 mp_fingerprints_available = value!;
-                                if(value == true){
+                                if (value == true) {
                                   widget.addHeightParent();
                                 } else {
                                   widget.subtractHeightParent();
                                 }
+                                // set bool in prefs
+                                _prefs.setBool(
+                                    'p4_mp_fingerprints_available', value);
                               });
                             },
                           ),
@@ -1044,15 +1067,24 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
                               child: mp_dental_record_photo != null
-                                  ? Image.memory(mp_dental_record_photo!, height: 200,)
+                                  ? Image.memory(
+                                      mp_dental_record_photo!,
+                                      height: 200,
+                                    )
                                   : Center(
                                       child: Column(
-                                        children: [
-                                          Icon(Icons.newspaper_rounded , size: 200, color: Colors.grey[200],),
-                                          Text('No image selected.'),
-                                          SizedBox(height: 20,)
-                                        ],
-                                      )),
+                                      children: [
+                                        Icon(
+                                          Icons.newspaper_rounded,
+                                          size: 200,
+                                          color: Colors.grey[200],
+                                        ),
+                                        Text('No image selected.'),
+                                        SizedBox(
+                                          height: 20,
+                                        )
+                                      ],
+                                    )),
                             ),
                             _verticalPadding,
                             SizedBox(
@@ -1064,7 +1096,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                                 child: const Text('Upload'),
                               ),
                             ),
-
                           ],
                         ),
                       // if mp_finger_print_records_available is true, show ask to upload finger print record photo
@@ -1084,14 +1115,24 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
                               child: mp_finger_print_record_photo != null
-                                  ? Image.memory(mp_finger_print_record_photo!, height: 200,)
-                                  : Center(child: Column(
-                                    children: [
-                                      Icon(Icons.fingerprint_rounded , size: 200, color: Colors.grey[200],),
-                                      Text('No image selected.'),
-                                      SizedBox(height: 20,)
-                                    ],
-                                  )),
+                                  ? Image.memory(
+                                      mp_finger_print_record_photo!,
+                                      height: 200,
+                                    )
+                                  : Center(
+                                      child: Column(
+                                      children: [
+                                        Icon(
+                                          Icons.fingerprint_rounded,
+                                          size: 200,
+                                          color: Colors.grey[200],
+                                        ),
+                                        Text('No image selected.'),
+                                        SizedBox(
+                                          height: 20,
+                                        )
+                                      ],
+                                    )),
                             ),
                             _verticalPadding,
                             SizedBox(

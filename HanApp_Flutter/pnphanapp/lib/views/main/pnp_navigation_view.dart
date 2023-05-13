@@ -15,7 +15,9 @@ class _NavRailViewState extends State<NavRailView> {
   static const List<Widget> _destinations = <Widget>[
     reportsPNP(filterValue: ['Pending']), //first page
     reportsPNP(filterValue: ['Verified']), //second page
-    reportsPNP(filterValue: ['Incomplete Details', 'Rejected']),
+    reportsPNP(filterValue: [
+      'Rejected'
+    ]), // third page, removed "Incomplete Details" since it can be added as a reject reason
     reportsPNP(filterValue: ['Already Found']), // fourth page
   ];
   bool _isExpanded = false;

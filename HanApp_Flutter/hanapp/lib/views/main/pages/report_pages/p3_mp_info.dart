@@ -75,7 +75,10 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
 class Page3MPDetails extends StatefulWidget {
   final VoidCallback addHeightParent;
   final VoidCallback subtractHeightParent;
-  const Page3MPDetails({super.key, required this.addHeightParent, required this.subtractHeightParent});
+  const Page3MPDetails(
+      {super.key,
+      required this.addHeightParent,
+      required this.subtractHeightParent});
 
   @override
   State<Page3MPDetails> createState() => _Page3MPDetailsState();
@@ -255,6 +258,10 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             prefs.getString('p3_mp_workSchool_streetHouseNum') ?? '';
         _mp_workSchool_name.text =
             prefs.getString('p3_mp_workSchool_name') ?? '';
+        // for mp_hasAltAddress and mp_hasSchoolWorkAddress bool
+        mp_hasAltAddress = _prefs.getBool('p3_mp_hasAltAddress') ?? false;
+        mp_hasSchoolWorkAddress =
+            _prefs.getBool('p3_mp_hasSchoolWorkAddress') ?? false;
       });
     });
   }
@@ -938,11 +945,13 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   onChanged: (bool? value) {
                     setState(() {
                       mp_hasAltAddress = value!;
-                      if(value == true){
+                      if (value == true) {
                         widget.addHeightParent();
                       } else {
                         widget.subtractHeightParent();
                       }
+                      // set bool in prefs
+                      _prefs.setBool('p3_mp_hasAltAddress', value);
                     });
                   },
                 ),
@@ -1175,11 +1184,13 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   onChanged: (bool? value) {
                     setState(() {
                       mp_hasSchoolWorkAddress = value!;
-                      if(value == true){
+                      if (value == true) {
                         widget.addHeightParent();
                       } else {
                         widget.subtractHeightParent();
                       }
+                      // set bool in prefs
+                      _prefs.setBool('p3_mp_hasSchoolWorkAddress', value);
                     });
                   },
                 ),
