@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
@@ -283,9 +284,9 @@ class _NavigationFieldState extends State<NavigationField> {
                           children: [
                             const SpinKitCubeGrid(
                                 color: Palette.indigo, size: 40),
-                            const SizedBox(height: 50),
-                            const Center(child: Text('Nearly there...')),
-                            const SizedBox(height: 50),
+                            // const SizedBox(height: 50),
+                            // const Center(child: Text('Nearly there...')),
+                            // const SizedBox(height: 50),
                           ],
                         ),
                       );
@@ -391,29 +392,29 @@ class _NavigationFieldState extends State<NavigationField> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    SpinKitCubeGrid(
-                      color: Palette.indigo,
-                      size: 40,
-                    ),
-                    SizedBox(
-                      height: 50,
-                    ),
+                  children: [
                     Text(
                       'Setting things up...',
+                      style: GoogleFonts.inter(textStyle: const TextStyle(fontWeight: FontWeight.w500)),
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black45),
                     ),
                     Text(
                       '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black45),
+                      textScaleFactor: 0.70,
                     ),
                     Text(
                       '\nMake sure your location service is turned on',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black45),
-                    )
+                      textScaleFactor: 0.70,
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    SpinKitCubeGrid(
+                      color: Palette.indigo,
+                      size: 25,
+                    ),
                   ],
                 ),
               ),

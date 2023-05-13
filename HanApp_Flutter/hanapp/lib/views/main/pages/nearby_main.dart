@@ -1,234 +1,245 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hanapp/main.dart';
-import 'package:location/location.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:firebase_database/firebase_database.dart';
-
-class NearbyMain extends StatefulWidget {
-  const NearbyMain({super.key});
-
-  @override
-  State<NearbyMain> createState() => _NearbyMainState();
-}
-
-class _NearbyMainState extends State<NearbyMain> {
-  final Completer<GoogleMapController> _controller = Completer();
-  late StreamSubscription<LocationData> _locationSubscription;
-  Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
-  final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
-  late dynamic _reports = {};
-  int timesWidgetBuilt = 0;
-  LatLng? sourceLocation;
-  LocationData? currentLocation;
-
-  BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
-  BitmapDescriptor greenPin =
-      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen);
-  BitmapDescriptor yellowPin =
-      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow);
-
-  Future<void> _fetchData() async {
-    final snapshot = await dbRef2.once();
-    setState(() {
-      _reports = snapshot.snapshot.value ?? {};
-    });
-    print(
-        '[DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED]');
+  import 'dart:async';
+  import 'package:flutter/material.dart';
+  import 'package:google_fonts/google_fonts.dart';
+  import 'package:google_maps_flutter/google_maps_flutter.dart';
+  import 'package:hanapp/main.dart';
+  import 'package:location/location.dart';
+  import 'package:flutter_spinkit/flutter_spinkit.dart';
+  import 'package:firebase_database/firebase_database.dart';
+  
+  class NearbyMain extends StatefulWidget {
+    const NearbyMain({super.key});
+  
+    @override
+    State<NearbyMain> createState() => _NearbyMainState();
   }
-
-  List<double> extractDoubles(String input) {
-    RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
-    List<double> doubles = [];
-    Iterable<RegExpMatch> matches = regExp.allMatches(input);
-    for (RegExpMatch match in matches) {
-      doubles.add(double.parse(match.group(0)!));
-    }
-    return doubles;
-  }
-
-  void getCurrentLocation() async {
-    Location location = Location();
-
-    await location.getLocation().then((location) {
+  
+  class _NearbyMainState extends State<NearbyMain> {
+    final Completer<GoogleMapController> _controller = Completer();
+    late StreamSubscription<LocationData> _locationSubscription;
+    Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
+    final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
+    late dynamic _reports = {};
+    int timesWidgetBuilt = 0;
+    LatLng? sourceLocation;
+    LocationData? currentLocation;
+  
+    BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
+    BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
+    BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
+  
+    Future<void> _fetchData() async {
+      final snapshot = await dbRef2.once();
       setState(() {
-        currentLocation = location;
-        sourceLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+        _reports = snapshot.snapshot.value ?? {};
       });
-    });
-    if (currentLocation != null) {
-      _locationSubscription = location.onLocationChanged.listen((newLocation) {
+      print(
+          '[DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED]');
+    }
+  
+    List<double> extractDoubles(String input) {
+      RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
+      List<double> doubles = [];
+      Iterable<RegExpMatch> matches = regExp.allMatches(input);
+      for (RegExpMatch match in matches) {
+        doubles.add(double.parse(match.group(0)!));
+      }
+      return doubles;
+    }
+  
+    void getCurrentLocation() async {
+      Location location = Location();
+  
+      await location.getLocation().then((location) {
         setState(() {
-          currentLocation = newLocation;
+          currentLocation = location;
           sourceLocation =
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
         });
       });
+      if (currentLocation != null) {
+        _locationSubscription = location.onLocationChanged.listen((newLocation) {
+          setState(() {
+            currentLocation = newLocation;
+            sourceLocation =
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+          });
+        });
+      }
     }
-  }
-
-  void recenterToUser() async {
-    GoogleMapController mapController = await _controller.future;
-    mapController.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target:
-              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          zoom: 20,
-        ),
-      ),
-    );
-  }
-
-  void setCustomMarkerIcon() {
-    // temporary images, just to show that it is possible
-    BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(6, 6)), //decrease if too large
-            'assets/images/mp_marker.png')
-        .then((icon) => sourceIcon = icon);
-    // BitmapDescriptor.fromAssetImage(
-    //         const ImageConfiguration(size: Size(20, 20)),
-    //         'assets/images/login.png')
-    //     .then((icon) => destinationIcon = icon);
-    BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(10, 10)),
-            'assets/images/position_marker.png')
-        .then((icon) => currentLocationIcon = icon);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getCurrentLocation();
-    setCustomMarkerIcon();
-    _fetchData();
-    _buildMarkers();
-  }
-
-  @override
-  void dispose() {
-    _locationSubscription.cancel();
-    _controller.future.then((controller) {
-      controller.dispose();
-    });
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: (_reports.isEmpty || _reports == null || currentLocation == null)
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Center(child: Text('Google maps is loading...')),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 15.0),
-                    child: Text(
-                      'Loading times may vary depending on your '
-                      'internet connection. . .',
-                      textAlign: TextAlign.center,
-                      textScaleFactor: 0.67,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: SpinKitCubeGrid(
-                    color: Palette.indigo,
-                    size: 25.0,
-                  ),
-                )
-              ],
-            )
-          : GoogleMap(
-              markers: _buildMarkers(),
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 20,
-              ),
-              onMapCreated: (controller) => {
-                _controller.complete(controller),
-                controller.setMapStyle(Utils.mapStyle)
-              },
-            ),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'nearbyMain',
-        onPressed: () {
-          recenterToUser();
-        },
-        child: const Icon(Icons.my_location),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
-    );
-  }
-
-  Set<Marker> _buildMarkers() {
-    final Set<Marker> markers = {};
-    if (currentLocation != null) {
-      markers.add(
-        Marker(
-          markerId: const MarkerId('currentLocation'),
-          position:
-              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          icon: currentLocationIcon,
-          infoWindow: const InfoWindow(
-            title: 'You',
+  
+    void recenterToUser() async {
+      GoogleMapController mapController = await _controller.future;
+      mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target:
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+            zoom: 20,
           ),
         ),
       );
     }
-    _reports.forEach((key, value) {
-      dynamic uid = key;
-      try {
-        value.forEach((key, value) {
-          final report = value as Map<dynamic, dynamic>;
-          if (report['status'] == 'Verified') {
-            final firstName = report['p3_mp_firstName'] ?? '';
-            final lastName = report['p3_mp_lastName'] ?? '';
-            final reportID = '${uid}_$key';
-            final location = report['p5_lastSeenLoc'] ?? '';
-            final dateReported = report['p5_reportDate'] ?? '';
-            final lastSeenLoc = report['p5_nearestLandmark'] ?? '';
-
-            // Info window
-            final mp_recentPhoto_LINK = report['mp_recentPhoto_LINK'];
-            final heightFeet = report['p4_mp_height_inches'] ?? '';
-            final heightInches = report['p4_mp_height_feet'] ?? '';
-            final sex = report['p3_mp_sex'] ?? '';
-            final age = report['p3_mp_age'] ?? '';
-            final weight = report['p4_mp_weight'] ?? '';
-            final scars = report['p4_mp_scars'] ?? '';
-            final marks = report['p4_mp_marks'] ?? '';
-            final tattoos = report['p4_mp_tattoos'] ?? '';
-            final hairColor = report['p4_mp_hair_color'] ?? '';
-            final eyeColor = report['p4_mp_eye_color'] ?? '';
-            final prosthetics = report['p4_mp_prosthetics'] ?? '';
-            final birthDefects = report['p4_mp_birth_defects'] ?? '';
-            final clothingAccessories = report['p4_mp_last_clothing'] ?? '';
-            final description = report['p5_incidentDetails'] ?? '';
-            final lastSeenDate = report['p5_lastSeenDate'] ?? '';
-            final lastSeenTime = report['p5_lastSeenTime'] ?? '';
-
-            final coordinates = extractDoubles(location.toString());
-            final reportLocation = LatLng(coordinates[0], coordinates[1]);
-            final marker = Marker(
-              markerId: MarkerId(reportID),
-              position: reportLocation,
-              icon: sourceIcon,
-              infoWindow: InfoWindow(
-                title: '$firstName $lastName',
-                snippet: 'Last Seen: $lastSeenDate, $lastSeenTime',
+  
+    void setCustomMarkerIcon() {
+      // temporary images, just to show that it is possible
+      BitmapDescriptor.fromAssetImage(
+              const ImageConfiguration(size: Size(6, 6)), //decrease if too large
+              'assets/images/mp_marker.png')
+          .then((icon) => sourceIcon = icon);
+      // BitmapDescriptor.fromAssetImage(
+      //         const ImageConfiguration(size: Size(20, 20)),
+      //         'assets/images/login.png')
+      //     .then((icon) => destinationIcon = icon);
+      BitmapDescriptor.fromAssetImage(
+              const ImageConfiguration(size: Size(10, 10)),
+              'assets/images/position_marker.png')
+          .then((icon) => currentLocationIcon = icon);
+    }
+  
+    @override
+    void initState() {
+      super.initState();
+      getCurrentLocation();
+      setCustomMarkerIcon();
+      _fetchData();
+      _buildMarkers();
+    }
+  
+    @override
+    void dispose() {
+      _locationSubscription.cancel();
+      _controller.future.then((controller) {
+        controller.dispose();
+      });
+      super.dispose();
+    }
+  
+    @override
+    Widget build(BuildContext context) {
+      return Scaffold(
+        body: (_reports.isEmpty || _reports == null || currentLocation == null)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Center(child: Text('Google maps is loading...',
+                      style: GoogleFonts.inter(textStyle: const TextStyle(fontWeight: FontWeight.w500)))),
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 15.0),
+                      child: Text(
+                        'Loading times may vary depending on your '
+                        'internet connection',
+                        textAlign: TextAlign.center,
+                        textScaleFactor: 0.67,
+                      ),
+                    ),
+                  ),
+                  const Center(
+                    child: SpinKitCubeGrid(
+                      color: Palette.indigo,
+                      size: 25.0,
+                    ),
+                  )
+                ],
+              )
+            : GoogleMap(
+                markers: _buildMarkers(),
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                      currentLocation!.latitude!, currentLocation!.longitude!),
+                  zoom: 20,
+                ),
+                onMapCreated: (controller) => {
+                  _controller.complete(controller),
+                  controller.setMapStyle(Utils.mapStyle)
+                },
               ),
-              onTap: () {
-                print('tapping on marker $reportID');
-                showModalBottomSheet(
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'nearbyMain',
+          backgroundColor: Palette.indigo,
+          elevation: 30,
+          onPressed: () {
+            recenterToUser();
+          },
+          child: const Icon(Icons.my_location),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      );
+    }
+  
+    Set<Marker> _buildMarkers() {
+      final Set<Marker> markers = {};
+      if (currentLocation != null) {
+        markers.add(
+          Marker(
+            markerId: const MarkerId('currentLocation'),
+            position:
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+            icon: currentLocationIcon,
+            infoWindow: const InfoWindow(
+              title: 'You',
+            ),
+          ),
+        );
+      }
+      _reports.forEach((key, value) {
+        dynamic uid = key;
+        try {
+          value.forEach((key, value) {
+            final report = value as Map<dynamic, dynamic>;
+            if (report['status'] == 'Verified') {
+              try {
+                final firstName = report['p3_mp_firstName'] ?? '';
+                final lastName = report['p3_mp_lastName'] ?? '';
+                final reportID = '${uid}_$key';
+                final location = report['p5_lastSeenLoc'] ?? '';
+                print('[TEST REPORT] $reportID NAME HERE CLEAR');
+                // Snippet
+  
+                final description = report['p5_incidentDetails'] ?? '';
+                print('[TEST REPORT] $reportID SNIPPET HERE CLEAR');
+                print('[TEST REPORT] $reportID LOCATION: $location');
+                final coordinates = extractDoubles(location.toString());
+                final reportLocation = LatLng(coordinates[0], coordinates[1]);
+                print('[TEST REPORT] $reportID LOCATION HERE CLEAR');
+  
+                final dateReported = report['p5_reportDate'] ?? '';
+                final lastSeenLoc = report['p5_nearestLandmark'] ?? '';
+  
+                // Info window
+                final mp_recentPhoto_LINK = report['mp_recentPhoto_LINK'];
+                final heightFeet = report['p4_mp_height_inches'] ?? '';
+                final heightInches = report['p4_mp_height_feet'] ?? '';
+                final sex = report['p3_mp_sex'] ?? '';
+                final age = report['p3_mp_age'] ?? '';
+                final weight = report['p4_mp_weight'] ?? '';
+                final scars = report['p4_mp_scars'] ?? '';
+                final marks = report['p4_mp_marks'] ?? '';
+                final tattoos = report['p4_mp_tattoos'] ?? '';
+                final hairColor = report['p4_mp_hair_color'] ?? '';
+                final eyeColor = report['p4_mp_eye_color'] ?? '';
+                final prosthetics = report['p4_mp_prosthetics'] ?? '';
+                final birthDefects = report['p4_mp_birth_defects'] ?? '';
+                final clothingAccessories = report['p4_mp_last_clothing'] ?? '';
+                final lastSeenDate = report['p5_lastSeenDate'] ?? '';
+                final lastSeenTime = report['p5_lastSeenTime'] ?? '';
+
+                bool minor = report['p1_isMinor'];
+                bool crime = report['p1_isVictimCrime'];
+                bool calamity = report['p1_isVictimNaturalCalamity'];
+
+                final marker = Marker(
+                  markerId: MarkerId(reportID),
+                  position: reportLocation,
+                  icon: sourceIcon,
+                  infoWindow: InfoWindow(
+                    title: '$firstName $lastName',
+                    snippet: 'Last Seen: $lastSeenDate, $lastSeenTime',
+                  ),
+                onTap: () {
+                  print('tapping on marker $reportID');
+                  showModalBottomSheet(
                     context: context,
                     barrierColor: Colors.black12,
                     shape: const RoundedRectangleBorder(
@@ -262,8 +273,7 @@ class _NearbyMainState extends State<NearbyMain> {
                                       ),
                                       const SizedBox(width: 10),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text('$firstName $lastName',
                                             style: GoogleFonts.inter(
@@ -273,6 +283,54 @@ class _NearbyMainState extends State<NearbyMain> {
                                             'Date Reported: $dateReported',
                                             style: GoogleFonts.inter(fontSize: 12,
                                                 color: Colors.black54),),
+
+                                          Visibility(
+                                            visible: minor || crime || calamity,
+                                            child: Row(
+                                              children: [
+                                                Visibility(
+                                                  visible: crime,
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(right: 5, top: 5),
+                                                    padding: const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                        color: Colors.deepPurple),
+                                                    //Retrieve the status here
+                                                    child: const Text('Crime',
+                                                      style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                  ),
+                                                ),
+                                                Visibility(
+                                                  visible: calamity,
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(right: 5, top: 5),
+                                                    padding: const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                        color: Colors.orangeAccent),
+                                                    //Retrieve the status here
+                                                    child: const Text('Calamity',
+                                                      style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                  ),
+                                                ),
+
+                                                Visibility(
+                                                  visible: minor,
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(right: 5, top: 5),
+                                                    padding: const EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(15),
+                                                        color: Colors.redAccent),
+                                                    //Retrieve the status here
+                                                    child: const Text('Minor',
+                                                      style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
                                         ],
                                       ),
                                     ],
@@ -283,56 +341,59 @@ class _NearbyMainState extends State<NearbyMain> {
                                     indent: 10,
                                     endIndent: 10,),
 
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text("LAST SEEN DATE",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: 10,
-                                              letterSpacing: 2,
-                                              color: Colors.black54)),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                                        padding: const EdgeInsets.all(15),
-                                        width: MediaQuery.of(context).size.width * 0.7,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(width: 0.5),
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(15))),
-                                        child: Text(
-                                          lastSeenDate,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(fontSize: 12.0),
-                                        ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("LAST SEEN DATE",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.35,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              lastSeenDate,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
 
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("LAST SEEN TIME",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w900,
-                                              fontSize: 10,
-                                              letterSpacing: 2,
-                                              color: Colors.black54)),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                                        padding: const EdgeInsets.all(15),
-                                        width: MediaQuery.of(context).size.width * 0.7,
-                                        decoration: BoxDecoration(
-                                            border: Border.all(width: 0.5),
-                                            borderRadius: const BorderRadius.all(
-                                                Radius.circular(15))),
-                                        child: Text(
-                                          lastSeenTime,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(fontSize: 12.0),
-                                        ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text("LAST SEEN TIME",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w900,
+                                                  fontSize: 10,
+                                                  letterSpacing: 2,
+                                                  color: Colors.black54)),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                                            padding: const EdgeInsets.all(15),
+                                            width: MediaQuery.of(context).size.width * 0.35,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(width: 0.5),
+                                                borderRadius: const BorderRadius.all(
+                                                    Radius.circular(15))),
+                                            child: Text(
+                                              lastSeenTime,
+                                              style: const TextStyle(fontSize: 12.0),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
@@ -350,7 +411,7 @@ class _NearbyMainState extends State<NearbyMain> {
                                         alignment: Alignment.centerLeft,
                                         margin: const EdgeInsets.only(top: 5, bottom: 15),
                                         padding: const EdgeInsets.all(15),
-                                        width: MediaQuery.of(context).size.width * 0.7,
+                                        width: MediaQuery.of(context).size.width * 0.75,
                                         decoration: BoxDecoration(
                                             border: Border.all(width: 0.5),
                                             borderRadius: const BorderRadius.all(
@@ -714,7 +775,7 @@ class _NearbyMainState extends State<NearbyMain> {
                                     alignment: Alignment.centerLeft,
                                     margin: const EdgeInsets.only(top: 5, bottom: 15),
                                     padding: const EdgeInsets.all(18),
-                                    width: MediaQuery.of(context).size.width * 0.7,
+                                    width: MediaQuery.of(context).size.width * 0.75,
                                     decoration: BoxDecoration(
                                         border: Border.all(width: 0.5),
                                         borderRadius:
@@ -733,40 +794,8 @@ class _NearbyMainState extends State<NearbyMain> {
                         },
                       );
                     },
-                );
-              },
-            );
-            markers.add(marker);
-            try {
-              final firstName = report['p3_mp_firstName'] ?? '';
-              final lastName = report['p3_mp_lastName'] ?? '';
-              final reportID = '${uid}_$key';
-              final location = report['p5_lastSeenLoc'] ?? '';
-              print('[TEST REPORT] $reportID NAME HERE CLEAR');
-              // Snippet
-              final heightFeet = report['p4_mp_height_inches'] ?? '';
-              final heightInches = report['p4_mp_height_feet'] ?? '';
-              final sex = report['p3_mp_sex'] ?? '';
-              final clothing = report['p4_mp_last_clothing'] ?? '';
-              final description = report['p5_incidentDetails'] ?? '';
-              print('[TEST REPORT] $reportID SNIPPET HERE CLEAR');
-              print('[TEST REPORT] $reportID LOCATION: $location');
-              final coordinates = extractDoubles(location.toString());
-              final reportLocation = LatLng(coordinates[0], coordinates[1]);
-              print('[TEST REPORT] $reportID LOCATION HERE CLEAR');
-
-              final marker = Marker(
-                markerId: MarkerId(reportID),
-                position: reportLocation,
-                icon: sourceIcon,
-                infoWindow: InfoWindow(
-                  title: '$firstName $lastName',
-                  snippet:
-                      "Sex: $sex \n Height: $heightFeet'$heightInches \n Clothing: $clothing",
-                  onTap: () {
-                    print('tapping on marker $reportID');
-                  },
-                ),
+                  );
+                },
               );
               markers.add(marker);
             } catch (e) {
