@@ -284,51 +284,54 @@
                                             style: GoogleFonts.inter(fontSize: 12,
                                                 color: Colors.black54),),
 
-                                          Visibility(
-                                            visible: minor || crime || calamity,
-                                            child: Row(
-                                              children: [
-                                                Visibility(
-                                                  visible: crime,
-                                                  child: Container(
-                                                    margin: EdgeInsets.only(right: 5, top: 5),
-                                                    padding: const EdgeInsets.all(8),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(15),
-                                                        color: Colors.deepPurple),
-                                                    //Retrieve the status here
-                                                    child: const Text('Crime',
-                                                      style: TextStyle(fontSize: 10, color: Colors.white),),
+                                          Container(
+                                            width: MediaQuery.of(context).size.width*0.65,
+                                            child: Visibility(
+                                              visible: minor || crime || calamity,
+                                              child: Wrap(
+                                                children: [
+                                                  Visibility(
+                                                    visible: crime,
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                                      padding: const EdgeInsets.all(8),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(15),
+                                                          color: Colors.deepPurple),
+                                                      //Retrieve the status here
+                                                      child: const Text('Victim of Crime',
+                                                        style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                    ),
                                                   ),
-                                                ),
-                                                Visibility(
-                                                  visible: calamity,
-                                                  child: Container(
-                                                    margin: EdgeInsets.only(right: 5, top: 5),
-                                                    padding: const EdgeInsets.all(8),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(15),
-                                                        color: Colors.orangeAccent),
-                                                    //Retrieve the status here
-                                                    child: const Text('Calamity',
-                                                      style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                  Visibility(
+                                                    visible: calamity,
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                                      padding: const EdgeInsets.all(8),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(15),
+                                                          color: Colors.orangeAccent),
+                                                      //Retrieve the status here
+                                                      child: const Text('Victim of Calamity',
+                                                        style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                    ),
                                                   ),
-                                                ),
 
-                                                Visibility(
-                                                  visible: minor,
-                                                  child: Container(
-                                                    margin: EdgeInsets.only(right: 5, top: 5),
-                                                    padding: const EdgeInsets.all(8),
-                                                    decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(15),
-                                                        color: Colors.redAccent),
-                                                    //Retrieve the status here
-                                                    child: const Text('Minor',
-                                                      style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                  Visibility(
+                                                    visible: minor,
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                                      padding: const EdgeInsets.all(8),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(15),
+                                                          color: Colors.redAccent),
+                                                      //Retrieve the status here
+                                                      child: const Text('Minor',
+                                                        style: TextStyle(fontSize: 10, color: Colors.white),),
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           )
                                         ],
