@@ -32,6 +32,11 @@ class _reportsPNPState extends State<reportsPNP> {
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   List<Map>? reportList = [];
 
+  late bool minor;
+  late bool crime;
+  late bool calamity;
+  late bool over24hours;
+
   // REPORT DETAILS
   String firstName = '';
   String lastName = '';
@@ -136,6 +141,11 @@ class _reportsPNPState extends State<reportsPNP> {
     String dateReported = report['p5_reportDate'] ?? '';
     String nearestLandmark = report['p5_nearestLandmark'] ?? '';
     String totalHoursMissingString = report['p5_totalHoursSinceLastSeen'] ?? '';
+
+    minor = report['p1_isMinor'] ?? false;
+    crime = report['p1_isVictimCrime'] ?? false;
+    calamity = report['p1_isVictimNaturalCalamity'] ?? false;
+    over24hours = report['p1_isMissing24Hours'] ?? false;
 
     // img links
     mp_locationSnapshot_LINK = report['mp_locSnapshot_LINK'] ?? '';
@@ -243,14 +253,17 @@ class _reportsPNPState extends State<reportsPNP> {
     // is Minor
     if (report['p1_isMinor'] != null && report['p1_isMinor']) {
       importanceString = 'Minor';
+      minor = true;
     }
     // is Missing over 24 hours
     if (report['p1_isMissing24Hours'] != null &&
         report['p1_isMissing24Hours']) {
       if (importanceString.isNotEmpty) {
         importanceString = '$importanceString, Over 24 hours missing';
+        over24hours = true;
       } else {
         importanceString = 'Over 24 hours missing';
+        over24hours = true;
       }
     }
     // adds the isMissing24Hours tag (if FALSE) if the total hours is over 24 hours (calculated based on the current time and date of PNP app)
@@ -275,8 +288,10 @@ class _reportsPNPState extends State<reportsPNP> {
     if (report['p1_isVictimCrime'] != null && report['p1_isVictimCrime']) {
       if (importanceString.isNotEmpty) {
         importanceString = '$importanceString, \nVictim of Crime';
+        crime = true;
       } else {
         importanceString = 'Victim of Crime';
+        crime = true;
       }
     }
     // is victim of natural calamity or human-made accident
@@ -284,8 +299,10 @@ class _reportsPNPState extends State<reportsPNP> {
         report['p1_isVictimNaturalCalamity']) {
       if (importanceString.isNotEmpty) {
         importanceString = '$importanceString, \nVictim of Calamity';
+        calamity = true;
       } else {
         importanceString = 'Victim of Calamity';
+        calamity = true;
       }
     }
     report['importanceTags'] = importanceString;
@@ -384,21 +401,83 @@ class _reportsPNPState extends State<reportsPNP> {
             ),
 
             SizedBox(
-              width: 200,
+              width: 240,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    importanceString == '' ? 'Absent Person' : importanceString,
-                    style: GoogleFonts.inter(
-                        fontSize: 12, fontWeight: FontWeight.w700, height: 2),
-                    textAlign: TextAlign.center,
+                  Visibility(
+                    visible: minor || crime || calamity || over24hours,
+                    child: Wrap(
+                      children: [
+                        Visibility(
+                          visible: crime,
+                          child: Container(
+                            margin: EdgeInsets.only(right: 5, top: 5),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.deepPurple),
+                            //Retrieve the status here
+                            child: const Text('Victim of Crime',
+                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                          ),
+                        ),
+                        Visibility(
+                          visible: calamity,
+                          child: Container(
+                            margin: EdgeInsets.only(right: 5, top: 5),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.orangeAccent),
+                            //Retrieve the status here
+                            child: const Text('Victim of Calamity',
+                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                          ),
+                        ),
+
+                        Visibility(
+                          visible: over24hours,
+                          child: Container(
+                            margin: EdgeInsets.only(right: 5, top: 5),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.green),
+                            //Retrieve the status here
+                            child: const Text('Over 24 Hours',
+                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                          ),
+                        ),
+
+                        Visibility(
+                          visible: minor,
+                          child: Container(
+                            margin: EdgeInsets.only(right: 5, top: 5),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.redAccent),
+                            //Retrieve the status here
+                            child: const Text('Minor',
+                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 2),
+                  // Text(
+                  //     importanceString == '' ? 'Absent Person' : importanceString,
+                  //     style: GoogleFonts.inter(
+                  //         fontSize: 12, fontWeight: FontWeight.w700, height: 2),
+                  //     textAlign: TextAlign.center),
+
+                  const SizedBox(height: 3),
                   Text('Priority Category',
+                      textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
-                          fontSize: 10, color: Colors.black38)),
+                          fontSize: 12, color: Colors.black38)),
                 ],
               ),
             ),
@@ -579,7 +658,7 @@ class _reportsPNPState extends State<reportsPNP> {
                             child: TextButton(
                               style: TextButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0)),
+                                    borderRadius: BorderRadius.circular(10.0)),
                                 backgroundColor: Palette.indigo,
                                 foregroundColor: Colors.white,
                               ),
@@ -600,18 +679,23 @@ class _reportsPNPState extends State<reportsPNP> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(Radius.circular(32.0))),
                                         title:
                                             Text('Enter Reason for Rejection'),
-                                        content: TextFormField(
-                                          onChanged: (value) {
-                                            rejectReason = value;
-                                          },
-                                          maxLines: 3,
-                                          decoration: InputDecoration(
-                                            hintText: 'Type reason here',
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
+                                        content: Container(
+                                          width: MediaQuery.of(context).size.width/3,
+                                          child: TextFormField(
+                                            onChanged: (value) {
+                                              rejectReason = value;
+                                            },
+                                            maxLines: 3,
+                                            decoration: InputDecoration(
+                                              hintText: 'Type reason here',
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -769,25 +853,33 @@ class _reportsPNPState extends State<reportsPNP> {
             ),
 
             // if status == rejected, show text button to "View Reject Reason" that shows a dialog box with the reason and allows it to be edited
+
             if (report['status'] == 'Rejected')
-              TextButton(
+              IconButton(
+                padding: EdgeInsets.only(left: 20),
+                tooltip: "View reason for rejection",
                 onPressed: () {
                   String? rejectReason;
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(20.0))),
                         title: const Text('Reason for Rejection'),
-                        content: TextFormField(
-                          initialValue: report['pnp_rejectReason'],
-                          onChanged: (value) {
-                            rejectReason = value;
-                          },
-                          maxLines: 3,
-                          decoration: InputDecoration(
-                            hintText: 'Type reason here',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                        content: Container(
+                          width: MediaQuery.of(context).size.width/3,
+                          child: TextFormField(
+                            initialValue: report['pnp_rejectReason'],
+                            onChanged: (value) {
+                              rejectReason = value;
+                            },
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              hintText: 'Type reason here',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                             ),
                           ),
                         ),
@@ -817,14 +909,35 @@ class _reportsPNPState extends State<reportsPNP> {
                     },
                   );
                 },
-                child: const Text('View Reject Reason'),
+                icon: Icon(Icons.rate_review_outlined),
+                color: Colors.black38,
+                focusColor: Palette.indigo,
+                selectedIcon: Icon(Icons.rate_review),
+                //child: const Text('View Reject Reason'),
               ),
 
             // if status == already found, show text "Date Found: " and the date found
             if (report['status'] == 'Already Found')
-              Text('Date Found: ${report['pnp_dateFound']}'),
+              SizedBox(
+                width: 200,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text('${report['pnp_dateFound']}',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.inter(
+                            fontSize: 18, fontWeight: FontWeight.w600)),
+                    const SizedBox(height: 3),
+                    Text('Date Found',
+                        style: GoogleFonts.inter(
+                            fontSize: 12, color: Colors.black38)),
+                  ],
+                ),
+              ),
+              //Text('Date Found: ${report['pnp_dateFound']}'),
 
-            SizedBox(width: 20),
+            //SizedBox(width: 20),
 
             // ICONS
             SizedBox(
@@ -1366,10 +1479,80 @@ class _reportsPNPState extends State<reportsPNP> {
                               : MediaQuery.of(context).size.width * .4,
                         ),
                       ),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          alignment: Alignment.center,
-                          child: Text(report['importanceTags'])),
+
+
+
+                      SizedBox(
+                        width: 300,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Visibility(
+                              visible: minor || crime || calamity || over24hours,
+                              child: Wrap(
+                                children: [
+                                  Visibility(
+                                    visible: crime,
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Colors.deepPurple),
+                                      //Retrieve the status here
+                                      child: const Text('Victim of Crime',
+                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: calamity,
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Colors.orangeAccent),
+                                      //Retrieve the status here
+                                      child: const Text('Victim of Calamity',
+                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                    ),
+                                  ),
+
+                                  Visibility(
+                                    visible: over24hours,
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Colors.green),
+                                      //Retrieve the status here
+                                      child: const Text('Over 24 Hours',
+                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                    ),
+                                  ),
+
+                                  Visibility(
+                                    visible: minor,
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Colors.redAccent),
+                                      //Retrieve the status here
+                                      child: const Text('Minor',
+                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
                       // Add more details as needed
 
                       const Padding(
