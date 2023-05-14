@@ -46,7 +46,7 @@ class _NotificationMain extends State<NotificationMain> {
 
   // optionStyle is for the text, we can remove this when actualy doing menu contents
   static const TextStyle optionStyle = TextStyle(
-      fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black54);
+      fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black);
   @override
   Widget build(BuildContext context) {
     // Map<dynamic, dynamic> reportsUnclean = widget.reports;
@@ -208,16 +208,22 @@ class _NotificationMain extends State<NotificationMain> {
               child: Column(
                 // ignore: prefer_const_literals_to_create_immutables
                 children: [
-                  const Icon(
-                    Icons.notifications_paused_outlined,
-                    size: 100,
-                    color: Colors.grey,
-                  ),
                   const Text(
-                    'No notifications',
+                    'Take a Break',
                     style: optionStyle,
                     textAlign: TextAlign.center,
                   ),
+
+                  const Text(
+                    '\nNo reported missing person near you!',
+                    textScaleFactor: 0.8,
+                    textAlign: TextAlign.center,
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(top: 40),
+                    child: Image.asset('assets/images/no_notif.png', height: 300,),
+                  )
                 ],
               ),
             ),
