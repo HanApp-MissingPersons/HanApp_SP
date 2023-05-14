@@ -419,8 +419,11 @@ class _reportsPNPState extends State<reportsPNP> {
                                 borderRadius: BorderRadius.circular(15),
                                 color: Colors.deepPurple),
                             //Retrieve the status here
-                            child: const Text('Victim of Crime',
-                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                            child: const Text(
+                              'Victim of Crime',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.white),
+                            ),
                           ),
                         ),
                         Visibility(
@@ -432,11 +435,13 @@ class _reportsPNPState extends State<reportsPNP> {
                                 borderRadius: BorderRadius.circular(15),
                                 color: Colors.orangeAccent),
                             //Retrieve the status here
-                            child: const Text('Victim of Calamity',
-                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                            child: const Text(
+                              'Victim of Calamity',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.white),
+                            ),
                           ),
                         ),
-
                         Visibility(
                           visible: over24hours,
                           child: Container(
@@ -446,11 +451,13 @@ class _reportsPNPState extends State<reportsPNP> {
                                 borderRadius: BorderRadius.circular(15),
                                 color: Colors.green),
                             //Retrieve the status here
-                            child: const Text('Over 24 Hours',
-                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                            child: const Text(
+                              'Over 24 Hours',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.white),
+                            ),
                           ),
                         ),
-
                         Visibility(
                           visible: minor,
                           child: Container(
@@ -460,8 +467,11 @@ class _reportsPNPState extends State<reportsPNP> {
                                 borderRadius: BorderRadius.circular(15),
                                 color: Colors.redAccent),
                             //Retrieve the status here
-                            child: const Text('Minor',
-                              style: TextStyle(fontSize: 10, color: Colors.white),),
+                            child: const Text(
+                              'Minor',
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.white),
+                            ),
                           ),
                         ),
                       ],
@@ -680,11 +690,15 @@ class _reportsPNPState extends State<reportsPNP> {
                                     builder: (BuildContext context) {
                                       return AlertDialog(
                                         shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(32.0))),
                                         title:
                                             Text('Enter Reason for Rejection'),
                                         content: Container(
-                                          width: MediaQuery.of(context).size.width/3,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3,
                                           child: TextFormField(
                                             onChanged: (value) {
                                               rejectReason = value;
@@ -865,10 +879,11 @@ class _reportsPNPState extends State<reportsPNP> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20.0))),
                         title: const Text('Reason for Rejection'),
                         content: Container(
-                          width: MediaQuery.of(context).size.width/3,
+                          width: MediaQuery.of(context).size.width / 3,
                           child: TextFormField(
                             initialValue: report['pnp_rejectReason'],
                             onChanged: (value) {
@@ -935,7 +950,7 @@ class _reportsPNPState extends State<reportsPNP> {
                   ],
                 ),
               ),
-              //Text('Date Found: ${report['pnp_dateFound']}'),
+            //Text('Date Found: ${report['pnp_dateFound']}'),
 
             //SizedBox(width: 20),
 
@@ -1061,7 +1076,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15))),
                                 child: Text(
-                                  firstName,
+                                  // firstName,
+                                  report['p3_mp_firstName'] ?? '',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -1093,7 +1109,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15))),
                                 child: Text(
-                                  lastName,
+                                  // lastName,
+                                  report['p3_mp_lastName'] ?? '',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -1128,7 +1145,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15))),
                                 child: Text(
-                                  middleName,
+                                  // middleName,
+                                  report['p3_mp_middleName'] ?? '',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -1160,7 +1178,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(15))),
                                 child: Text(
-                                  nickname,
+                                  // nickname,
+                                  report['p3_mp_nickname'] ?? '',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -1480,8 +1499,6 @@ class _reportsPNPState extends State<reportsPNP> {
                         ),
                       ),
 
-
-
                       SizedBox(
                         width: 300,
                         child: Column(
@@ -1489,7 +1506,8 @@ class _reportsPNPState extends State<reportsPNP> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Visibility(
-                              visible: minor || crime || calamity || over24hours,
+                              visible:
+                                  minor || crime || calamity || over24hours,
                               child: Wrap(
                                 children: [
                                   Visibility(
@@ -1498,11 +1516,15 @@ class _reportsPNPState extends State<reportsPNP> {
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
                                           color: Colors.deepPurple),
                                       //Retrieve the status here
-                                      child: const Text('Victim of Crime',
-                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                      child: const Text(
+                                        'Victim of Crime',
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.white),
+                                      ),
                                     ),
                                   ),
                                   Visibility(
@@ -1511,39 +1533,49 @@ class _reportsPNPState extends State<reportsPNP> {
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
                                           color: Colors.orangeAccent),
                                       //Retrieve the status here
-                                      child: const Text('Victim of Calamity',
-                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                      child: const Text(
+                                        'Victim of Calamity',
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.white),
+                                      ),
                                     ),
                                   ),
-
                                   Visibility(
                                     visible: over24hours,
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
                                           color: Colors.green),
                                       //Retrieve the status here
-                                      child: const Text('Over 24 Hours',
-                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                      child: const Text(
+                                        'Over 24 Hours',
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.white),
+                                      ),
                                     ),
                                   ),
-
                                   Visibility(
                                     visible: minor,
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
                                           color: Colors.redAccent),
                                       //Retrieve the status here
-                                      child: const Text('Minor',
-                                        style: TextStyle(fontSize: 12, color: Colors.white),),
+                                      child: const Text(
+                                        'Minor',
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.white),
+                                      ),
                                     ),
                                   ),
                                 ],
