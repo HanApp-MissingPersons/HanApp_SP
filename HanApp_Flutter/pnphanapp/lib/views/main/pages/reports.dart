@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:image_network/image_network.dart';
+import 'package:intl/intl.dart';
 
 class reportsPNP extends StatefulWidget {
   final List<String> filterValue;
@@ -134,6 +135,7 @@ class _reportsPNPState extends State<reportsPNP> {
     String lastSeenTime = report['p5_lastSeenTime'] ?? '';
     String dateReported = report['p5_reportDate'] ?? '';
     String nearestLandmark = report['p5_nearestLandmark'] ?? '';
+    String totalHoursMissingString = report['p5_totalHoursSinceLastSeen'] ?? '';
 
     // img links
     mp_locationSnapshot_LINK = report['mp_locSnapshot_LINK'] ?? '';
@@ -189,10 +191,60 @@ class _reportsPNPState extends State<reportsPNP> {
       report['distance'] = distance;
     }
 
-    // classify importance
+    // calculate and update total hours missing (both for if still missing, and if already found)
+    if (report['p5_lastSeenDate'] != null &&
+        report['p5_lastSeenTime'] != null) {
+      DateFormat dateTimeFormat = DateFormat('MMMM d, y hh:mm a');
+      DateTime lastSeenDateTime = dateTimeFormat
+          .parse('${report['p5_lastSeenDate']} ${report['p5_lastSeenTime']}');
+      if (report['status'] == "Already Found") {
+        // DateFormat dateTimeFormat = DateFormat('MMMM d, y hh:mm a');
+        // use "pnp_dateFound" in report RTDB to calculate total hours missing, defaulting time to 12:00 PM
+        // current format is
+        //     String dateFound =
+        // '${selectedDate.month.toString().padLeft(2, '0')}/'
+        // '${selectedDate.day.toString().padLeft(2, '0')}/'
+        // '${selectedDate.year.toString()}';
+        DateFormat dateTimeFormat = DateFormat('MM/dd/yyyy hh:mm a');
+        DateTime foundDateTime = dateTimeFormat.parse(
+            '${report['pnp_dateFound']} 12:00 PM'); // 12:00 PM is default time
+        // DateTime foundTime = dateTimeFormat.parse(
+        // '${report['pnp_dateFound']} 12:00 PM'); // 12:00 PM is default time
+        Duration difference = foundDateTime.difference(lastSeenDateTime);
+        int differenceInHours = difference.inHours;
+        String differenceInHoursString = differenceInHours.toString();
+        // update RTDB p5_totalHoursSinceLastSeen
+        report['p5_totalHoursSinceLastSeen'] = differenceInHoursString;
+        databaseReportsReference
+            .child(report['uid'])
+            .child(report['key'])
+            .update({
+          'p5_totalHoursSinceLastSeen': differenceInHoursString,
+        });
+      } else {
+        DateTime now = DateTime.now();
+        Duration difference = now.difference(lastSeenDateTime);
+        int differenceInHours = difference.inHours;
+        String differenceInHoursString = differenceInHours.toString();
+        // update RTDB p5_totalHoursSinceLastSeen
+        report['p5_totalHoursSinceLastSeen'] = differenceInHoursString;
+        databaseReportsReference
+            .child(report['uid'])
+            .child(report['key'])
+            .update({
+          'p5_totalHoursSinceLastSeen': differenceInHoursString,
+        });
+      }
+    }
+
+    // calculate and update total hours missing if Already Found (deduct with dateFound) rather than current time
+
+    // CLASSIFIERS
+    // is Minor
     if (report['p1_isMinor'] != null && report['p1_isMinor']) {
       importanceString = 'Minor';
     }
+    // is Missing over 24 hours
     if (report['p1_isMissing24Hours'] != null &&
         report['p1_isMissing24Hours']) {
       if (importanceString.isNotEmpty) {
@@ -201,6 +253,25 @@ class _reportsPNPState extends State<reportsPNP> {
         importanceString = 'Over 24 hours missing';
       }
     }
+    // adds the isMissing24Hours tag (if FALSE) if the total hours is over 24 hours (calculated based on the current time and date of PNP app)
+    if (
+        // date and time not missing
+        report['p5_lastSeenDate'] != null &&
+            report['p5_lastSeenTime'] != null &&
+            // over 24 hours
+            int.parse(report['p5_totalHoursSinceLastSeen'.trim()]) >= 24 &&
+            // isMissing24Hours tag is false when the report is created
+            report['p1_isMissing24Hours'] == false) {
+      // update RTDB on p1_isMissing24Hours
+      report['p1_isMissing24Hours'] = true;
+      databaseReportsReference
+          .child(report['uid'])
+          .child(report['key'])
+          .update({
+        'p1_isMissing24Hours': true,
+      });
+    }
+    // is victim of a crime
     if (report['p1_isVictimCrime'] != null && report['p1_isVictimCrime']) {
       if (importanceString.isNotEmpty) {
         importanceString = '$importanceString, \nVictim of Crime';
@@ -208,6 +279,7 @@ class _reportsPNPState extends State<reportsPNP> {
         importanceString = 'Victim of Crime';
       }
     }
+    // is victim of natural calamity or human-made accident
     if (report['p1_isVictimNaturalCalamity'] != null &&
         report['p1_isVictimNaturalCalamity']) {
       if (importanceString.isNotEmpty) {
@@ -352,7 +424,7 @@ class _reportsPNPState extends State<reportsPNP> {
 
             // Last seen time
             SizedBox(
-              width: 200,
+              width: 150,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -362,6 +434,24 @@ class _reportsPNPState extends State<reportsPNP> {
                           fontSize: 18, fontWeight: FontWeight.w600)),
                   SizedBox(height: 3),
                   Text('Last Seen Time',
+                      style: GoogleFonts.inter(
+                          fontSize: 12, color: Colors.black38)),
+                ],
+              ),
+            ),
+
+            // total hours missing
+            SizedBox(
+              width: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(totalHoursMissingString,
+                      style: GoogleFonts.inter(
+                          fontSize: 18, fontWeight: FontWeight.w600)),
+                  SizedBox(height: 3),
+                  Text('Total Hours Missing',
                       style: GoogleFonts.inter(
                           fontSize: 12, color: Colors.black38)),
                 ],
@@ -430,7 +520,8 @@ class _reportsPNPState extends State<reportsPNP> {
                       String? newStatusValue = statusValue;
                       return AlertDialog(
                         title: Text(
-                            'Change Report Status of $firstName $lastName'),
+                            // 'Change Report Status of $firstName $lastName'),
+                            'Change Report Status of ${report['p3_mp_firstName']} ${report['p3_mp_lastName']}'),
                         shape: const RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20.0))),
@@ -1014,7 +1105,7 @@ class _reportsPNPState extends State<reportsPNP> {
                         ),
                       ),
 
-                      // Last Seen Location
+                      // Last Seen Date
                       Text("LAST SEEN DATE",
                           style: TextStyle(
                               fontWeight: FontWeight.w900,
