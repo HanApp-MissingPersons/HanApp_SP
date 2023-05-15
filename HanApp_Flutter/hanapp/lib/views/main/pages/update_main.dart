@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -19,7 +21,34 @@ class _UpdateMainState extends State<UpdateMain> {
   // optionStyle is for the text, we can remove this when actualy doing menu contents
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   List<Map> reportList = [];
+  List<Map> reportListCopy = [];
+  List<Map> reportListOriginal = [];
+  TextEditingController editingController = TextEditingController();
   final user = FirebaseAuth.instance.currentUser;
+  bool firstCheck = true;
+
+  void filterSearchResults(String query) {
+    setState(() {
+      reportList = reportListCopy.where((item) {
+        if (item.containsKey('status')) {
+          var firstName = item['p3_mp_firstName'] ?? '';
+          var lastName = item['p3_mp_lastName'] ?? '';
+          var combinedName =
+              firstName + lastName == '' ? 'No Name' : firstName + lastName;
+          var status = item['status'] ?? '';
+          var searchToken = combinedName + status;
+          var returnVal =
+              searchToken.toLowerCase().contains(query.toLowerCase());
+          return returnVal;
+        } else {
+          return false;
+        }
+      }).toList();
+      print('reportCopy len: ${reportListCopy.length}');
+      print('report len: ${reportList.length}');
+    });
+    reportListCopy = List.from(reportList);
+  }
 
   Widget listItem({required Map report}) {
     String reportName = 'No Name';
@@ -72,42 +101,49 @@ class _UpdateMainState extends State<UpdateMain> {
         break;
     }
 
-    print(report['status']);
-    print(report.keys);
+    // print(report['status']);
+    // print(report.keys);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 3,
       child: ListTile(
-        title: Text(reportName,
-          style: GoogleFonts.inter(textStyle: TextStyle(
-            fontWeight: FontWeight.w700)),
+        title: Text(
+          reportName,
+          style: GoogleFonts.inter(
+              textStyle: TextStyle(fontWeight: FontWeight.w700)),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(report['p5_reportDate'], textScaleFactor: 0.9,),
+            Text(
+              report['p5_reportDate'],
+              textScaleFactor: 0.9,
+            ),
             if (report['status'] == 'Rejected')
               TextButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(10.0))),
-                              title: const Text('Reason for Rejection'),
-                              content: Text(report['pnp_rejectReason'])
-                          );
-                        }
-                    );
-                  },
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10.0))),
+                            title: const Text('Reason for Rejection'),
+                            content: Text(report['pnp_rejectReason'] ??
+                                'No stated reason for rejection'));
+                      });
+                },
                 child: Container(
-                  width: MediaQuery.of(context).size.width * 0.25,
+                    width: MediaQuery.of(context).size.width * 0.25,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
                     alignment: Alignment.centerLeft,
-                    child: Text('View Feedback', textScaleFactor: 0.8,)),
+                    child: Text(
+                      'View Feedback',
+                      textScaleFactor: 0.8,
+                    )),
               ),
           ],
         ),
@@ -129,6 +165,18 @@ class _UpdateMainState extends State<UpdateMain> {
         ),
       ),
     );
+  }
+
+  StreamSubscription? _subscription;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 
   static const TextStyle optionStyle = TextStyle(
@@ -161,9 +209,6 @@ class _UpdateMainState extends State<UpdateMain> {
                 icon: Icon(Icons.account_circle_outlined, size: 30),
                 selectedIcon: Icon(Icons.account_circle, size: 30),
                 onPressed: () {
-                  // sign out the user
-                  // FirebaseAuth.instance.signOut();
-                  // navigate to the login page
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -185,59 +230,87 @@ class _UpdateMainState extends State<UpdateMain> {
                       left: MediaQuery.of(context).size.width * 0.1),
                   child: Text('Reports',
                       style: GoogleFonts.inter(
-                          textStyle: TextStyle(
+                          textStyle: const TextStyle(
                               fontWeight: FontWeight.w900, fontSize: 24))),
                 ),
               ],
             ),
           ),
           Container(
+            margin: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width * 0.1,
+                left: MediaQuery.of(context).size.width * 0.1),
+            child: TextField(
+              controller: editingController,
+              decoration: const InputDecoration(
+                  labelText: "Search",
+                  hintText: "Search",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              onChanged: (value) {
+                filterSearchResults(value);
+                setState(() {
+                  reportListCopy = reportListOriginal;
+                });
+              },
+            ),
+          ),
+          Container(
             //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
-            height: MediaQuery.of(context).size.height * .65,
+            height: MediaQuery.of(context).size.height * .575,
             width: MediaQuery.of(context).size.width * .85,
-            child: StreamBuilder(
-              stream: dbRef.onValue,
+            child: FutureBuilder(
+              future: dbRef.once(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                print('snapshot: $snapshot');
+                // print('snapshot: $snapshot');
                 if (!snapshot.hasData) {
                   return const SpinKitCubeGrid(
                     color: Palette.indigo,
                     size: 30.0,
                   );
                 }
-                reportList.clear();
-                dynamic values = snapshot.data?.snapshot.value;
-                if (values != null) {
-                  Map<dynamic, dynamic> reports = values;
-                  // users
-                  reports.forEach((key, value) {
-                    dynamic uid = key;
-                    // reports of each user
-                    print('key = $key');
-                    if (key == user?.uid) {
-                      value.forEach((key, value) {
-                        value['key'] = '${key}__$uid';
-                        value['uid'] = uid;
-                        // add report to list
-                        reportList.add(value);
-                      });
+                if (firstCheck) {
+                  reportList.clear();
+                  reportListCopy.clear();
+                  dynamic values = snapshot.data?.snapshot.value;
+                  if (values != null) {
+                    Map<dynamic, dynamic> reports = values;
+                    // users
+                    reports.forEach((key, value) {
+                      dynamic uid = key;
+                      // reports of each user
+                      // print('key = $key');
+                      if (key == user?.uid) {
+                        value.forEach((key, value) {
+                          value['key'] = '${key}__$uid';
+                          value['uid'] = uid;
+                          // add report to list
+                          reportList.add(value);
+                          reportListCopy.add(value);
+                          reportListOriginal.add(value);
+                        });
+                      }
+                    });
+                    if (reportList.isEmpty) {
+                      return Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                            'There are currently no submitted reports'),
+                      );
                     }
-                  });
-                  if (reportList.isEmpty) {
+                  } else {
+                    // reportListCopy = reportList;
                     return Container(
                       alignment: Alignment.center,
                       child: const Text(
                           'There are currently no submitted reports'),
                     );
                   }
-                } else {
-                  return Container(
-                    alignment: Alignment.center,
-                    child:
-                        const Text('There are currently no submitted reports'),
-                  );
+                  firstCheck = false;
                 }
                 return ListView.builder(
+                  shrinkWrap: true,
                   itemCount: reportList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return listItem(report: reportList[index]);
