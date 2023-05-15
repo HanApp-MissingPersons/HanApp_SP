@@ -64,7 +64,7 @@ class _UpdateMainState extends State<UpdateMain> {
         break;
       case 'Already Found':
         statusChange = const Text('Found',
-            style: TextStyle(color: Colors.white), textAlign: TextAlign.center);
+            style: TextStyle(color: Colors.black54), textAlign: TextAlign.center);
         break;
       default:
         statusChange = const Text('Incomplete',
@@ -135,27 +135,26 @@ class _UpdateMainState extends State<UpdateMain> {
       fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black54);
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
-      child: Column(
-        //crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
+      //crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: MediaQuery.of(context).size.width * 0.85,
+          padding: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height / 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .15,
-              ),
               Padding(
-                padding: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width / 5,
-                    right: MediaQuery.of(context).size.width / 5),
-                child: const Text(
-                  'Updates',
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
+                padding: const EdgeInsets.only(right: 20.0),
+                child: Image.asset('assets/images/hanappLogo.png', width: 35),
+              ),
+              const Text(
+                'Updates',
+                style: TextStyle(
+                    fontSize: 18.0, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
               ),
               IconButton(
                 icon: Icon(Icons.account_circle_outlined, size: 30),
@@ -174,80 +173,80 @@ class _UpdateMainState extends State<UpdateMain> {
               ),
             ],
           ),
-          Container(
-            margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * .05, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.1),
-                  child: Text('Reports',
-                      style: GoogleFonts.inter(
-                          textStyle: TextStyle(
-                              fontWeight: FontWeight.w900, fontSize: 24))),
-                ),
-              ],
-            ),
+        ),
+        Container(
+          margin: EdgeInsets.only(
+              top: MediaQuery.of(context).size.height * .05, bottom: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.1),
+                child: Text('Reports',
+                    style: GoogleFonts.inter(
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.w900, fontSize: 24))),
+              ),
+            ],
           ),
-          Container(
-            //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
-            height: MediaQuery.of(context).size.height * .65,
-            width: MediaQuery.of(context).size.width * .85,
-            child: StreamBuilder(
-              stream: dbRef.onValue,
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                print('snapshot: $snapshot');
-                if (!snapshot.hasData) {
-                  return const SpinKitCubeGrid(
-                    color: Palette.indigo,
-                    size: 30.0,
-                  );
-                }
-                reportList.clear();
-                dynamic values = snapshot.data?.snapshot.value;
-                if (values != null) {
-                  Map<dynamic, dynamic> reports = values;
-                  // users
-                  reports.forEach((key, value) {
-                    dynamic uid = key;
-                    // reports of each user
-                    print('key = $key');
-                    if (key == user?.uid) {
-                      value.forEach((key, value) {
-                        value['key'] = '${key}__$uid';
-                        value['uid'] = uid;
-                        // add report to list
-                        reportList.add(value);
-                      });
-                    }
-                  });
-                  if (reportList.isEmpty) {
-                    return Container(
-                      alignment: Alignment.center,
-                      child: const Text(
-                          'There are currently no submitted reports'),
-                    );
+        ),
+        Container(
+          //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
+          height: MediaQuery.of(context).size.height * .65,
+          width: MediaQuery.of(context).size.width * .85,
+          child: StreamBuilder(
+            stream: dbRef.onValue,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              print('snapshot: $snapshot');
+              if (!snapshot.hasData) {
+                return const SpinKitCubeGrid(
+                  color: Palette.indigo,
+                  size: 30.0,
+                );
+              }
+              reportList.clear();
+              dynamic values = snapshot.data?.snapshot.value;
+              if (values != null) {
+                Map<dynamic, dynamic> reports = values;
+                // users
+                reports.forEach((key, value) {
+                  dynamic uid = key;
+                  // reports of each user
+                  print('key = $key');
+                  if (key == user?.uid) {
+                    value.forEach((key, value) {
+                      value['key'] = '${key}__$uid';
+                      value['uid'] = uid;
+                      // add report to list
+                      reportList.add(value);
+                    });
                   }
-                } else {
+                });
+                if (reportList.isEmpty) {
                   return Container(
                     alignment: Alignment.center,
-                    child:
-                        const Text('There are currently no submitted reports'),
+                    child: const Text(
+                        'There are currently no submitted reports'),
                   );
                 }
-                return ListView.builder(
-                  itemCount: reportList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return listItem(report: reportList[index]);
-                  },
+              } else {
+                return Container(
+                  alignment: Alignment.center,
+                  child:
+                      const Text('There are currently no submitted reports'),
                 );
-              },
-            ),
+              }
+              return ListView.builder(
+                itemCount: reportList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return listItem(report: reportList[index]);
+                },
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -61,26 +61,23 @@ class _NotificationMain extends State<NotificationMain> {
         ? Center(
             child: Column(
               children: [
-                Padding(
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.85,
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height / 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * .15,
-                      ),
                       Padding(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width / 6.7,
-                            right: MediaQuery.of(context).size.width / 6.7),
-                        child: const Text(
-                          'Notifications',
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center,
-                        ),
+                        padding: const EdgeInsets.only(right: 20.0),
+                        child: Image.asset('assets/images/hanappLogo.png', width: 35),
+                      ),
+                      const Text(
+                        'Notifications',
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.w600),
+                        textAlign: TextAlign.center,
                       ),
                       IconButton(
                         icon: Icon(Icons.account_circle_outlined, size: 30),
@@ -118,7 +115,7 @@ class _NotificationMain extends State<NotificationMain> {
                         child: Card(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0)),
-                          elevation: 3,
+                          elevation: 4,
                           child: ListTile(
                             isThreeLine: true,
                             dense: true,
@@ -159,7 +156,7 @@ class _NotificationMain extends State<NotificationMain> {
                               },
                               child: const Icon(Icons.remove_red_eye_outlined),
                             ),
-                            tileColor: Colors.grey[200],
+                            tileColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),

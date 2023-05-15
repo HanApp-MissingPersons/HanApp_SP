@@ -56,23 +56,12 @@ class _HomeMainState extends State<HomeMain> {
                       Padding(
                         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 14),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  right: MediaQuery.of(context).size.width / 2.5),
-                              child: const IconButton(
-                                icon: Icon(Icons.info_outline_rounded, size: 35),
-                                onPressed: null,
-                              ),
-                            ),
-                            const IconButton(
-                              icon: Icon(Icons.notifications_outlined, size: 35),
-                              onPressed: null,
-                            ),
+                            Image.asset('assets/images/hanappLogo.png', width: 40),
                             IconButton(
-                              icon: Icon(Icons.account_circle_outlined, size: 35),
+                              icon: Icon(Icons.account_circle_outlined, size: 40),
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -86,7 +75,7 @@ class _HomeMainState extends State<HomeMain> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 50),
+                        padding: const EdgeInsets.only(top: 30),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

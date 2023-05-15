@@ -106,11 +106,7 @@ class _ProfileMain extends State<ProfileMain> {
                             textAlign: TextAlign.center,
                           ),
                         ),
-                        const IconButton(
-                          icon: Icon(Icons.manage_accounts_outlined,
-                              color: Colors.black),
-                          onPressed: null,
-                        )
+                        SizedBox(width: 50,)
                       ],
                     ),
 

@@ -330,7 +330,7 @@ class _reportsPNPState extends State<reportsPNP> {
         height: 110,
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(15)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
         child: Row(
           children: [
@@ -954,64 +954,18 @@ class _reportsPNPState extends State<reportsPNP> {
 
             //SizedBox(width: 20),
 
-            // ICONS
-            SizedBox(
-                width: 120,
-                child: Row(
-                  children: [
-                    // IconButton(
-                    //   icon: isClicked
-                    //       ? Icon(Icons.star_outline_rounded)
-                    //       : Icon(Icons.star_rounded)
-                    //   onPressed: () {
-                    //     setState(() {
-                    //       isClicked = !isClicked
-                    //     });
-                    //   })
-                    const IconButton(
-                        icon: Icon(Icons.outlined_flag_rounded),
-                        onPressed: null),
-
-                    PopupMenuButton(
-                        icon: const Icon(
-                          Icons.more_vert,
-                          color: Colors.black38,
-                        ),
-                        tooltip: "Show options",
-                        itemBuilder: (context) => [
-                              const PopupMenuItem(child: Text('Edit')),
-                              const PopupMenuItem(child: Text('Add')),
-                              const PopupMenuItem(
-                                child: Text('Delete'),
-                                // onTap: () {
-                                //   displayReportDialog(context, report, reportImages);
-                                //   setState(() {
-                                //   });}
-                              )
-                            ],
-                        onSelected: null),
-
-                    IconButton(
-                        icon: const Icon(
-                          Icons.chevron_right_rounded,
-                          size: 30,
-                          color: Colors.black38,
-                        ),
-                        onPressed: () {
-                          if (dateReported.isNotEmpty) {
-                            displayReportDialog(context, report);
-                          }
-                        })
-                  ],
-                )),
-            // const IconButton(
-            //     icon: Icon(
+            // // ICONS
+            // IconButton(
+            //     icon: const Icon(
             //       Icons.chevron_right_rounded,
-            //       size: 40,
-            //       opticalSize: 100,
-            //       color: Colors.black54,
+            //       size: 30,
+            //       color: Colors.black38,
             //     ),
-            //     onPressed: null)
+            //     onPressed: () {
+            //       if (dateReported.isNotEmpty) {
+            //         displayReportDialog(context, report);
+            //       }
+            //     }),
           ],
         ),
       ),
