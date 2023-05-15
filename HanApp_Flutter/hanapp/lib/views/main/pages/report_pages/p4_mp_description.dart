@@ -459,6 +459,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
                             hintText: 'Hair Color',
+                            hintStyle: TextStyle(fontStyle: FontStyle.italic),
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             border: OutlineInputBorder(
                                 borderRadius:

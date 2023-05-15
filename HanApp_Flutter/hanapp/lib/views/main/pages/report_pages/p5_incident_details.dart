@@ -318,14 +318,17 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               _verticalPadding,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.info_outline_rounded, size: 20),
-                  SizedBox(width: 5),
-                  Text(
-                    '''Fields with (*) are required.''',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black54,
+                children: [
+                  const Icon(Icons.info_outline_rounded, size: 20),
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 60,
+                    child: const Text(
+                      '''Fields with (*) require user input.\nThe rest are auto-generated.''',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ],
@@ -358,7 +361,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 40,
                 child: const Text(
-                  'Last Seen Date',
+                  'Last Seen Date*',
                   style: headingStyle,
                 ),
               ),
