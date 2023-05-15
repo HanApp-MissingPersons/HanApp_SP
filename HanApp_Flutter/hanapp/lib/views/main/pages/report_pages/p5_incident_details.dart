@@ -773,6 +773,18 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               ),
               _verticalPadding,
               SizedBox(
+                width: MediaQuery.of(context).size.width - 40,
+                child: const Text(
+                  '''Note: If "Victim of Crime" or "Victim of Calamity or Accident", please provide specific details regarding the crime or calamity/accident.''',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black38,
+                  ),
+                ),
+              ),
+              _verticalPadding,
+              _verticalPadding,
+              SizedBox(
                 width: MediaQuery.of(context).size.width - 50,
                 child: const Text(
                   "End of Absent/Missing Person Details Form. Swipe left to move to next page",

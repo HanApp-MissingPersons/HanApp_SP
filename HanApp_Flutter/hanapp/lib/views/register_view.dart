@@ -481,7 +481,7 @@ class _RegisterViewState extends State<RegisterView> {
                             Container(
                               child: ageFromBday != null
                                   ? Text(
-                                      'You are currently a $ageFromBday year old',
+                                      'You are currently $ageFromBday years of age',
                                       style: TextStyle(
                                           color: Colors.grey[600],
                                           fontSize: 12),

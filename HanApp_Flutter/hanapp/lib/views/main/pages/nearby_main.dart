@@ -228,9 +228,9 @@ class _NearbyMainState extends State<NearbyMain> {
               final lastSeenDate = report['p5_lastSeenDate'] ?? '';
               final lastSeenTime = report['p5_lastSeenTime'] ?? '';
 
-              bool minor = report['p1_isMinor'];
-              bool crime = report['p1_isVictimCrime'];
-              bool calamity = report['p1_isVictimNaturalCalamity'];
+              bool minor = report['p1_isMinor'] ?? false;
+              bool crime = report['p1_isVictimCrime'] ?? false;
+              bool calamity = report['p1_isVictimNaturalCalamity'] ?? false;
 
               final marker = Marker(
                 markerId: MarkerId(reportID),

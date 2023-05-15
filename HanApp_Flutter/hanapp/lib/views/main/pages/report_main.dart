@@ -117,7 +117,7 @@ class _ReportMainState extends State<ReportMain> {
                 subtractHeightParent: returnP4Height,
               )), // change image display height
           // page 5
-          const SizedBox(height: 1600, child: Page5IncidentDetails()),
+          const SizedBox(height: 1800, child: Page5IncidentDetails()),
           // page 6
           Container(
             margin: const EdgeInsets.only(top: 40),
