@@ -1491,12 +1491,28 @@ class _reportsPNPState extends State<reportsPNP> {
                             //   onLoading: const SpinKitCubeGrid(
                             //       color: Colors.indigoAccent),
                             // ),
-                            Image.network(
-                          report['mp_recentPhoto_LINK'],
-                          width: MediaQuery.of(context).size.width * .4 > 200
-                              ? MediaQuery.of(context).size.width * .25
-                              : MediaQuery.of(context).size.width * .4,
-                        ),
+                            report['mp_recentPhoto_LINK'] != null
+                                ? Image.network(
+                                    report['mp_recentPhoto_LINK'],
+                                    width: MediaQuery.of(context).size.width *
+                                                .4 >
+                                            200
+                                        ? MediaQuery.of(context).size.width *
+                                            .25
+                                        : MediaQuery.of(context).size.width *
+                                            .4,
+                                  )
+                                : Icon(
+                                    Icons.person,
+                                    size: MediaQuery.of(context).size.width *
+                                                .4 >
+                                            200
+                                        ? MediaQuery.of(context).size.width *
+                                            .25
+                                        : MediaQuery.of(context).size.width *
+                                            .4,
+                                    color: Colors.grey,
+                                  ),
                       ),
 
                       SizedBox(
