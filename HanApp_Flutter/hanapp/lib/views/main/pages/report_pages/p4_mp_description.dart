@@ -279,8 +279,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
       mp_hair_color_natural =
-          _prefs.getBool('p4_mp_hair_color_natural') ?? false;
-      mp_eye_color_natural = _prefs.getBool('p4_mp_eye_color_natural') ?? false;
+          _prefs.getBool('p4_mp_hair_color_natural') ?? true;
+      mp_eye_color_natural = _prefs.getBool('p4_mp_eye_color_natural') ?? true;
     });
   }
 
@@ -494,7 +494,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 100,
                               child: const Text(
-                                  'Natural hair color? (not dyed/wearing wig)',
+                                  'Natural hair color (not dyed/wearing wig).',
                                   style: TextStyle(
                                       fontSize: 12, color: Colors.black54)),
                             ),
@@ -553,7 +553,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width - 100,
                               child: const Text(
-                                  'Natural eye color? (not wearing contacts)',
+                                  'Natural eye color (not wearing contacts)',
                                   style: TextStyle(
                                       fontSize: 12, color: Colors.black54)),
                             ),
@@ -804,8 +804,8 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         child: TextField(
                           controller: _mp_medications,
                           decoration: const InputDecoration(
-                            labelText: 'If none/unknown type "NA"',
-                            hintText: 'Medications',
+                            hintText: 'If none/unknown type "NA"',
+                            labelText: 'Medications',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),

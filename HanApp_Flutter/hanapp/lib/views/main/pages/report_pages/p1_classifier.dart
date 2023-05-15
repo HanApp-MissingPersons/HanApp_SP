@@ -101,7 +101,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
       'The person is missing due to a natural calamity/disaster (typhoons, earthquakes, landslides), or accident';
   static const String minorText =
       // 'Is the absent/missing person a minor (under the age of 18)?';
-      'The person is still a minor (under the age of 18)';
+      'The person is still a minor\n(under the age of 18)';
   static const String missing24HoursText =
       'The person has been missing for more than 24 hours since they were last seen';
   static const String victimCrimeText =

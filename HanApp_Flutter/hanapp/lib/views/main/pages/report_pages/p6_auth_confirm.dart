@@ -358,7 +358,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             text: TextSpan(children: [
                               const TextSpan(
                                 text:
-                                    "I hereby provide my consent and authorize the PNP to record and upload the information and photograph of the absent/missing person”. For more details, download and view ",
+                                    "I hereby provide my consent and authorize the PNP to record and upload the information and photograph of the absent/missing person”.\nFor more details, download and view ",
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

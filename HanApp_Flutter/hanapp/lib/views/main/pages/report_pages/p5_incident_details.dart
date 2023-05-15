@@ -534,10 +534,11 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         TextEditingController(text: totalHoursSinceLastSeen),
                     enabled: false,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: "Hours Since Last Seen",
-                    ),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: "Hours Since Last Seen",
+                        labelStyle: TextStyle(color: Colors.black)),
                     onChanged: (value) {
                       totalHoursSinceLastSeen = value;
                       // prefs.setString('p5_hoursSinceLastSeen', value);
