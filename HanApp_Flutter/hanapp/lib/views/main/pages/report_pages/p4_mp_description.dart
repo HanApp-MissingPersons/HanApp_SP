@@ -1147,11 +1147,31 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           ],
                         ),
                       // END OF PAGE
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
-                        child: const Text(
-                          "End of Absent/Missing Person Details Form. Swipe left to move to next page",
-                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                      _verticalPadding,
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width / 50),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              // Icons.info_outline_rounded,
+                              Icons.swipe_left_rounded,
+                              color: Colors.black54,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 5),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 40,
+                              child: const Text(
+                                'End of Absent/Missing Person Description Form. \nSwipe left to continue.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       // DEBUG TOOL: SHARED PREF PRINTER

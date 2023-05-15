@@ -1198,11 +1198,38 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             ),
             _verticalPadding,
             // "Swipe Right to Move to Next Page"
-            SizedBox(
-              width: MediaQuery.of(context).size.width - 30,
-              child: const Text(
-                "End of Reportee Details Form. Swipe left to move to next page",
-                style: TextStyle(fontSize: 12, color: Colors.black54),
+            // SizedBox(
+            //   width: MediaQuery.of(context).size.width - 30,
+            //   child: const Text(
+            //     "End of Reportee Details Form. Swipe left to move to next page",
+            //     style: TextStyle(fontSize: 12, color: Colors.black54),
+            //   ),
+            // ),
+
+            Padding(
+              padding:
+                  EdgeInsets.only(left: MediaQuery.of(context).size.width / 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    // Icons.info_outline_rounded,
+                    Icons.swipe_left_rounded,
+                    color: Colors.black54,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 40,
+                    child: const Text(
+                      'End of Reportee Details Form. \nSwipe left to continue.',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             // DEBUG TOOL: SHARED PREF PRINTER

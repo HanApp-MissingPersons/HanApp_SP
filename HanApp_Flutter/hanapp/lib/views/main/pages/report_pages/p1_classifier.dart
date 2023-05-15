@@ -98,10 +98,10 @@ class _Page1ClassifierState extends State<Page1Classifier> {
   // classifier texts
   static const String naturalCalamityText =
       //'Is the absent/missing person a victim of a natural calamity (typhoons, earthquakes, landslides), or human-induced disasters or accidents?';
-      'The person is missing due to natural calamity/disaster (typhoons, earthquakes, landslides), or accident';
+      'The person is missing due to a natural calamity/disaster (typhoons, earthquakes, landslides), or accident';
   static const String minorText =
       // 'Is the absent/missing person a minor (under the age of 18)?';
-      'The person is still a minor (under the age of 18).';
+      'The person is still a minor (under the age of 18)';
   static const String missing24HoursText =
       'The person has been missing for more than 24 hours since they were last seen';
   static const String victimCrimeText =
@@ -343,22 +343,35 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                         left: MediaQuery.of(context).size.width / 50),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.info_outline_rounded,
+                      children: [
+                        const Icon(
+                          // Icons.info_outline_rounded,
+                          Icons.swipe_left_rounded,
+                          color: Colors.black54,
                           size: 20,
                         ),
-                        SizedBox(width: 5),
-                        Text(
-                          '''Swipe left to continue.''',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black54,
+                        const SizedBox(width: 5),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 40,
+                          child: const Text(
+                            'End of Classifiers Form. \nSwipe left to continue.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
+
+                  // Text(
+                  //   '''End of Classifiers Form. Swipe left to continue.''',
+                  //   style: TextStyle(
+                  //     fontSize: 12,
+                  //     color: Colors.black54,
+                  //   ),
+                  // ),
                   // Padding(
                   //   padding: EdgeInsets.only(
                   //       left: MediaQuery.of(context).size.width / 6),
