@@ -20,7 +20,7 @@ import 'package:maps_toolkit/maps_toolkit.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 int REPORT_RETRIEVAL_INTERVAL = 1;
-int REPORT_RETRIEVAL_RADIUS = 5000;
+int REPORT_RETRIEVAL_RADIUS = 3000;
 bool firstRetrieve = true;
 
 class NavigationField extends StatefulWidget {
@@ -395,7 +395,9 @@ class _NavigationFieldState extends State<NavigationField> {
                   children: [
                     Text(
                       'Setting things up...',
-                      style: GoogleFonts.inter(textStyle: const TextStyle(fontWeight: FontWeight.w500)),
+                      style: GoogleFonts.inter(
+                          textStyle:
+                              const TextStyle(fontWeight: FontWeight.w500)),
                       textAlign: TextAlign.center,
                     ),
                     Text(

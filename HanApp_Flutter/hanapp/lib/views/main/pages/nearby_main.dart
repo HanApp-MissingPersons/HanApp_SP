@@ -75,7 +75,7 @@ class _NearbyMainState extends State<NearbyMain> {
         CameraPosition(
           target:
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          zoom: 15,
+          zoom: 14,
         ),
       ),
     );
@@ -151,7 +151,7 @@ class _NearbyMainState extends State<NearbyMain> {
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                     currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 15,
+                zoom: 14,
               ),
               onMapCreated: (controller) => {
                 _controller.complete(controller),
