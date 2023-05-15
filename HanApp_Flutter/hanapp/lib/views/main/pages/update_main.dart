@@ -78,11 +78,39 @@ class _UpdateMainState extends State<UpdateMain> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       elevation: 3,
       child: ListTile(
-        title: Text(reportName),
-        subtitle: Text(report['p5_reportDate']),
-        // shape: RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.circular(40),
-        // ),
+        title: Text(reportName,
+          style: GoogleFonts.inter(textStyle: TextStyle(
+            fontWeight: FontWeight.w700)),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(report['p5_reportDate'], textScaleFactor: 0.9,),
+            if (report['status'] == 'Rejected')
+              TextButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              title: const Text('Reason for Rejection'),
+                              content: Text(report['pnp_rejectReason'])
+                          );
+                        }
+                    );
+                  },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),),
+                    alignment: Alignment.centerLeft,
+                    child: Text('View Feedback', textScaleFactor: 0.8,)),
+              ),
+          ],
+        ),
         trailing: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
