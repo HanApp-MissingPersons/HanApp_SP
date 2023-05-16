@@ -64,7 +64,7 @@ class _UpdateMainState extends State<UpdateMain> {
         break;
       case 'Already Found':
         statusChange = const Text('Found',
-            style: TextStyle(color: Colors.black54), textAlign: TextAlign.center);
+            style: TextStyle(color: Colors.black), textAlign: TextAlign.center);
         break;
       default:
         statusChange = const Text('Incomplete',

@@ -231,6 +231,7 @@ class _NearbyMainState extends State<NearbyMain> {
               bool minor = report['p1_isMinor'] ?? false;
               bool crime = report['p1_isVictimCrime'] ?? false;
               bool calamity = report['p1_isVictimNaturalCalamity'] ?? false;
+              bool over24Hours = report['p1_isMissing24Hours'] ?? false;
 
               final marker = Marker(
                 markerId: MarkerId(reportID),
@@ -345,6 +346,22 @@ class _NearbyMainState extends State<NearbyMain> {
                                                             fontSize: 10,
                                                             color:
                                                                 Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Visibility(
+                                                    visible: over24Hours,
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(right: 5, top: 5),
+                                                      padding: const EdgeInsets.all(8),
+                                                      decoration: BoxDecoration(
+                                                          borderRadius: BorderRadius.circular(15),
+                                                          color: Colors.green),
+                                                      //Retrieve the status here
+                                                      child: const Text(
+                                                        'Over 24 Hours',
+                                                        style:
+                                                        TextStyle(fontSize: 10, color: Colors.white),
                                                       ),
                                                     ),
                                                   ),
