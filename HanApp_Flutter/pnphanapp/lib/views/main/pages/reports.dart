@@ -123,6 +123,8 @@ class _reportsPNPState extends State<reportsPNP> {
     //     (await dbRef.once().asStream().first) as AsyncSnapshot;
     if (snapshot.snapshot.value != null) {
       reportList!.clear();
+      reportListCopy.clear();
+      reportListOriginal.clear();
       dynamic values = snapshot.snapshot.value;
       if (values != null) {
         Map<dynamic, dynamic> reports = values;
@@ -142,6 +144,8 @@ class _reportsPNPState extends State<reportsPNP> {
                   userLatLng.longitude == 999999) {
                 // add report to list
                 reportList!.add(value);
+                reportListCopy.add(value);
+                reportListOriginal.add(value);
               } else {
                 List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
                 double lastSeenLocLat = lastSeenLocList[0];
@@ -153,6 +157,8 @@ class _reportsPNPState extends State<reportsPNP> {
                 if (distance <= 10000) {
                   // add report to list
                   reportList!.add(value);
+                  reportListCopy.add(value);
+                  reportListOriginal.add(value);
                 } else {
                   print('[NOT OK] distance is: $distance');
                 }
@@ -171,8 +177,61 @@ class _reportsPNPState extends State<reportsPNP> {
     return SphericalUtil.computeDistanceBetween(first, second);
   }
 
+  // List<Map<dynamic, dynamic>> rearrangeList(
+  //     List<Map<dynamic, dynamic>> listOfMaps, String keyToSort) {
+  //   var uniqueReports = <Map<dynamic, dynamic>>[];
+  //   var uniqueKeys = <String, bool>{};
+
+  //   for (var map in listOfMaps) {
+  //     var encodedMap = jsonEncode(map);
+  //     if (!uniqueKeys.containsKey(encodedMap)) {
+  //       uniqueKeys[encodedMap] = true;
+  //       uniqueReports.add(map);
+  //     }
+  //   }
+
+  //   listOfMaps.clear();
+  //   listOfMaps.addAll(uniqueReports);
+
+  //   print('[BEFORE]');
+  //   for (var map in listOfMaps) {
+  //     if (map.containsKey(keyToSort)) {
+  //       var keyValue = map[keyToSort];
+  //       print(keyValue);
+  //     }
+  //   }
+
+  //   listOfMaps.sort((a, b) {
+  //     final dynamic valueA = a[keyToSort];
+  //     final dynamic valueB = b[keyToSort];
+
+  //     if (valueA == null && valueB == null) {
+  //       return 0;
+  //     } else if (valueA == null) {
+  //       return 1;
+  //     } else if (valueB == null) {
+  //       return -1;
+  //     } else {
+  //       return valueA.compareTo(valueB);
+  //     }
+  //   });
+
+  //   print('[AFTER]');
+  //   for (var map in listOfMaps) {
+  //     if (map.containsKey(keyToSort)) {
+  //       var keyValue = map[keyToSort];
+  //       print(keyValue);
+  //     }
+  //   }
+
+  //   return listOfMaps;
+  // }
+
   List<Map<dynamic, dynamic>> rearrangeList(
-      List<Map<dynamic, dynamic>> listOfMaps, String keyToSort) {
+    List<Map<dynamic, dynamic>> listOfMaps,
+    String keyToSort,
+    List<dynamic> sortList,
+  ) {
     var uniqueReports = <Map<dynamic, dynamic>>[];
     var uniqueKeys = <String, bool>{};
 
@@ -206,7 +265,20 @@ class _reportsPNPState extends State<reportsPNP> {
       } else if (valueB == null) {
         return -1;
       } else {
-        return valueA.compareTo(valueB);
+        // Check if both values are in the sortList
+        if (sortList.contains(valueA) && sortList.contains(valueB)) {
+          // Compare the indexes in the sortList
+          return sortList.indexOf(valueA).compareTo(sortList.indexOf(valueB));
+        } else if (sortList.contains(valueA)) {
+          // valueA is in the sortList, so it should come first
+          return -1;
+        } else if (sortList.contains(valueB)) {
+          // valueB is in the sortList, so it should come first
+          return 1;
+        } else {
+          // None of the values are in the sortList, compare them normally
+          return valueA.compareTo(valueB);
+        }
       }
     });
 
@@ -842,7 +914,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                                 'pnp_rejectReason':
                                                     rejectReason,
                                               });
-
+                                              fetchData();
+                                              editingController.clear();
                                               Navigator.of(context).pop();
                                             },
                                           ),
@@ -941,6 +1014,8 @@ class _reportsPNPState extends State<reportsPNP> {
                                 // end of Date Found dialogue box
                                 print(
                                     '[changed status] ${report['keyUid']} to $statusValue');
+                                fetchData();
+                                editingController.clear();
                                 Navigator.of(context).pop();
 
                                 setState(() {});
@@ -2143,8 +2218,34 @@ class _reportsPNPState extends State<reportsPNP> {
     );
   }
 
+  void filterSearchResults(String query) {
+    setState(() {
+      reportList = reportListCopy.where((item) {
+        if (item.containsKey('status')) {
+          var firstName = item['p3_mp_firstName'] ?? '';
+          var lastName = item['p3_mp_lastName'] ?? '';
+          var combinedName =
+              firstName + lastName == '' ? 'No Name' : firstName + lastName;
+          var status = item['status'] ?? '';
+          var searchToken = combinedName + status;
+          var returnVal =
+              searchToken.toLowerCase().contains(query.toLowerCase());
+          return returnVal;
+        } else {
+          return false;
+        }
+      }).toList();
+      print('reportCopy len: ${reportListCopy.length}');
+      print('report len: ${reportList!.length}');
+    });
+    reportListCopy = List.from(reportList!);
+  }
+
   var oldFilterValue;
   var filterValueLocal;
+  List<Map> reportListCopy = [];
+  List<Map> reportListOriginal = [];
+  TextEditingController editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     // if (reportList!.isNotEmpty) {
@@ -2157,19 +2258,66 @@ class _reportsPNPState extends State<reportsPNP> {
     filterValueLocal = widget.filterValue;
     if (filterValueLocal != oldFilterValue) {
       fetchData();
+      editingController.clear();
     }
     return Column(
       children: [
         Container(
           margin: EdgeInsets.only(top: 20),
-          child: TextButton(
-            onPressed: () {
-              if (reportList!.isNotEmpty) {
-                reportList = rearrangeList(reportList!, 'p3_mp_lastName');
-                setState(() {});
-              }
-            },
-            child: Text('BALLS'),
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.35,
+                child: TextField(
+                  controller: editingController,
+                  decoration: const InputDecoration(
+                      labelText: "Search",
+                      hintText: "Search",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(25.0)))),
+                  onChanged: (value) {
+                    filterSearchResults(value);
+                    setState(() {
+                      // reportListCopy.clear();
+                      reportListCopy = reportListOriginal;
+                    });
+                  },
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (reportList!.isNotEmpty) {
+                    reportList =
+                        rearrangeList(reportList!, 'p3_mp_lastName', []);
+                    setState(() {});
+                  }
+                },
+                child: Text('Sort By lastName'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (reportList!.isNotEmpty) {
+                    reportList =
+                        rearrangeList(reportList!, 'p3_mp_lastName', []);
+                    setState(() {});
+                  }
+                },
+                child: Text('Sort By lastName'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (reportList!.isNotEmpty) {
+                    reportList =
+                        rearrangeList(reportList!, 'p3_mp_lastName', []);
+                    setState(() {});
+                  }
+                },
+                child: Text('Sort By lastName'),
+              ),
+            ],
           ),
         ),
         Container(

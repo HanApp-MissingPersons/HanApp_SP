@@ -15,8 +15,8 @@ class _NavRailViewState extends State<NavRailView> {
   // final List<dynamic> _destinations = ['Home', 'Calendar', 'Email', reportsPNP];
   static const List<Widget> _destinations = <Widget>[
     reportsPNP(filterValue: ['Pending']), //first page
-    // reportsPNP(filterValue: ['Verified']), //second page
-    reportsVerfiedPNP(),
+    reportsPNP(filterValue: ['Verified']), //second page
+    // reportsVerfiedPNP(),
     reportsPNP(filterValue: [
       'Rejected'
     ]), // third page, removed "Incomplete Details" since it can be added as a reject reason
