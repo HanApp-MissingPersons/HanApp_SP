@@ -89,7 +89,7 @@ class _reportsPNPState extends State<reportsPNP> {
   @override
   void initState() {
     super.initState();
-    print(user!.uid);
+    // print(user!.uid);
     _activateListeners();
     fetchData();
   }
@@ -2219,6 +2219,10 @@ class _reportsPNPState extends State<reportsPNP> {
   }
 
   void filterSearchResults(String query) {
+    // print('[BEFORE FILTERING]');
+    // print('reportCopy len: ${reportListCopy.length}');
+    // print('report len: ${reportList!.length}');
+    reportList!.clear();
     setState(() {
       reportList = reportListCopy.where((item) {
         if (item.containsKey('status')) {
@@ -2235,9 +2239,12 @@ class _reportsPNPState extends State<reportsPNP> {
           return false;
         }
       }).toList();
-      print('reportCopy len: ${reportListCopy.length}');
-      print('report len: ${reportList!.length}');
+      // reportListCopy.clear();
+      // print('[AFTER FILTERING]');
+      // print('reportCopy len: ${reportListCopy.length}');
+      // print('report len: ${reportList!.length}');
     });
+    // reportListCopy.clear();
     reportListCopy = List.from(reportList!);
   }
 
@@ -2248,17 +2255,18 @@ class _reportsPNPState extends State<reportsPNP> {
   TextEditingController editingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    // if (reportList!.isNotEmpty) {
-    //   // reportList!.clear();
-    //   fetchData();
-    // }
     if (filterValueLocal != null) {
       oldFilterValue = filterValueLocal!;
     }
     filterValueLocal = widget.filterValue;
+    // print('before changing tabs: ${reportList!.length}');
     if (filterValueLocal != oldFilterValue) {
+      reportList!.clear();
+      reportListCopy.clear();
+      reportListOriginal.clear();
       fetchData();
       editingController.clear();
+      // print('after changing tabs: ${reportList!.length}');
     }
     return Column(
       children: [
@@ -2282,7 +2290,7 @@ class _reportsPNPState extends State<reportsPNP> {
                     filterSearchResults(value);
                     setState(() {
                       // reportListCopy.clear();
-                      reportListCopy = reportListOriginal;
+                      reportListCopy = List.from(reportListOriginal);
                     });
                   },
                 ),
