@@ -75,7 +75,7 @@ class _NearbyMainState extends State<NearbyMain> {
         CameraPosition(
           target:
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          zoom: 14,
+          zoom: 20,
         ),
       ),
     );
@@ -151,7 +151,7 @@ class _NearbyMainState extends State<NearbyMain> {
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                     currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 14,
+                zoom: 20,
               ),
               onMapCreated: (controller) => {
                 _controller.complete(controller),
@@ -355,9 +355,10 @@ class _NearbyMainState extends State<NearbyMain> {
                                                       margin: EdgeInsets.only(right: 5, top: 5),
                                                       padding: const EdgeInsets.all(8),
                                                       decoration: BoxDecoration(
-                                                          borderRadius: BorderRadius.circular(15),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(15),
                                                           color: Colors.green),
-                                                      //Retrieve the status here
                                                       child: const Text(
                                                         'Over 24 Hours',
                                                         style:
