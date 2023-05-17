@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:pnphanapp/views/main/pages/reports.dart';
+import 'package:pnphanapp/views/main/pages/reportsVerified.dart';
 
 class NavRailView extends StatefulWidget {
   const NavRailView({super.key});
@@ -14,7 +15,8 @@ class _NavRailViewState extends State<NavRailView> {
   // final List<dynamic> _destinations = ['Home', 'Calendar', 'Email', reportsPNP];
   static const List<Widget> _destinations = <Widget>[
     reportsPNP(filterValue: ['Pending']), //first page
-    reportsPNP(filterValue: ['Verified']), //second page
+    // reportsPNP(filterValue: ['Verified']), //second page
+    reportsVerfiedPNP(),
     reportsPNP(filterValue: [
       'Rejected'
     ]), // third page, removed "Incomplete Details" since it can be added as a reject reason

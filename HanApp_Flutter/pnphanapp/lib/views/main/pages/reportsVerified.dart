@@ -14,15 +14,14 @@ import 'package:pnphanapp/main.dart';
 import 'package:image_network/image_network.dart';
 import 'package:intl/intl.dart';
 
-class reportsPNP extends StatefulWidget {
-  final List<String> filterValue;
-  const reportsPNP({Key? key, required this.filterValue}) : super(key: key);
+class reportsVerfiedPNP extends StatefulWidget {
+  const reportsVerfiedPNP({Key? key}) : super(key: key);
 
   @override
-  State<reportsPNP> createState() => _reportsPNPState();
+  State<reportsVerfiedPNP> createState() => _reportsVerfiedPNP();
 }
 
-class _reportsPNPState extends State<reportsPNP> {
+class _reportsVerfiedPNP extends State<reportsVerfiedPNP> {
   String cors_anywhere = 'https://cors-anywhere.herokuapp.com/';
   final user = FirebaseAuth.instance.currentUser;
   DatabaseReference pnpAccountsRef =
@@ -30,7 +29,7 @@ class _reportsPNPState extends State<reportsPNP> {
   DatabaseReference databaseReportsReference =
       FirebaseDatabase.instance.ref('Reports');
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
-  List<Map>? reportList = [];
+  List<Map> reportList = [];
 
   late bool minor;
   late bool crime;
@@ -91,7 +90,6 @@ class _reportsPNPState extends State<reportsPNP> {
     super.initState();
     print(user!.uid);
     _activateListeners();
-    fetchData();
   }
 
   void _activateListeners() {
@@ -116,109 +114,8 @@ class _reportsPNPState extends State<reportsPNP> {
     });
   }
 
-  Future<void> fetchData() async {
-    // Retrieve data from Firebase
-    DatabaseEvent snapshot = await dbRef.once();
-    // AsyncSnapshot<dynamic> snapshot =
-    //     (await dbRef.once().asStream().first) as AsyncSnapshot;
-    if (snapshot.snapshot.value != null) {
-      reportList!.clear();
-      dynamic values = snapshot.snapshot.value;
-      if (values != null) {
-        Map<dynamic, dynamic> reports = values;
-        // users
-        reports.forEach((key, value) {
-          dynamic uid = key;
-          // reports of each user
-          value.forEach((key, value) {
-            value['keyUid'] = '${key}__$uid';
-            value['key'] = key;
-            value['uid'] = uid;
-            var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
-            var status = value['status'] ?? '';
-            // print('status: $status');
-            if (lastSeenLoc != '' && widget.filterValue.contains(status)) {
-              if (userLatLng.latitude == 999999 &&
-                  userLatLng.longitude == 999999) {
-                // add report to list
-                reportList!.add(value);
-              } else {
-                List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
-                double lastSeenLocLat = lastSeenLocList[0];
-                double lastSeenLocLong = lastSeenLocList[1];
-                LatLng lastSeenLocLatLng =
-                    LatLng(lastSeenLocLat, lastSeenLocLong);
-                var distance = calculateDistance(userLatLng, lastSeenLocLatLng);
-                // currently, distance is set to 10km
-                if (distance <= 10000) {
-                  // add report to list
-                  reportList!.add(value);
-                } else {
-                  print('[NOT OK] distance is: $distance');
-                }
-              }
-            }
-            // reportList.add(value);
-          });
-        });
-      }
-      // Trigger a rebuild with the fetched data
-      setState(() {});
-    }
-  }
-
   num calculateDistance(LatLng first, LatLng second) {
     return SphericalUtil.computeDistanceBetween(first, second);
-  }
-
-  List<Map<dynamic, dynamic>> rearrangeList(
-      List<Map<dynamic, dynamic>> listOfMaps, String keyToSort) {
-    var uniqueReports = <Map<dynamic, dynamic>>[];
-    var uniqueKeys = <String, bool>{};
-
-    for (var map in listOfMaps) {
-      var encodedMap = jsonEncode(map);
-      if (!uniqueKeys.containsKey(encodedMap)) {
-        uniqueKeys[encodedMap] = true;
-        uniqueReports.add(map);
-      }
-    }
-
-    listOfMaps.clear();
-    listOfMaps.addAll(uniqueReports);
-
-    print('[BEFORE]');
-    for (var map in listOfMaps) {
-      if (map.containsKey(keyToSort)) {
-        var keyValue = map[keyToSort];
-        print(keyValue);
-      }
-    }
-
-    listOfMaps.sort((a, b) {
-      final dynamic valueA = a[keyToSort];
-      final dynamic valueB = b[keyToSort];
-
-      if (valueA == null && valueB == null) {
-        return 0;
-      } else if (valueA == null) {
-        return 1;
-      } else if (valueB == null) {
-        return -1;
-      } else {
-        return valueA.compareTo(valueB);
-      }
-    });
-
-    print('[AFTER]');
-    for (var map in listOfMaps) {
-      if (map.containsKey(keyToSort)) {
-        var keyValue = map[keyToSort];
-        print(keyValue);
-      }
-    }
-
-    return listOfMaps;
   }
 
   List<double> extractDoubles(String input) {
@@ -842,8 +739,14 @@ class _reportsPNPState extends State<reportsPNP> {
                                                 'pnp_rejectReason':
                                                     rejectReason,
                                               });
-
+                                              setState(() {
+                                                firstCheck = true;
+                                              });
                                               Navigator.of(context).pop();
+                                              setState(() {
+                                                firstCheck = true;
+                                              });
+                                              setState(() {});
                                             },
                                           ),
                                         ],
@@ -853,74 +756,15 @@ class _reportsPNPState extends State<reportsPNP> {
                                 } else {
                                   // Navigator.of(context).pop();
                                 }
-                                // end of Rejection reason dialogue box
-                                // IF ALREADY FOUND, PROMPT FOR DATE
-                                // if (statusValue == "Already Found") {
-                                //   // Show a dialog box asking for date found
-                                //   String? dateFound;
-                                //   // ignore: use_build_context_synchronously
-                                //   await showDialog(
-                                //     // context: currentContext,
-                                //     context: context,
-                                //     builder: (BuildContext context) {
-                                //       return AlertDialog(
-                                //         title: Text('Enter Date Found'),
-                                //         content:
-                                //             // CHANGE THIS TO DATE PICKER
-                                //             TextFormField(
-                                //           onChanged: (value) {
-                                //             dateFound = value;
-                                //           },
-                                //           maxLines: 3,
-                                //           decoration: InputDecoration(
-                                //             hintText: 'Type date here',
-                                //             border: OutlineInputBorder(
-                                //               borderRadius:
-                                //                   BorderRadius.circular(10.0),
-                                //             ),
-                                //           ),
-                                //         ),
-                                //         // END OF "CHANGE THIS TO DATE PICKER"
-                                //         actions: <Widget>[
-                                //           // TextButton(
-                                //           //   child: Text('Cancel'),
-                                //           //   onPressed: () {
-                                //           //     // revert back to previous status
-                                //           //     oldStatusValue = report['status'];
-                                //           //     Navigator.of(context).pop();
-                                //           //   },
-                                //           // ),
-                                //           TextButton(
-                                //             child: Text('Save Date'),
-                                //             onPressed: () async {
-                                //               report['pnp_dateFound'] =
-                                //                   dateFound;
-                                //               await databaseReportsReference
-                                //                   .child(report['uid'])
-                                //                   .child(report['key'])
-                                //                   .update({
-                                //                 'pnp_dateFound': dateFound,
-                                //               });
 
-                                //               Navigator.of(context).pop();
-                                //             },
-                                //           ),
-                                //         ],
-                                //       );
-                                //     },
-                                //   );
-                                // } else {
-                                //   // Navigator.of(context).pop();
-                                // }
                                 if (statusValue == "Already Found") {
                                   // Show a dialog box asking for date found
                                   DateTime? selectedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime.now(),
-                                    cancelText: '',
-                                  );
+                                      context: context,
+                                      initialDate: DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now(),
+                                      cancelText: null);
 
                                   if (selectedDate != null) {
                                     // Format the selected date as MM/dd/YYYY
@@ -928,6 +772,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                         '${selectedDate.month.toString().padLeft(2, '0')}/'
                                         '${selectedDate.day.toString().padLeft(2, '0')}/'
                                         '${selectedDate.year.toString()}';
+                                    print('dateFoundLLLL: $dateFound');
 
                                     report['pnp_dateFound'] = dateFound;
                                     await databaseReportsReference
@@ -940,9 +785,18 @@ class _reportsPNPState extends State<reportsPNP> {
                                 }
                                 // end of Date Found dialogue box
                                 print(
-                                    '[changed status] ${report['keyUid']} to $statusValue');
+                                    '[changed status reportsVerified] ${report['keyUid']} to $statusValue');
+                                setState(() {
+                                  print('went herereerere');
+                                  editingController.clear();
+                                });
+                                setState(() {
+                                  firstCheck = true;
+                                });
                                 Navigator.of(context).pop();
-
+                                setState(() {
+                                  firstCheck = true;
+                                });
                                 setState(() {});
                               },
                               child: Text('Confirm'),
@@ -1017,8 +871,14 @@ class _reportsPNPState extends State<reportsPNP> {
                                   .update({
                                 'pnp_rejectReason': rejectReason,
                               });
-
+                              setState(() {
+                                firstCheck = true;
+                              });
                               Navigator.of(context).pop();
+                              setState(() {
+                                firstCheck = true;
+                              });
+                              setState(() {});
                             },
                             child: const Text('Save'),
                           ),
@@ -2143,53 +2003,153 @@ class _reportsPNPState extends State<reportsPNP> {
     );
   }
 
-  var oldFilterValue;
-  var filterValueLocal;
+  // List<Map> reportList = [];
+  List<Map> reportListCopy = [];
+  List<Map> reportListOriginal = [];
+  TextEditingController editingController = TextEditingController();
+  bool firstCheck = true;
+  void filterSearchResults(String query) {
+    setState(() {
+      reportList = reportListCopy.where((item) {
+        if (item.containsKey('status')) {
+          var firstName = item['p3_mp_firstName'] ?? '';
+          var lastName = item['p3_mp_lastName'] ?? '';
+          var combinedName =
+              firstName + lastName == '' ? 'No Name' : firstName + lastName;
+          var status = item['status'] ?? '';
+          var searchToken = combinedName + status;
+          var returnVal =
+              searchToken.toLowerCase().contains(query.toLowerCase());
+          return returnVal;
+        } else {
+          return false;
+        }
+      }).toList();
+      print('reportCopy len: ${reportListCopy.length}');
+      print('report len: ${reportList.length}');
+    });
+    reportListCopy = List.from(reportList);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // if (reportList!.isNotEmpty) {
-    //   // reportList!.clear();
-    //   fetchData();
-    // }
-    if (filterValueLocal != null) {
-      oldFilterValue = filterValueLocal!;
-    }
-    filterValueLocal = widget.filterValue;
-    if (filterValueLocal != oldFilterValue) {
-      fetchData();
-    }
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(top: 20),
-          child: TextButton(
-            onPressed: () {
-              if (reportList!.isNotEmpty) {
-                reportList = rearrangeList(reportList!, 'p3_mp_lastName');
-                setState(() {});
-              }
-            },
-            child: Text('BALLS'),
+    List<String>? filterValueLocal = ['Verified'];
+    return Container(
+      height: double.infinity,
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width * 0.1,
+                left: MediaQuery.of(context).size.width * 0.1,
+                top: MediaQuery.of(context).size.height * 0.05),
+            child: TextField(
+              controller: editingController,
+              decoration: const InputDecoration(
+                  labelText: "Search",
+                  hintText: "Search",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              onChanged: (value) {
+                filterSearchResults(value);
+                setState(() {
+                  firstCheck = false;
+                  // reportListCopy.clear();
+                  reportListCopy = reportListOriginal;
+                });
+              },
+            ),
           ),
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: reportList!.isNotEmpty
-              ? ListView.builder(
-                  itemCount: reportList!.length,
-                  physics: const BouncingScrollPhysics(
-                    parent: PageScrollPhysics(),
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return listItem(report: reportList![index]);
-                  },
-                )
-              : Container(
-                  alignment: Alignment.center,
-                  child: const Text('There are currently no reports'),
-                ),
-        ),
-      ],
+          Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: FutureBuilder(
+              future: dbRef.once(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData || userLatLng == LatLng(0, 0)) {
+                  return const SpinKitCubeGrid(
+                    color: Palette.indigo,
+                    size: 40.0,
+                  );
+                }
+                if (firstCheck) {
+                  reportList.clear();
+                  reportListCopy.clear();
+                  dynamic values = snapshot.data?.snapshot.value;
+                  if (values != null) {
+                    Map<dynamic, dynamic> reports = values;
+                    // users
+                    reports.forEach((key, value) {
+                      dynamic uid = key;
+                      // reports of each user
+                      value.forEach((key, value) {
+                        value['keyUid'] = '${key}__$uid';
+                        value['key'] = key;
+                        value['uid'] = uid;
+                        var lastSeenLoc = value['p5_lastSeenLoc'] ?? '';
+                        var status = value['status'] ?? '';
+                        // print('status: $status');
+                        if (lastSeenLoc != '' &&
+                            filterValueLocal.contains(status)) {
+                          if (userLatLng.latitude == 999999 &&
+                              userLatLng.longitude == 999999) {
+                            reportList.add(value);
+                            reportListCopy.add(value);
+                            reportListOriginal.add(value);
+                          } else {
+                            List<double> lastSeenLocList =
+                                extractDoubles(lastSeenLoc);
+                            double lastSeenLocLat = lastSeenLocList[0];
+                            double lastSeenLocLong = lastSeenLocList[1];
+                            LatLng lastSeenLocLatLng =
+                                LatLng(lastSeenLocLat, lastSeenLocLong);
+                            var distance = calculateDistance(
+                                userLatLng, lastSeenLocLatLng);
+                            var snapshotLinkForVerify =
+                                value['mp_locationSnapshot_LINK'];
+                            bool isValuePresent = reportListCopy.any((map) =>
+                                map.containsValue(snapshotLinkForVerify));
+                            print('isValuePresent: $isValuePresent');
+                            // currently, distance is set to 10km
+                            if (distance <= 10000 && !isValuePresent) {
+                              reportList.add(value);
+                              reportListCopy.add(value);
+                              reportListOriginal.add(value);
+                            } else {
+                              print('[NOT OK] distance is: $distance');
+                            }
+                          }
+                        }
+                        // reportList.add(value);
+                      });
+                    });
+                  } else {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: const Text('There are currently no reports here'),
+                    );
+                  }
+                  firstCheck = false;
+                }
+
+                return reportList.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: reportList.length,
+                        physics: const BouncingScrollPhysics(
+                            parent: PageScrollPhysics()),
+                        itemBuilder: (BuildContext context, int index) {
+                          return listItem(report: reportList[index]);
+                        },
+                      )
+                    : Container(
+                        alignment: Alignment.center,
+                        child: const Text('There are currently no reports'),
+                      );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
