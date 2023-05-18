@@ -440,15 +440,17 @@ class _reportsPNPState extends State<reportsPNP> {
         over24hours = true;
       }
     }
-    // adds the isMissing24Hours tag (if FALSE) if the total hours is over 24 hours (calculated based on the current time and date of PNP app)
+    // adds the isMissing24Hours tag if the total hours is over 24 hours (calculated based on the current time and date of PNP app)
     if (
         // date and time not missing
         report['p5_lastSeenDate'] != null &&
             report['p5_lastSeenTime'] != null &&
             // over 24 hours
             int.parse(report['p5_totalHoursSinceLastSeen'.trim()]) >= 24 &&
+            // &&
             // isMissing24Hours tag is false when the report is created
-            report['p1_isMissing24Hours'] == false) {
+            (report['p1_isMissing24Hours'] == null ||
+                report['p1_isMissing24Hours'] == false)) {
       // update RTDB on p1_isMissing24Hours
       report['p1_isMissing24Hours'] = true;
       databaseReportsReference

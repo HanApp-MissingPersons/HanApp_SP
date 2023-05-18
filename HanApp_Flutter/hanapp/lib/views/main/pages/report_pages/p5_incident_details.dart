@@ -460,8 +460,19 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 40,
                       child: const Text(
-                        'Last Seen Time',
+                        'Last Seen Time*',
                         style: headingStyle,
+                      ),
+                    ),
+                    // small text saying "provide an estimate if exact time is unknown"
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: const Text(
+                        'Provide an estimate if exact time is unknown',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
                       ),
                     ),
                     _verticalPadding,

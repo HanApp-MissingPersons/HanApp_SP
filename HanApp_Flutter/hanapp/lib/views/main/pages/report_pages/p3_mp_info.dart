@@ -191,8 +191,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
       setState(() {
         _prefs = prefs;
         // basic info
-        mp_civilStatValue =
-            prefs.getString('p3_mp_civilStatus') ?? 'Common Law';
+        mp_civilStatValue = prefs.getString('p3_mp_civilStatus') ?? 'Single';
         sexValue = prefs.getString('p3_mp_sex') ?? '';
         _mp_lastName.text = prefs.getString('p3_mp_lastName') ?? '';
         _mp_firstName.text = prefs.getString('p3_mp_firstName') ?? '';
@@ -295,7 +294,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 Icon(Icons.info_outline_rounded, size: 20),
                 SizedBox(width: 5),
                 Text(
-                  '''Fields with (*) are required.''',
+                  '''Fields with (*) are required. Put NA if not known.''',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black54,
@@ -327,7 +326,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Last Name*",
-                        hintText: "Dela Cruz",
+                        hintText: "ex: Dela Cruz",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -354,7 +353,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "First Name*",
-                        hintText: "Juan",
+                        hintText: "ex: Juan",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -390,7 +389,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Middle Name",
-                        hintText: "Pedro",
+                        hintText: "ex: Pedro",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -417,7 +416,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Qualifier",
-                        hintText: "Jr.",
+                        hintText: "ex: Jr., Sr., III, etc.",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -480,7 +479,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.never,
-                        hintText: "Filipino",
+                        labelText: 'Citizenship*',
+                        hintText: "ex: Filipino",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10)))),
@@ -515,7 +515,8 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
                         labelText: "Nationality/Ethnicity*",
-                        hintText: "Asian, Hispanic, Latino, etc.",
+                        hintText:
+                            "ex: Filipino, Chinese, Hispanic, Latino, etc.",
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         border: OutlineInputBorder(
                             borderRadius:
@@ -794,7 +795,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Email",
-                  hintText: "juandelacruz@gmail.com",
+                  hintText: "ex: juandelacruz@gmail.com",
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_contact_email', value);
@@ -824,6 +825,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Region*",
+                  hintText: 'ex: Region VI',
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_region', value);
@@ -840,10 +842,10 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  labelText: "Province*",
-                ),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
+                    labelText: "Province*",
+                    hintText: 'ex: Iloilo'),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_province', value);
                   _writeToPrefs('p3_mp_address_province', value);
@@ -862,6 +864,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Municipality/City*",
+                  hintText: 'ex: Iloilo City',
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_city', value);
@@ -881,6 +884,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Barangay*",
+                  hintText: 'ex: Brgy. San Jose',
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_barangay', value);
@@ -900,6 +904,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Village, Sitio, Subdivision",
+                  hintText: 'ex: Sitio San Jose',
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_villageSitio', value);
@@ -919,6 +924,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Street/House Number*",
+                  hintText: 'ex: 1234 Street',
                 ),
                 onChanged: (value) {
                   // _prefs.setString('p3_mp_address_streetHouseNum', value);

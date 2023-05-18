@@ -189,7 +189,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     loadImage_face();
     setState(() {
       reportee_hasAltAddress = _prefs.getBool('p2_hasAltAddress') ?? false;
-      _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Common Law';
+      _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Single';
       _highestEduc = _prefs.getString('p2_highestEduc') ?? 'Unknown';
       relationshipToMP = _prefs.getString('p2_relationshipToMP');
       if (relationshipToMP != null) {
@@ -514,7 +514,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       //labelText: 'Relationship to Missing Person*',
-                      hintText: 'Sibling, Relative, Spouse, etc.',
+                      hintText: 'ex: Sibling, Relative, Spouse, etc.',
                     ),
                   ),
                 ),
@@ -549,7 +549,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       //labelText: 'Citizenship*',
-                      hintText: 'Filipino',
+                      hintText: 'ex: Filipino',
                     ),
                     // add validator:
                     validator: (value) {
@@ -686,7 +686,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Alternate Mobile Phone',
+                      labelText: 'Alternate Mobile Phone (if any)',
                       hintText: '09XXXXXXXXX',
                     ),
                   ),
@@ -719,10 +719,11 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      labelText: 'Region*',
-                    ),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                        labelText: 'Region*',
+                        hintText: 'ex: Region VI'),
                   ),
                 ),
                 _verticalPadding,
@@ -742,6 +743,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Province*',
+                      hintText: 'ex: Iloilo',
                     ),
                   ),
                 ),
@@ -762,6 +764,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Municipality/City*',
+                      hintText: 'ex: Iloilo City',
                     ),
                   ),
                 ),
@@ -782,6 +785,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Barangay*',
+                      hintText: 'ex: Brgy. San Jose',
                     ),
                   ),
                 ),
@@ -802,6 +806,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Village, Sitio, Subdivision',
+                      hintText: 'ex: Sitio Talahib',
                     ),
                   ),
                 ),
@@ -822,6 +827,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'House Number/Street*',
+                      hintText: 'ex: 123 Street',
                     ),
                   ),
                 ),

@@ -65,6 +65,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
         } else {
           isMinor = false;
         }
+        _prefs.setBool('p1_isMinor', isMinor!);
       }
 
       // isMissing24Hours = _prefs.getBool('p1_isMissing24Hours') ?? false;
@@ -81,6 +82,7 @@ class _Page1ClassifierState extends State<Page1Classifier> {
         } else {
           isMissing24Hours = false;
         }
+        _prefs.setBool('p1_isMissing24Hours', isMissing24Hours!);
       }
 
       isVictimCrime = _prefs.getBool('p1_isVictimCrime') ?? false;

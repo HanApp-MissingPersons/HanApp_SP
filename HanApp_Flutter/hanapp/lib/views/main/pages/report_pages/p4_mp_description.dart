@@ -65,7 +65,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   String? mp_height_feet;
   String? mp_height_inches;
   String? mp_weight;
-  String? mp_blood_type;
+  String? mp_blood_typeValue;
   String? mp_medications;
   // MP socmed details
   String? mp_facebook;
@@ -312,6 +312,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         _mp_height_inches.text = _prefs.getString('p4_mp_height_inches') ?? '';
         _mp_weight.text = _prefs.getString('p4_mp_weight') ?? '';
         _mp_blood_type.text = _prefs.getString('p4_mp_blood_type') ?? '';
+        mp_blood_typeValue = _prefs.getString('p4_mp_blood_type') ?? 'Unknown';
         _mp_medications.text = _prefs.getString('p4_mp_medications') ?? '';
         // MP socmed details
         _mp_facebook.text =
@@ -758,14 +759,14 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                             ),
-                            value: mp_blood_type,
+                            value: mp_blood_typeValue,
                             icon: const Icon(Icons.arrow_drop_down),
                             iconSize: 24,
                             elevation: 16,
                             style: const TextStyle(color: Colors.black54),
                             onChanged: (String? bloodtypeValue) {
                               setState(() {
-                                mp_blood_type = bloodtypeValue;
+                                mp_blood_typeValue = bloodtypeValue;
                                 // _prefs.setString('p4_mp_blood_type', bloodtype_value!);
                                 _writeToPrefs(
                                     'p4_mp_blood_type', bloodtypeValue!);
@@ -835,7 +836,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           controller: _mp_facebook,
                           decoration: const InputDecoration(
                             labelText: 'Facebook',
-                            hintText: 'Facebook Username',
+                            hintText: 'Facebook Username (NA if none/unknown)',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -857,7 +858,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           controller: _mp_twitter,
                           decoration: const InputDecoration(
                             labelText: 'Twitter',
-                            hintText: 'Twitter Username',
+                            hintText: 'Twitter Username (NA if none/unknown)',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -879,7 +880,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           controller: _mp_instagram,
                           decoration: const InputDecoration(
                             labelText: 'Instagram',
-                            hintText: 'Instagram Username',
+                            hintText: 'Instagram Username (NA if none/unknown)',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -1011,7 +1012,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: const Text(
                           'Does the person have dental and/or finger print records? Please check all that apply',
-                          style: TextStyle(fontSize: 12, color: Colors.black38),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Color.fromARGB(255, 0, 0, 0)),
                         ),
                       ),
                       _verticalPadding,
@@ -1176,20 +1179,21 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         ),
                       ),
                       // DEBUG TOOL: SHARED PREF PRINTER
-                      // TextButton(
-                      //   onPressed: () async {
-                      //     final prefs = await SharedPreferences.getInstance();
-                      //     // print(prefs.getKeys());
-                      //     // print(prefs.getString('p4_mp_scars'));
-                      //     // print(prefs.getString('p4_mp_marks'));
-                      //     // print(prefs.getString('p4_mp_blood_type'));
-                      //     // print(prefs.getString('p4_mp_socmed_facebook_username'));
-                      //     // print bools for hair and eye
-                      //     print(prefs.getBool('p4_mp_hair_color_natural'));
-                      //     print(prefs.getBool('p4_mp_eye_color_natural'));
-                      //   },
-                      //   child: const Text('Print Shared Preferences'),
-                      // ),
+                      TextButton(
+                        onPressed: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          print(prefs.getKeys());
+                          // print(prefs.getString('p4_mp_scars'));
+                          // print(prefs.getString('p4_mp_marks'));
+                          // print(prefs.getString('p4_mp_blood_type'));
+                          // print(prefs
+                          //     .getString('p4_mp_socmed_facebook_username'));
+                          // // print bools for hair and eye
+                          // print(prefs.getBool('p4_mp_hair_color_natural'));
+                          // print(prefs.getBool('p4_mp_eye_color_natural'));
+                        },
+                        child: const Text('Print Shared Preferences'),
+                      ),
                     ]))
           ])
         : // Circular loading icon
