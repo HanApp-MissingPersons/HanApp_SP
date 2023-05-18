@@ -1157,6 +1157,42 @@ class _reportsPNPState extends State<reportsPNP> {
     String lastSeenLocation = report['p5_lastSeenLoc'] ?? '';
     String nearestLandmark = report['p5_nearestLandmark'] ?? '';
 
+    String firstName = report['p3_mp_firstName'] ?? '';
+    String lastName = report['p3_mp_lastName'] ?? '';
+    String middleName = report['p3_mp_middleName'] ?? '';
+    String nickname = report['p3_mp_nickname'] ?? '';
+    String sex = report['p3_mp_sex'] ?? '';
+    String civilStatus = report['p3_mp_civilStatus'] ?? '';
+
+    String age = report['p3_mp_age'] ?? '';
+    String mobilePhone = report['p3_mp_contact_mobilePhone'] ?? '';
+    String homePhone = report['p3_mp_contact_homePhone'] ?? '';
+    String citizenship = report['p3_mp_citizenship'] ?? '';
+    String birthDate = report['p3_mp_birthDate'] ?? '';
+    String heightFeet = report['p4_mp_height_inches'] ?? '';
+    String heightInches = report['p4_mp_height_feet'] ?? '';
+    String weight = report['p4_mp_weight'] ?? '';
+    String scars = report['p4_mp_scars'] ?? '';
+    String marks = report['p4_mp_marks'] ?? '';
+    String tattoos = report['p4_mp_tattoos'] ?? '';
+    String hairColor = report['p4_mp_hair_color'] ?? '';
+    String eyeColor = report['p4_mp_eye_color'] ?? '';
+    String prosthetics = report['p4_mp_prosthetics'] ?? '';
+    String birthDefects = report['p4_mp_birth_defects'] ?? '';
+    String clothingAccessories = report['p4_mp_last_clothing'] ?? '';
+
+    String streetHouseNum = report['p3_mp_address_streetHouseNum'] ?? '';
+    String villageSitio = report['p3_mp_address_villageSitio'] ?? '';
+    String barangay = report['p3_mp_address_barangay'] ?? '';
+    String city = report['p3_mp_address_city'] ?? '';
+    String province = report['p3_mp_address_province'] ?? '';
+    String region = report['p3_mp_address_region'] ?? '';
+
+    String pinnedLocCityMun = report['p5_cityName'] ?? '';
+    String pinnedLocBarangay = report['p5_brgyName'] ?? '';
+    String incidentDetails = report['p5_incidentDetails'] ?? '';
+
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1209,7 +1245,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                         Radius.circular(15))),
                                 child: Text(
                                   // firstName,
-                                  report['p3_mp_firstName'] ?? '',
+                                  firstName,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -1242,7 +1278,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                         Radius.circular(15))),
                                 child: Text(
                                   // lastName,
-                                  report['p3_mp_lastName'] ?? '',
+                                  lastName,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -1278,7 +1314,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                         Radius.circular(15))),
                                 child: Text(
                                   // middleName,
-                                  report['p3_mp_middleName'] ?? '',
+                                  middleName,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -1311,7 +1347,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                         Radius.circular(15))),
                                 child: Text(
                                   // nickname,
-                                  report['p3_mp_nickname'] ?? '',
+                                  nickname,
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontSize: 15.0),
                                 ),
@@ -2052,105 +2088,144 @@ class _reportsPNPState extends State<reportsPNP> {
                     ],
                   ),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        color: Palette.indigo,
-                        margin: const EdgeInsets.all(20),
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        child:
-                            // Image.network(report['mp_locationSnapshot_LINK']),
-                            ImageNetwork(
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width * 0.25,
-                                image: report['mp_locationSnapshot_LINK'],
-                                onLoading: const SpinKitCubeGrid(
-                                    color: Colors.indigoAccent)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            color: Palette.indigo,
+                            margin: const EdgeInsets.all(20),
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            child:
+                                // Image.network(report['mp_locationSnapshot_LINK']),
+                                ImageNetwork(
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width * 0.25,
+                                    image: report['mp_locationSnapshot_LINK'],
+                                    onLoading: const SpinKitCubeGrid(
+                                        color: Colors.indigoAccent)),
+                          ),
+                          Text("NEAREST LANDMARK",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 10,
+                                  letterSpacing: 2,
+                                  color: Colors.black54)),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                            padding: const EdgeInsets.all(15),
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 0.5),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                            child: Text(
+                              nearestLandmark,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 15.0),
+                            ),
+                          ),
+                          Text("CITY/MUNICIPALITY",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 10,
+                                  letterSpacing: 2,
+                                  color: Colors.black54)),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                            padding: const EdgeInsets.all(15),
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 0.5),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                            child: Text(
+                              pinnedLocCityMun,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 15.0),
+                            ),
+                          ),
+                          Text("BARANGAY/DISTRICT",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 10,
+                                  letterSpacing: 2,
+                                  color: Colors.black54)),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                            padding: const EdgeInsets.all(15),
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 0.5),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                            child: Text(
+                              pinnedLocBarangay,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 15.0),
+                            ),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 30, bottom: 10),
+                            child: Text("Incident Details",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w900,
+                                )),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            margin: const EdgeInsets.only(top: 5, bottom: 15),
+                            padding: const EdgeInsets.all(15),
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            decoration: BoxDecoration(
+                                border: Border.all(width: 0.5),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(15))),
+                            child: Text(
+                              incidentDetails,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(fontSize: 15.0),
+                            ),
+                          ),
+                        ],
                       ),
-                      Text("NEAREST LANDMARK",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
-                              letterSpacing: 2,
-                              color: Colors.black54)),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(15),
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 0.5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
-                        child: Text(
-                          nearestLandmark,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15.0),
-                        ),
-                      ),
-                      Text("CITY/MUNICIPALITY",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
-                              letterSpacing: 2,
-                              color: Colors.black54)),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(15),
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 0.5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
-                        child: Text(
-                          pinnedLocCityMun,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15.0),
-                        ),
-                      ),
-                      Text("BARANGAY/DISTRICT",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 10,
-                              letterSpacing: 2,
-                              color: Colors.black54)),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(15),
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 0.5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
-                        child: Text(
-                          pinnedLocBarangay,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15.0),
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 30, bottom: 10),
-                        child: Text("Incident Details",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                            )),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: const EdgeInsets.only(top: 5, bottom: 15),
-                        padding: const EdgeInsets.all(15),
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 0.5),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(15))),
-                        child: Text(
-                          incidentDetails,
-                          textAlign: TextAlign.left,
-                          style: const TextStyle(fontSize: 15.0),
+
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.all(Radius.circular(10.0))),
+                                      title: const Text('Reason for Rejection'),
+                                      content: SingleChildScrollView(
+                                  child: Row(
+                                    children: [
+
+                                    ],
+                                  )
+                                      ),
+                                  );
+                                });
+                          },
+                          child: Container(
+                              height: MediaQuery.of(context).size.height * 0.03,
+                              width: MediaQuery.of(context).size.width * 0.10,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(15)),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Reportee Details',
+                              )),
                         ),
                       ),
                     ],
@@ -2223,20 +2298,56 @@ class _reportsPNPState extends State<reportsPNP> {
       // print('after changing tabs: ${reportList!.length}');
     }
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(top: 20),
+          margin: EdgeInsets.only(top: 40, left: 40, bottom: 20),
           width: MediaQuery.of(context).size.width * 0.9,
           child: Row(
             children: [
+              Text('Reports',
+                  style: GoogleFonts.inter(
+                      textStyle: TextStyle(
+                          fontWeight: FontWeight.w900, fontSize: 20))),
+              SizedBox(width: MediaQuery.of(context).size.width * 0.4),
+              TextButton(
+                onPressed: () {
+                  if (reportList!.isNotEmpty) {
+                    reportList =
+                        rearrangeList(reportList!, 'p3_mp_lastName', []);
+                    setState(() {});
+                  }
+                },
+                child: Text('Sort By lastName'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (reportList!.isNotEmpty) {
+                    reportList =
+                        rearrangeList(reportList!, 'p3_mp_lastName', []);
+                    setState(() {});
+                  }
+                },
+                child: Text('Sort By lastName'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (reportList!.isNotEmpty) {
+                    reportList =
+                        rearrangeList(reportList!, 'p3_mp_lastName', []);
+                    setState(() {});
+                  }
+                },
+                child: Text('Sort By lastName'),
+              ),
               Container(
-                width: MediaQuery.of(context).size.width * 0.35,
+                width: MediaQuery.of(context).size.width * 0.15,
                 child: TextField(
+                  style: TextStyle(fontSize: 12),
                   controller: editingController,
                   decoration: const InputDecoration(
-                      labelText: "Search",
                       hintText: "Search",
-                      prefixIcon: Icon(Icons.search),
+                      prefixIcon: Icon(Icons.search, size: 20),
                       border: OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(25.0)))),
@@ -2249,41 +2360,12 @@ class _reportsPNPState extends State<reportsPNP> {
                   },
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  if (reportList!.isNotEmpty) {
-                    reportList =
-                        rearrangeList(reportList!, 'p3_mp_lastName', []);
-                    setState(() {});
-                  }
-                },
-                child: Text('Sort By lastName'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (reportList!.isNotEmpty) {
-                    reportList =
-                        rearrangeList(reportList!, 'p3_mp_lastName', []);
-                    setState(() {});
-                  }
-                },
-                child: Text('Sort By lastName'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (reportList!.isNotEmpty) {
-                    reportList =
-                        rearrangeList(reportList!, 'p3_mp_lastName', []);
-                    setState(() {});
-                  }
-                },
-                child: Text('Sort By lastName'),
-              ),
             ],
           ),
         ),
+
         Container(
-          height: MediaQuery.of(context).size.height * 0.8,
+          height: MediaQuery.of(context).size.height * 0.85,
           child: reportList!.isNotEmpty
               ? ListView.builder(
                   itemCount: reportList!.length,

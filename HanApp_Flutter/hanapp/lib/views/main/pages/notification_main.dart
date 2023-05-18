@@ -138,7 +138,7 @@ class _NotificationMain extends State<NotificationMain> {
 
                       final firstName = currentReportValues['p3_mp_firstName'] ?? '';
                       final lastName = currentReportValues['p3_mp_lastName'] ?? '';
-                      final mp_recentPhoto_LINK = currentReportValues['mp_recentPhoto_LINK'];
+                      final mp_recentPhoto_LINK = currentReportValues['mp_recentPhoto_LINK'] ?? 'https://images.squarespace-cdn.com/content/v1/5b8709309f87706a308b674a/1630432472107-419TL4L1S480Z0LIVRYA/Missing.jpg';
                       final lastSeenLoc = currentReportValues['p5_nearestLandmark'] ?? '';
                       final dateReported = currentReportValues['p5_reportDate'] ?? '';
 

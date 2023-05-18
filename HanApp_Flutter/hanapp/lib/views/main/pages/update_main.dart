@@ -291,7 +291,7 @@ class _UpdateMainState extends State<UpdateMain> {
             },
           ),
         ),
-      ],
+
           Container(
             margin: EdgeInsets.only(
                 top: MediaQuery.of(context).size.height * .05, bottom: 10),
@@ -392,8 +392,7 @@ class _UpdateMainState extends State<UpdateMain> {
               },
             ),
           ),
-        ],
-      ),
+      ]
     );
   }
 }
