@@ -812,11 +812,13 @@ class _reportsPNPState extends State<reportsPNP> {
                                 // }
                                 if (statusValue == "Already Found") {
                                   // Show a dialog box asking for date found
+                                  // ignore: use_build_context_synchronously
                                   DateTime? selectedDate = await showDatePicker(
                                     context: context,
                                     initialDate: DateTime.now(),
                                     firstDate: DateTime(1900),
                                     lastDate: DateTime.now(),
+                                    cancelText: '',
                                   );
 
                                   if (selectedDate != null) {
