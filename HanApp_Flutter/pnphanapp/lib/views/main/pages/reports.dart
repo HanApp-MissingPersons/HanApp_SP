@@ -761,286 +761,315 @@ class _reportsPNPState extends State<reportsPNP> {
             // CHANGE REPORT STATUS POPUP
             SizedBox(
               width: 160,
-              height: 50,
-              child: TextButton(
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      side: const BorderSide(
-                          color: Colors.black,
-                          width: 1,
-                          style: BorderStyle.solid),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  // final currentContext = context;
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      // String? oldStatusValue = statusValue;
-                      String? newStatusValue = statusValue;
-                      return AlertDialog(
-                        title: Text(
-                            // 'Change Report Status of $firstName $lastName'),
-                            'Change Report Status of ${report['p3_mp_firstName']} ${report['p3_mp_lastName']}'),
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'Are you sure you want to change the report status of this missing person?',
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            const SizedBox(height: 16),
-                            DropdownButtonFormField<String>(
-                              // text to display when no value is selected
-                              hint: const Text(
-                                'Select Report Status',
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              decoration: const InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                ),
-                              ),
-                              value: newStatusValue,
-                              icon: const Icon(Icons.arrow_drop_down),
-                              iconSize: 24,
-                              elevation: 16,
-                              style: const TextStyle(color: Colors.black54),
-                              onChanged: (String? value) {
-                                newStatusValue = value;
-                              },
-                              items: <String>[
-                                'Verified',
-                                'Already Found',
-                                // 'Incomplete Details', -- this can be under "Rejected"
-                                'Rejected',
-                              ].map<DropdownMenuItem<String>>((statusValue) {
-                                return DropdownMenuItem<String>(
-                                  value: statusValue,
-                                  child: Text(statusValue),
-                                );
-                              }).toList(),
-                            ),
-                          ],
+              height: 70,
+              child: Column(
+                children: [
+                  TextButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          side: const BorderSide(
+                              color: Colors.black,
+                              width: 1,
+                              style: BorderStyle.solid),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(15),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0)),
-                                backgroundColor: Palette.indigo,
-                                foregroundColor: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      // final currentContext = context;
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          // String? oldStatusValue = statusValue;
+                          String? newStatusValue = statusValue;
+                          return AlertDialog(
+                            title: Text(
+                                // 'Change Report Status of $firstName $lastName'),
+                                'Change Report Status of ${report['p3_mp_firstName']} ${report['p3_mp_lastName']}'),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20.0))),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'Are you sure you want to change the report status of this missing person?',
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                                const SizedBox(height: 16),
+                                DropdownButtonFormField<String>(
+                                  // text to display when no value is selected
+                                  hint: const Text(
+                                    'Select Report Status',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(10)),
+                                    ),
+                                  ),
+                                  value: newStatusValue,
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  style: const TextStyle(color: Colors.black54),
+                                  onChanged: (String? value) {
+                                    newStatusValue = value;
+                                  },
+                                  items: <String>[
+                                    'Verified',
+                                    'Already Found',
+                                    // 'Incomplete Details', -- this can be under "Rejected"
+                                    'Rejected',
+                                  ].map<DropdownMenuItem<String>>((statusValue) {
+                                    return DropdownMenuItem<String>(
+                                      value: statusValue,
+                                      child: Text(statusValue),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel'),
                               ),
-                              onPressed: () async {
-                                statusValue = newStatusValue;
-                                report['status'] = statusValue;
-                                await databaseReportsReference
-                                    .child(report['uid'])
-                                    .child(report['key'])
-                                    .update({"status": "$statusValue"});
-                                // IF REJECTED, PROMPT FOR REASON
-                                if (statusValue == "Rejected") {
-                                  // Show a dialog box asking for reason for rejection
-                                  String? rejectReason;
-                                  // ignore: use_build_context_synchronously
-                                  await showDialog(
-                                    // context: currentContext,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(32.0))),
-                                        title:
-                                            Text('Enter Reason for Rejection'),
-                                        content: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3,
-                                          child: TextFormField(
-                                            onChanged: (value) {
-                                              rejectReason = value;
-                                            },
-                                            maxLines: 3,
-                                            decoration: InputDecoration(
-                                              hintText: 'Type reason here',
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        actions: <Widget>[
-                                          // TextButton(
-                                          //   child: Text('Cancel'),
-                                          //   onPressed: () async {
-                                          //     // revert back to previous status
-                                          //     report['status'] = oldStatusValue;
-                                          //     await databaseReportsReference
-                                          //         .child(report['uid'])
-                                          //         .child(report['key'])
-                                          //         .update({
-                                          //       "status": "$oldStatusValue"
-                                          //     });
-                                          //     Navigator.of(context).pop();
-                                          //   },
-                                          // ),
-                                          TextButton(
-                                            child: Text('Save Reason'),
-                                            onPressed: () async {
-                                              report['pnp_rejectReason'] =
-                                                  rejectReason;
-                                              await databaseReportsReference
-                                                  .child(report['uid'])
-                                                  .child(report['key'])
-                                                  .update({
-                                                'pnp_rejectReason':
-                                                    rejectReason,
-                                              });
-                                              fetchData();
-                                              editingController.clear();
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                } else {
-                                  // Navigator.of(context).pop();
-                                }
-                                // end of Rejection reason dialogue box
-                                // IF ALREADY FOUND, PROMPT FOR DATE
-                                // if (statusValue == "Already Found") {
-                                //   // Show a dialog box asking for date found
-                                //   String? dateFound;
-                                //   // ignore: use_build_context_synchronously
-                                //   await showDialog(
-                                //     // context: currentContext,
-                                //     context: context,
-                                //     builder: (BuildContext context) {
-                                //       return AlertDialog(
-                                //         title: Text('Enter Date Found'),
-                                //         content:
-                                //             // CHANGE THIS TO DATE PICKER
-                                //             TextFormField(
-                                //           onChanged: (value) {
-                                //             dateFound = value;
-                                //           },
-                                //           maxLines: 3,
-                                //           decoration: InputDecoration(
-                                //             hintText: 'Type date here',
-                                //             border: OutlineInputBorder(
-                                //               borderRadius:
-                                //                   BorderRadius.circular(10.0),
-                                //             ),
-                                //           ),
-                                //         ),
-                                //         // END OF "CHANGE THIS TO DATE PICKER"
-                                //         actions: <Widget>[
-                                //           // TextButton(
-                                //           //   child: Text('Cancel'),
-                                //           //   onPressed: () {
-                                //           //     // revert back to previous status
-                                //           //     oldStatusValue = report['status'];
-                                //           //     Navigator.of(context).pop();
-                                //           //   },
-                                //           // ),
-                                //           TextButton(
-                                //             child: Text('Save Date'),
-                                //             onPressed: () async {
-                                //               report['pnp_dateFound'] =
-                                //                   dateFound;
-                                //               await databaseReportsReference
-                                //                   .child(report['uid'])
-                                //                   .child(report['key'])
-                                //                   .update({
-                                //                 'pnp_dateFound': dateFound,
-                                //               });
-
-                                //               Navigator.of(context).pop();
-                                //             },
-                                //           ),
-                                //         ],
-                                //       );
-                                //     },
-                                //   );
-                                // } else {
-                                //   // Navigator.of(context).pop();
-                                // }
-                                if (statusValue == "Already Found") {
-                                  // Show a dialog box asking for date found
-                                  DateTime? selectedDate = await showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1900),
-                                    lastDate: DateTime.now(),
-                                    cancelText: '',
-                                  );
-
-                                  if (selectedDate != null) {
-                                    // Format the selected date as MM/dd/YYYY
-                                    String dateFound =
-                                        '${selectedDate.month.toString().padLeft(2, '0')}/'
-                                        '${selectedDate.day.toString().padLeft(2, '0')}/'
-                                        '${selectedDate.year.toString()}';
-
-                                    report['pnp_dateFound'] = dateFound;
+                              Container(
+                                padding: const EdgeInsets.all(15),
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0)),
+                                    backgroundColor: Palette.indigo,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  onPressed: () async {
+                                    statusValue = newStatusValue;
+                                    report['status'] = statusValue;
                                     await databaseReportsReference
                                         .child(report['uid'])
                                         .child(report['key'])
-                                        .update({
-                                      'pnp_dateFound': dateFound,
-                                    });
-                                  }
-                                }
-                                // end of Date Found dialogue box
-                                print(
-                                    '[changed status] ${report['keyUid']} to $statusValue');
-                                fetchData();
-                                editingController.clear();
-                                Navigator.of(context).pop();
+                                        .update({"status": "$statusValue"});
+                                    // IF REJECTED, PROMPT FOR REASON
+                                    if (statusValue == "Rejected") {
+                                      // Show a dialog box asking for reason for rejection
+                                      String? rejectReason;
+                                      // ignore: use_build_context_synchronously
+                                      await showDialog(
+                                        // context: currentContext,
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(32.0))),
+                                            title:
+                                                Text('Enter Reason for Rejection'),
+                                            content: Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  3,
+                                              child: TextFormField(
+                                                onChanged: (value) {
+                                                  rejectReason = value;
+                                                },
+                                                maxLines: 3,
+                                                decoration: InputDecoration(
+                                                  hintText: 'Type reason here',
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(10.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            actions: <Widget>[
+                                              // TextButton(
+                                              //   child: Text('Cancel'),
+                                              //   onPressed: () async {
+                                              //     // revert back to previous status
+                                              //     report['status'] = oldStatusValue;
+                                              //     await databaseReportsReference
+                                              //         .child(report['uid'])
+                                              //         .child(report['key'])
+                                              //         .update({
+                                              //       "status": "$oldStatusValue"
+                                              //     });
+                                              //     Navigator.of(context).pop();
+                                              //   },
+                                              // ),
+                                              TextButton(
+                                                child: Text('Save Reason'),
+                                                onPressed: () async {
+                                                  report['pnp_rejectReason'] =
+                                                      rejectReason;
+                                                  await databaseReportsReference
+                                                      .child(report['uid'])
+                                                      .child(report['key'])
+                                                      .update({
+                                                    'pnp_rejectReason':
+                                                        rejectReason,
+                                                  });
+                                                  fetchData();
+                                                  editingController.clear();
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      // Navigator.of(context).pop();
+                                    }
+                                    // end of Rejection reason dialogue box
+                                    // IF ALREADY FOUND, PROMPT FOR DATE
+                                    // if (statusValue == "Already Found") {
+                                    //   // Show a dialog box asking for date found
+                                    //   String? dateFound;
+                                    //   // ignore: use_build_context_synchronously
+                                    //   await showDialog(
+                                    //     // context: currentContext,
+                                    //     context: context,
+                                    //     builder: (BuildContext context) {
+                                    //       return AlertDialog(
+                                    //         title: Text('Enter Date Found'),
+                                    //         content:
+                                    //             // CHANGE THIS TO DATE PICKER
+                                    //             TextFormField(
+                                    //           onChanged: (value) {
+                                    //             dateFound = value;
+                                    //           },
+                                    //           maxLines: 3,
+                                    //           decoration: InputDecoration(
+                                    //             hintText: 'Type date here',
+                                    //             border: OutlineInputBorder(
+                                    //               borderRadius:
+                                    //                   BorderRadius.circular(10.0),
+                                    //             ),
+                                    //           ),
+                                    //         ),
+                                    //         // END OF "CHANGE THIS TO DATE PICKER"
+                                    //         actions: <Widget>[
+                                    //           // TextButton(
+                                    //           //   child: Text('Cancel'),
+                                    //           //   onPressed: () {
+                                    //           //     // revert back to previous status
+                                    //           //     oldStatusValue = report['status'];
+                                    //           //     Navigator.of(context).pop();
+                                    //           //   },
+                                    //           // ),
+                                    //           TextButton(
+                                    //             child: Text('Save Date'),
+                                    //             onPressed: () async {
+                                    //               report['pnp_dateFound'] =
+                                    //                   dateFound;
+                                    //               await databaseReportsReference
+                                    //                   .child(report['uid'])
+                                    //                   .child(report['key'])
+                                    //                   .update({
+                                    //                 'pnp_dateFound': dateFound,
+                                    //               });
 
-                                setState(() {});
-                              },
-                              child: Text('Confirm'),
-                            ),
-                          ),
-                        ],
+                                    //               Navigator.of(context).pop();
+                                    //             },
+                                    //           ),
+                                    //         ],
+                                    //       );
+                                    //     },
+                                    //   );
+                                    // } else {
+                                    //   // Navigator.of(context).pop();
+                                    // }
+                                    if (statusValue == "Already Found") {
+                                      // Show a dialog box asking for date found
+                                      DateTime? selectedDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime.now(),
+                                        cancelText: '',
+                                      );
+
+                                      if (selectedDate != null) {
+                                        // Format the selected date as MM/dd/YYYY
+                                        String dateFound =
+                                            '${selectedDate.month.toString().padLeft(2, '0')}/'
+                                            '${selectedDate.day.toString().padLeft(2, '0')}/'
+                                            '${selectedDate.year.toString()}';
+
+                                        report['pnp_dateFound'] = dateFound;
+                                        await databaseReportsReference
+                                            .child(report['uid'])
+                                            .child(report['key'])
+                                            .update({
+                                          'pnp_dateFound': dateFound,
+                                        });
+                                      }
+                                    }
+                                    // end of Date Found dialogue box
+                                    print(
+                                        '[changed status] ${report['keyUid']} to $statusValue');
+                                    fetchData();
+                                    editingController.clear();
+                                    Navigator.of(context).pop();
+
+                                    setState(() {});
+                                  },
+                                  child: Text('Confirm'),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
-                  );
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                        report['status'] == 'pending'
-                            ? 'Pending'
-                            : report['status'],
-                        style: GoogleFonts.inter(
-                            fontSize: 12, fontWeight: FontWeight.w700)),
-                    const SizedBox(width: 5),
-                    const Icon(Icons.edit, size: 15),
-                  ],
-                ),
+
+                    child: Container(
+                      height: 50,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                              report['status'] == 'pending'
+                                  ? 'Pending'
+                                  : report['status'],
+                              style: GoogleFonts.inter(
+                                  fontSize: 12, fontWeight: FontWeight.w700)),
+                          const SizedBox(width: 3),
+                          const Icon(Icons.edit, size: 15),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // if (report['status'] == 'Already Found')
+                    Visibility(
+                      visible: report['status'] == 'Already Found',
+                      child: Container(
+                        margin: EdgeInsets.only(top:5.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text('Date Found',
+                                style: GoogleFonts.inter(
+                                    fontSize: 10, color: Colors.black38)),
+                            const SizedBox(width: 10),
+                            Text('${report['pnp_dateFound']}',
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.inter(
+                                    fontSize: 10, fontWeight: FontWeight.w600)),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
 
@@ -1110,24 +1139,24 @@ class _reportsPNPState extends State<reportsPNP> {
               ),
 
             // if status == already found, show text "Date Found: " and the date found
-            if (report['status'] == 'Already Found')
-              SizedBox(
-                width: 200,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('${report['pnp_dateFound']}',
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.inter(
-                            fontSize: 18, fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 3),
-                    Text('Date Found',
-                        style: GoogleFonts.inter(
-                            fontSize: 12, color: Colors.black38)),
-                  ],
-                ),
-              ),
+            // if (report['status'] == 'Already Found')
+            //   SizedBox(
+            //     width: 200,
+            //     child: Column(
+            //       mainAxisAlignment: MainAxisAlignment.center,
+            //       crossAxisAlignment: CrossAxisAlignment.center,
+            //       children: [
+            //         Text('${report['pnp_dateFound']}',
+            //             textAlign: TextAlign.center,
+            //             style: GoogleFonts.inter(
+            //                 fontSize: 18, fontWeight: FontWeight.w600)),
+            //         const SizedBox(height: 3),
+            //         Text('Date Found',
+            //             style: GoogleFonts.inter(
+            //                 fontSize: 12, color: Colors.black38)),
+            //       ],
+            //     ),
+            //   ),
             //Text('Date Found: ${report['pnp_dateFound']}'),
 
             //SizedBox(width: 20),
@@ -2309,39 +2338,10 @@ class _reportsPNPState extends State<reportsPNP> {
                   style: GoogleFonts.inter(
                       textStyle: TextStyle(
                           fontWeight: FontWeight.w900, fontSize: 20))),
-              SizedBox(width: MediaQuery.of(context).size.width * 0.4),
-              TextButton(
-                onPressed: () {
-                  if (reportList!.isNotEmpty) {
-                    reportList =
-                        rearrangeList(reportList!, 'p3_mp_lastName', []);
-                    setState(() {});
-                  }
-                },
-                child: Text('Sort By lastName'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (reportList!.isNotEmpty) {
-                    reportList =
-                        rearrangeList(reportList!, 'p3_mp_lastName', []);
-                    setState(() {});
-                  }
-                },
-                child: Text('Sort By lastName'),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (reportList!.isNotEmpty) {
-                    reportList =
-                        rearrangeList(reportList!, 'p3_mp_lastName', []);
-                    setState(() {});
-                  }
-                },
-                child: Text('Sort By lastName'),
-              ),
+              //SizedBox(width: MediaQuery.of(context).size.width * 0.2),
               Container(
                 width: MediaQuery.of(context).size.width * 0.15,
+                margin: EdgeInsets.only(left: 70, right: 30),
                 child: TextField(
                   style: TextStyle(fontSize: 12),
                   controller: editingController,
@@ -2350,7 +2350,7 @@ class _reportsPNPState extends State<reportsPNP> {
                       prefixIcon: Icon(Icons.search, size: 20),
                       border: OutlineInputBorder(
                           borderRadius:
-                              BorderRadius.all(Radius.circular(25.0)))),
+                          BorderRadius.all(Radius.circular(25.0)))),
                   onChanged: (value) {
                     filterSearchResults(value);
                     setState(() {
@@ -2360,6 +2360,46 @@ class _reportsPNPState extends State<reportsPNP> {
                   },
                 ),
               ),
+              IconButton(
+                tooltip: "Sort ascendingly by last name",
+                  splashRadius: 0.2,
+                  onPressed: () {
+                    if (reportList!.isNotEmpty) {
+                      reportList =
+                          rearrangeList(reportList!, 'p3_mp_lastName', []);
+                      setState(() {});
+                    }
+                  }, icon: Icon(Icons.sort_by_alpha, color: Colors.black54,)),
+              // TextButton(
+              //   onPressed: () {
+              //     if (reportList!.isNotEmpty) {
+              //       reportList =
+              //           rearrangeList(reportList!, 'p3_mp_lastName', []);
+              //       setState(() {});
+              //     }
+              //   },
+              //   child: Text('Sort By lastName'),
+              // ),
+              // TextButton(
+              //   onPressed: () {
+              //     if (reportList!.isNotEmpty) {
+              //       reportList =
+              //           rearrangeList(reportList!, 'p3_mp_lastName', []);
+              //       setState(() {});
+              //     }
+              //   },
+              //   child: Text('Sort By lastName'),
+              // ),
+              // TextButton(
+              //   onPressed: () {
+              //     if (reportList!.isNotEmpty) {
+              //       reportList =
+              //           rearrangeList(reportList!, 'p3_mp_lastName', []);
+              //       setState(() {});
+              //     }
+              //   },
+              //   child: Text('Sort By lastName'),
+              // ),
             ],
           ),
         ),

@@ -115,9 +115,19 @@ class _UpdateMainState extends State<UpdateMain> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              report['p5_reportDate'],
-              textScaleFactor: 0.9,
+            Visibility(
+              visible: report['status'] != 'Already Found',
+              child: Text(
+                "Date Reported: ${report['p5_reportDate']}",
+                textScaleFactor: 0.70,
+              ),
+            ),
+            Visibility(
+              visible: report['status'] == 'Already Found',
+              child: Text(
+                "Date Found: ${report['p5_reportDate']}",
+                textScaleFactor: 0.70,
+              ),
             ),
             if (report['status'] == 'Rejected')
               TextButton(
@@ -159,8 +169,6 @@ class _UpdateMainState extends State<UpdateMain> {
               //Retrieve the status here
               child: statusChange,
             ),
-            // Text(report['p5_reportDate'],
-            //   style: TextStyle(fontSize: 10),),
           ],
         ),
       ),
@@ -316,7 +324,6 @@ class _UpdateMainState extends State<UpdateMain> {
             child: TextField(
               controller: editingController,
               decoration: const InputDecoration(
-                  labelText: "Search",
                   hintText: "Search",
                   prefixIcon: Icon(Icons.search),
                   border: OutlineInputBorder(

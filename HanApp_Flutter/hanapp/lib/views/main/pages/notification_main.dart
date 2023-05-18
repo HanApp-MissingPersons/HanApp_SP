@@ -117,7 +117,7 @@ class _NotificationMain extends State<NotificationMain> {
 
                 // NOTIFICATIONS LIST
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.75,
+                  height: MediaQuery.of(context).size.height * 0.70,
                   width: MediaQuery.of(context).size.width * 0.9,
                   margin: const EdgeInsets.only(top: 30.0),
                   child: ListView.builder(
