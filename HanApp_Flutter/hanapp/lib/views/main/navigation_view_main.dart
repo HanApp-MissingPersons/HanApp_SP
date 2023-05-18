@@ -287,6 +287,7 @@ class _NavigationFieldState extends State<NavigationField> {
                             // const SizedBox(height: 50),
                             // const Center(child: Text('Nearly there...')),
                             // const SizedBox(height: 50),
+                            //Image.asset('assets/images/hanappLogo.png', width: 50)
                           ],
                         ),
                       );
@@ -360,17 +361,37 @@ class _NavigationFieldState extends State<NavigationField> {
                     label: 'Nearby'),
                 (reportsClean != null)
                     ? (reportsClean!.isNotEmpty)
-                        ? const BottomNavigationBarItem(
-                            icon: Icon(Icons.notification_important_outlined),
-                            activeIcon: Icon(Icons.notification_important),
+                        ? BottomNavigationBarItem(
+                            icon: Stack(
+                              children: [
+                                Icon(Icons.notifications_outlined),
+                                Positioned(  // draw a red marble
+                                  top: 0.0,
+                                  right: 0.0,
+                                  child: new Icon(Icons.brightness_1, size: 9.0,
+                                      color: Colors.redAccent),
+                                )
+                              ],
+                            ),
+                            activeIcon: Stack(
+                              children: [
+                                Icon(Icons.notifications),
+                                Positioned(  // draw a red marble
+                                  top: 0.0,
+                                  right: 0.0,
+                                  child: new Icon(Icons.brightness_1, size: 9.0,
+                                      color: Colors.redAccent),
+                                )
+                              ],
+                            ),
                             label: 'Notifications')
                         : const BottomNavigationBarItem(
-                            icon: Icon(Icons.notifications_paused_outlined),
-                            activeIcon: Icon(Icons.notifications_paused),
+                            icon: Icon(Icons.notifications_outlined),
+                            activeIcon: Icon(Icons.notifications),
                             label: 'Notifications')
                     : const BottomNavigationBarItem(
-                        icon: Icon(Icons.notifications_paused_outlined),
-                        activeIcon: Icon(Icons.notifications_paused),
+                        icon: Icon(Icons.notifications_outlined),
+                        activeIcon: Icon(Icons.notifications),
                         label: 'Notifications'),
                 const BottomNavigationBarItem(
                     icon: Icon(Icons.tips_and_updates_outlined),
@@ -424,6 +445,9 @@ class _NavigationFieldState extends State<NavigationField> {
             bottomNavigationBar: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.white,
+              selectedItemColor: Colors.white10,
+              unselectedItemColor: Colors.white10,
+              showSelectedLabels: false,
               showUnselectedLabels: false,
               onTap: null,
               items: const [
@@ -434,7 +458,7 @@ class _NavigationFieldState extends State<NavigationField> {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.near_me_outlined), label: 'Near Me'),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.notifications_paused_outlined),
+                    icon: Icon(Icons.notifications_outlined),
                     label: 'Notifications'),
                 BottomNavigationBarItem(
                     icon: Icon(Icons.tips_and_updates_outlined),
