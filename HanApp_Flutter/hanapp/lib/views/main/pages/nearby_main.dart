@@ -75,7 +75,7 @@ class _NearbyMainState extends State<NearbyMain> {
         CameraPosition(
           target:
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-          zoom: 20,
+          zoom: 14.25,
         ),
       ),
     );
@@ -151,7 +151,7 @@ class _NearbyMainState extends State<NearbyMain> {
               initialCameraPosition: CameraPosition(
                 target: LatLng(
                     currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 20,
+                zoom: 14.25,
               ),
               onMapCreated: (controller) => {
                 _controller.complete(controller),
@@ -352,8 +352,11 @@ class _NearbyMainState extends State<NearbyMain> {
                                                   Visibility(
                                                     visible: over24Hours,
                                                     child: Container(
-                                                      margin: EdgeInsets.only(right: 5, top: 5),
-                                                      padding: const EdgeInsets.all(8),
+                                                      margin: EdgeInsets.only(
+                                                          right: 5, top: 5),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8),
                                                       decoration: BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius
@@ -361,8 +364,10 @@ class _NearbyMainState extends State<NearbyMain> {
                                                           color: Colors.green),
                                                       child: const Text(
                                                         'Over 24 Hours',
-                                                        style:
-                                                        TextStyle(fontSize: 10, color: Colors.white),
+                                                        style: TextStyle(
+                                                            fontSize: 10,
+                                                            color:
+                                                                Colors.white),
                                                       ),
                                                     ),
                                                   ),
