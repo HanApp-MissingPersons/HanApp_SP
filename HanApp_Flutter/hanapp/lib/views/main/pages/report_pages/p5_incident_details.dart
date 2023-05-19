@@ -646,7 +646,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         // geocoding stuff
                         lastSeenLoc_lat = location.latitude.toString();
                         lastSeenLoc_lng = location.longitude.toString();
-                        _getAddress();
+                        _getAddress(); // run getAddress() to get address from lat,lng
                         placeName != null
                             ? _writeToPrefs('p5_placeName', placeName!)
                             : _writeToPrefs('p5_placeName', 'No Place Name');
@@ -665,7 +665,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                             ? _writeToPrefs('p5_brgyName', brgyName!)
                             : _writeToPrefs('p5_brgyName', 'No Barangay name');
                       });
-                      _getAddress;
+                      // _getAddress;
                       // set lastSeenLoc_lat and lastSeenLoc_long
                     }
                   },
