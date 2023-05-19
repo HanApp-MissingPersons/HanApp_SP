@@ -40,6 +40,8 @@ class Page6AuthConfirm extends StatefulWidget {
 }
 
 class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
+  // for testing: set to false to enable report form validity checking
+  bool REPORT_ALWAYS_VALID = false;
   bool areImageUploading = false;
   // Firebase Realtime Database initialize
   FirebaseDatabase database = FirebaseDatabase.instance;
@@ -47,6 +49,14 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   DatabaseReference reportsRef = FirebaseDatabase.instance.ref("Reports");
   DatabaseReference reportsIMG = FirebaseDatabase.instance.ref("Report Images");
   late String? reportCount = '';
+  late String? reporteeFirstName = '';
+  late String? reporteeLastName = '';
+  late String? reporteeMiddleName = '';
+  late String? reporteeQualifiers = '';
+  late String? reporteeBirthDate = '';
+  late String? reporteeEmail = '';
+  late String? reporteePhoneNumber = '';
+  late String? reporteeSex = '';
   final user = FirebaseAuth.instance.currentUser;
   String userUID = FirebaseAuth.instance.currentUser!.uid;
   Map<String, dynamic> prefsDict = {};
@@ -102,29 +112,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         setState(() {
           prefs.setString('p6_reporteeSignature_PATH', file.path);
         });
-        //   await FirebaseStorage.instance
-        //       .ref()
-        //       .child('Reports')
-        //       .child(userUID)
-        //       .child('report_$reportCount')
-        //       .child('signature')
-        //       .putFile(file)
-        //       .whenComplete(() async {
-        //     await FirebaseStorage.instance
-        //         .ref()
-        //         .child('Reports')
-        //         .child(userUID)
-        //         .child('report_$reportCount')
-        //         .child('signature')
-        //         .getDownloadURL()
-        //         .then((value) {
-        //       print('GOT VALUE: $value');
-        //       setState(() {
-        //         prefs.setString('p6_reporteeSignature_LINK', value);
-        //       });
-        //     });
-        //   });
-        //   print('[SIGNATURE] Signature uploaded');
       } catch (e) {
         print('[ERROR] $e');
       }
@@ -225,6 +212,13 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       Map<dynamic, dynamic> userDict = snapshot.value as Map<dynamic, dynamic>;
       print('${userDict['firstName']} ${userDict['lastName']}');
       reportCount = userDict['reportCount'];
+      reporteeFirstName = userDict['firstName'] ?? '';
+      reporteeLastName = userDict['lastName'] ?? '';
+      reporteeMiddleName = userDict['middleName'] ?? 'N/A';
+      reporteePhoneNumber = userDict['phoneNumber'] ?? 'N/A';
+      reporteeQualifiers = userDict['qualifiers'] ?? 'N/A';
+      reporteeEmail = userDict['email'] ?? 'N/A';
+      reporteeBirthDate = userDict['birthDate'] ?? 'N/A';
     });
     print('[REPORT COUNT] report count: $reportCount');
   }
@@ -609,9 +603,107 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                 child: const Text('Submit Report'),
                                 onPressed: () async {
                                   // check completeness of report when submitting
-                                  checkReportValidity()
-                                      ? await submitReport().then((value) =>
-                                          popAndShowSnackbar(context))
+                                  checkReportValidity(REPORT_ALWAYS_VALID)
+                                      ? showDialog(
+                                          barrierDismissible: false,
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Confirm Submission'),
+                                              content: const Text(
+                                                  'Are you sure you want to submit this report?'),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                              actions: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 10, right: 20),
+                                                  child: StatefulBuilder(
+                                                    builder: (BuildContext
+                                                            context,
+                                                        StateSetter setState) {
+                                                      return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          areImageUploading
+                                                              ? const Text(
+                                                                  'Uploading Report...')
+                                                              : TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: const Text(
+                                                                      'Cancel')),
+                                                          Container(
+                                                            width: 10,
+                                                          ),
+                                                          ElevatedButton(
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
+                                                              backgroundColor:
+                                                                  Palette
+                                                                      .indigo,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5.0),
+                                                              ),
+                                                            ),
+                                                            onPressed:
+                                                                areImageUploading
+                                                                    ? null
+                                                                    : () async {
+                                                                        setState(
+                                                                            () {
+                                                                          areImageUploading =
+                                                                              true;
+                                                                        });
+                                                                        await submitReport().then((value) =>
+                                                                            popAndShowSnackbar(context));
+                                                                      },
+                                                            child: areImageUploading
+                                                                ? const SizedBox(
+                                                                    height:
+                                                                        24.0,
+                                                                    width: 50.0,
+                                                                    child:
+                                                                        SizedBox(
+                                                                      width: 24,
+                                                                      child:
+                                                                          SpinKitCubeGrid(
+                                                                        size:
+                                                                            24,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                : const SizedBox(
+                                                                    width: 50.0,
+                                                                    child: Text(
+                                                                        'Submit'),
+                                                                  ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          })
                                       : await showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
@@ -630,122 +722,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                             );
                                           },
                                         );
-                                  // if checkReportValidity is true (details complete), submit report confirmation
-                                  if (checkReportValidity()) {
-                                    showDialog(
-                                        barrierDismissible: false,
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text(
-                                                'Confirm Submission'),
-                                            content: const Text(
-                                                'Are you sure you want to submit this report?'),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                            ),
-                                            actions: <Widget>[
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 10, right: 20),
-                                                child: StatefulBuilder(
-                                                  builder: (BuildContext
-                                                          context,
-                                                      StateSetter setState) {
-                                                    return Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        areImageUploading
-                                                            ? const Text(
-                                                                'Uploading Report...')
-                                                            : TextButton(
-                                                                onPressed: () {
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop();
-                                                                },
-                                                                child: const Text(
-                                                                    'Cancel')),
-                                                        Container(
-                                                          width: 10,
-                                                        ),
-                                                        ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor:
-                                                                Palette.indigo,
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5.0),
-                                                            ),
-                                                          ),
-                                                          onPressed:
-                                                              areImageUploading
-                                                                  ? null
-                                                                  : () async {
-                                                                      setState(
-                                                                          () {
-                                                                        areImageUploading =
-                                                                            true;
-                                                                      });
-                                                                      // checkReportValidity()
-                                                                      //     ? await submitReport().then((value) =>
-                                                                      //         popAndShowSnackbar(context))
-                                                                      //     : await showDialog(
-                                                                      //         context:
-                                                                      //             context,
-                                                                      //         builder:
-                                                                      //             (BuildContext context) {
-                                                                      //           return AlertDialog(
-                                                                      //             title: const Text('Incomplete form'),
-                                                                      //             content: Text(formErrorMessage()),
-                                                                      //             actions: <Widget>[
-                                                                      //               TextButton(
-                                                                      //                 child: const Text('Close'),
-                                                                      //                 onPressed: () {
-                                                                      //                   Navigator.of(context).pop();
-                                                                      //                 },
-                                                                      //               ),
-                                                                      //             ],
-                                                                      //           );
-                                                                      //         },
-                                                                      //       );
-                                                                    },
-                                                          child: areImageUploading
-                                                              ? const SizedBox(
-                                                                  height: 24.0,
-                                                                  width: 50.0,
-                                                                  child:
-                                                                      SizedBox(
-                                                                    width: 24,
-                                                                    child:
-                                                                        SpinKitCubeGrid(
-                                                                      size: 24,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              : const SizedBox(
-                                                                  width: 50.0,
-                                                                  child: Text(
-                                                                      'Submit'),
-                                                                ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  }
                                 },
 
                                 // use sharedpreferences getAll() method to get all the data
@@ -759,15 +735,6 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                 child: Text('Submit Report'),
                               ),
                             ),
-                      // print all sharedpreferences data
-                      // TextButton(
-                      //   onPressed: () async {
-                      //     final prefs = await SharedPreferences.getInstance();
-                      //     print(prefs.getKeys());
-                      //     // preview of saved signature in a popup dialog
-                      //   },
-                      //   child: const Text('Print Shared Preferences'),
-                      // ),
                     ],
                   ),
                 ),
@@ -778,10 +745,12 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   }
 
   List<String> dialogMessage = ['none'];
-  checkReportValidity() {
+  checkReportValidity(bool removeReportValidtyCheck) {
     List<String> keysList = prefs.getKeys().toList();
     bool returnval = true;
-
+    if (removeReportValidtyCheck) {
+      return true;
+    }
     // p1 has no required values
     // p2 required values
     if (!(keysList.contains('p2_citizenship') &&
@@ -899,6 +868,14 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     if (reportCount != null) {
       String reportChildName = "report_${reportCount!}";
       prefsDict['status'] = 'Pending';
+      prefsDict['reportee_firstName'] = reporteeFirstName;
+      prefsDict['reportee_lastName'] = reporteeLastName;
+      prefsDict['reportee_middleName'] = reporteeMiddleName;
+      prefsDict['reportee_phoneNumber'] = reporteePhoneNumber;
+      prefsDict['reportee_email'] = reporteeEmail;
+      prefsDict['reportee_birthDate'] = reporteeBirthDate;
+      prefsDict['reportee_sex'] = reporteeSex;
+      prefsDict['reportee_qualifiers'] = reporteeQualifiers;
       await uploadImages();
       await retrievePrefsData();
       prefsDict.removeWhere((key, value) => key.endsWith('_PATH'));
