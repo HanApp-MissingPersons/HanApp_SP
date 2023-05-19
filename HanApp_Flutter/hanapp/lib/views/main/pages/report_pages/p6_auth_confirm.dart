@@ -41,7 +41,7 @@ class Page6AuthConfirm extends StatefulWidget {
 
 class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   // for testing: set to false to enable report form validity checking
-  bool REPORT_ALWAYS_VALID = false;
+  bool REPORT_ALWAYS_VALID = true;
   bool areImageUploading = false;
   // Firebase Realtime Database initialize
   FirebaseDatabase database = FirebaseDatabase.instance;
@@ -135,7 +135,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> imagePaths = [
       'p6_reporteeSignature_PATH',
-      'p2_singlePhoto_face_PATH',
+      'p2_reporteeSelfie_PATH',
       'p2_reportee_ID_Photo_PATH',
       'p4_mp_recent_photo_PATH',
       'p4_mp_dental_record_photo_PATH',
@@ -219,6 +219,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
       reporteeQualifiers = userDict['qualifiers'] ?? 'N/A';
       reporteeEmail = userDict['email'] ?? 'N/A';
       reporteeBirthDate = userDict['birthDate'] ?? 'N/A';
+      reporteeSex = userDict['sex'] ?? 'N/A';
     });
     print('[REPORT COUNT] report count: $reportCount');
   }
@@ -231,7 +232,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     List<String> keyList = prefs.getKeys().toList();
     List<String> imagesList = [
       'p2_reportee_ID_Photo',
-      'p2_singlePhoto_face',
+      'p2_reporteeSelfie',
       'p4_mp_recent_photo',
       'p5_locSnapshot',
       'p6_reporteeSignature',

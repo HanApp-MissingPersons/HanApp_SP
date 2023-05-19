@@ -14,6 +14,8 @@ import 'package:pnphanapp/main.dart';
 import 'package:image_network/image_network.dart';
 import 'package:intl/intl.dart';
 
+import '../../pnp_login_view.dart';
+
 class reportsPNP extends StatefulWidget {
   final List<String> filterValue;
   const reportsPNP({Key? key, required this.filterValue}) : super(key: key);
@@ -21,6 +23,8 @@ class reportsPNP extends StatefulWidget {
   @override
   State<reportsPNP> createState() => _reportsPNPState();
 }
+
+bool isFetchingData = false;
 
 class _reportsPNPState extends State<reportsPNP> {
   String cors_anywhere = 'https://cors-anywhere.herokuapp.com/';
@@ -117,6 +121,9 @@ class _reportsPNPState extends State<reportsPNP> {
   }
 
   Future<void> fetchData() async {
+    setState(() {
+      isFetchingData = true;
+    });
     // Retrieve data from Firebase
     DatabaseEvent snapshot = await dbRef.once();
     // AsyncSnapshot<dynamic> snapshot =
@@ -169,8 +176,10 @@ class _reportsPNPState extends State<reportsPNP> {
         });
       }
       // Trigger a rebuild with the fetched data
-      setState(() {});
     }
+    setState(() {
+      isFetchingData = false;
+    });
   }
 
   num calculateDistance(LatLng first, LatLng second) {
@@ -1226,6 +1235,9 @@ class _reportsPNPState extends State<reportsPNP> {
     String pinnedLocBarangay = report['p5_brgyName'] ?? '';
     String incidentDetails = report['p5_incidentDetails'] ?? '';
 
+    String reporteeIDLINK = report['reportee_Selfie_LINK'] ?? '';
+    String reporteeSelfieLINK = report['reportee_ID_Photo_LINK'] ?? '';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -2238,10 +2250,42 @@ class _reportsPNPState extends State<reportsPNP> {
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10.0))),
-                                    title: const Text('Reason for Rejection'),
+                                    title:
+                                        const Text('Details of the Reportee'),
                                     content: SingleChildScrollView(
-                                        child: Row(
-                                      children: [],
+                                        child: Column(
+                                      children: [
+                                        reporteeIDLINK != ''
+                                            ? Image.network(
+                                                reporteeIDLINK,
+                                                width: 200,
+                                              )
+                                            : const Icon(Icons.tag_faces_sharp),
+                                        reporteeSelfieLINK != ''
+                                            ? Image.network(reporteeSelfieLINK,
+                                                width: 200)
+                                            : const Icon(Icons.person),
+                                        Text(
+                                          'Name: ${report['reportee_firstName'] ?? 'N/A'} ${report['reportee_middleName'] == null ? report['reportee_middleName'] == 'N/A' ? '' : report['reportee_middleName'] : ''}${report['reportee_lastName'] ?? 'N/A'} ${report['reportee_qualifiers'] ?? ''}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          'Email: ${report['reportee_email'] ?? 'N/A'}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          'Phone Number: ${report['reportee_phoneNumber'] ?? 'N/A'}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          'Sex: ${report['reportee_sex'] ?? 'N/A'}',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
                                     )),
                                   );
                                 });
@@ -2332,7 +2376,7 @@ class _reportsPNPState extends State<reportsPNP> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          margin: EdgeInsets.only(top: 40, left: 40, bottom: 20),
+          margin: EdgeInsets.only(top: 30, left: 40, bottom: 20),
           width: MediaQuery.of(context).size.width * 0.9,
           child: Row(
             children: [
@@ -2376,6 +2420,21 @@ class _reportsPNPState extends State<reportsPNP> {
                     Icons.sort_by_alpha,
                     color: Colors.black54,
                   )),
+              IconButton(
+                tooltip: "Logout",
+                splashRadius: 0.2,
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginView()),
+                  );
+                },
+                icon: Icon(
+                  Icons.logout,
+                  color: Colors.black54,
+                ),
+              )
               // TextButton(
               //   onPressed: () {
               //     if (reportList!.isNotEmpty) {
@@ -2410,22 +2469,37 @@ class _reportsPNPState extends State<reportsPNP> {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * 0.85,
-          child: reportList!.isNotEmpty
-              ? ListView.builder(
-                  itemCount: reportList!.length,
-                  physics: const BouncingScrollPhysics(
-                    parent: PageScrollPhysics(),
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return listItem(report: reportList![index]);
-                  },
-                )
-              : Container(
-                  alignment: Alignment.center,
-                  child: const Text('There are currently no reports'),
-                ),
-        ),
+            height: MediaQuery.of(context).size.height * 0.85,
+            child: isFetchingData
+                ? Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        SpinKitCubeGrid(
+                          color: Colors.indigoAccent,
+                          size: 50.0,
+                        ),
+                        SizedBox(height: 30),
+                        Text('Retrieving reports...'),
+                      ],
+                    ),
+                  )
+                : reportList!.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: reportList!.length,
+                        physics: const BouncingScrollPhysics(
+                          parent: PageScrollPhysics(),
+                        ),
+                        itemBuilder: (BuildContext context, int index) {
+                          return listItem(report: reportList![index]);
+                        },
+                      )
+                    : Container(
+                        alignment: Alignment.center,
+                        child: const Text('There are currently no reports'),
+                      )),
       ],
     );
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -137,7 +138,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   }
 
   Future<void> loadImage_face() async {
-    String? singlePhotoStringFace = _prefs.getString('p2_singlePhoto_face');
+    String? singlePhotoStringFace = _prefs.getString('p2_reporteeSelfie');
     if (singlePhotoStringFace == null) {
       print('[p2] No user selfie ');
       return;
@@ -154,7 +155,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
           'p2_reportee_ID_Photo', base64Encode(reportee_ID_Photo!));
     }
     if (singlePhoto_face != null) {
-      _prefs.setString('p2_singlePhoto_face', base64Encode(singlePhoto_face!));
+      _prefs.setString('p2_reporteeSelfie', base64Encode(singlePhoto_face!));
     }
   }
 
@@ -162,6 +163,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
+      final file = File(pickedFile.path);
+      setState(() {
+        _writeToPrefs('p2_reportee_ID_Photo_PATH', file.path);
+      });
       final imageBytes = await pickedFile.readAsBytes();
       setState(() {
         reportee_ID_Photo = imageBytes;
@@ -175,6 +180,10 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     final pickedFileFace =
         await pickerFace.pickImage(source: ImageSource.camera);
     if (pickedFileFace != null) {
+      final file = File(pickedFileFace.path);
+      setState(() {
+        _writeToPrefs('p2_reporteeSelfie_PATH', file.path);
+      });
       final imageBytesFace = await pickedFileFace.readAsBytes();
       setState(() {
         singlePhoto_face = imageBytesFace;

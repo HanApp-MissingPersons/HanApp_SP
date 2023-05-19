@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:pnphanapp/views/main/pages/reports.dart';
-import 'package:pnphanapp/views/main/pages/reportsVerified.dart';
 
 class NavRailView extends StatefulWidget {
   const NavRailView({super.key});
