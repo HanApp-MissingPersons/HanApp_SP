@@ -268,12 +268,58 @@ class _NearbyMainState extends State<NearbyMain> {
                                 children: [
                                   Row(
                                     children: [
-                                      Container(
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return Dialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                ),
+                                                child: Container(
+                                                  constraints: BoxConstraints(
+                                                    maxHeight:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.8,
+                                                  ),
+                                                  child: GestureDetector(
+                                                    onScaleStart:
+                                                        (ScaleStartDetails
+                                                            details) {
+                                                      // Handle scale start event if needed
+                                                    },
+                                                    onScaleUpdate:
+                                                        (ScaleUpdateDetails
+                                                            details) {
+                                                      // Handle scale update event
+                                                      // You can update the scale factor or do other transformations here
+                                                    },
+                                                    child: InteractiveViewer(
+                                                      boundaryMargin:
+                                                          EdgeInsets.all(0),
+                                                      minScale: 0.5,
+                                                      maxScale: 5.0,
+                                                      child: Image.network(
+                                                          mp_recentPhoto_LINK),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Container(
                                           width: 50,
                                           height: 50,
                                           color: Colors.white,
                                           child: Image.network(
-                                              mp_recentPhoto_LINK)),
+                                              mp_recentPhoto_LINK),
+                                        ),
+                                      ),
                                       const SizedBox(width: 10),
                                       Column(
                                         crossAxisAlignment:
