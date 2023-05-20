@@ -880,7 +880,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                           return AlertDialog(
                                             shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(
-                                                    Radius.circular(32.0))),
+                                                    Radius.circular(20.0))),
                                             title: Text(
                                                 'Enter Reason for Rejection'),
                                             content: Container(
@@ -1237,6 +1237,11 @@ class _reportsPNPState extends State<reportsPNP> {
 
     String reporteeIDLINK = report['reportee_Selfie_LINK'] ?? '';
     String reporteeSelfieLINK = report['reportee_ID_Photo_LINK'] ?? '';
+
+    // //String reporteeBirthDate = report['reportee_birthDate'] ?? '';
+    // DateFormat dateTimeFormat = DateFormat('MMMM d, y hh:mm a');
+    // DateTime reporteeBirthdate = dateTimeFormat
+    //     .parse('${report['reportee_birthDate']} 12:00 am');
 
     showDialog(
       context: context,
@@ -2253,37 +2258,156 @@ class _reportsPNPState extends State<reportsPNP> {
                                     title:
                                         const Text('Details of the Reportee'),
                                     content: SingleChildScrollView(
-                                        child: Column(
+                                        child: Row(
                                       children: [
-                                        reporteeIDLINK != ''
-                                            ? Image.network(
-                                                reporteeIDLINK,
-                                                width: 200,
-                                              )
-                                            : const Icon(Icons.tag_faces_sharp),
-                                        reporteeSelfieLINK != ''
-                                            ? Image.network(reporteeSelfieLINK,
-                                                width: 200)
-                                            : const Icon(Icons.person),
-                                        Text(
-                                          'Name: ${report['reportee_firstName'] ?? 'N/A'} ${report['reportee_middleName'] == null ? report['reportee_middleName'] == 'N/A' ? '' : report['reportee_middleName'] : ''}${report['reportee_lastName'] ?? 'N/A'} ${report['reportee_qualifiers'] ?? ''}',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                        Column(
+                                          children: [
+                                            reporteeIDLINK != ''
+                                                ? Image.network(
+                                                    reporteeIDLINK,
+                                                    width: 200,
+                                                  )
+                                                : Image.network(
+                                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                              width: 200,
+                                            ),
+                                            SizedBox(height: 20),
+                                            reporteeSelfieLINK != ''
+                                                ? Image.network(reporteeSelfieLINK,
+                                                    width: 200)
+                                                : Image.network(
+                                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                              width: 200,
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          'Email: ${report['reportee_email'] ?? 'N/A'}',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          'Phone Number: ${report['reportee_phoneNumber'] ?? 'N/A'}',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          'Sex: ${report['reportee_sex'] ?? 'N/A'}',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                        SizedBox(width: 20),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 10),
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    textAlign: TextAlign.center,
+                                                    '${report['reportee_firstName'] ?? 'N/A'} ${report['reportee_middleName'] == null ? report['reportee_middleName'] == 'N/A' ? '' : report['reportee_middleName'] : ''}${report['reportee_lastName'] ?? 'N/A'}', //${report['reportee_qualifiers'] ?? ''}
+                                                    style: GoogleFonts.inter(
+                                                        fontSize: 22.0,
+                                                        fontWeight: FontWeight.w900),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  SelectableText(
+                                                    "${report['reportee_email'] ?? 'N/A'}",
+                                                    style: const TextStyle(fontSize: 15.0),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: MediaQuery.of(context).size.height / 20),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(bottom: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: const [
+                                                        Icon(Icons.phone_outlined),
+                                                        Padding(
+                                                          padding: EdgeInsets.only(left: 10),
+                                                          child: Text('Phone Number',
+                                                              style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.bold)),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width:  MediaQuery.of(context).size.width * 0.1,
+                                                    padding: const EdgeInsets.all(10),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(width: 0.5),
+                                                        borderRadius: const BorderRadius.all(
+                                                            Radius.circular(15))),
+                                                    child: SelectableText(
+                                                      "${report['reportee_phoneNumber'] ?? 'N/A'}",
+                                                      textAlign: TextAlign.center,
+                                                      style: const TextStyle(fontSize: 15.0),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 10),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(bottom: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: const [
+                                                        Icon(Icons.wc_outlined),
+                                                        Padding(
+                                                          padding: EdgeInsets.only(left: 10),
+                                                          child: Text('Sex',
+                                                              style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight: FontWeight.bold)),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width:  MediaQuery.of(context).size.width * 0.1,
+                                                    padding: const EdgeInsets.all(10),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(width: 0.5),
+                                                        borderRadius: const BorderRadius.all(
+                                                            Radius.circular(15))),
+                                                    child: SelectableText(
+                                                      "${report['reportee_sex'] ?? 'N/A'}",
+                                                      textAlign: TextAlign.center,
+                                                      style: const TextStyle(fontSize: 15.0),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top:20.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: const [
+                                                  Icon(Icons.assignment_ind_outlined),
+                                                  Padding(
+                                                    padding: EdgeInsets.only(left: 10),
+                                                    child: Text('Signature',
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight: FontWeight.bold)),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+
+                                            reportee_Signature_LINK != ''
+                                                ? Image.network(
+                                              reportee_Signature_LINK,
+                                              width: 200,
+                                            )
+                                                : Container(
+                                              width: 200,
+                                              color: Palette.indigo,
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     )),
@@ -2300,7 +2424,7 @@ class _reportsPNPState extends State<reportsPNP> {
                               alignment: Alignment.center,
                               child: Text(
                                 'Reportee Details',
-                              )),
+                              textAlign: TextAlign.center,),),
                         ),
                       ),
                     ],
@@ -2478,8 +2602,8 @@ class _reportsPNPState extends State<reportsPNP> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: const [
                         SpinKitCubeGrid(
-                          color: Colors.indigoAccent,
-                          size: 50.0,
+                          color: Palette.indigo,
+                          size: 40.0,
                         ),
                         SizedBox(height: 30),
                         Text('Retrieving reports...'),
