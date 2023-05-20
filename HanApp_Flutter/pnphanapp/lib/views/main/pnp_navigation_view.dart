@@ -1,6 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:pnphanapp/views/main/pages/reports.dart';
+
+import '../pnp_login_view.dart';
 
 class NavRailView extends StatefulWidget {
   const NavRailView({super.key});
@@ -39,16 +42,35 @@ class _NavRailViewState extends State<NavRailView> {
         child: Image.asset('assets/images/hanappLogo.png'),
       ),
       trailing: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 2.5),
-        child: IconButton(
-          icon: _isExpanded == true
-              ? const Icon(Icons.close_rounded)
-              : const Icon(Icons.menu_rounded),
-          onPressed: () {
-            setState(() {
-              _isExpanded = !_isExpanded;
-            });
-          },
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+        child: Column(
+          children: [
+            IconButton(
+              tooltip: "Logout",
+              splashRadius: 0.2,
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginView()),
+                );
+              },
+              icon: Icon(
+                Icons.logout,
+              ),
+            ),
+            SizedBox(height: 30),
+            IconButton(
+              icon: _isExpanded == true
+                  ? const Icon(Icons.close_rounded)
+                  : const Icon(Icons.menu_rounded),
+              onPressed: () {
+                setState(() {
+                  _isExpanded = !_isExpanded;
+                });
+              },
+            ),
+          ],
         ),
       ),
       destinations: const <NavigationRailDestination>[

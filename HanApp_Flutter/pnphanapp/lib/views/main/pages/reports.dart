@@ -2544,21 +2544,6 @@ class _reportsPNPState extends State<reportsPNP> {
                     Icons.sort_by_alpha,
                     color: Colors.black54,
                   )),
-              IconButton(
-                tooltip: "Logout",
-                splashRadius: 0.2,
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginView()),
-                  );
-                },
-                icon: Icon(
-                  Icons.logout,
-                  color: Colors.black54,
-                ),
-              )
               // TextButton(
               //   onPressed: () {
               //     if (reportList!.isNotEmpty) {
