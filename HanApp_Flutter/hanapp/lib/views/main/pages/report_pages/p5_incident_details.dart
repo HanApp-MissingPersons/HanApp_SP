@@ -649,21 +649,24 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                         _getAddress(); // run getAddress() to get address from lat,lng
                         placeName != null
                             ? _writeToPrefs('p5_placeName', placeName!)
-                            : _writeToPrefs('p5_placeName', 'No Place Name');
+                            : _writeToPrefs(
+                                'p5_placeName', 'No Registered Place Name');
 
                         nearestLandmark != null
                             ? _writeToPrefs(
                                 'p5_nearestLandmark', nearestLandmark!)
                             : _writeToPrefs(
-                                'p5_nearestLandmark', 'No Landmark');
+                                'p5_nearestLandmark', 'No Registered Landmark');
 
                         cityName != null
                             ? _writeToPrefs('p5_cityName', cityName!)
-                            : _writeToPrefs('p5_cityName', 'No City Name');
+                            : _writeToPrefs(
+                                'p5_cityName', 'No Registered City Name');
 
                         brgyName != null
                             ? _writeToPrefs('p5_brgyName', brgyName!)
-                            : _writeToPrefs('p5_brgyName', 'No Barangay name');
+                            : _writeToPrefs(
+                                'p5_brgyName', 'No Registered Barangay name');
                       });
                       // _getAddress;
                       // set lastSeenLoc_lat and lastSeenLoc_long
