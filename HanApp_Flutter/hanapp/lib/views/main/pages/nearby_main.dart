@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hanapp/main.dart';
@@ -80,6 +81,7 @@ class _NearbyMainState extends State<NearbyMain> {
       ),
     );
   }
+
 
   void setCustomMarkerIcon() {
     // temporary images, just to show that it is possible
@@ -315,12 +317,21 @@ class _NearbyMainState extends State<NearbyMain> {
                                             },
                                           );
                                         },
-                                        child: Container(
-                                          width: 50,
-                                          height: 50,
-                                          color: Colors.white,
-                                          child: Image.network(
-                                              mp_recentPhoto_LINK),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 50,
+                                              height: 50,
+                                              alignment: Alignment.center,
+                                              color: Colors.white,
+                                              child: Image.network(
+                                                  mp_recentPhoto_LINK, fit: BoxFit.fill),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Icon(Icons.search_outlined, size: 15, color: Palette.indigo),
+                                            )
+                                          ],
                                         ),
                                       ),
                                       const SizedBox(width: 10),
@@ -559,18 +570,71 @@ class _NearbyMainState extends State<NearbyMain> {
                                               const TextStyle(fontSize: 12.0),
                                         ),
                                       ),
-                                      const Text(
-                                        'If you have any information about this person, please contact the nearest police station',
-                                        style: const TextStyle(fontSize: 12.0),
+                                      // const Text(
+                                      //   'If you have any information about this person, please contact the nearest police station',
+                                      //   style: const TextStyle(fontSize: 12.0),
+                                      // ),
+                                      // SelectableText(
+                                      //   'call $pnp_contactNumber',
+                                      //   style: const TextStyle(fontSize: 12.0),
+                                      // ),
+                                      // SelectableText(
+                                      //   'or email $pnp_contactEmail',
+                                      //   style: const TextStyle(fontSize: 12.0),
+                                      // ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.only(right: 10, left: 20),
+                                            child: Icon(Icons.crisis_alert_outlined, color: Colors.black54,),
+                                          ),
+                                          SizedBox(
+                                            width: 230,
+                                            child: Text(
+                                              'If you locate a person or have information about this person. Call or email the police to notify immediately',
+                                              textScaleFactor: 0.60,
+                                            style: TextStyle(color: Colors.black54)),
+                                          ),
+                                        ],
                                       ),
-                                      SelectableText(
-                                        'call $pnp_contactNumber',
-                                        style: const TextStyle(fontSize: 12.0),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                )),
+                                            onPressed: () async {
+                                              var number = pnp_contactNumber; //set the number here
+                                              bool? res = await FlutterPhoneDirectCaller.callNumber(number);
+                                              },
+                                            child: Container(
+                                              child: Text('Call Police'),
+                                            ),
+                                          ),
+
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                )),
+                                            onPressed: () async {
+                                              var number = pnp_contactNumber; //set the number here
+                                              bool? res = await FlutterPhoneDirectCaller.callNumber(number);
+                                            },
+                                            child: Container(
+                                              child: Text('Email Police'),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      SelectableText(
-                                        'or email $pnp_contactEmail',
-                                        style: const TextStyle(fontSize: 12.0),
-                                      ),
+
                                     ],
                                   ),
                                   ExpansionTile(
@@ -1049,6 +1113,8 @@ class _NearbyMainState extends State<NearbyMain> {
     return markers;
   }
 }
+
+
 
 class Utils {
   static String mapStyle = '''
