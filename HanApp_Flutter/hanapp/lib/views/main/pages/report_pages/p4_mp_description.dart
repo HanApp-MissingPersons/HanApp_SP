@@ -357,7 +357,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.info_outline_rounded, size: 20),
+                          const Icon(
+                            Icons.info_outline_rounded,
+                            size: 25,
+                            color: Colors.redAccent,
+                          ),
                           const SizedBox(width: 10),
                           SizedBox(
                             width: MediaQuery.of(context).size.width - 80,

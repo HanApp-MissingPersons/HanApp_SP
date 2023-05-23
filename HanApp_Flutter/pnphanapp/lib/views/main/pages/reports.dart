@@ -88,6 +88,8 @@ class _reportsPNPState extends State<reportsPNP> {
 
   var userLat;
   var userLong;
+  var pnp_contactEmail;
+  var pnp_contactNumber;
   late LatLng userLatLng = LatLng(0, 0);
 
   @override
@@ -108,6 +110,8 @@ class _reportsPNPState extends State<reportsPNP> {
           setState(() {
             userLat = value['lat'] ?? '';
             userLong = value['long'] ?? '';
+            pnp_contactEmail = value['pnp_contactEmail'] ?? '';
+            pnp_contactNumber = value['pnp_contactNumber'] ?? '';
             if (userLat != '' && userLong != '') {
               userLatLng = LatLng(double.parse(userLat.toString()),
                   double.parse(userLong.toString()));
@@ -1004,6 +1008,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                     if (statusValue == "Already Found") {
                                       // Show a dialog box asking for date found
                                       DateTime? selectedDate =
+                                          // ignore: use_build_context_synchronously
                                           await showDatePicker(
                                         context: context,
                                         initialDate: DateTime.now(),
@@ -1025,6 +1030,26 @@ class _reportsPNPState extends State<reportsPNP> {
                                             .child(report['key'])
                                             .update({
                                           'pnp_dateFound': dateFound,
+                                        });
+                                      }
+                                    }
+
+                                    if (statusValue == "Verified") {
+                                      if (pnp_contactNumber != '' &&
+                                          pnp_contactEmail != '') {
+                                        await databaseReportsReference
+                                            .child(report['uid'])
+                                            .child(report['key'])
+                                            .update({
+                                          'pnp_contactNumber':
+                                              pnp_contactNumber,
+                                        });
+
+                                        await databaseReportsReference
+                                            .child(report['uid'])
+                                            .child(report['key'])
+                                            .update({
+                                          'pnp_contactEmail': pnp_contactEmail,
                                         });
                                       }
                                     }
@@ -2252,7 +2277,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                 context: context,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    shape: RoundedRectangleBorder(
+                                    shape: const RoundedRectangleBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(10.0))),
                                     title:
@@ -2268,25 +2293,28 @@ class _reportsPNPState extends State<reportsPNP> {
                                                     width: 200,
                                                   )
                                                 : Image.network(
-                                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                                              width: 200,
-                                            ),
+                                                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                                    width: 200,
+                                                  ),
                                             SizedBox(height: 20),
                                             reporteeSelfieLINK != ''
-                                                ? Image.network(reporteeSelfieLINK,
+                                                ? Image.network(
+                                                    reporteeSelfieLINK,
                                                     width: 200)
                                                 : Image.network(
-                                              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
-                                              width: 200,
-                                            ),
+                                                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+                                                    width: 200,
+                                                  ),
                                           ],
                                         ),
                                         SizedBox(width: 20),
                                         Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 10),
+                                              padding: const EdgeInsets.only(
+                                                  top: 10),
                                               child: Column(
                                                 children: [
                                                   Text(
@@ -2294,119 +2322,173 @@ class _reportsPNPState extends State<reportsPNP> {
                                                     '${report['reportee_firstName'] ?? 'N/A'} ${report['reportee_middleName'] == null ? report['reportee_middleName'] == 'N/A' ? '' : report['reportee_middleName'] : ''}${report['reportee_lastName'] ?? 'N/A'}', //${report['reportee_qualifiers'] ?? ''}
                                                     style: GoogleFonts.inter(
                                                         fontSize: 22.0,
-                                                        fontWeight: FontWeight.w900),
+                                                        fontWeight:
+                                                            FontWeight.w900),
                                                   ),
                                                   const SizedBox(height: 5),
                                                   SelectableText(
                                                     "${report['reportee_email'] ?? 'N/A'}",
-                                                    style: const TextStyle(fontSize: 15.0),
+                                                    style: const TextStyle(
+                                                        fontSize: 15.0),
                                                   ),
                                                 ],
                                               ),
                                             ),
                                             Padding(
                                               padding: EdgeInsets.only(
-                                                  top: MediaQuery.of(context).size.height / 20),
+                                                  top: MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      20),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Padding(
-                                                    padding: const EdgeInsets.only(bottom: 10),
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10),
                                                     child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
                                                       children: const [
-                                                        Icon(Icons.phone_outlined),
+                                                        Icon(Icons
+                                                            .phone_outlined),
                                                         Padding(
-                                                          padding: EdgeInsets.only(left: 10),
-                                                          child: Text('Phone Number',
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
+                                                          child: Text(
+                                                              'Phone Number',
                                                               style: TextStyle(
                                                                   fontSize: 15,
-                                                                  fontWeight: FontWeight.bold)),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
                                                         )
                                                       ],
                                                     ),
                                                   ),
                                                   Container(
-                                                    width:  MediaQuery.of(context).size.width * 0.1,
-                                                    padding: const EdgeInsets.all(10),
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.1,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
                                                     decoration: BoxDecoration(
-                                                        border: Border.all(width: 0.5),
-                                                        borderRadius: const BorderRadius.all(
-                                                            Radius.circular(15))),
+                                                        border: Border.all(
+                                                            width: 0.5),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                    .all(
+                                                                Radius.circular(
+                                                                    15))),
                                                     child: SelectableText(
                                                       "${report['reportee_phoneNumber'] ?? 'N/A'}",
-                                                      textAlign: TextAlign.center,
-                                                      style: const TextStyle(fontSize: 15.0),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: const TextStyle(
+                                                          fontSize: 15.0),
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ),
-
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 10),
+                                              padding: const EdgeInsets.only(
+                                                  top: 10),
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Padding(
-                                                    padding: const EdgeInsets.only(bottom: 10),
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10),
                                                     child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
                                                       children: const [
                                                         Icon(Icons.wc_outlined),
                                                         Padding(
-                                                          padding: EdgeInsets.only(left: 10),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 10),
                                                           child: Text('Sex',
                                                               style: TextStyle(
                                                                   fontSize: 15,
-                                                                  fontWeight: FontWeight.bold)),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
                                                         )
                                                       ],
                                                     ),
                                                   ),
                                                   Container(
-                                                    width:  MediaQuery.of(context).size.width * 0.1,
-                                                    padding: const EdgeInsets.all(10),
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.1,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
                                                     decoration: BoxDecoration(
-                                                        border: Border.all(width: 0.5),
-                                                        borderRadius: const BorderRadius.all(
-                                                            Radius.circular(15))),
+                                                        border: Border.all(
+                                                            width: 0.5),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                    .all(
+                                                                Radius.circular(
+                                                                    15))),
                                                     child: SelectableText(
                                                       "${report['reportee_sex'] ?? 'N/A'}",
-                                                      textAlign: TextAlign.center,
-                                                      style: const TextStyle(fontSize: 15.0),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: const TextStyle(
+                                                          fontSize: 15.0),
                                                     ),
                                                   ),
                                                 ],
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(top:20.0),
+                                              padding: const EdgeInsets.only(
+                                                  top: 20.0),
                                               child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: const [
-                                                  Icon(Icons.assignment_ind_outlined),
+                                                  Icon(Icons
+                                                      .assignment_ind_outlined),
                                                   Padding(
-                                                    padding: EdgeInsets.only(left: 10),
+                                                    padding: EdgeInsets.only(
+                                                        left: 10),
                                                     child: Text('Signature',
                                                         style: TextStyle(
                                                             fontSize: 15,
-                                                            fontWeight: FontWeight.bold)),
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
                                                   )
                                                 ],
                                               ),
                                             ),
                                             SizedBox(height: 10),
-
                                             reportee_Signature_LINK != ''
                                                 ? Image.network(
-                                              reportee_Signature_LINK,
-                                              width: 200,
-                                            )
+                                                    reportee_Signature_LINK,
+                                                    width: 200,
+                                                  )
                                                 : Container(
-                                              width: 200,
-                                              color: Palette.indigo,
-                                            ),
+                                                    width: 200,
+                                                    color: Palette.indigo,
+                                                  ),
                                           ],
                                         ),
                                       ],
@@ -2415,16 +2497,18 @@ class _reportsPNPState extends State<reportsPNP> {
                                 });
                           },
                           child: Container(
-                              height: MediaQuery.of(context).size.height * 0.03,
-                              width: MediaQuery.of(context).size.width * 0.10,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Reportee Details',
-                              textAlign: TextAlign.center,),),
+                            height: MediaQuery.of(context).size.height * 0.03,
+                            width: MediaQuery.of(context).size.width * 0.10,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Reportee Details',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                       ),
                     ],

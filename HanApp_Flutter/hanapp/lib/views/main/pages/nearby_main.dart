@@ -210,6 +210,9 @@ class _NearbyMainState extends State<NearbyMain> {
               final dateReported = report['p5_reportDate'] ?? '';
               final lastSeenLoc = report['p5_nearestLandmark'] ?? '';
 
+              final pnp_contactNumber = report['pnp_contactNumber'] ?? '';
+              final pnp_contactEmail = report['pnp_contactEmail'] ?? '';
+
               // Info window
               final mp_recentPhoto_LINK = report['mp_recentPhoto_LINK'];
               final heightFeet = report['p4_mp_height_inches'] ?? '';
@@ -555,6 +558,18 @@ class _NearbyMainState extends State<NearbyMain> {
                                           style:
                                               const TextStyle(fontSize: 12.0),
                                         ),
+                                      ),
+                                      const Text(
+                                        'If you have any information about this person, please contact the nearest police station',
+                                        style: const TextStyle(fontSize: 12.0),
+                                      ),
+                                      SelectableText(
+                                        'call $pnp_contactNumber',
+                                        style: const TextStyle(fontSize: 12.0),
+                                      ),
+                                      SelectableText(
+                                        'or email $pnp_contactEmail',
+                                        style: const TextStyle(fontSize: 12.0),
                                       ),
                                     ],
                                   ),

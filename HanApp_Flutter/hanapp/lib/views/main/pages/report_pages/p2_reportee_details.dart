@@ -317,9 +317,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
   /* SHARED PREF EMPTY CHECKER AND SAVER FUNCTION*/
   Future<void> _writeToPrefs(String key, String value) async {
     if (value != '') {
-      _prefs.setString(key, value);
+      await _prefs.setString(key, value);
     } else {
-      _prefs.remove(key);
+      await _prefs.remove(key);
     }
   }
 
