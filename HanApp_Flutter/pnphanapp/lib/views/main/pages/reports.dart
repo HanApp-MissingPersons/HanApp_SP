@@ -321,6 +321,8 @@ class _reportsPNPState extends State<reportsPNP> {
   }
 
   Widget listItem({required Map report}) {
+    reportee_Signature_LINK = '';
+    reportee_ID_Photo_LINK = '';
     String importanceString = '';
     String lastSeenLoc = report['p5_lastSeenLoc'] ?? '';
     String lastSeenDate = report['p5_lastSeenDate'] ?? '';
@@ -1262,6 +1264,7 @@ class _reportsPNPState extends State<reportsPNP> {
 
     String reporteeIDLINK = report['reportee_Selfie_LINK'] ?? '';
     String reporteeSelfieLINK = report['reportee_ID_Photo_LINK'] ?? '';
+    String reporteeSignatureLINK = report['reportee_Signature_LINK'] ?? '';
 
     // //String reporteeBirthDate = report['reportee_birthDate'] ?? '';
     // DateFormat dateTimeFormat = DateFormat('MMMM d, y hh:mm a');
@@ -2482,7 +2485,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                             SizedBox(height: 10),
                                             reportee_Signature_LINK != ''
                                                 ? Image.network(
-                                                    reportee_Signature_LINK,
+                                                    reporteeSignatureLINK,
                                                     width: 200,
                                                   )
                                                 : Container(
