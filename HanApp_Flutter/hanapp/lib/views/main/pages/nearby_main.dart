@@ -7,6 +7,9 @@ import 'package:hanapp/main.dart';
 import 'package:location/location.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 
 class NearbyMain extends StatefulWidget {
   const NearbyMain({super.key});
@@ -82,7 +85,6 @@ class _NearbyMainState extends State<NearbyMain> {
     );
   }
 
-
   void setCustomMarkerIcon() {
     // temporary images, just to show that it is possible
     BitmapDescriptor.fromAssetImage(
@@ -115,6 +117,15 @@ class _NearbyMainState extends State<NearbyMain> {
       controller.dispose();
     });
     super.dispose();
+  }
+
+  void _sendEmail(var pnp_contactEmail) {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: pnp_contactEmail,
+      queryParameters: {'subject': 'Report\tInformation\tUpdate'},
+    );
+    launchUrl(emailLaunchUri);
   }
 
   @override
@@ -325,11 +336,14 @@ class _NearbyMainState extends State<NearbyMain> {
                                               alignment: Alignment.center,
                                               color: Colors.white,
                                               child: Image.network(
-                                                  mp_recentPhoto_LINK, fit: BoxFit.fill),
+                                                  mp_recentPhoto_LINK,
+                                                  fit: BoxFit.fill),
                                             ),
                                             Align(
                                               alignment: Alignment.bottomRight,
-                                              child: Icon(Icons.search_outlined, size: 15, color: Palette.indigo),
+                                              child: Icon(Icons.search_outlined,
+                                                  size: 15,
+                                                  color: Palette.indigo),
                                             )
                                           ],
                                         ),
@@ -589,44 +603,70 @@ class _NearbyMainState extends State<NearbyMain> {
                                       Row(
                                         children: const [
                                           Padding(
-                                            padding: EdgeInsets.only(right: 10, left: 20),
-                                            child: Icon(Icons.crisis_alert_outlined, color: Colors.black54,),
+                                            padding: EdgeInsets.only(
+                                                right: 10, left: 20),
+                                            child: Icon(
+                                              Icons.crisis_alert_outlined,
+                                              color: Colors.black54,
+                                            ),
                                           ),
                                           SizedBox(
                                             width: 230,
                                             child: Text(
-                                              'If you locate a person or have information about this person. Call or email the police to notify immediately',
-                                              textScaleFactor: 0.60,
-                                            style: TextStyle(color: Colors.black54)),
+                                                'If you locate a person or have information about this person. Call or email the police to notify immediately',
+                                                textScaleFactor: 0.60,
+                                                style: TextStyle(
+                                                    color: Colors.black54)),
                                           ),
                                         ],
                                       ),
                                       SizedBox(height: 10),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                )),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            )),
                                             onPressed: () async {
-                                              var number = pnp_contactNumber; //set the number here
-                                              bool? res = await FlutterPhoneDirectCaller.callNumber(number);
-                                              },
+                                              final url = Uri.parse(
+                                                  'tel:$pnp_contactNumber');
+                                              if (Platform.isAndroid) {
+                                                if (await canLaunchUrl(url)) {
+                                                  await launchUrl(url);
+                                                } else {
+                                                  throw 'Could not launch $url';
+                                                }
+                                              }
+
+                                              Clipboard.setData(ClipboardData(
+                                                  text: pnp_contactNumber));
+                                              // ignore: use_build_context_synchronously
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'PNP number copied to clipboard'),
+                                                ),
+                                              );
+                                            },
                                             child: Container(
                                               child: Text('Call Police'),
                                             ),
                                           ),
-
                                           ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(10),
-                                                )),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            )),
                                             onPressed: () async {
-                                              var number = pnp_contactNumber; //set the number here
-                                              bool? res = await FlutterPhoneDirectCaller.callNumber(number);
+                                              if (Platform.isAndroid) {
+                                                _sendEmail(pnp_contactEmail);
+                                              }
                                             },
                                             child: Container(
                                               child: Text('Email Police'),
@@ -634,7 +674,6 @@ class _NearbyMainState extends State<NearbyMain> {
                                           ),
                                         ],
                                       ),
-
                                     ],
                                   ),
                                   ExpansionTile(
@@ -1113,8 +1152,6 @@ class _NearbyMainState extends State<NearbyMain> {
     return markers;
   }
 }
-
-
 
 class Utils {
   static String mapStyle = '''
