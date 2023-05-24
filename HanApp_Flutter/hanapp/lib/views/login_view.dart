@@ -382,43 +382,51 @@ class _LoginViewState extends State<LoginView> {
                             child: Text(
                               'New to Hanapp? Register',
                               style: GoogleFonts.inter(
-                                fontSize: 12, color: Colors.black54
-                              ),
+                                  fontSize: 12, color: Colors.black54),
                             ),
                           ),
                           // for testing only
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const SendNotif()));
-                              },
-                              child: const Text('Google Maps Test')),
+                          kDebugMode
+                              ? TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SendNotif()));
+                                  },
+                                  child: const Text('Google Maps Test'))
+                              : const SizedBox(),
                           // for testing only
-                          TextButton(
-                            onPressed: () async {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: 'hanapp.sp@gmail.com',
-                                      password: 'abc123');
-                              if (mounted) {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const NavigationField()),
-                                    (route) => false);
-                              }
-                            },
-                            child: const Text(
-                                'Login as hanapp.sp@gmail.com (for easier testing)'),
-                          ),
-                          TextButton(
-                              onPressed: () {
-                                // Navigate to homepage_main.dart
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SharedPreferencesDemo()));
-                              },
-                              child: const Text('Go test preferences'))
+                          kDebugMode
+                              ? TextButton(
+                                  onPressed: () async {
+                                    await FirebaseAuth.instance
+                                        .signInWithEmailAndPassword(
+                                            email: 'hanapp.sp@gmail.com',
+                                            password: 'abc123');
+                                    if (mounted) {
+                                      Navigator.of(context).pushAndRemoveUntil(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const NavigationField()),
+                                          (route) => false);
+                                    }
+                                  },
+                                  child: const Text(
+                                      'Login as hanapp.sp@gmail.com (for easier testing)'),
+                                )
+                              : const SizedBox(),
+                          kDebugMode
+                              ? TextButton(
+                                  onPressed: () {
+                                    // Navigate to homepage_main.dart
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SharedPreferencesDemo()));
+                                  },
+                                  child: const Text('Go test preferences'))
+                              : const SizedBox(),
                         ], // children
                       ),
                     ),

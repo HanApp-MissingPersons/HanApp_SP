@@ -11,6 +11,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1183,21 +1184,24 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                         ),
                       ),
                       // DEBUG TOOL: SHARED PREF PRINTER
-                      TextButton(
-                        onPressed: () async {
-                          final prefs = await SharedPreferences.getInstance();
-                          print(prefs.getKeys());
-                          // print(prefs.getString('p4_mp_scars'));
-                          // print(prefs.getString('p4_mp_marks'));
-                          // print(prefs.getString('p4_mp_blood_type'));
-                          // print(prefs
-                          //     .getString('p4_mp_socmed_facebook_username'));
-                          // // print bools for hair and eye
-                          // print(prefs.getBool('p4_mp_hair_color_natural'));
-                          // print(prefs.getBool('p4_mp_eye_color_natural'));
-                        },
-                        child: const Text('Print Shared Preferences'),
-                      ),
+                      kDebugMode
+                          ? TextButton(
+                              onPressed: () async {
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                print(prefs.getKeys());
+                                // print(prefs.getString('p4_mp_scars'));
+                                // print(prefs.getString('p4_mp_marks'));
+                                // print(prefs.getString('p4_mp_blood_type'));
+                                // print(prefs
+                                //     .getString('p4_mp_socmed_facebook_username'));
+                                // // print bools for hair and eye
+                                // print(prefs.getBool('p4_mp_hair_color_natural'));
+                                // print(prefs.getBool('p4_mp_eye_color_natural'));
+                              },
+                              child: const Text('Print Shared Preferences'),
+                            )
+                          : const SizedBox(),
                     ]))
           ])
         : // Circular loading icon
