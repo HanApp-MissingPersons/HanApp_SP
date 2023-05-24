@@ -84,23 +84,50 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         // gatekeeper, make sure user is valid and email is unverified before sending verification email
                         if (user != null && !user.emailVerified) {
                           // send verification email
-                          await user.sendEmailVerification();
-                          // show snackbar to notify user that verification email has been sent
-                          // mounted is a bool that checks if the widget is mounted or live,
-                          // since this is a stateful widget, it is necessary to check if the widget is mounted before showing a snackbar
-                          if (mounted) {
-                            // show snackbar
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Verification email sent'),
-                              ),
-                            );
-                            // navigate to login page
+                          try {
+                            await user.sendEmailVerification();
 
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginView()));
+                            // show snackbar to notify user that verification email has been sent
+                            // mounted is a bool that checks if the widget is mounted or live,
+                            // since this is a stateful widget, it is necessary to check if the widget is mounted before showing a snackbar
+                            if (mounted) {
+                              // show snackbar
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Verification email sent'),
+                                ),
+                              );
+                            }
+                          } on FirebaseAuthException catch (e) {
+                            // show snackbar to notify user that verification email has been sent
+                            // mounted is a bool that checks if the widget is mounted or live,
+                            // since this is a stateful widget, it is necessary to check if the widget is mounted before showing a snackbar
+                            if (mounted) {
+                              if (e.code == 'too-many-requests') {
+                                // show snackbar
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Too many requests, please try again later'),
+                                  ),
+                                );
+                              } else {
+                                // show snackbar
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Error sending email, please try again later'),
+                                  ),
+                                );
+                              }
+                            }
                           }
+                          // navigate to login page
+
+                          // ignore: use_build_context_synchronously
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginView()));
                         }
                       },
                       // text for text button
