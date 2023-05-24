@@ -17,7 +17,7 @@ import 'pages/notification_main.dart';
 import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as perm;
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 int REPORT_RETRIEVAL_INTERVAL = 1;
@@ -158,22 +158,32 @@ class _NavigationFieldState extends State<NavigationField> {
 
   getCurrentLocation() async {
     Location location = Location();
+    perm.PermissionStatus permissionStatus =
+        await perm.Permission.locationWhenInUse.request();
 
-    await location.getLocation().then((location) {
-      setState(() {
-        currentLocation = location;
-        sourceLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-      });
-    });
-    if (currentLocation != null) {
-      _locationSubscription = location.onLocationChanged.listen((newLocation) {
+    if (permissionStatus.isGranted) {
+      await location.getLocation().then((locationData) {
         setState(() {
-          currentLocation = newLocation;
+          currentLocation = locationData;
           sourceLocation =
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
         });
       });
+
+      if (currentLocation != null) {
+        _locationSubscription =
+            location.onLocationChanged.listen((newLocation) {
+          setState(() {
+            currentLocation = newLocation;
+            sourceLocation =
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+          });
+        });
+      }
+    } else {
+      // Handle the case where the user denied or didn't grant location permission
+      // You can show an error message or request the permission again based on your app's requirements.
+      print('Location permission denied');
     }
   }
 
@@ -258,9 +268,9 @@ class _NavigationFieldState extends State<NavigationField> {
 
   bool locationPermission = false;
   checkLocationPermission() async {
-    if (!(await Permission.location.isDenied ||
-        await Permission.location.isRestricted ||
-        await Permission.location.isPermanentlyDenied)) {
+    if (!(await perm.Permission.location.isDenied ||
+        await perm.Permission.location.isRestricted ||
+        await perm.Permission.location.isPermanentlyDenied)) {
       setState(() {
         locationPermission = true;
       });
@@ -480,9 +490,28 @@ class _NavigationFieldState extends State<NavigationField> {
                           const Text(
                             'HanApp requires your location to facilitate reports',
                           ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text.rich(
+                            TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                        'Make sure that location permission is enabled and is '),
+                                TextSpan(
+                                  text: 'set to Precise',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.indigo),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
                           TextButton(
                             onPressed: () {
-                              openAppSettings();
+                              perm.openAppSettings();
                             },
                             child: const Text(
                               'Go to app settings >',

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -220,6 +221,14 @@ class _NotificationMain extends State<NotificationMain> {
                                                                 5))),
                                                 child: ElevatedButton(
                                                   onPressed: () async {
+                                                    BuildContext dialogContext =
+                                                        context; // Store the dialog's context
+
+                                                    if (mounted) {
+                                                      Navigator.of(
+                                                              dialogContext)
+                                                          .pop();
+                                                    }
                                                     await FirebaseDatabase
                                                         .instance
                                                         .ref('Notifications')
@@ -228,10 +237,14 @@ class _NotificationMain extends State<NotificationMain> {
                                                             .reports.keys
                                                             .elementAt(index)
                                                             .toString())
-                                                        .set('hidden');
-                                                    // ignore: use_build_context_synchronously
-                                                    Navigator.of(context).pop();
-                                                    setState(() {});
+                                                        .set('hidden')
+                                                        .then((_) {
+                                                      if (kDebugMode) {
+                                                        print(
+                                                            '[NOTIFICATIONS] REPORT HIDDEN');
+                                                      }
+                                                      // Use the stored context to pop the dialog
+                                                    });
                                                   },
                                                   child: const Text(
                                                     'Confirm',
