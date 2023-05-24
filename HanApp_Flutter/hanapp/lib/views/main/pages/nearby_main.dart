@@ -339,11 +339,18 @@ class _NearbyMainState extends State<NearbyMain> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            '$firstName $lastName',
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 20),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width *
+                                                0.65,
+                                            child: Text(
+                                              '$firstName $lastName',
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 20),
+                                              maxLines: 3,
+                                            ),
                                           ),
                                           Text(
                                             'Date Reported: $dateReported',
