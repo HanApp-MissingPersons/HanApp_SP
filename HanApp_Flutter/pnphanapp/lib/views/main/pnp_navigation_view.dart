@@ -42,7 +42,7 @@ class _NavRailViewState extends State<NavRailView> {
         child: Image.asset('assets/images/hanappLogo.png'),
       ),
       trailing: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
         child: Column(
           children: [
             IconButton(

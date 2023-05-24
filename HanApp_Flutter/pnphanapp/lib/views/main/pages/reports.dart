@@ -527,9 +527,13 @@ class _reportsPNPState extends State<reportsPNP> {
           children: [
             MouseRegion(
               cursor: SystemMouseCursors.click,
-              child: SizedBox(
-                width: 250,
-                height: 50,
+              child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minHeight: 50,
+                    minWidth: 250,
+                    maxHeight: 50,
+                    maxWidth: 400,
+                  ),
                 child: GestureDetector(
                   onTap: () {
                     print('tapped ${report['keyUid']}');
