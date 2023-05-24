@@ -17,6 +17,7 @@ import 'pages/notification_main.dart';
 import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
+import 'package:permission_handler/permission_handler.dart';
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 int REPORT_RETRIEVAL_INTERVAL = 1;
@@ -255,9 +256,25 @@ class _NavigationFieldState extends State<NavigationField> {
     super.initState();
   }
 
+  bool locationPermission = false;
+  checkLocationPermission() async {
+    if (!(await Permission.location.isDenied ||
+        await Permission.location.isRestricted ||
+        await Permission.location.isPermanentlyDenied)) {
+      setState(() {
+        locationPermission = true;
+      });
+    } else {
+      setState(() {
+        locationPermission = false;
+      });
+    }
+  }
+
   List<Widget>? widgetOptions;
   @override
   Widget build(BuildContext context) {
+    checkLocationPermission();
     // print('reportsClean length: ${reportsClean?.length}');
     // print('widgetOptions length: ${widgetOptions?.length}');
     return (reportsClean != null && widgetOptions != null)
@@ -365,22 +382,24 @@ class _NavigationFieldState extends State<NavigationField> {
                             icon: Stack(
                               children: [
                                 Icon(Icons.notifications_outlined),
-                                Positioned(  // draw a red marble
+                                Positioned(
+                                  // draw a red marble
                                   top: 0.0,
                                   right: 0.0,
-                                  child: new Icon(Icons.brightness_1, size: 9.0,
-                                      color: Colors.redAccent),
+                                  child: new Icon(Icons.brightness_1,
+                                      size: 9.0, color: Colors.redAccent),
                                 )
                               ],
                             ),
                             activeIcon: Stack(
                               children: [
                                 Icon(Icons.notifications),
-                                Positioned(  // draw a red marble
+                                Positioned(
+                                  // draw a red marble
                                   top: 0.0,
                                   right: 0.0,
-                                  child: new Icon(Icons.brightness_1, size: 9.0,
-                                      color: Colors.redAccent),
+                                  child: new Icon(Icons.brightness_1,
+                                      size: 9.0, color: Colors.redAccent),
                                 )
                               ],
                             ),
@@ -410,36 +429,68 @@ class _NavigationFieldState extends State<NavigationField> {
             body: Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * .75,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Setting things up...',
-                      style: GoogleFonts.inter(
-                          textStyle:
-                              const TextStyle(fontWeight: FontWeight.w500)),
-                      textAlign: TextAlign.center,
-                    ),
-                    Text(
-                      '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
-                      textAlign: TextAlign.center,
-                      textScaleFactor: 0.70,
-                    ),
-                    Text(
-                      '\nMake sure your location service is turned on',
-                      textAlign: TextAlign.center,
-                      textScaleFactor: 0.70,
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    SpinKitCubeGrid(
-                      color: Palette.indigo,
-                      size: 25,
-                    ),
-                  ],
-                ),
+                child: locationPermission
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Setting things up...',
+                            style: GoogleFonts.inter(
+                                textStyle: const TextStyle(
+                                    fontWeight: FontWeight.w500)),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
+                            textAlign: TextAlign.center,
+                            textScaleFactor: 0.70,
+                          ),
+                          Text(
+                            '\nMake sure your location service is turned on',
+                            textAlign: TextAlign.center,
+                            textScaleFactor: 0.70,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          SpinKitCubeGrid(
+                            color: Palette.indigo,
+                            size: 25,
+                          ),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_off_outlined,
+                            color: Colors.indigoAccent[100],
+                            size: 150,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                              'Location Permissions have been turned off'),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            'HanApp requires your location to facilitate reports',
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              openAppSettings();
+                            },
+                            child: const Text(
+                              'Go to app settings >',
+                              style: TextStyle(color: Colors.indigoAccent),
+                            ),
+                          )
+                        ],
+                      ),
               ),
             ),
             bottomNavigationBar: BottomNavigationBar(
