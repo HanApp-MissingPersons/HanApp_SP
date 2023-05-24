@@ -261,7 +261,7 @@ class _NavigationFieldState extends State<NavigationField> {
     _firebaseInit = Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    getCurrentLocation();
+    // getCurrentLocation();
     _fetchData();
     super.initState();
   }
