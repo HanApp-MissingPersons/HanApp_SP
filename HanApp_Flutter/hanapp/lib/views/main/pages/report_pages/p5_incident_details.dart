@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hanapp/main.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:intl/intl.dart';
@@ -287,6 +288,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
 
   @override
   void initState() {
+    checkLocationPermission();
     getSharedPrefs();
     try {
       print(prefs.getKeys());
@@ -296,6 +298,13 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
     super.initState();
     retrieveUserData();
     // calculateHoursSinceLastSeen();
+  }
+
+  bool isPermitted = false;
+  void checkLocationPermission() async {
+    bool toChange = await Permission.location.isDenied
+        .then((value) => isPermitted = !value);
+    print('isloading: $isPermitted');
   }
 
   @override
@@ -607,71 +616,97 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                 width: MediaQuery.of(context).size.width * .9,
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    Map<String, dynamic>? result;
-                    reportCount != 'NONE'
-                        ? result = await showDialog<Map<String, dynamic>?>(
-                            barrierDismissible: false,
-                            context: context,
-                            builder: (BuildContext context) {
-                              print('User UID: $userUID');
-                              print('Report Count: $reportCount');
-                              return MapDialog(
-                                  uid: userUID, reportCount: reportCount);
-                            },
-                          )
-                        : // show snackbar
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  'Retrieving user data is taking longer than usual'),
-                            ),
-                          );
-                    if (result != null) {
-                      LatLng location = result['location'];
-                      Uint8List? image;
-                      try {
-                        image = result['image'];
-                      } catch (e) {
-                        print(e);
-                      }
+                  onPressed: !isPermitted
+                      ? null
+                      : () async {
+                          Map<String, dynamic>? result;
+                          reportCount != 'NONE'
+                              ? result =
+                                  await showDialog<Map<String, dynamic>?>(
+                                  barrierDismissible: false,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    print('User UID: $userUID');
+                                    print('Report Count: $reportCount');
+                                    return MapDialog(
+                                        uid: userUID, reportCount: reportCount);
+                                  },
+                                )
+                              : // show snackbar
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Retrieving user data is taking longer than usual'),
+                                  ),
+                                );
+                          if (result != null) {
+                            LatLng location = result['location'];
+                            Uint8List? image;
+                            try {
+                              image = result['image'];
+                            } catch (e) {
+                              print(e);
+                            }
 
-                      print(
-                          'Selected location: ${location.latitude}, ${location.longitude}');
-                      setState(() {
-                        locSnapshot = image;
-                        lastSeenLoc =
-                            'Lat: ${location.latitude}, Long: ${location.longitude}';
-                        _writeToPrefs('p5_lastSeenLoc', lastSeenLoc!);
-                        // geocoding stuff
-                        lastSeenLoc_lat = location.latitude.toString();
-                        lastSeenLoc_lng = location.longitude.toString();
-                        _getAddress(); // run getAddress() to get address from lat,lng
-                        placeName != null
-                            ? _writeToPrefs('p5_placeName', placeName!)
-                            : _writeToPrefs('p5_placeName', 'No Place Name');
+                            print(
+                                'Selected location: ${location.latitude}, ${location.longitude}');
+                            setState(() {
+                              locSnapshot = image;
+                              lastSeenLoc =
+                                  'Lat: ${location.latitude}, Long: ${location.longitude}';
+                              _writeToPrefs('p5_lastSeenLoc', lastSeenLoc!);
+                              // geocoding stuff
+                              lastSeenLoc_lat = location.latitude.toString();
+                              lastSeenLoc_lng = location.longitude.toString();
+                              _getAddress(); // run getAddress() to get address from lat,lng
+                              placeName != null
+                                  ? _writeToPrefs('p5_placeName', placeName!)
+                                  : _writeToPrefs(
+                                      'p5_placeName', 'No Place Name');
 
-                        nearestLandmark != null
-                            ? _writeToPrefs(
-                                'p5_nearestLandmark', nearestLandmark!)
-                            : _writeToPrefs(
-                                'p5_nearestLandmark', 'No Landmark');
+                              nearestLandmark != null
+                                  ? _writeToPrefs(
+                                      'p5_nearestLandmark', nearestLandmark!)
+                                  : _writeToPrefs(
+                                      'p5_nearestLandmark', 'No Landmark');
 
-                        cityName != null
-                            ? _writeToPrefs('p5_cityName', cityName!)
-                            : _writeToPrefs('p5_cityName', 'No City Name');
+                              cityName != null
+                                  ? _writeToPrefs('p5_cityName', cityName!)
+                                  : _writeToPrefs(
+                                      'p5_cityName', 'No City Name');
 
-                        brgyName != null
-                            ? _writeToPrefs('p5_brgyName', brgyName!)
-                            : _writeToPrefs('p5_brgyName', 'No Barangay name');
-                      });
-                      // _getAddress;
-                      // set lastSeenLoc_lat and lastSeenLoc_long
-                    }
-                  },
+                              brgyName != null
+                                  ? _writeToPrefs('p5_brgyName', brgyName!)
+                                  : _writeToPrefs(
+                                      'p5_brgyName', 'No Barangay name');
+                            });
+                            // _getAddress;
+                            // set lastSeenLoc_lat and lastSeenLoc_long
+                          }
+                        },
                   child: const Text('Select Location'),
                 ),
               ),
+              !isPermitted
+                  ? Container(
+                      margin: const EdgeInsets.only(bottom: 20),
+                      width: MediaQuery.of(context).size.width * .9,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.info_rounded,
+                              color: Colors.indigoAccent, size: 20),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text('Precise Location Permission is not enabled.',
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.indigoAccent)),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
               _verticalPadding,
               // Pinned Loc Details
               SizedBox(

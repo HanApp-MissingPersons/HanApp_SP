@@ -21,7 +21,7 @@ class NearbyMain extends StatefulWidget {
 
 class _NearbyMainState extends State<NearbyMain> {
   final Completer<GoogleMapController> _controller = Completer();
-  late StreamSubscription<LocationData> _locationSubscription;
+  StreamSubscription<LocationData>? _locationSubscription;
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
   late dynamic _reports = {};
@@ -43,15 +43,29 @@ class _NearbyMainState extends State<NearbyMain> {
   }
 
   bool? locationPermission;
-  bool isLoading = false;
+  bool isPermitted = false;
+  bool firstLoad = true;
   void checkLocationPermission() async {
-    isLoading = true;
-    bool toChange =
-        await Permission.location.isDenied.then((value) => isLoading = false);
-    locationPermission = !toChange;
+    bool toChange = await Permission.location.isDenied
+        .then((value) => isPermitted = !value);
+    print('toChange: $toChange');
+    if (isPermitted) {
+      try {
+        getCurrentLocation();
+      } catch (e) {
+        print('[nearby location] error: $e');
+      }
+    }
+    if (firstLoad) {
+      Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
+            locationPermission = toChange;
+            firstLoad = false;
+          }));
+    } else {
+      locationPermission = toChange;
+    }
     print('location Permission: $locationPermission');
-    Future.delayed(const Duration(seconds: 1));
-    print('isloading: $isLoading');
+    print('isloading: $isPermitted');
   }
 
   List<double> extractDoubles(String input) {
@@ -67,21 +81,26 @@ class _NearbyMainState extends State<NearbyMain> {
   void getCurrentLocation() async {
     Location location = Location();
 
-    await location.getLocation().then((location) {
-      setState(() {
-        currentLocation = location;
-        sourceLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-      });
-    });
-    if (currentLocation != null) {
-      _locationSubscription = location.onLocationChanged.listen((newLocation) {
+    try {
+      await location.getLocation().then((location) {
         setState(() {
-          currentLocation = newLocation;
+          currentLocation = location;
           sourceLocation =
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
         });
       });
+      if (currentLocation != null && _locationSubscription != null) {
+        _locationSubscription =
+            location.onLocationChanged.listen((newLocation) {
+          setState(() {
+            currentLocation = newLocation;
+            sourceLocation =
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+          });
+        });
+      }
+    } catch (e) {
+      print('[nearby location] error on setStates');
     }
   }
 
@@ -117,7 +136,13 @@ class _NearbyMainState extends State<NearbyMain> {
   @override
   void initState() {
     super.initState();
-    getCurrentLocation();
+    try {
+      checkLocationPermission();
+    } catch (e) {
+      print('[nearby init] error: $e');
+    }
+
+    // getCurrentLocation();
     setCustomMarkerIcon();
     _fetchData();
     _buildMarkers();
@@ -125,10 +150,16 @@ class _NearbyMainState extends State<NearbyMain> {
 
   @override
   void dispose() {
-    _locationSubscription.cancel();
-    _controller.future.then((controller) {
-      controller.dispose();
-    });
+    if (_locationSubscription != null) {
+      _locationSubscription!.cancel();
+    }
+    try {
+      _controller.future.then((controller) {
+        controller.dispose();
+      });
+    } catch (e) {
+      print('[nearby dispose] error: $e');
+    }
     super.dispose();
   }
 
@@ -143,7 +174,7 @@ class _NearbyMainState extends State<NearbyMain> {
 
   @override
   Widget build(BuildContext context) {
-    checkLocationPermission();
+    // checkLocationPermission();
     return Scaffold(
       body: locationPermission != null
           ? !locationPermission!
