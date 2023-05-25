@@ -268,17 +268,24 @@ class _NavigationFieldState extends State<NavigationField> {
 
   bool locationPermission = false;
   checkLocationPermission() async {
+    // print('[UWOOOOOOOOOOOOOOGHHHHH]');
+    // print('isDenied: ${await perm.Permission.location.isDenied}');
+    // print('isRestricted: ${await perm.Permission.location.isRestricted}');
+    // print(
+    //     'isPermanentlyDenied: ${await perm.Permission.location.isPermanentlyDenied}');
     if (!(await perm.Permission.location.isDenied ||
         await perm.Permission.location.isRestricted ||
         await perm.Permission.location.isPermanentlyDenied)) {
       setState(() {
         locationPermission = true;
       });
+      // print('[UWOOOOOOOOOOOOOOGHHHHH]');
     } else {
       setState(() {
         locationPermission = false;
       });
     }
+    // print(locationPermission);
   }
 
   List<Widget>? widgetOptions;

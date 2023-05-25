@@ -8,6 +8,7 @@ import 'package:location/location.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' show Platform;
 
@@ -39,6 +40,18 @@ class _NearbyMainState extends State<NearbyMain> {
     });
     print(
         '[DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED]');
+  }
+
+  bool? locationPermission;
+  bool isLoading = false;
+  void checkLocationPermission() async {
+    isLoading = true;
+    bool toChange =
+        await Permission.location.isDenied.then((value) => isLoading = false);
+    locationPermission = !toChange;
+    print('location Permission: $locationPermission');
+    Future.delayed(const Duration(seconds: 1));
+    print('isloading: $isLoading');
   }
 
   List<double> extractDoubles(String input) {
@@ -130,9 +143,113 @@ class _NearbyMainState extends State<NearbyMain> {
 
   @override
   Widget build(BuildContext context) {
+    checkLocationPermission();
     return Scaffold(
-      body: (_reports.isEmpty || _reports == null || currentLocation == null)
-          ? Column(
+      body: locationPermission != null
+          ? !locationPermission!
+              ? // NO LOCATION PERMISSION
+              Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * .75,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.location_off_outlined,
+                          color: Colors.indigoAccent[100],
+                          size: 150,
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text('Location Permissions have been turned off'),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text(
+                          'HanApp requires your location to check for nearby verified reports',
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        const Text.rich(
+                          TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                      'Make sure that location permission is enabled and is '),
+                              TextSpan(
+                                text: 'set to Precise',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.indigo),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextButton(
+                          onPressed: () {
+                            openAppSettings();
+                          },
+                          child: const Text(
+                            'Go to app settings >',
+                            style: TextStyle(color: Colors.indigoAccent),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              : (_reports.isEmpty ||
+                      _reports == null ||
+                      currentLocation == null)
+                  ?
+                  // LOADING SCREEN
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Center(
+                            child: Text('Google maps is loading...',
+                                style: GoogleFonts.inter(
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w500)))),
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 15.0),
+                            child: Text(
+                              'Loading times may vary depending on your '
+                              'internet connection',
+                              textAlign: TextAlign.center,
+                              textScaleFactor: 0.67,
+                            ),
+                          ),
+                        ),
+                        const Center(
+                          child: SpinKitCubeGrid(
+                            color: Palette.indigo,
+                            size: 25.0,
+                          ),
+                        )
+                      ],
+                    )
+                  :
+                  // MAP
+                  GoogleMap(
+                      markers: _buildMarkers(),
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(currentLocation!.latitude!,
+                            currentLocation!.longitude!),
+                        zoom: 14.25,
+                      ),
+                      onMapCreated: (controller) => {
+                        _controller.complete(controller),
+                        controller.setMapStyle(Utils.mapStyle)
+                      },
+                    )
+          : // LOADING SCREEN
+          Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Center(
@@ -158,18 +275,6 @@ class _NearbyMainState extends State<NearbyMain> {
                   ),
                 )
               ],
-            )
-          : GoogleMap(
-              markers: _buildMarkers(),
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 14.25,
-              ),
-              onMapCreated: (controller) => {
-                _controller.complete(controller),
-                controller.setMapStyle(Utils.mapStyle)
-              },
             ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'nearbyMain',
@@ -355,8 +460,8 @@ class _NearbyMainState extends State<NearbyMain> {
                                         children: [
                                           Container(
                                             width: MediaQuery.of(context)
-                                                .size
-                                                .width *
+                                                    .size
+                                                    .width *
                                                 0.65,
                                             child: Text(
                                               '$firstName $lastName',

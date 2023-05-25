@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:hanapp/main.dart';
 import 'package:location/location.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -63,6 +64,14 @@ class _MapDialogState extends State<MapDialog> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+  }
+
+  bool locationPermission = false;
+  void checkLocationPermission() async {
+    bool toChange = await Permission.location.isDenied;
+    setState(() {
+      locationPermission = toChange;
+    });
   }
 
   void _getCurrentLocation() async {
@@ -175,29 +184,80 @@ class _MapDialogState extends State<MapDialog> {
           : SizedBox(
               height: MediaQuery.of(context).size.height * 0.5,
               child: Center(
-                child: Column(
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: [
-                    const SizedBox(
-                      height: 100,
-                    ),
-                    const Text(
-                      'Getting current location...',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black87,
+                child: !locationPermission
+                    ? Column(
+                        // ignore: prefer_const_literals_to_create_immutables
+                        children: [
+                          const SizedBox(
+                            height: 100,
+                          ),
+                          const Text(
+                            'Getting current location...',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const SpinKitCubeGrid(
+                            color: Palette.indigo,
+                            size: 20,
+                          ),
+                        ],
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_off_outlined,
+                            color: Colors.indigoAccent[100],
+                            size: 70,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                              'Location Permissions have been turned off.'),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            'HanApp requires your location to add a location',
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text.rich(
+                            TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                        'Make sure that location permission is enabled and is '),
+                                TextSpan(
+                                  text: 'set to Precise',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.indigo),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          TextButton(
+                            onPressed: () {
+                              openAppSettings();
+                            },
+                            child: const Text(
+                              'Go to app settings >',
+                              style: TextStyle(color: Colors.indigoAccent),
+                            ),
+                          )
+                        ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const SpinKitCubeGrid(
-                      color: Palette.indigo,
-                      size: 20,
-                    ),
-                  ],
-                ),
               ),
             ),
       actions: [

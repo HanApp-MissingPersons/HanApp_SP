@@ -9,6 +9,7 @@ import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NotificationMain extends StatefulWidget {
   final Map<dynamic, dynamic> reports;
@@ -62,19 +63,20 @@ class _NotificationMain extends State<NotificationMain> {
     return doubles;
   }
 
+  bool locationPermission = false;
+  void checkLocationPermission() async {
+    bool toChange = await Permission.location.isDenied;
+    setState(() {
+      locationPermission = toChange;
+    });
+  }
+
   // optionStyle is for the text, we can remove this when actualy doing menu contents
   static const TextStyle optionStyle =
       TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black);
   @override
   Widget build(BuildContext context) {
-    // Map<dynamic, dynamic> reportsUnclean = widget.reports;
-    // Map<dynamic, dynamic> reportsClean =
-    //     Map.from(reportsUnclean); // make a copy of reportsUnclean
-
-    // for (var key in hiddenReports.keys.toList()) {
-    //   reportsClean.remove(key);
-    // }
-
+    checkLocationPermission();
     return widget.reports.isNotEmpty
         ? Center(
             child: Column(
@@ -83,35 +85,41 @@ class _NotificationMain extends State<NotificationMain> {
                   width: MediaQuery.of(context).size.width * 0.85,
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height / 10),
-                  child: Row(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: Image.asset('assets/images/hanappLogo.png',
-                            width: 35),
-                      ),
-                      const Text(
-                        'Notifications',
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.w600),
-                        textAlign: TextAlign.center,
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.account_circle_outlined, size: 30),
-                        selectedIcon: Icon(Icons.account_circle, size: 30),
-                        onPressed: () {
-                          // sign out the user
-                          // FirebaseAuth.instance.signOut();
-                          // navigate to the login page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ProfileMain(),
-                            ),
-                          );
-                        },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 20.0),
+                            child: Image.asset('assets/images/hanappLogo.png',
+                                width: 35),
+                          ),
+                          const Text(
+                            'Notifications',
+                            style: TextStyle(
+                                fontSize: 18.0, fontWeight: FontWeight.w600),
+                            textAlign: TextAlign.center,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.account_circle_outlined, size: 30),
+                            selectedIcon: Icon(Icons.account_circle, size: 30),
+                            onPressed: () {
+                              // sign out the user
+                              // FirebaseAuth.instance.signOut();
+                              // navigate to the login page
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ProfileMain(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -496,36 +504,65 @@ class _NotificationMain extends State<NotificationMain> {
                     bottom: MediaQuery.of(context).size.height * 0.10),
                 padding: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height / 10),
-                child: Row(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20.0),
-                      child: Image.asset('assets/images/hanappLogo.png',
-                          width: 35),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 20.0),
+                          child: Image.asset('assets/images/hanappLogo.png',
+                              width: 35),
+                        ),
+                        const Text(
+                          'Notifications',
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.account_circle_outlined, size: 30),
+                          selectedIcon: Icon(Icons.account_circle, size: 30),
+                          onPressed: () {
+                            // sign out the user
+                            // FirebaseAuth.instance.signOut();
+                            // navigate to the login page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ProfileMain(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    const Text(
-                      'Notifications',
-                      style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.w600),
-                      textAlign: TextAlign.center,
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.account_circle_outlined, size: 30),
-                      selectedIcon: Icon(Icons.account_circle, size: 30),
-                      onPressed: () {
-                        // sign out the user
-                        // FirebaseAuth.instance.signOut();
-                        // navigate to the login page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProfileMain(),
-                          ),
-                        );
-                      },
-                    ),
+                    locationPermission
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.info_rounded,
+                                size: 20,
+                                color: Colors.blueGrey,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                'Enable precise location permission to \nreceive nearby report notifications.',
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 12),
+                                softWrap: true,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          )
+                        : const SizedBox(height: 30),
                   ],
                 ),
               ),
@@ -535,7 +572,7 @@ class _NotificationMain extends State<NotificationMain> {
                 textAlign: TextAlign.center,
               ),
               const Text(
-                '\nNo new reported missing person near you!',
+                '\nNo new notifications!',
                 textScaleFactor: 0.8,
                 textAlign: TextAlign.center,
               ),
