@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -78,8 +79,9 @@ class _NotificationMain extends State<NotificationMain> {
   Widget build(BuildContext context) {
     checkLocationPermission();
     return widget.reports.isNotEmpty
-        ? Center(
-            child: Column(
+        ? Column(
+          children: [
+            Stack(
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width * 0.85,
@@ -494,78 +496,48 @@ class _NotificationMain extends State<NotificationMain> {
                 ),
               ],
             ),
-          )
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+          ],
+        )
+        : Container(
+          width: MediaQuery.of(context).size.width * 0.85,
+          //margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.10),
+          //padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.85,
-                margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.height * 0.10),
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 10),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 20.0),
-                          child: Image.asset('assets/images/hanappLogo.png',
-                              width: 35),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20.0),
+                    child: Image.asset('assets/images/hanappLogo.png',
+                        width: 35),
+                  ),
+                  const Text(
+                    'Notifications',
+                    style: TextStyle(
+                        fontSize: 18.0, fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.account_circle_outlined, size: 30),
+                    selectedIcon: Icon(Icons.account_circle, size: 30),
+                    onPressed: () {
+                      // sign out the user
+                      // FirebaseAuth.instance.signOut();
+                      // navigate to the login page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileMain(),
                         ),
-                        const Text(
-                          'Notifications',
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w600),
-                          textAlign: TextAlign.center,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.account_circle_outlined, size: 30),
-                          selectedIcon: Icon(Icons.account_circle, size: 30),
-                          onPressed: () {
-                            // sign out the user
-                            // FirebaseAuth.instance.signOut();
-                            // navigate to the login page
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ProfileMain(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                    locationPermission
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: const [
-                              Icon(
-                                Icons.info_rounded,
-                                size: 20,
-                                color: Colors.blueGrey,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Enable precise location permission to \nreceive nearby report notifications.',
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 12),
-                                softWrap: true,
-                                textAlign: TextAlign.start,
-                              ),
-                            ],
-                          )
-                        : const SizedBox(height: 30),
-                  ],
-                ),
+                      );
+                    },
+                  ),
+                ],
               ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.5),
               const Text(
                 'Take a Break',
                 style: optionStyle,
@@ -578,13 +550,36 @@ class _NotificationMain extends State<NotificationMain> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                    top: 40, bottom: MediaQuery.of(context).size.height * 0.12),
-                child: Image.asset(
-                  'assets/images/no_notif.png',
-                  height: 300,
-                ),
-              )
+                    top: 20),
+                child:  Lottie.network("https://assets3.lottiefiles.com/private_files/lf30_lKuCPz.json",
+                    animate: true,
+                    width: MediaQuery.of(context).size.width * 0.8),
+              ),
+              locationPermission
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.info_rounded,
+                          size: 20,
+                          color: Colors.blueGrey,
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Enable precise location permission to \nreceive nearby report notifications.',
+                          style:
+                              TextStyle(color: Colors.grey, fontSize: 12),
+                          softWrap: true,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    )
+                  : const SizedBox(height: 30),
             ],
-          );
+          ),
+        );
   }
 }
