@@ -193,99 +193,127 @@ class _UpdateMainState extends State<UpdateMain> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      //crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          width: MediaQuery.of(context).size.width * 0.85,
-          padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height / 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 20.0),
-                child: Image.asset('assets/images/hanappLogo.png', width: 35),
-              ),
-              const Text(
-                'Updates',
-                style: TextStyle(
-                    fontSize: 18.0, fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-              ),
-              IconButton(
-                icon: Icon(Icons.account_circle_outlined, size: 30),
-                selectedIcon: Icon(Icons.account_circle, size: 30),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProfileMain(),
-                    ),
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.85,
+            padding:
+                EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: Image.asset('assets/images/hanappLogo.png', width: 35),
+                ),
+                const Text(
+                  'Updates',
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
+                ),
+                IconButton(
+                  icon: Icon(Icons.account_circle_outlined, size: 30),
+                  selectedIcon: Icon(Icons.account_circle, size: 30),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileMain(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * .05, bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.1),
+                  child: Text('Reports',
+                      style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.w900, fontSize: 24))),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
+            height: MediaQuery.of(context).size.height * .65,
+            width: MediaQuery.of(context).size.width * .85,
+            child: StreamBuilder(
+              stream: dbRef.onValue,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                print('snapshot: $snapshot');
+                if (!snapshot.hasData) {
+                  return const SpinKitCubeGrid(
+                    color: Palette.indigo,
+                    size: 30.0,
                   );
-                },
-              ),
-            ],
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(
-              top: MediaQuery.of(context).size.height * .05, bottom: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.1),
-                child: Text('Reports',
-                    style: GoogleFonts.inter(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.w900, fontSize: 24))),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
-          height: MediaQuery.of(context).size.height * .65,
-          width: MediaQuery.of(context).size.width * .85,
-          child: StreamBuilder(
-            stream: dbRef.onValue,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              print('snapshot: $snapshot');
-              if (!snapshot.hasData) {
-                return const SpinKitCubeGrid(
-                  color: Palette.indigo,
-                  size: 30.0,
-                );
-              }
-              reportList.clear();
-              dynamic values = snapshot.data?.snapshot.value;
-              if (values != null) {
-                Map<dynamic, dynamic> reports = values;
-                // users
-                reports.forEach((key, value) {
-                  dynamic uid = key;
-                  // reports of each user
-                  print('key = $key');
-                  if (key == user?.uid) {
-                    value.forEach((key, value) {
-                      value['key'] = '${key}__$uid';
-                      value['uid'] = uid;
-                      // add report to list
-                      reportList.add(value);
-                    });
+                }
+                reportList.clear();
+                dynamic values = snapshot.data?.snapshot.value;
+                if (values != null) {
+                  Map<dynamic, dynamic> reports = values;
+                  // users
+                  reports.forEach((key, value) {
+                    dynamic uid = key;
+                    // reports of each user
+                    print('key = $key');
+                    if (key == user?.uid) {
+                      value.forEach((key, value) {
+                        value['key'] = '${key}__$uid';
+                        value['uid'] = uid;
+                        // add report to list
+                        reportList.add(value);
+                      });
+                    }
+                  });
+                  if (reportList.isEmpty) {
+                    return Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * .05),
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          const Text(
+                            'No Reports Yet',
+                            style: TextStyle(
+                                fontSize: 21,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                          const Text(
+                            '\nReport a Missing Person',
+                            textScaleFactor: 0.8,
+                            textAlign: TextAlign.center,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 20),
+                            child: Lottie.asset("assets/lottie/noReports.json",
+                                animate: true,
+                                width: MediaQuery.of(context).size.width * 0.8),
+                          ),
+                        ],
+                      ),
+                    );
                   }
-                });
-                if (reportList.isEmpty) {
+                } else {
                   return Container(
-                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * .05),
                     alignment: Alignment.center,
                     child: Column(
                       children: [
                         const Text(
                           'No Reports Yet',
-                          style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black),
+                          style: optionStyle,
                           textAlign: TextAlign.center,
                         ),
                         const Text(
@@ -295,8 +323,11 @@ class _UpdateMainState extends State<UpdateMain> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                              top: 20),
-                          child:  Lottie.network("https://assets3.lottiefiles.com/packages/lf20_hSevJIQ2Wm.json",
+                              top: 20,
+                              bottom:
+                                  MediaQuery.of(context).size.height * 0.30),
+                          child: Lottie.network(
+                              "https://assets3.lottiefiles.com/private_files/lf30_lKuCPz.json",
                               animate: true,
                               width: MediaQuery.of(context).size.width * 0.8),
                         ),
@@ -304,42 +335,15 @@ class _UpdateMainState extends State<UpdateMain> {
                     ),
                   );
                 }
-              } else {
-                return Container(
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      const Text(
-                        'No Reports Yet',
-                        style: optionStyle,
-                        textAlign: TextAlign.center,
-                      ),
-                      const Text(
-                        '\nReport a Missing Person',
-                        textScaleFactor: 0.8,
-                        textAlign: TextAlign.center,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: 20, bottom: MediaQuery.of(context).size.height * 0.30),
-                        child:  Lottie.network("https://assets3.lottiefiles.com/private_files/lf30_lKuCPz.json",
-                            animate: true,
-                            width: MediaQuery.of(context).size.width * 0.8),
-                      ),
-                    ],
-                  ),
+                return ListView.builder(
+                  itemCount: reportList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return listItem(report: reportList[index]);
+                  },
                 );
-              }
-              return ListView.builder(
-                itemCount: reportList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return listItem(report: reportList[index]);
-                },
-              );
-            },
+              },
+            ),
           ),
-        ),
-      ]
-    );
+        ]);
   }
 }

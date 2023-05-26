@@ -503,7 +503,7 @@ class _NavigationFieldState extends State<NavigationField> {
                     // ),
                   )
             : Scaffold(
-      backgroundColor: Colors.white,
+                backgroundColor: Colors.white,
                 body: Center(
                   child: StreamBuilder<perm.PermissionStatus>(
                       stream: perm.Permission.location.status.asStream(),
@@ -518,15 +518,18 @@ class _NavigationFieldState extends State<NavigationField> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Lottie.network("https://assets4.lottiefiles.com/packages/lf20_ampohobu.json",
+                                Lottie.asset("assets/lottie/noLocation.json",
                                     animate: true,
-                                    width: MediaQuery.of(context).size.width * 0.9),
+                                    width: MediaQuery.of(context).size.width *
+                                        0.9),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                const Text(
-                                    'Location Permission is off',
-                                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black),
+                                const Text('Location Permission is off',
+                                    style: TextStyle(
+                                        fontSize: 21,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
                                     textAlign: TextAlign.center),
                                 const SizedBox(
                                   height: 10,
@@ -539,8 +542,8 @@ class _NavigationFieldState extends State<NavigationField> {
                                   height: 10,
                                 ),
                                 Text.rich(
-                                    textAlign: TextAlign.center,
-                                    textScaleFactor: 0.8,
+                                  textAlign: TextAlign.center,
+                                  textScaleFactor: 0.8,
                                   TextSpan(
                                     children: <TextSpan>[
                                       TextSpan(
@@ -562,8 +565,7 @@ class _NavigationFieldState extends State<NavigationField> {
                                   },
                                   child: const Text(
                                     'Go to app settings',
-                                    style:
-                                        TextStyle(color: Palette.indigo),
+                                    style: TextStyle(color: Palette.indigo),
                                   ),
                                 ),
                                 !isLocationCoarse
@@ -575,8 +577,8 @@ class _NavigationFieldState extends State<NavigationField> {
                                         },
                                         child: const Text(
                                           'Proceed without location access',
-                                          style: TextStyle(
-                                              color: Palette.indigo),
+                                          style:
+                                              TextStyle(color: Palette.indigo),
                                         ),
                                       )
                                     : const SizedBox()

@@ -8,6 +8,7 @@ import 'package:location/location.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart' as lottie;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' show Platform;
@@ -182,54 +183,66 @@ class _NearbyMainState extends State<NearbyMain> {
               Center(
                   child: Container(
                     width: MediaQuery.of(context).size.width * .75,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.location_off_outlined,
-                          color: Colors.indigoAccent[100],
-                          size: 150,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text('Location Permissions have been turned off'),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text(
-                          'HanApp requires your location to check for nearby verified reports',
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text.rich(
-                          TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text:
-                                      'Make sure that location permission is enabled and is '),
-                              TextSpan(
-                                text: 'set to Precise',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo),
-                              ),
-                            ],
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05,
                           ),
-                        ),
-                        const SizedBox(height: 20),
-                        TextButton(
-                          onPressed: () {
-                            openAppSettings();
-                          },
-                          child: const Text(
-                            'Go to app settings >',
-                            style: TextStyle(color: Colors.indigoAccent),
+                          lottie.Lottie.asset("assets/lottie/noLocation.json",
+                              animate: true,
+                              width: MediaQuery.of(context).size.width * 0.9),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        )
-                      ],
+                          const Text('Location Permission is off',
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                              textAlign: TextAlign.center),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            '\nHanApp requires your location to display verified reports on a map near you.',
+                            textScaleFactor: 0.8,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text.rich(
+                            textAlign: TextAlign.center,
+                            textScaleFactor: 0.8,
+                            TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                        'Make sure that location permission is enabled and is '),
+                                TextSpan(
+                                  text: 'set to Precise',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Palette.indigo),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                          TextButton(
+                            onPressed: () {
+                              openAppSettings();
+                            },
+                            child: const Text(
+                              'Go to app settings',
+                              style: TextStyle(color: Palette.indigo),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 )
