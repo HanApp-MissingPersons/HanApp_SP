@@ -78,55 +78,57 @@ class _NotificationMain extends State<NotificationMain> {
   @override
   Widget build(BuildContext context) {
     checkLocationPermission();
-    return widget.reports.isNotEmpty
-        ? Column(
+    return SingleChildScrollView(
+      physics: NeverScrollableScrollPhysics(),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.85,
+        //padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Stack(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.85,
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child: Image.asset('assets/images/hanappLogo.png',
-                                width: 35),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: Image.asset('assets/images/hanappLogo.png',
+                          width: 35),
+                    ),
+                    const Text(
+                      'Notifications',
+                      style: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.account_circle_outlined, size: 30),
+                      selectedIcon: Icon(Icons.account_circle, size: 30),
+                      onPressed: () {
+                        // sign out the user
+                        // FirebaseAuth.instance.signOut();
+                        // navigate to the login page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfileMain(),
                           ),
-                          const Text(
-                            'Notifications',
-                            style: TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.center,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.account_circle_outlined, size: 30),
-                            selectedIcon: Icon(Icons.account_circle, size: 30),
-                            onPressed: () {
-                              // sign out the user
-                              // FirebaseAuth.instance.signOut();
-                              // navigate to the login page
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ProfileMain(),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
-
+              ],
+            ),
+        widget.reports.isNotEmpty
+            ? Column(
+          children: [
+            Column(
+              children: [
                 // NOTIFICATIONS LIST
                 Container(
                   height: MediaQuery.of(context).size.height * 0.70,
@@ -136,9 +138,9 @@ class _NotificationMain extends State<NotificationMain> {
                     itemCount: widget.reports.length,
                     itemBuilder: (context, index) {
                       dynamic currentReportValues =
-                          widget.reports[widget.reports.keys.elementAt(index)];
+                      widget.reports[widget.reports.keys.elementAt(index)];
                       dynamic currentReportKey =
-                          widget.reports.keys.elementAt(index);
+                      widget.reports.keys.elementAt(index);
 
                       bool minor = currentReportValues['p1_isMinor'] ?? false;
                       bool crime =
@@ -159,7 +161,7 @@ class _NotificationMain extends State<NotificationMain> {
                       final lastName =
                           currentReportValues['p3_mp_lastName'] ?? '';
                       final mp_recentPhoto_LINK = currentReportValues[
-                              'mp_recentPhoto_LINK'] ??
+                      'mp_recentPhoto_LINK'] ??
                           'https://images.squarespace-cdn.com/content/v1/5b8709309f87706a308b674a/1630432472107-419TL4L1S480Z0LIVRYA/Missing.jpg';
                       final lastSeenLoc =
                           currentReportValues['p5_nearestLandmark'] ?? '';
@@ -185,7 +187,7 @@ class _NotificationMain extends State<NotificationMain> {
                                       height: 48,
                                       color: Palette.indigo,
                                       child:
-                                          Image.network(mp_recentPhoto_LINK)),
+                                      Image.network(mp_recentPhoto_LINK)),
                                 ),
                               ],
                             ),
@@ -205,10 +207,10 @@ class _NotificationMain extends State<NotificationMain> {
                                     actions: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 10),
+                                        const EdgeInsets.only(bottom: 10),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          MainAxisAlignment.end,
                                           children: [
                                             TextButton(
                                               onPressed: () {
@@ -224,11 +226,11 @@ class _NotificationMain extends State<NotificationMain> {
                                                 decoration: BoxDecoration(
                                                     color: Palette.indigo,
                                                     border:
-                                                        Border.all(width: 0.5),
+                                                    Border.all(width: 0.5),
                                                     borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                5))),
+                                                    const BorderRadius.all(
+                                                        Radius.circular(
+                                                            5))),
                                                 child: ElevatedButton(
                                                   onPressed: () async {
                                                     BuildContext dialogContext =
@@ -236,7 +238,7 @@ class _NotificationMain extends State<NotificationMain> {
 
                                                     if (mounted) {
                                                       Navigator.of(
-                                                              dialogContext)
+                                                          dialogContext)
                                                           .pop();
                                                     }
                                                     await FirebaseDatabase
@@ -244,9 +246,9 @@ class _NotificationMain extends State<NotificationMain> {
                                                         .ref('Notifications')
                                                         .child(userUid)
                                                         .child(widget
-                                                            .reports.keys
-                                                            .elementAt(index)
-                                                            .toString())
+                                                        .reports.keys
+                                                        .elementAt(index)
+                                                        .toString())
                                                         .set('hidden')
                                                         .then((_) {
                                                       if (kDebugMode) {
@@ -318,7 +320,7 @@ class _NotificationMain extends State<NotificationMain> {
                                   Container(
                                     margin: EdgeInsets.only(bottom: 10.0),
                                     width:
-                                        MediaQuery.of(context).size.width * 5,
+                                    MediaQuery.of(context).size.width * 5,
                                     child: Visibility(
                                       visible: minor ||
                                           crime ||
@@ -334,7 +336,7 @@ class _NotificationMain extends State<NotificationMain> {
                                               padding: const EdgeInsets.all(8),
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(15),
+                                                  BorderRadius.circular(15),
                                                   color: Colors.deepPurple),
                                               //Retrieve the status here
                                               child: const Text(
@@ -353,7 +355,7 @@ class _NotificationMain extends State<NotificationMain> {
                                               padding: const EdgeInsets.all(8),
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(15),
+                                                  BorderRadius.circular(15),
                                                   color: Colors.green),
                                               //Retrieve the status here
                                               child: const Text(
@@ -372,7 +374,7 @@ class _NotificationMain extends State<NotificationMain> {
                                               padding: const EdgeInsets.all(8),
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(15),
+                                                  BorderRadius.circular(15),
                                                   color: Colors.orangeAccent),
                                               //Retrieve the status here
                                               child: const Text(
@@ -391,7 +393,7 @@ class _NotificationMain extends State<NotificationMain> {
                                               padding: const EdgeInsets.all(8),
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(15),
+                                                  BorderRadius.circular(15),
                                                   color: Colors.redAccent),
                                               //Retrieve the status here
                                               child: const Text(
@@ -407,16 +409,19 @@ class _NotificationMain extends State<NotificationMain> {
                                     ),
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Icon(
                                         Icons.touch_app,
                                         size: 10,
                                       ),
-                                      Text(
-                                        'Tap to view more details in Nearby Reports',
-                                        textScaleFactor: 0.65,
+                                      SizedBox(width: 10,),
+                                      SizedBox(
+                                        width: 100,
+                                        child: Text(
+                                          'Tap to view more details in Nearby Reports',
+                                          maxLines: 2,
+                                          textScaleFactor: 0.65,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -443,10 +448,10 @@ class _NotificationMain extends State<NotificationMain> {
                                     actions: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(bottom: 10),
+                                        const EdgeInsets.only(bottom: 10),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          MainAxisAlignment.end,
                                           children: [
                                             TextButton(
                                               onPressed: () {
@@ -462,11 +467,11 @@ class _NotificationMain extends State<NotificationMain> {
                                                 decoration: BoxDecoration(
                                                     color: Palette.indigo,
                                                     border:
-                                                        Border.all(width: 0.5),
+                                                    Border.all(width: 0.5),
                                                     borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                5))),
+                                                    const BorderRadius.all(
+                                                        Radius.circular(
+                                                            5))),
                                                 child: ElevatedButton(
                                                   onPressed: () {
                                                     widget.missingPersonTap();
@@ -498,88 +503,60 @@ class _NotificationMain extends State<NotificationMain> {
             ),
           ],
         )
-        : Container(
+            : Container(
           width: MediaQuery.of(context).size.width * 0.85,
-          //margin: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.10),
-          //padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              SizedBox(height: MediaQuery.of(context).size.height * 0.17),
+              Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20.0),
-                    child: Image.asset('assets/images/hanappLogo.png',
-                        width: 35),
-                  ),
                   const Text(
-                    'Notifications',
-                    style: TextStyle(
-                        fontSize: 18.0, fontWeight: FontWeight.w600),
+                    'Take a Break',
+                    style: optionStyle,
                     textAlign: TextAlign.center,
                   ),
-                  IconButton(
-                    icon: Icon(Icons.account_circle_outlined, size: 30),
-                    selectedIcon: Icon(Icons.account_circle, size: 30),
-                    onPressed: () {
-                      // sign out the user
-                      // FirebaseAuth.instance.signOut();
-                      // navigate to the login page
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfileMain(),
-                        ),
-                      );
-                    },
+                  const Text(
+                    '\nNo new notifications!',
+                    textScaleFactor: 0.8,
+                    textAlign: TextAlign.center,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: 20, bottom: MediaQuery.of(context).size.height * 0.115),
+                    child:  Lottie.network("https://assets3.lottiefiles.com/private_files/lf30_lKuCPz.json",
+                        animate: true,
+                        width: MediaQuery.of(context).size.width * 0.8),
                   ),
                 ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.height * 0.5),
-              const Text(
-                'Take a Break',
-                style: optionStyle,
-                textAlign: TextAlign.center,
-              ),
-              const Text(
-                '\nNo new notifications!',
-                textScaleFactor: 0.8,
-                textAlign: TextAlign.center,
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    top: 20),
-                child:  Lottie.network("https://assets3.lottiefiles.com/private_files/lf30_lKuCPz.json",
-                    animate: true,
-                    width: MediaQuery.of(context).size.width * 0.8),
-              ),
               locationPermission
                   ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.info_rounded,
-                          size: 20,
-                          color: Colors.blueGrey,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          'Enable precise location permission to \nreceive nearby report notifications.',
-                          style:
-                              TextStyle(color: Colors.grey, fontSize: 12),
-                          softWrap: true,
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    )
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.info_rounded,
+                    size: 20,
+                    color: Colors.black54,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    'Enable precise location permission to \nreceive nearby report notifications.',
+                    style:
+                    TextStyle(color: Colors.black54),
+                    textScaleFactor: 0.8,
+                    softWrap: true,
+                    textAlign: TextAlign.start,
+                  ),
+                ],
+              )
                   : const SizedBox(height: 30),
             ],
-          ),
-        );
+        ),
+      )])),
+    );
   }
 }
