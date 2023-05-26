@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../main.dart';
 
@@ -278,16 +279,55 @@ class _UpdateMainState extends State<UpdateMain> {
                 });
                 if (reportList.isEmpty) {
                   return Container(
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * .05),
                     alignment: Alignment.center,
-                    child: const Text(
-                        'There are currently no submitted reports'),
+                    child: Column(
+                      children: [
+                        const Text(
+                          'No Reports Yet',
+                          style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black),
+                          textAlign: TextAlign.center,
+                        ),
+                        const Text(
+                          '\nReport a Missing Person',
+                          textScaleFactor: 0.8,
+                          textAlign: TextAlign.center,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: 20),
+                          child:  Lottie.network("https://assets3.lottiefiles.com/packages/lf20_hSevJIQ2Wm.json",
+                              animate: true,
+                              width: MediaQuery.of(context).size.width * 0.8),
+                        ),
+                      ],
+                    ),
                   );
                 }
               } else {
                 return Container(
                   alignment: Alignment.center,
-                  child:
-                      const Text('There are currently no submitted reports'),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'No Reports Yet',
+                        style: optionStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                      const Text(
+                        '\nReport a Missing Person',
+                        textScaleFactor: 0.8,
+                        textAlign: TextAlign.center,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: 20, bottom: MediaQuery.of(context).size.height * 0.30),
+                        child:  Lottie.network("https://assets3.lottiefiles.com/private_files/lf30_lKuCPz.json",
+                            animate: true,
+                            width: MediaQuery.of(context).size.width * 0.8),
+                      ),
+                    ],
+                  ),
                 );
               }
               return ListView.builder(
@@ -299,106 +339,6 @@ class _UpdateMainState extends State<UpdateMain> {
             },
           ),
         ),
-
-          Container(
-            margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * .05, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.1),
-                  child: Text('Reports',
-                      style: GoogleFonts.inter(
-                          textStyle: const TextStyle(
-                              fontWeight: FontWeight.w900, fontSize: 24))),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                right: MediaQuery.of(context).size.width * 0.1,
-                left: MediaQuery.of(context).size.width * 0.1),
-            child: TextField(
-              controller: editingController,
-              decoration: const InputDecoration(
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-              onChanged: (value) {
-                filterSearchResults(value);
-                setState(() {
-                  reportListCopy = reportListOriginal;
-                });
-              },
-            ),
-          ),
-          Container(
-            //margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .1),
-            height: MediaQuery.of(context).size.height * .575,
-            width: MediaQuery.of(context).size.width * .85,
-            child: FutureBuilder(
-              future: dbRef.once(),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                // print('snapshot: $snapshot');
-                if (!snapshot.hasData) {
-                  return const SpinKitCubeGrid(
-                    color: Palette.indigo,
-                    size: 30.0,
-                  );
-                }
-                if (firstCheck) {
-                  reportList.clear();
-                  reportListCopy.clear();
-                  dynamic values = snapshot.data?.snapshot.value;
-                  if (values != null) {
-                    Map<dynamic, dynamic> reports = values;
-                    // users
-                    reports.forEach((key, value) {
-                      dynamic uid = key;
-                      // reports of each user
-                      // print('key = $key');
-                      if (key == user?.uid) {
-                        value.forEach((key, value) {
-                          value['key'] = '${key}__$uid';
-                          value['uid'] = uid;
-                          // add report to list
-                          reportList.add(value);
-                          reportListCopy.add(value);
-                          reportListOriginal.add(value);
-                        });
-                      }
-                    });
-                    if (reportList.isEmpty) {
-                      return Container(
-                        alignment: Alignment.center,
-                        child: const Text(
-                            'There are currently no submitted reports'),
-                      );
-                    }
-                  } else {
-                    // reportListCopy = reportList;
-                    return Container(
-                      alignment: Alignment.center,
-                      child: const Text(
-                          'There are currently no submitted reports'),
-                    );
-                  }
-                  firstCheck = false;
-                }
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: reportList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return listItem(report: reportList[index]);
-                  },
-                );
-              },
-            ),
-          ),
       ]
     );
   }
