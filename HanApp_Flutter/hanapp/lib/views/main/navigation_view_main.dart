@@ -10,6 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import '../../firebase_options.dart';
 import 'pages/home_main.dart';
 import 'pages/report_main.dart';
@@ -502,6 +503,7 @@ class _NavigationFieldState extends State<NavigationField> {
                     // ),
                   )
             : Scaffold(
+      backgroundColor: Colors.white,
                 body: Center(
                   child: StreamBuilder<perm.PermissionStatus>(
                       stream: perm.Permission.location.status.asStream(),
@@ -516,26 +518,29 @@ class _NavigationFieldState extends State<NavigationField> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  Icons.location_off_outlined,
-                                  color: Colors.indigoAccent[100],
-                                  size: 150,
-                                ),
+                                Lottie.network("https://assets4.lottiefiles.com/packages/lf20_ampohobu.json",
+                                    animate: true,
+                                    width: MediaQuery.of(context).size.width * 0.9),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 const Text(
-                                    'Location Permissions have been turned off'),
+                                    'Location Permission is off',
+                                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black),
+                                    textAlign: TextAlign.center),
                                 const SizedBox(
                                   height: 10,
                                 ),
                                 const Text(
-                                  'HanApp requires your location to facilitate reports',
+                                  '\nHanApp requires your location to facilitate reports',
+                                  textScaleFactor: 0.8,
                                 ),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                const Text.rich(
+                                Text.rich(
+                                    textAlign: TextAlign.center,
+                                    textScaleFactor: 0.8,
                                   TextSpan(
                                     children: <TextSpan>[
                                       TextSpan(
@@ -545,24 +550,21 @@ class _NavigationFieldState extends State<NavigationField> {
                                         text: 'set to Precise',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.indigo),
+                                            color: Palette.indigo),
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 50),
                                 TextButton(
                                   onPressed: () {
                                     perm.openAppSettings();
                                   },
                                   child: const Text(
-                                    'Go to app settings >',
+                                    'Go to app settings',
                                     style:
-                                        TextStyle(color: Colors.indigoAccent),
+                                        TextStyle(color: Palette.indigo),
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
                                 ),
                                 !isLocationCoarse
                                     ? TextButton(
@@ -572,9 +574,9 @@ class _NavigationFieldState extends State<NavigationField> {
                                           });
                                         },
                                         child: const Text(
-                                          'Proceed without location access >',
+                                          'Proceed without location access',
                                           style: TextStyle(
-                                              color: Colors.indigoAccent),
+                                              color: Palette.indigo),
                                         ),
                                       )
                                     : const SizedBox()
