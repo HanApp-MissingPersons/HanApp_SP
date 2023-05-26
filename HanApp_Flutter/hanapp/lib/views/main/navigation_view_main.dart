@@ -503,78 +503,86 @@ class _NavigationFieldState extends State<NavigationField> {
                   )
             : Scaffold(
                 body: Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * .75,
-                    child: Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.location_off_outlined,
-                            color: Colors.indigoAccent[100],
-                            size: 150,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text(
-                              'Location Permissions have been turned off'),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text(
-                            'HanApp requires your location to facilitate reports',
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const Text.rich(
-                            TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text:
-                                        'Make sure that location permission is enabled and is '),
-                                TextSpan(
-                                  text: 'set to Precise',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.indigo),
+                  child: StreamBuilder<perm.PermissionStatus>(
+                      stream: perm.Permission.location.status.asStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          checkLocationPermission();
+                        }
+                        return Container(
+                          width: MediaQuery.of(context).size.width * .75,
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.location_off_outlined,
+                                  color: Colors.indigoAccent[100],
+                                  size: 150,
                                 ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          TextButton(
-                            onPressed: () {
-                              perm.openAppSettings();
-                            },
-                            child: const Text(
-                              'Go to app settings >',
-                              style: TextStyle(color: Colors.indigoAccent),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          !isLocationCoarse
-                              ? TextButton(
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                    'Location Permissions have been turned off'),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                  'HanApp requires your location to facilitate reports',
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text.rich(
+                                  TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text:
+                                              'Make sure that location permission is enabled and is '),
+                                      TextSpan(
+                                        text: 'set to Precise',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.indigo),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                TextButton(
                                   onPressed: () {
-                                    setState(() {
-                                      locationPermission = true;
-                                    });
+                                    perm.openAppSettings();
                                   },
                                   child: const Text(
-                                    'Proceed without location access >',
+                                    'Go to app settings >',
                                     style:
                                         TextStyle(color: Colors.indigoAccent),
                                   ),
-                                )
-                              : const SizedBox()
-                        ],
-                      ),
-                    ),
-                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                !isLocationCoarse
+                                    ? TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            locationPermission = true;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'Proceed without location access >',
+                                          style: TextStyle(
+                                              color: Colors.indigoAccent),
+                                        ),
+                                      )
+                                    : const SizedBox()
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                 ),
               );
   }
