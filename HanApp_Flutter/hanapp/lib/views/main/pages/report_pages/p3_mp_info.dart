@@ -321,10 +321,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 25,
                     controller: _mp_lastName,
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                        counterText: '',
                         labelText: "Last Name*",
                         hintText: "ex: Dela Cruz",
                         border: OutlineInputBorder(
@@ -348,10 +350,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 25,
                     controller: _mp_firstName,
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                        counterText: '',
                         labelText: "First Name*",
                         hintText: "ex: Juan",
                         border: OutlineInputBorder(
@@ -387,7 +391,9 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                     controller: _mp_middleName,
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
+                    maxLength: 25,
                     decoration: const InputDecoration(
+                        counterText: '',
                         labelText: "Middle Name",
                         hintText: "ex: Pedro",
                         border: OutlineInputBorder(
@@ -411,10 +417,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 10,
                     controller: _mp_qualifier,
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                        counterText: '',
                         labelText: "Qualifier",
                         hintText: "ex: Jr., Sr., III, etc.",
                         border: OutlineInputBorder(
@@ -438,10 +446,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 20,
                     controller: _mp_nickname,
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                        counterText: '',
                         labelText: "Nickname / Known Aliases",
                         hintText: "Nickname / Known Aliases",
                         border: OutlineInputBorder(
@@ -474,10 +484,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 20,
                     controller: _mp_citizenship,
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                        counterText: '',
                         floatingLabelBehavior: FloatingLabelBehavior.never,
                         labelText: 'Citizenship*',
                         hintText: "ex: Filipino",
@@ -510,10 +522,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 20,
                     controller: _mp_nationalityEthnicity,
                     keyboardType: TextInputType.name,
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                        counterText: '',
                         labelText: "Nationality/Ethnicity*",
                         hintText:
                             "ex: Filipino, Chinese, Hispanic, Latino, etc.",
@@ -789,9 +803,11 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 50,
                 controller: _mp_contact_email,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
+                  counterText: "",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Email",
@@ -818,10 +834,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 30,
                 controller: _mp_address_region,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                  counterText: "",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Region*",
@@ -838,10 +856,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 30,
                 controller: _mp_address_province,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                    counterText: "",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10))),
                     labelText: "Province*",
@@ -857,10 +877,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 30,
                 controller: _mp_address_city,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                  counterText: "",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Municipality/City*",
@@ -877,10 +899,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 30,
                 controller: _mp_address_barangay,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                  counterText: "",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Barangay*",
@@ -897,10 +921,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 50,
                 controller: _mp_address_villageSitio,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                  counterText: "",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Village, Sitio, Subdivision",
@@ -917,10 +943,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 50,
                 controller: _mp_address_streetHouseNum,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                  counterText: "",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                   labelText: "Street/House Number*",
@@ -978,10 +1006,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_address_region_alt,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -998,10 +1028,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_address_province_alt,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1018,10 +1050,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_address_city_alt,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1038,10 +1072,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_address_barangay_alt,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1058,10 +1094,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 50,
                       controller: _mp_address_villageSitio_alt,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1078,10 +1116,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 50,
                       controller: _mp_address_streetHouseNum_alt,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1110,10 +1150,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: TextFormField(
+                maxLength: 30,
                 controller: _mp_occupation,
                 keyboardType: TextInputType.text,
                 textCapitalization: TextCapitalization.words,
                 decoration: const InputDecoration(
+                  counterText: "",
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -1218,10 +1260,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_workSchool_region,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1238,10 +1282,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_workSchool_province,
                       textCapitalization: TextCapitalization.words,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1258,10 +1304,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_workSchool_city,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1278,10 +1326,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_workSchool_barangay,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1298,10 +1348,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 50,
                       controller: _mp_workSchool_villageSitio,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1318,10 +1370,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 50,
                       controller: _mp_workSchool_streetHouseNum,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -1338,10 +1392,12 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
                     child: TextFormField(
+                      maxLength: 30,
                       controller: _mp_workSchool_name,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
                       decoration: const InputDecoration(
+                        counterText: "",
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),

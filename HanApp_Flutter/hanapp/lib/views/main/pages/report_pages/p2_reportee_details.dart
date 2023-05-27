@@ -504,6 +504,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 30,
                     controller: _reporteeRelationshipToMissingPerson,
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -519,6 +520,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -545,6 +547,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 30,
                     controller: _reporteeCitizenship,
                     onChanged: (text) {
                       setState(() {
@@ -554,6 +557,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -720,6 +724,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeRegion,
+                    maxLength: 30,
                     onChanged: (text) {
                       setState(() {
                         // _prefs.setString('p2_region', text);
@@ -728,6 +733,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                        counterText: '',
                         border: OutlineInputBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
@@ -740,6 +746,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 30,
                     controller: _reporteeProvince,
                     onChanged: (text) {
                       setState(() {
@@ -749,6 +756,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Province*',
@@ -762,6 +770,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeCity,
+                    maxLength: 30,
                     onChanged: (text) {
                       setState(() {
                         // _prefs.setString('p2_townCity', text);
@@ -770,6 +779,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Municipality/City*',
@@ -783,6 +793,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
                     controller: _reporteeBarangay,
+                    maxLength: 30,
                     onChanged: (text) {
                       setState(() {
                         // _prefs.setString('p2_barangay', text);
@@ -791,6 +802,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Barangay*',
@@ -803,6 +815,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 30,
                     controller: _reporteeVillageSitio,
                     onChanged: (text) {
                       setState(() {
@@ -812,6 +825,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'Village, Sitio, Subdivision',
@@ -824,6 +838,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 30,
                     controller: _reporteeStreetHouseNum,
                     onChanged: (text) {
                       setState(() {
@@ -833,6 +848,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       labelText: 'House Number/Street*',
@@ -885,6 +901,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
+                          maxLength: 30,
                           controller: _reporteeAltRegion,
                           onChanged: (text) {
                             setState(() {
@@ -894,6 +911,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -906,6 +924,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
+                          maxLength: 30,
                           controller: _reporteeAltProvince,
                           onChanged: (text) {
                             setState(() {
@@ -915,6 +934,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -927,6 +947,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
+                          maxLength: 30,
                           controller: _reporteeAltCityTown,
                           onChanged: (text) {
                             setState(() {
@@ -936,6 +957,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -949,6 +971,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
                           controller: _reporteeAltBarangay,
+                          maxLength: 30,
                           onChanged: (text) {
                             setState(() {
                               // _prefs.setString('p2_altBarangay', text);
@@ -957,6 +980,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -969,6 +993,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
+                          maxLength: 50,
                           controller: _reporteeAltVillageSitio,
                           onChanged: (text) {
                             setState(() {
@@ -978,6 +1003,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -990,6 +1016,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextFormField(
+                          maxLength: 50,
                           controller: _reporteeAltStreetHouseNum,
                           onChanged: (text) {
                             setState(() {
@@ -999,6 +1026,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           },
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -1094,6 +1122,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
                   child: TextFormField(
+                    maxLength: 20,
                     controller: _reporteeOccupation,
                     onChanged: (text) {
                       setState(() {
@@ -1103,6 +1132,7 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                     },
                     textCapitalization: TextCapitalization.words,
                     decoration: const InputDecoration(
+                      counterText: '',
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
