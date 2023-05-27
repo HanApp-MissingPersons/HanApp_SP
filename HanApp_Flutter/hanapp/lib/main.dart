@@ -84,6 +84,7 @@ class MyApp extends StatelessWidget {
           Theme.of(context).textTheme,
         ),
       ),
+      debugShowCheckedModeBanner: false,
       // proceed to login page if user is not signed in, otherwise proceed to home page
       home: isUserSignedIn ? const NavigationField() : const LoginView(),
     );
