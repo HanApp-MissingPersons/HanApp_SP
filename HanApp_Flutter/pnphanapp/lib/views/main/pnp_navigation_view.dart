@@ -67,26 +67,45 @@ class _NavRailViewState extends State<NavRailView> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text("Confirm Logout"),
+                      title: Text("Logout from PNP Hanapp"),
                       content: Text("Are you sure you want to logout?"),
+                      shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(20.0))),
                       actions: [
-                        TextButton(
-                          child: Text("Cancel"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: Text("Logout"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            FirebaseAuth.instance.signOut();
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginView()),
-                            );
-                          },
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8, bottom: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                child: Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              TextButton(
+                                child: Text("Logout"),
+                                style: TextButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                  backgroundColor: Palette.indigo,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginView()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     );
