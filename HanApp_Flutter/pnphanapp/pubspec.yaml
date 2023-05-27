@@ -43,6 +43,7 @@ dependencies:
   maps_toolkit: ^2.0.1
   image_network: ^2.5.1
   intl: ^0.18.1
+  lottie: ^2.3.2
 
 dev_dependencies:
   flutter_test:

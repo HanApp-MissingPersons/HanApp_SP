@@ -9,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
 import 'package:pnphanapp/main.dart';
 import 'package:image_network/image_network.dart';
@@ -517,8 +518,8 @@ class _reportsPNPState extends State<reportsPNP> {
       scrollDirection: Axis.horizontal,
       child: Container(
         margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.all(10),
-        height: 110,
+        padding: const EdgeInsets.all(30),
+        //height: 110,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -527,13 +528,8 @@ class _reportsPNPState extends State<reportsPNP> {
           children: [
             MouseRegion(
               cursor: SystemMouseCursors.click,
-              child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    minHeight: 50,
-                    minWidth: 250,
-                    maxHeight: 50,
-                    maxWidth: 400,
-                  ),
+              child: Container(
+                width: 400,
                 child: GestureDetector(
                   onTap: () {
                     print('tapped ${report['keyUid']}');
@@ -571,23 +567,15 @@ class _reportsPNPState extends State<reportsPNP> {
                             Image.network(mp_recentPhoto_LINK)
                             : const Icon(Icons.person),
                       ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$firstName $lastName',
-                            //JUST change the font size to 18 when Name is applied
-                            style: GoogleFonts.inter(
-                                fontSize: 18, fontWeight: FontWeight.w700),
-                          ),
-                          // Text(
-                          //   importanceString == ''
-                          //       ? 'Absent Person'
-                          //       : importanceString,
-                          //   style: GoogleFonts.inter(fontSize: 12),
-                          // ),
-                        ],
+                      SizedBox(
+                        width: 340,
+                        child: Text(
+                          '$firstName $lastName',
+                          //JUST change the font size to 18 when Name is applied
+                          style: GoogleFonts.inter(
+                              fontSize: 18, fontWeight: FontWeight.w700),
+                          maxLines: 3,
+                        ),
                       ),
                     ],
                   ),
@@ -807,7 +795,7 @@ class _reportsPNPState extends State<reportsPNP> {
                           return AlertDialog(
                             title: Text(
                                 // 'Change Report Status of $firstName $lastName'),
-                                'Change Report Status of ${report['p3_mp_firstName']} ${report['p3_mp_lastName']}'),
+                                'Change Report Status'),
                             shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(20.0))),
@@ -2698,7 +2686,18 @@ class _reportsPNPState extends State<reportsPNP> {
                       )
                     : Container(
                         alignment: Alignment.center,
-                        child: const Text('There are currently no reports'),
+                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+                        child: Column(
+                          children: [
+                            Text(
+                              'No Reports Yet',
+                              style: GoogleFonts.inter(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black),
+                              textAlign: TextAlign.center,
+                            ),
+                            Lottie.network("https://assets3.lottiefiles.com/packages/lf20_hSevJIQ2Wm.json",
+                                animate: true,),
+                          ],
+                        ),
                       )),
       ],
     );
