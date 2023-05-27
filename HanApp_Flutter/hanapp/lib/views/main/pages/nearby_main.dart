@@ -1,11 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hanapp/main.dart';
 import 'package:location/location.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart' as lottie;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io' show Platform;
 
 class NearbyMain extends StatefulWidget {
   const NearbyMain({super.key});
@@ -16,7 +22,7 @@ class NearbyMain extends StatefulWidget {
 
 class _NearbyMainState extends State<NearbyMain> {
   final Completer<GoogleMapController> _controller = Completer();
-  late StreamSubscription<LocationData> _locationSubscription;
+  StreamSubscription<LocationData>? _locationSubscription;
   Query dbRef = FirebaseDatabase.instance.ref().child('Reports');
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
   late dynamic _reports = {};
@@ -37,6 +43,32 @@ class _NearbyMainState extends State<NearbyMain> {
         '[DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED] [DATA FETCHED]');
   }
 
+  bool? locationPermission;
+  bool isPermitted = false;
+  bool firstLoad = true;
+  void checkLocationPermission() async {
+    bool toChange = await Permission.location.isDenied
+        .then((value) => isPermitted = !value);
+    print('toChange: $toChange');
+    if (isPermitted) {
+      try {
+        getCurrentLocation();
+      } catch (e) {
+        print('[nearby location] error: $e');
+      }
+    }
+    if (firstLoad) {
+      Future.delayed(const Duration(seconds: 1)).then((value) => setState(() {
+            locationPermission = toChange;
+            firstLoad = false;
+          }));
+    } else {
+      locationPermission = toChange;
+    }
+    print('location Permission: $locationPermission');
+    print('isloading: $isPermitted');
+  }
+
   List<double> extractDoubles(String input) {
     RegExp regExp = RegExp(r"[-+]?\d*\.?\d+");
     List<double> doubles = [];
@@ -50,21 +82,26 @@ class _NearbyMainState extends State<NearbyMain> {
   void getCurrentLocation() async {
     Location location = Location();
 
-    await location.getLocation().then((location) {
-      setState(() {
-        currentLocation = location;
-        sourceLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-      });
-    });
-    if (currentLocation != null) {
-      _locationSubscription = location.onLocationChanged.listen((newLocation) {
+    try {
+      await location.getLocation().then((location) {
         setState(() {
-          currentLocation = newLocation;
+          currentLocation = location;
           sourceLocation =
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
         });
       });
+      if (currentLocation != null && _locationSubscription != null) {
+        _locationSubscription =
+            location.onLocationChanged.listen((newLocation) {
+          setState(() {
+            currentLocation = newLocation;
+            sourceLocation =
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+          });
+        });
+      }
+    } catch (e) {
+      print('[nearby location] error on setStates');
     }
   }
 
@@ -100,7 +137,13 @@ class _NearbyMainState extends State<NearbyMain> {
   @override
   void initState() {
     super.initState();
-    getCurrentLocation();
+    try {
+      checkLocationPermission();
+    } catch (e) {
+      print('[nearby init] error: $e');
+    }
+
+    // getCurrentLocation();
     setCustomMarkerIcon();
     _fetchData();
     _buildMarkers();
@@ -108,18 +151,149 @@ class _NearbyMainState extends State<NearbyMain> {
 
   @override
   void dispose() {
-    _locationSubscription.cancel();
-    _controller.future.then((controller) {
-      controller.dispose();
-    });
+    if (_locationSubscription != null) {
+      _locationSubscription!.cancel();
+    }
+    try {
+      _controller.future.then((controller) {
+        controller.dispose();
+      });
+    } catch (e) {
+      print('[nearby dispose] error: $e');
+    }
     super.dispose();
+  }
+
+  void _sendEmail(var pnp_contactEmail) {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: pnp_contactEmail,
+      queryParameters: {'subject': 'Report\tInformation\tUpdate'},
+    );
+    launchUrl(emailLaunchUri);
   }
 
   @override
   Widget build(BuildContext context) {
+    // checkLocationPermission();
     return Scaffold(
-      body: (_reports.isEmpty || _reports == null || currentLocation == null)
-          ? Column(
+      body: locationPermission != null
+          ? !locationPermission!
+              ? // NO LOCATION PERMISSION
+              Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * .75,
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                          ),
+                          lottie.Lottie.asset("assets/lottie/noLocation.json",
+                              animate: true,
+                              width: MediaQuery.of(context).size.width * 0.9),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text('Location Permission is off',
+                              style: TextStyle(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                              textAlign: TextAlign.center),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            '\nHanApp requires your location to display verified reports on a map near you.',
+                            textScaleFactor: 0.8,
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text.rich(
+                            textAlign: TextAlign.center,
+                            textScaleFactor: 0.8,
+                            TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                        'Make sure that location permission is enabled and is '),
+                                TextSpan(
+                                  text: 'set to Precise',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Palette.indigo),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                          TextButton(
+                            onPressed: () {
+                              openAppSettings();
+                            },
+                            child: const Text(
+                              'Go to app settings',
+                              style: TextStyle(color: Palette.indigo),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : (_reports.isEmpty ||
+                      _reports == null ||
+                      currentLocation == null)
+                  ?
+                  // LOADING SCREEN
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Center(
+                            child: Text('Google maps is loading...',
+                                style: GoogleFonts.inter(
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w500)))),
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 15.0),
+                            child: Text(
+                              'Loading times may vary depending on your '
+                              'internet connection',
+                              textAlign: TextAlign.center,
+                              textScaleFactor: 0.67,
+                            ),
+                          ),
+                        ),
+                        const Center(
+                          child: SpinKitCubeGrid(
+                            color: Palette.indigo,
+                            size: 25.0,
+                          ),
+                        )
+                      ],
+                    )
+                  :
+                  // MAP
+                  GoogleMap(
+                      markers: _buildMarkers(),
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(currentLocation!.latitude!,
+                            currentLocation!.longitude!),
+                        zoom: 14.25,
+                      ),
+                      onMapCreated: (controller) => {
+                        _controller.complete(controller),
+                        controller.setMapStyle(Utils.mapStyle)
+                      },
+                    )
+          : // LOADING SCREEN
+          Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Center(
@@ -145,18 +319,6 @@ class _NearbyMainState extends State<NearbyMain> {
                   ),
                 )
               ],
-            )
-          : GoogleMap(
-              markers: _buildMarkers(),
-              initialCameraPosition: CameraPosition(
-                target: LatLng(
-                    currentLocation!.latitude!, currentLocation!.longitude!),
-                zoom: 14.25,
-              ),
-              onMapCreated: (controller) => {
-                _controller.complete(controller),
-                controller.setMapStyle(Utils.mapStyle)
-              },
             ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'nearbyMain',
@@ -209,6 +371,9 @@ class _NearbyMainState extends State<NearbyMain> {
 
               final dateReported = report['p5_reportDate'] ?? '';
               final lastSeenLoc = report['p5_nearestLandmark'] ?? '';
+
+              final pnp_contactNumber = report['pnp_contactNumber'] ?? '';
+              final pnp_contactEmail = report['pnp_contactEmail'] ?? '';
 
               // Info window
               final mp_recentPhoto_LINK = report['mp_recentPhoto_LINK'];
@@ -312,12 +477,24 @@ class _NearbyMainState extends State<NearbyMain> {
                                             },
                                           );
                                         },
-                                        child: Container(
-                                          width: 50,
-                                          height: 50,
-                                          color: Colors.white,
-                                          child: Image.network(
-                                              mp_recentPhoto_LINK),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              width: 50,
+                                              height: 50,
+                                              alignment: Alignment.center,
+                                              color: Colors.white,
+                                              child: Image.network(
+                                                  mp_recentPhoto_LINK,
+                                                  fit: BoxFit.fill),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Icon(Icons.search_outlined,
+                                                  size: 15,
+                                                  color: Palette.indigo),
+                                            )
+                                          ],
                                         ),
                                       ),
                                       const SizedBox(width: 10),
@@ -325,11 +502,18 @@ class _NearbyMainState extends State<NearbyMain> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            '$firstName $lastName',
-                                            style: GoogleFonts.inter(
-                                                fontWeight: FontWeight.w700,
-                                                fontSize: 20),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.65,
+                                            child: Text(
+                                              '$firstName $lastName',
+                                              style: GoogleFonts.inter(
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 20),
+                                              maxLines: 3,
+                                            ),
                                           ),
                                           Text(
                                             'Date Reported: $dateReported',
@@ -555,6 +739,96 @@ class _NearbyMainState extends State<NearbyMain> {
                                           style:
                                               const TextStyle(fontSize: 12.0),
                                         ),
+                                      ),
+                                      // const Text(
+                                      //   'If you have any information about this person, please contact the nearest police station',
+                                      //   style: const TextStyle(fontSize: 12.0),
+                                      // ),
+                                      // SelectableText(
+                                      //   'call $pnp_contactNumber',
+                                      //   style: const TextStyle(fontSize: 12.0),
+                                      // ),
+                                      // SelectableText(
+                                      //   'or email $pnp_contactEmail',
+                                      //   style: const TextStyle(fontSize: 12.0),
+                                      // ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                right: 10, left: 20),
+                                            child: Icon(
+                                              Icons.crisis_alert_outlined,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 230,
+                                            child: Text(
+                                                'If you locate a person or have information about this person. Call or email the police to notify immediately',
+                                                textScaleFactor: 0.60,
+                                                style: TextStyle(
+                                                    color: Colors.black54)),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            )),
+                                            onPressed: () async {
+                                              final url = Uri.parse(
+                                                  'tel:$pnp_contactNumber');
+                                              if (Platform.isAndroid) {
+                                                if (await canLaunchUrl(url)) {
+                                                  await launchUrl(url);
+                                                } else {
+                                                  throw 'Could not launch $url';
+                                                }
+                                              }
+
+                                              Clipboard.setData(ClipboardData(
+                                                  text: pnp_contactNumber));
+                                              // ignore: use_build_context_synchronously
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'PNP number copied to clipboard'),
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              child: Text('Call Police'),
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            )),
+                                            onPressed: () async {
+                                              if (Platform.isAndroid) {
+                                                _sendEmail(pnp_contactEmail);
+                                              }
+                                            },
+                                            child: Container(
+                                              child: Text('Email Police'),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),

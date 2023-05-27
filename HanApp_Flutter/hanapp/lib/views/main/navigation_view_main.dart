@@ -5,10 +5,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import '../../firebase_options.dart';
 import 'pages/home_main.dart';
 import 'pages/report_main.dart';
@@ -17,6 +19,7 @@ import 'pages/notification_main.dart';
 import 'pages/update_main.dart';
 import 'pages/report_pages/p1_classifier.dart';
 import 'package:maps_toolkit/maps_toolkit.dart';
+import 'package:permission_handler/permission_handler.dart' as perm;
 // import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 int REPORT_RETRIEVAL_INTERVAL = 1;
@@ -155,24 +158,42 @@ class _NavigationFieldState extends State<NavigationField> {
     });
   }
 
+  bool isLocationCoarse = false;
   getCurrentLocation() async {
     Location location = Location();
+    perm.PermissionStatus permissionStatus =
+        await perm.Permission.locationWhenInUse.request();
 
-    await location.getLocation().then((location) {
-      setState(() {
-        currentLocation = location;
-        sourceLocation =
-            LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
-      });
-    });
-    if (currentLocation != null) {
-      _locationSubscription = location.onLocationChanged.listen((newLocation) {
+    if (permissionStatus.isGranted) {
+      var permissionType = await perm.Permission.location.serviceStatus;
+      if (!(permissionType == ServiceStatus.disabled ||
+          permissionType == ServiceStatus.enabled)) {
         setState(() {
-          currentLocation = newLocation;
+          isLocationCoarse = true;
+        });
+      }
+      await location.getLocation().then((locationData) {
+        setState(() {
+          currentLocation = locationData;
           sourceLocation =
               LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
         });
       });
+
+      if (currentLocation != null) {
+        _locationSubscription =
+            location.onLocationChanged.listen((newLocation) {
+          setState(() {
+            currentLocation = newLocation;
+            sourceLocation =
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!);
+          });
+        });
+      }
+    } else {
+      // Handle the case where the user denied or didn't grant location permission
+      // You can show an error message or request the permission again based on your app's requirements.
+      print('Location permission denied');
     }
   }
 
@@ -250,220 +271,323 @@ class _NavigationFieldState extends State<NavigationField> {
     _firebaseInit = Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    getCurrentLocation();
+    // getCurrentLocation();
+    checkLocationPermission();
     _fetchData();
     super.initState();
+  }
+
+  bool? locationPermission;
+  checkLocationPermission() async {
+    if (!(await perm.Permission.location.isDenied ||
+        await perm.Permission.location.isRestricted ||
+        await perm.Permission.location.isPermanentlyDenied)) {
+      setState(() {
+        locationPermission = true;
+      });
+    } else {
+      setState(() {
+        locationPermission = false;
+      });
+    }
+    // print(locationPermission);
   }
 
   List<Widget>? widgetOptions;
   @override
   Widget build(BuildContext context) {
+    // checkLocationPermission();
     // print('reportsClean length: ${reportsClean?.length}');
     // print('widgetOptions length: ${widgetOptions?.length}');
-    return (reportsClean != null && widgetOptions != null)
-        ? Scaffold(
-            body: FutureBuilder(
-              future: _firebaseInit,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error: ${snapshot.error}'),
-                  );
-                } else {
-                  switch (snapshot.connectionState) {
-                    // if there is no connection, return a text widget
-                    case ConnectionState.none:
-                      return const Center(child: Text('None oh no'));
-                    // if there is a connection, return a text widget
-                    case ConnectionState.waiting:
-                      return Center(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          // ignore: prefer_const_literals_to_create_immutables
-                          children: [
-                            const SpinKitCubeGrid(
-                                color: Palette.indigo, size: 40),
-                            // const SizedBox(height: 50),
-                            // const Center(child: Text('Nearly there...')),
-                            // const SizedBox(height: 50),
-                            //Image.asset('assets/images/hanappLogo.png', width: 50)
-                          ],
-                        ),
-                      );
-                    // if the connection is active, return a text widget
-                    case ConnectionState.active:
-                      return const Center(child: Text('App loading in...'));
-                    // if the connection is done, return a text widget
-                    case ConnectionState.done:
-                      return Stack(
-                        children: [
-                          Positioned(
-                            child: SizedBox(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: selectedIndex == 2
-                                    ? widgetOptions!.elementAt(selectedIndex)
-                                    // else if maps, do not place in singlechildscroll view
-                                    : selectedIndex == 1
-                                        ? widgetOptions!
-                                            .elementAt(selectedIndex)
-                                        : Center(
-                                            child: SingleChildScrollView(
-                                                child: widgetOptions!.elementAt(
-                                                    selectedIndex)))),
-                          ),
-                          // Positioned(
-                          //   // position the user profile button
-                          //   top: MediaQuery.of(context).size.height * .090,
-                          //   right: MediaQuery.of(context).size.width * .080,
-                          //   child: FloatingActionButton(
-                          //     onPressed: () {
-                          //       // sign out the user
-                          //       // FirebaseAuth.instance.signOut();
-                          //       // navigate to the login page
-                          //       Navigator.push(
-                          //         context,
-                          //         MaterialPageRoute(
-                          //           builder: (context) => const ProfileMain(),
-                          //         ),
-                          //       );
-                          //     },
-                          //     shape: const CircleBorder(),
-                          //     clipBehavior: Clip.antiAlias,
-                          //     child: const Icon(Icons.person_outline_rounded),
-                          //   ),
-                          // ),
-                          // _widgetOptions.elementAt(_selectedIndex)
-                        ],
-                      );
-                    // : const NearbyMain();
-                  }
-                }
-              },
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              items: <BottomNavigationBarItem>[
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined),
-                    activeIcon: Icon(Icons.home_rounded),
-                    label: 'Home'),
-                //backgroundColor: Colors.white),
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.summarize_outlined),
-                    activeIcon: Icon(Icons.summarize_rounded),
-                    label: 'Report'),
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.near_me_outlined),
-                    activeIcon: Icon(Icons.near_me_rounded),
-                    label: 'Nearby'),
-                (reportsClean != null)
-                    ? (reportsClean!.isNotEmpty)
-                        ? BottomNavigationBarItem(
-                            icon: Stack(
-                              children: [
-                                Icon(Icons.notifications_outlined),
-                                Positioned(  // draw a red marble
-                                  top: 0.0,
-                                  right: 0.0,
-                                  child: new Icon(Icons.brightness_1, size: 9.0,
-                                      color: Colors.redAccent),
-                                )
-                              ],
-                            ),
-                            activeIcon: Stack(
-                              children: [
-                                Icon(Icons.notifications),
-                                Positioned(  // draw a red marble
-                                  top: 0.0,
-                                  right: 0.0,
-                                  child: new Icon(Icons.brightness_1, size: 9.0,
-                                      color: Colors.redAccent),
-                                )
-                              ],
-                            ),
-                            label: 'Notifications')
-                        : const BottomNavigationBarItem(
-                            icon: Icon(Icons.notifications_outlined),
-                            activeIcon: Icon(Icons.notifications),
-                            label: 'Notifications')
-                    : const BottomNavigationBarItem(
-                        icon: Icon(Icons.notifications_outlined),
-                        activeIcon: Icon(Icons.notifications),
-                        label: 'Notifications'),
-                const BottomNavigationBarItem(
-                    icon: Icon(Icons.tips_and_updates_outlined),
-                    activeIcon: Icon(Icons.tips_and_updates_rounded),
-                    label: 'Updates'),
-              ],
-              currentIndex: selectedIndex,
-              selectedFontSize: 9,
-              selectedItemColor: Palette.indigo,
-              unselectedItemColor: Colors.black26,
-              showUnselectedLabels: false,
-              onTap: _onItemTapped,
+    return locationPermission == null
+        ? const Scaffold(
+            body: Center(
+              child: SpinKitCubeGrid(color: Palette.indigo, size: 40),
             ),
           )
-        : Scaffold(
-            body: Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width * .75,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Setting things up...',
-                      style: GoogleFonts.inter(
-                          textStyle:
-                              const TextStyle(fontWeight: FontWeight.w500)),
-                      textAlign: TextAlign.center,
+        : locationPermission!
+            ? (reportsClean != null && widgetOptions != null)
+                ? Scaffold(
+                    body: FutureBuilder(
+                      future: _firebaseInit,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else {
+                          switch (snapshot.connectionState) {
+                            // if there is no connection, return a text widget
+                            case ConnectionState.none:
+                              return const Center(child: Text('None oh no'));
+                            // if there is a connection, return a text widget
+                            case ConnectionState.waiting:
+                              return Center(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: [
+                                    const SpinKitCubeGrid(
+                                        color: Palette.indigo, size: 40),
+                                    // const SizedBox(height: 50),
+                                    // const Center(child: Text('Nearly there...')),
+                                    // const SizedBox(height: 50),
+                                    //Image.asset('assets/images/hanappLogo.png', width: 50)
+                                  ],
+                                ),
+                              );
+                            // if the connection is active, return a text widget
+                            case ConnectionState.active:
+                              return const Center(
+                                  child: Text('App loading in...'));
+                            // if the connection is done, return a text widget
+                            case ConnectionState.done:
+                              return Stack(
+                                children: [
+                                  Positioned(
+                                    child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height:
+                                            MediaQuery.of(context).size.height,
+                                        child: selectedIndex == 2
+                                            ? widgetOptions!
+                                                .elementAt(selectedIndex)
+                                            // else if maps, do not place in singlechildscroll view
+                                            : selectedIndex == 1
+                                                ? widgetOptions!
+                                                    .elementAt(selectedIndex)
+                                                : Center(
+                                                    child: SingleChildScrollView(
+                                                        child: widgetOptions!
+                                                            .elementAt(
+                                                                selectedIndex)))),
+                                  ),
+                                ],
+                              );
+                            // : const NearbyMain();
+                          }
+                        }
+                      },
                     ),
-                    Text(
-                      '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
-                      textAlign: TextAlign.center,
-                      textScaleFactor: 0.70,
+                    bottomNavigationBar: BottomNavigationBar(
+                      type: BottomNavigationBarType.fixed,
+                      backgroundColor: Colors.white,
+                      items: <BottomNavigationBarItem>[
+                        const BottomNavigationBarItem(
+                            icon: Icon(Icons.home_outlined),
+                            activeIcon: Icon(Icons.home_rounded),
+                            label: 'Home'),
+                        //backgroundColor: Colors.white),
+                        const BottomNavigationBarItem(
+                            icon: Icon(Icons.summarize_outlined),
+                            activeIcon: Icon(Icons.summarize_rounded),
+                            label: 'Report'),
+                        const BottomNavigationBarItem(
+                            icon: Icon(Icons.near_me_outlined),
+                            activeIcon: Icon(Icons.near_me_rounded),
+                            label: 'Nearby'),
+                        (reportsClean != null)
+                            ? (reportsClean!.isNotEmpty)
+                                ? BottomNavigationBarItem(
+                                    icon: Stack(
+                                      children: [
+                                        const Icon(
+                                            Icons.notifications_outlined),
+                                        Positioned(
+                                          // draw a red marble
+                                          top: 0.0,
+                                          right: 0.0,
+                                          // ignore: prefer_const_constructors, unnecessary_new
+                                          child: new Icon(Icons.brightness_1,
+                                              size: 9.0,
+                                              color: Colors.redAccent),
+                                        )
+                                      ],
+                                    ),
+                                    activeIcon: Stack(
+                                      children: [
+                                        const Icon(Icons.notifications),
+                                        Positioned(
+                                          // draw a red marble
+                                          top: 0.0,
+                                          right: 0.0,
+                                          // ignore: unnecessary_new, prefer_const_constructors
+                                          child: new Icon(Icons.brightness_1,
+                                              size: 9.0,
+                                              color: Colors.redAccent),
+                                        )
+                                      ],
+                                    ),
+                                    label: 'Notifications')
+                                : const BottomNavigationBarItem(
+                                    icon: Icon(Icons.notifications_outlined),
+                                    activeIcon: Icon(Icons.notifications),
+                                    label: 'Notifications')
+                            : const BottomNavigationBarItem(
+                                icon: Icon(Icons.notifications_outlined),
+                                activeIcon: Icon(Icons.notifications),
+                                label: 'Notifications'),
+                        const BottomNavigationBarItem(
+                            icon: Icon(Icons.tips_and_updates_outlined),
+                            activeIcon: Icon(Icons.tips_and_updates_rounded),
+                            label: 'Updates'),
+                      ],
+                      currentIndex: selectedIndex,
+                      selectedFontSize: 9,
+                      selectedItemColor: Palette.indigo,
+                      unselectedItemColor: Colors.black26,
+                      showUnselectedLabels: false,
+                      onTap: _onItemTapped,
                     ),
-                    Text(
-                      '\nMake sure your location service is turned on',
-                      textAlign: TextAlign.center,
-                      textScaleFactor: 0.70,
+                  )
+                //
+                : Scaffold(
+                    body: Center(
+                      child: Container(
+                          width: MediaQuery.of(context).size.width * .75,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Setting things up...',
+                                style: GoogleFonts.inter(
+                                    textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w500)),
+                                textAlign: TextAlign.center,
+                              ),
+                              const Text(
+                                '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
+                                textAlign: TextAlign.center,
+                                textScaleFactor: 0.70,
+                              ),
+                              const Text(
+                                '\nMake sure your location service is turned on',
+                                textAlign: TextAlign.center,
+                                textScaleFactor: 0.70,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              const SpinKitCubeGrid(
+                                color: Palette.indigo,
+                                size: 25,
+                              ),
+                            ],
+                          )),
                     ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    SpinKitCubeGrid(
-                      color: Palette.indigo,
-                      size: 25,
-                    ),
-                  ],
+                    // bottomNavigationBar: BottomNavigationBar(
+                    //   type: BottomNavigationBarType.fixed,
+                    //   backgroundColor: Colors.white,
+                    //   selectedItemColor: Colors.white10,
+                    //   unselectedItemColor: Colors.white10,
+                    //   showSelectedLabels: false,
+                    //   showUnselectedLabels: false,
+                    //   onTap: null,
+                    //   items: const [
+                    //     BottomNavigationBarItem(
+                    //         icon: Icon(Icons.home_outlined), label: 'Home'),
+                    //     BottomNavigationBarItem(
+                    //         icon: Icon(Icons.summarize_outlined), label: 'Reports'),
+                    //     BottomNavigationBarItem(
+                    //         icon: Icon(Icons.near_me_outlined), label: 'Near Me'),
+                    //     BottomNavigationBarItem(
+                    //         icon: Icon(Icons.notifications_outlined),
+                    //         label: 'Notifications'),
+                    //     BottomNavigationBarItem(
+                    //         icon: Icon(Icons.tips_and_updates_outlined),
+                    //         label: 'Updates'),
+                    //   ],
+                    // ),
+                  )
+            : Scaffold(
+                backgroundColor: Colors.white,
+                body: Center(
+                  child: StreamBuilder<perm.PermissionStatus>(
+                      stream: perm.Permission.location.status.asStream(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          checkLocationPermission();
+                        }
+                        return Container(
+                          width: MediaQuery.of(context).size.width * .75,
+                          child: Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Lottie.asset("assets/lottie/noLocation.json",
+                                    animate: true,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.9),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text('Location Permission is off',
+                                    style: TextStyle(
+                                        fontSize: 21,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                    textAlign: TextAlign.center),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                  '\nHanApp requires your location to facilitate reports',
+                                  textScaleFactor: 0.8,
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text.rich(
+                                  textAlign: TextAlign.center,
+                                  textScaleFactor: 0.8,
+                                  TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text:
+                                              'Make sure that location permission is enabled and is '),
+                                      TextSpan(
+                                        text: 'set to Precise',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Palette.indigo),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 50),
+                                TextButton(
+                                  onPressed: () {
+                                    perm.openAppSettings();
+                                  },
+                                  child: const Text(
+                                    'Go to app settings',
+                                    style: TextStyle(color: Palette.indigo),
+                                  ),
+                                ),
+                                !isLocationCoarse
+                                    ? TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            locationPermission = true;
+                                          });
+                                        },
+                                        child: const Text(
+                                          'Proceed without location access',
+                                          style:
+                                              TextStyle(color: Palette.indigo),
+                                        ),
+                                      )
+                                    : const SizedBox()
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
                 ),
-              ),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              selectedItemColor: Colors.white10,
-              unselectedItemColor: Colors.white10,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              onTap: null,
-              items: const [
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.home_outlined), label: 'Home'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.summarize_outlined), label: 'Reports'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.near_me_outlined), label: 'Near Me'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.notifications_outlined),
-                    label: 'Notifications'),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.tips_and_updates_outlined),
-                    label: 'Updates'),
-              ],
-            ));
+              );
   }
 }

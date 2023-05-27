@@ -23,6 +23,8 @@ Future<void> registerSanJoaquin(context) async {
     await registrationRef.child('SanJoaqin').set({
       'lat': 10.587563005612441,
       'long': 122.14228426782086,
+      'pnp_contactEmail': 'pnpSanJoaqin@dummyEmail.sp',
+      'pnp_contactNumber': '09123456789',
       'uid': userCred.user!.uid,
     });
     ScaffoldMessenger.of(context)
@@ -41,6 +43,8 @@ void registerMiagao(context) async {
     await registrationRef.child('Miagao').set({
       'lat': 10.640882128439756,
       'long': 122.24802365770803,
+      'pnp_contactEmail': 'pnpMiagaon@dummyEmail.sp',
+      'pnp_contactNumber': '09123456789',
       'uid': userCred.user!.uid,
     });
 
@@ -59,6 +63,8 @@ void registerJaro(context) async {
     await registrationRef.child('Jaro').set({
       'lat': 10.726473565638335,
       'long': 122.55836118446929,
+      'pnp_contactEmail': 'pnpJaro@dummyEmail.sp',
+      'pnp_contactNumber': '09123456789',
       'uid': userCred.user!.uid,
     });
 

@@ -41,7 +41,7 @@ class Page6AuthConfirm extends StatefulWidget {
 
 class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   // for testing: set to false to enable report form validity checking
-  bool REPORT_ALWAYS_VALID = true;
+  bool REPORT_ALWAYS_VALID = false;
   bool areImageUploading = false;
   // Firebase Realtime Database initialize
   FirebaseDatabase database = FirebaseDatabase.instance;
@@ -229,6 +229,8 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
     // save reportReason and dateFound to shared preferences (both empty strings)
     prefs.setString('pnp_rejectReason', '');
     prefs.setString('pnp_dateFound', '');
+    prefs.setString('pnp_contactNumber', '');
+    prefs.setString('pnp_contactEmail', '');
     List<String> keyList = prefs.getKeys().toList();
     List<String> imagesList = [
       'p2_reportee_ID_Photo',
@@ -765,8 +767,12 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
         keysList.contains('p2_streetHouseNum') &&
         keysList.contains('p2_reportee_ID_Photo') &&
         keysList.contains('p2_relationshipToMP') &&
-        keysList.contains('p2_singlePhoto_face'))) {
+        keysList.contains('p2_reporteeSelfie'))) {
       print('[p2 report not valid] p2 values are not complete');
+      print(
+          'keysList contains civil status: ${keysList.contains('p2_civil_status')}');
+      print(
+          'keysList contains relationShip to MP: ${keysList.contains('p2_relationShipToMP')}');
       dialogMessage.add('p2');
       returnval = false;
     } else {
