@@ -806,8 +806,10 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
               SizedBox(
                 width: MediaQuery.of(context).size.width - 50,
                 child: TextField(
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  maxLength: 500,
                   controller: TextEditingController(text: incidentDetails),
-                  maxLines: 5,
+                  maxLines: 6,
                   textCapitalization: TextCapitalization.sentences,
                   decoration: const InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
