@@ -45,14 +45,52 @@ class _NavRailViewState extends State<NavRailView> {
         padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
         child: Column(
           children: [
+            // IconButton(
+            //   tooltip: "Logout",
+            //   splashRadius: 0.2,
+            //   onPressed: () {
+            //     FirebaseAuth.instance.signOut();
+            //     Navigator.pushReplacement(
+            //       context,
+            //       MaterialPageRoute(builder: (context) => LoginView()),
+            //     );
+            //   },
+            //   icon: Icon(
+            //     Icons.logout,
+            //   ),
+            // ),
             IconButton(
               tooltip: "Logout",
               splashRadius: 0.2,
               onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginView()),
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Confirm Logout"),
+                      content: Text("Are you sure you want to logout?"),
+                      actions: [
+                        TextButton(
+                          child: Text("Cancel"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: Text("Logout"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            FirebaseAuth.instance.signOut();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginView()),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
               icon: Icon(
