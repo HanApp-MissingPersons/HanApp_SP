@@ -49,10 +49,51 @@ class _NavRailViewState extends State<NavRailView> {
               tooltip: "Logout",
               splashRadius: 0.2,
               onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginView()),
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text("Logout from PNP Hanapp"),
+                      content: Text("Are you sure you want to logout?"),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(20.0))),
+                      actions: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8, bottom:8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                child: Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              SizedBox(width: 10),
+                              TextButton(
+                                child: Text("Logout"),
+                                style: TextButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)),
+                                backgroundColor: Palette.indigo,
+                                foregroundColor: Colors.white,),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginView()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
               icon: Icon(
