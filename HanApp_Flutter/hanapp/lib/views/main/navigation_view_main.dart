@@ -71,9 +71,10 @@ class _NavigationFieldState extends State<NavigationField> {
     print('PRINT HIDDEN: ${hiddenReports.keys.toList()}');
   }
 
+  bool serviceEnabled = false;
   continuallyCheckLocationService() async {
     Future.delayed(const Duration(seconds: 1)).then((value) async {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         print('no sir no sir');
         continuallyCheckLocationService();
@@ -547,7 +548,8 @@ class _NavigationFieldState extends State<NavigationField> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                const Text('Location Permission is off',
+                                const Text(
+                                    'Location Permission is approximate, or is turned off',
                                     style: TextStyle(
                                         fontSize: 21,
                                         fontWeight: FontWeight.bold,
@@ -590,20 +592,20 @@ class _NavigationFieldState extends State<NavigationField> {
                                     style: TextStyle(color: Palette.indigo),
                                   ),
                                 ),
-                                !isLocationCoarse
-                                    ? TextButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            locationPermission = true;
-                                          });
-                                        },
-                                        child: const Text(
-                                          'Proceed without location access',
-                                          style:
-                                              TextStyle(color: Palette.indigo),
-                                        ),
-                                      )
-                                    : const SizedBox()
+                                // !isLocationCoarse
+                                //     ? TextButton(
+                                //         onPressed: () {
+                                //           setState(() {
+                                //             locationPermission = true;
+                                //           });
+                                //         },
+                                //         child: const Text(
+                                //           'Proceed without location access',
+                                //           style:
+                                //               TextStyle(color: Palette.indigo),
+                                //         ),
+                                //       )
+                                //     : const SizedBox()
                               ],
                             ),
                           ),
