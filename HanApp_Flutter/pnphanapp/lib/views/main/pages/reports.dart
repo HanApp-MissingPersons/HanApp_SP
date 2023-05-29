@@ -2698,11 +2698,13 @@ class _reportsPNPState extends State<reportsPNP> {
                                   color: Colors.black),
                               textAlign: TextAlign.center,
                             ),
-                            // Icon(Icons.blo, size: 50, color: Colors.black54),
-                            Lottie.asset("assets/lottie/noReports.json",
-                                animate: false,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.15),
+                            Icon(Icons.checklist_rtl_outlined,
+                                size: MediaQuery.of(context).size.width * .25,
+                                color: Colors.grey[300]),
+                            // Lottie.asset("assets/lottie/noReports.json",
+                            //     animate: false,
+                            //     height:
+                            //         MediaQuery.of(context).size.width * 0.15),
                           ],
                         ),
                       )),
