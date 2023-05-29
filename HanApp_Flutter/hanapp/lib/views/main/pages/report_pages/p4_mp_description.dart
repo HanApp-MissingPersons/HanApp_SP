@@ -107,16 +107,16 @@ class _Page4MPDescState extends State<Page4MPDesc> {
   // bool _mp_hair_color_natural = false;
   // bool _mp_eye_color_natural = false;
 
-  // NA checkbox values
-  bool? mp_hasScars = false;
-  bool? mp_hasMarks = false;
-  bool? mp_hasTattoos = false;
-  bool? mp_hasProsthetics = false;
-  bool? mp_hasBirthDefects = false;
-  bool? mp_hasMedications = false;
-  bool? mp_hasFacebook = false;
-  bool? mp_hasTwitter = false;
-  bool? mp_hasInstagram = false;
+  // // NA checkbox values
+  // bool? mp_hasScars = false;
+  // bool? mp_hasMarks = false;
+  // bool? mp_hasTattoos = false;
+  // bool? mp_hasProsthetics = false;
+  // bool? mp_hasBirthDefects = false;
+  // bool? mp_hasMedications = false;
+  // bool? mp_hasFacebook = false;
+  // bool? mp_hasTwitter = false;
+  // bool? mp_hasInstagram = false;
 
   // dispose all controllers
   @override
@@ -294,7 +294,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
           _prefs.getBool('p4_mp_hair_color_natural') ?? true;
       mp_eye_color_natural = _prefs.getBool('p4_mp_eye_color_natural') ?? true;
 
-      mp_hasScars = _prefs.getBool('p4_mp_hasScars') ?? false;
+      // mp_hasScars = _prefs.getBool('p4_mp_hasScars') ?? false;
     });
   }
 
@@ -401,88 +401,92 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       ),
                       _verticalPadding,
                       // scars text field, saves to shared preference after user types
-                      // SizedBox(
-                      //   width: MediaQuery.of(context).size.width - 40,
-                      //   child: TextField(
-                      //     controller: _mp_scars,
-                      //     textCapitalization: TextCapitalization.sentences,
-                      //     decoration: const InputDecoration(
-                      //       labelText: 'Scars',
-                      //       border: OutlineInputBorder(
-                      //           borderRadius:
-                      //               BorderRadius.all(Radius.circular(10))),
-                      //     ),
-                      //     onChanged: (value) {
-                      //       setState(() {
-                      //         // _prefs.setString('p4_mp_scars', value);
-                      //         _writeToPrefs('p4_mp_scars', value);
-                      //       });
-                      //     },
-                      //   ),
-                      // ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                maxLength: 50,
-                                controller: _mp_scars,
-                                enabled:
-                                    !mp_hasScars!, // Disable the text field when NA is checked
-                                textCapitalization:
-                                    TextCapitalization.sentences,
-                                decoration: const InputDecoration(
-                                  counterText: '',
-                                  labelText: 'Scars',
-                                  border: OutlineInputBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10)),
-                                  ),
-                                ),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _writeToPrefs('p4_mp_scars', value);
-                                    //print shared pref value
-                                  });
-                                },
-                              ),
-                            ),
-                            Checkbox(
-                              value: mp_hasScars,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  mp_hasScars = newValue!;
-                                  // if checked
-                                  if (mp_hasScars!) {
-                                    _mp_scars.text =
-                                        'NA'; // replace text with NA if checked
-                                    _writeToPrefs('p4_mp_scars', 'NA');
-                                  }
-                                  // if unchecked
-                                  if (!mp_hasScars!) {
-                                    _prefs.remove('p4_mp_scars'); // set to null
-                                    _mp_scars.clear(); // clear text field
-                                  }
-                                  // set bool value to shared pref for persistence
-                                  _prefs.setBool(
-                                      'p4_mp_hasScars', mp_hasScars!);
-                                });
-                              },
-                            ),
-                            // text for NA
-                            const Text('NA'),
-                          ],
+                        child: TextField(
+                          maxLength: 50,
+                          controller: _mp_scars,
+                          textCapitalization: TextCapitalization.sentences,
+                          decoration: const InputDecoration(
+                            counterText: '',
+                            labelText: 'Scars',
+                            border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              // _prefs.setString('p4_mp_scars', value);
+                              _writeToPrefs('p4_mp_scars', value);
+                            });
+                          },
                         ),
                       ),
+                      // SizedBox(
+                      //   width: MediaQuery.of(context).size.width - 40,
+                      //   child: Row(
+                      //     children: [
+                      //       Expanded(
+                      //         child: TextField(
+                      //           maxLength: 50,
+                      //           controller: _mp_scars,
+                      //           enabled:
+                      //               !mp_hasScars!, // Disable the text field when NA is checked
+                      //           textCapitalization:
+                      //               TextCapitalization.sentences,
+                      //           decoration: const InputDecoration(
+                      //             counterText: '',
+                      //             labelText: 'Scars',
+                      //             border: OutlineInputBorder(
+                      //               borderRadius:
+                      //                   BorderRadius.all(Radius.circular(10)),
+                      //             ),
+                      //           ),
+                      //           onChanged: (value) {
+                      //             setState(() {
+                      //               _writeToPrefs('p4_mp_scars', value);
+                      //               //print shared pref value
+                      //             });
+                      //           },
+                      //         ),
+                      //       ),
+                      //       Checkbox(
+                      //         value: mp_hasScars,
+                      //         onChanged: (newValue) {
+                      //           setState(() {
+                      //             mp_hasScars = newValue!;
+                      //             // if checked
+                      //             if (mp_hasScars!) {
+                      //               _mp_scars.text =
+                      //                   'NA'; // replace text with NA if checked
+                      //               _writeToPrefs('p4_mp_scars', 'NA');
+                      //             }
+                      //             // if unchecked
+                      //             if (!mp_hasScars!) {
+                      //               _prefs.remove('p4_mp_scars'); // set to null
+                      //               _mp_scars.clear(); // clear text field
+                      //             }
+                      //             // set bool value to shared pref for persistence
+                      //             _prefs.setBool(
+                      //                 'p4_mp_hasScars', mp_hasScars!);
+                      //           });
+                      //         },
+                      //       ),
+                      //       // text for NA
+                      //       const Text('NA'),
+                      //     ],
+                      //   ),
+                      // ),
                       _verticalPadding,
                       // marks text field, saves to shared preference after user types
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 50,
                           controller: _mp_marks,
                           textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
+                            counterText: '',
                             labelText: 'Marks',
                             border: OutlineInputBorder(
                                 borderRadius:
@@ -501,9 +505,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 50,
                           controller: _mp_tattoos,
                           textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
+                            counterText: '',
                             labelText: 'Tattoos',
                             border: OutlineInputBorder(
                                 borderRadius:
@@ -529,9 +535,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 20,
                           controller: _mp_hair_color,
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             hintText: 'Hair Color',
                             //hintStyle: TextStyle(fontStyle: FontStyle.italic),
                             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -586,9 +594,11 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 20,
                           controller: _mp_eye_color,
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             hintText: 'Eye Color',
                             border: OutlineInputBorder(
@@ -649,8 +659,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 50,
                           controller: _mp_prosthetics,
                           decoration: const InputDecoration(
+                            counterText: '',
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             hintText: 'If none/unknown type "NA"',
                             border: OutlineInputBorder(
@@ -704,9 +716,12 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLines: 2,
+                          maxLength: 60,
                           controller: _mp_last_clothing,
                           textCapitalization: TextCapitalization.words,
                           decoration: const InputDecoration(
+                            counterText: '',
                             hintText: 'Clothing and Accessories',
                             floatingLabelBehavior: FloatingLabelBehavior.never,
                             border: OutlineInputBorder(
@@ -876,8 +891,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 60,
                           controller: _mp_medications,
                           decoration: const InputDecoration(
+                            counterText: '',
                             hintText: 'If none/unknown type "NA"',
                             labelText: 'Medications',
                             border: OutlineInputBorder(
@@ -906,10 +923,12 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 50,
                           controller: _mp_facebook,
                           decoration: const InputDecoration(
+                            counterText: '',
                             labelText: 'Facebook',
-                            hintText: 'Facebook Username (NA if none/unknown)',
+                            hintText: 'FB Username (NA if none/unknown)',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -928,8 +947,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 50,
                           controller: _mp_twitter,
                           decoration: const InputDecoration(
+                            counterText: '',
                             labelText: 'Twitter',
                             hintText: 'Twitter Username (NA if none/unknown)',
                             border: OutlineInputBorder(
@@ -950,10 +971,12 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 40,
                         child: TextField(
+                          maxLength: 50,
                           controller: _mp_instagram,
                           decoration: const InputDecoration(
+                            counterText: '',
                             labelText: 'Instagram',
-                            hintText: 'Instagram Username (NA if none/unknown)',
+                            hintText: 'IG Username (NA if none/unknown)',
                             border: OutlineInputBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(10))),
@@ -974,8 +997,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.425,
                             child: TextField(
+                              maxLength: 50,
                               controller: _mp_socmed_other_platform,
                               decoration: const InputDecoration(
+                                counterText: '',
                                 labelText: 'Others',
                                 hintText: 'Platform Name',
                                 border: OutlineInputBorder(
@@ -995,8 +1020,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.425,
                             child: TextField(
+                              maxLength: 50,
                               controller: _mp_socmed_other_username,
                               decoration: const InputDecoration(
+                                counterText: '',
                                 labelText: 'Username',
                                 hintText: 'Username',
                                 border: OutlineInputBorder(
@@ -1260,8 +1287,10 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                                 // print(prefs.getKeys());
                                 // print(prefs.getString('p4_mp_scars'));
                                 // print value of p4_mp_scars: (Scar:):
-                                print('Scars: ' +
-                                    prefs.getString('p4_mp_scars')!);
+                                if (kDebugMode) {
+                                  print(
+                                      'Scars: ${prefs.getString('p4_mp_scars')!}');
+                                }
                                 // print(prefs.getString('p4_mp_marks'));
                                 // print(prefs.getString('p4_mp_blood_type'));
                                 // print(prefs
