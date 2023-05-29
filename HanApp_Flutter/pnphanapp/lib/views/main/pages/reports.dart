@@ -2686,16 +2686,23 @@ class _reportsPNPState extends State<reportsPNP> {
                       )
                     : Container(
                         alignment: Alignment.center,
-                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.1),
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height * 0.1),
                         child: Column(
                           children: [
                             Text(
                               'No Reports Yet',
-                              style: GoogleFonts.inter(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black),
+                              style: GoogleFonts.inter(
+                                  fontSize: 21,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
                               textAlign: TextAlign.center,
                             ),
-                            Lottie.network("https://assets3.lottiefiles.com/packages/lf20_hSevJIQ2Wm.json",
-                                animate: true,),
+                            // Icon(Icons.blo, size: 50, color: Colors.black54),
+                            Lottie.asset("assets/lottie/noReports.json",
+                                animate: false,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.15),
                           ],
                         ),
                       )),
