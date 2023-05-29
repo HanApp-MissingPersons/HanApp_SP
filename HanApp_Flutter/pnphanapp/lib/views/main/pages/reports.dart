@@ -529,7 +529,7 @@ class _reportsPNPState extends State<reportsPNP> {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Container(
-                width: 400,
+                width: 260,
                 child: GestureDetector(
                   onTap: () {
                     print('tapped ${report['keyUid']}');
@@ -568,12 +568,12 @@ class _reportsPNPState extends State<reportsPNP> {
                             : const Icon(Icons.person),
                       ),
                       SizedBox(
-                        width: 340,
+                        width: 200,
                         child: Text(
                           '$firstName $lastName',
                           //JUST change the font size to 18 when Name is applied
                           style: GoogleFonts.inter(
-                              fontSize: 18, fontWeight: FontWeight.w700),
+                              fontSize: 14, fontWeight: FontWeight.w700),
                           maxLines: 3,
                         ),
                       ),
