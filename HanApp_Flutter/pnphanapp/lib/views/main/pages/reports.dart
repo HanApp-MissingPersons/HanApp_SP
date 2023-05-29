@@ -519,7 +519,6 @@ class _reportsPNPState extends State<reportsPNP> {
       child: Container(
         margin: const EdgeInsets.all(10),
         padding: const EdgeInsets.all(30),
-        //height: 110,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(20)),
@@ -573,7 +572,7 @@ class _reportsPNPState extends State<reportsPNP> {
                           '$firstName $lastName',
                           //JUST change the font size to 18 when Name is applied
                           style: GoogleFonts.inter(
-                              fontSize: 14, fontWeight: FontWeight.w700),
+                              fontSize: 18, fontWeight: FontWeight.w700),
                           maxLines: 3,
                         ),
                       ),
@@ -683,34 +682,34 @@ class _reportsPNPState extends State<reportsPNP> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // change text
-                  Text(lastSeenDate,
+                  Text("$lastSeenDate, $lastSeenTime",
                       style: GoogleFonts.inter(
-                          fontSize: 18, fontWeight: FontWeight.w600)),
+                          fontSize: 18, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
                   SizedBox(height: 3),
-                  Text('Last Seen Date',
+                  Text('Last Seen',
                       style: GoogleFonts.inter(
                           fontSize: 12, color: Colors.black38)),
                 ],
               ),
             ),
 
-            // Last seen time
-            SizedBox(
-              width: 150,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(lastSeenTime,
-                      style: GoogleFonts.inter(
-                          fontSize: 18, fontWeight: FontWeight.w600)),
-                  SizedBox(height: 3),
-                  Text('Last Seen Time',
-                      style: GoogleFonts.inter(
-                          fontSize: 12, color: Colors.black38)),
-                ],
-              ),
-            ),
+            // // Last seen time
+            // SizedBox(
+            //   width: 150,
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: [
+            //       Text(lastSeenTime,
+            //           style: GoogleFonts.inter(
+            //               fontSize: 18, fontWeight: FontWeight.w600)),
+            //       SizedBox(height: 3),
+            //       Text('Last Seen Time',
+            //           style: GoogleFonts.inter(
+            //               fontSize: 12, color: Colors.black38)),
+            //     ],
+            //   ),
+            // ),
 
             // total hours missing
             SizedBox(
@@ -2694,8 +2693,11 @@ class _reportsPNPState extends State<reportsPNP> {
                               style: GoogleFonts.inter(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.black),
                               textAlign: TextAlign.center,
                             ),
-                            Lottie.network("https://assets3.lottiefiles.com/packages/lf20_hSevJIQ2Wm.json",
-                                animate: true,),
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Image.asset('assets/images/pnp_no.png',
+                                  height: MediaQuery.of(context).size.height * 0.6),
+                            ),
                           ],
                         ),
                       )),
