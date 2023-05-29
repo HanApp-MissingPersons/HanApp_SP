@@ -71,6 +71,20 @@ class _NavigationFieldState extends State<NavigationField> {
     print('PRINT HIDDEN: ${hiddenReports.keys.toList()}');
   }
 
+  continuallyCheckLocationService() async {
+    Future.delayed(const Duration(seconds: 1)).then((value) async {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        print('no sir no sir');
+        continuallyCheckLocationService();
+      } else {
+        setState(() {});
+        print('yes sir yes sir');
+        await _fetchData();
+      }
+    });
+  }
+
   Future<void> _fetchData() async {
     final reportsStream = dbRef2.onValue;
     final notificationsStream = notificationRef.onValue;
@@ -180,6 +194,12 @@ class _NavigationFieldState extends State<NavigationField> {
         });
       });
 
+      Geolocator.getServiceStatusStream().listen((status) {
+        if (status == ServiceStatus.enabled) {
+          setState(() {});
+          print('[LOC LOC LOC] HAS BEEN ENABLED!');
+        }
+      });
       if (currentLocation != null) {
         _locationSubscription =
             location.onLocationChanged.listen((newLocation) {
@@ -273,7 +293,9 @@ class _NavigationFieldState extends State<NavigationField> {
     );
     // getCurrentLocation();
     checkLocationPermission();
-    _fetchData();
+    // _fetchData();
+    Location().getLocation();
+    continuallyCheckLocationService();
     super.initState();
   }
 
