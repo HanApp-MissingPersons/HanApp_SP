@@ -684,7 +684,8 @@ class _reportsPNPState extends State<reportsPNP> {
                   // change text
                   Text("$lastSeenDate, $lastSeenTime",
                       style: GoogleFonts.inter(
-                          fontSize: 18, fontWeight: FontWeight.w600), textAlign: TextAlign.center),
+                          fontSize: 18, fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.center),
                   SizedBox(height: 3),
                   Text('Last Seen',
                       style: GoogleFonts.inter(
@@ -2657,6 +2658,7 @@ class _reportsPNPState extends State<reportsPNP> {
         ),
         Container(
             height: MediaQuery.of(context).size.height * 0.85,
+            alignment: Alignment.center,
             child: isFetchingData
                 ? Container(
                     alignment: Alignment.center,
@@ -2674,14 +2676,19 @@ class _reportsPNPState extends State<reportsPNP> {
                     ),
                   )
                 : reportList!.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: reportList!.length,
-                        physics: const BouncingScrollPhysics(
-                          parent: PageScrollPhysics(),
+                    ? Container(
+                        alignment: Alignment.center,
+                        transformAlignment: Alignment.center,
+                        child: ListView.builder(
+                          itemCount: reportList!.length,
+                          physics: const BouncingScrollPhysics(
+                            parent: PageScrollPhysics(),
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Center(
+                                child: listItem(report: reportList![index]));
+                          },
                         ),
-                        itemBuilder: (BuildContext context, int index) {
-                          return listItem(report: reportList![index]);
-                        },
                       )
                     : Container(
                         alignment: Alignment.center,
@@ -2700,7 +2707,8 @@ class _reportsPNPState extends State<reportsPNP> {
                             Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: Image.asset('assets/images/pnp_no.png',
-                                  height: MediaQuery.of(context).size.height * 0.6),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.6),
                             ),
                           ],
                         ),
