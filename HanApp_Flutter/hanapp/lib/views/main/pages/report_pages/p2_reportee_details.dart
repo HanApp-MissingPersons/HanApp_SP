@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hanapp/main.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -1250,32 +1251,25 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
             //     style: TextStyle(fontSize: 12, color: Colors.black54),
             //   ),
             // ),
-
-            Padding(
-              padding:
-                  EdgeInsets.only(left: MediaQuery.of(context).size.width / 50),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    // Icons.info_outline_rounded,
-                    Icons.swipe_left_rounded,
-                    color: Colors.black54,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 5),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 40,
-                    child: const Text(
-                      'End of Reportee Details Form. \nSwipe left to continue.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black54,
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Lottie.network(
+                    "https://assets8.lottiefiles.com/packages/lf20_xpxbhrm4.json",
+                    animate: true,
+                    width: MediaQuery.of(context).size.width*0.15),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: const Text(
+                    '\nEnd of Reportee Details Form \nSwipe left to continue.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             // DEBUG TOOL: SHARED PREF PRINTER
             // TextButton(

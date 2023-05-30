@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hanapp/main.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'p3_mp_info.dart';
@@ -338,33 +339,26 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   ), // end of Row for Victim of Crime
                   // add padding between rows
                   _verticalPadding,
-                  _verticalPadding,
                   //info/instruction
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width / 50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          // Icons.info_outline_rounded,
-                          Icons.swipe_left_rounded,
-                          color: Colors.black54,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 5),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width - 40,
-                          child: const Text(
-                            'End of Classifiers Form. \nSwipe left to continue.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.black54,
-                            ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Lottie.network(
+                          "https://assets8.lottiefiles.com/packages/lf20_xpxbhrm4.json",
+                          animate: true,
+                          width: MediaQuery.of(context).size.width*0.15),
+                      const SizedBox(width: 5),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: const Text(
+                          '\nEnd of Classifiers Form \nSwipe left to continue.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black54,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
 
                   // Text(

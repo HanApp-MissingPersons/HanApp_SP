@@ -13,6 +13,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:hanapp/main.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -1251,32 +1254,25 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                           ],
                         ),
                       // END OF PAGE
-                      _verticalPadding,
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: MediaQuery.of(context).size.width / 50),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              // Icons.info_outline_rounded,
-                              Icons.swipe_left_rounded,
-                              color: Colors.black54,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 5),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width - 40,
-                              child: const Text(
-                                'End of Absent/Missing Person Description Form. \nSwipe left to continue.',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.black54,
-                                ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Lottie.network(
+                              "https://assets8.lottiefiles.com/packages/lf20_xpxbhrm4.json",
+                              animate: true,
+                              width: MediaQuery.of(context).size.width*0.15),
+                          const SizedBox(width: 5),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: const Text(
+                              '\nEnd of Missing Person Description Form \nSwipe left to continue.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.black54,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       // DEBUG TOOL: SHARED PREF PRINTER
                       kDebugMode
@@ -1305,9 +1301,9 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                     ]))
           ])
         : // Circular loading icon
-        const Center(
-            child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+        Center(
+            child: SpinKitCubeGrid(
+            size: 40, color: Palette.indigo,
           ));
   }
 }
