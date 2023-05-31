@@ -26,21 +26,31 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Color(0xFFF8F8F8),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.1),
+        padding: EdgeInsets.all(screenHeight * 0.1),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset('assets/images/pnpLogin.png',
-                height: MediaQuery.of(context).size.height * 0.8),
+            screenWidth > 600
+                ? Expanded(
+              child: Image.asset(
+                'assets/images/pnpLogin.png',
+                height: screenHeight * 0.8,
+              ),
+            )
+                : SizedBox(),
             Padding(
               padding: EdgeInsets.only(
-                  top: 15, left: MediaQuery.of(context).size.height / 8),
+                  top: 15, left: screenWidth > 600 ? screenHeight / 20 : 0, right: screenWidth/10),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
@@ -48,7 +58,7 @@ class _LoginViewState extends State<LoginView> {
                       'Login',
                       textAlign: TextAlign.left,
                       style: GoogleFonts.inter(
-                        fontSize: 29,
+                        fontSize: screenWidth > 600 ? 29 : 24,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -56,8 +66,7 @@ class _LoginViewState extends State<LoginView> {
                   Padding(
                     padding: const EdgeInsets.only(top: 40, bottom: 20),
                     child: SizedBox(
-                      //EMAIL
-                      width: 360,
+                      width: screenWidth > 600 ? 360 : screenWidth * 0.8,
                       child: TextFormField(
                         controller: _email,
                         autocorrect: false,
@@ -73,13 +82,11 @@ class _LoginViewState extends State<LoginView> {
                             borderRadius: BorderRadius.all(Radius.circular(15)),
                           ),
                         ),
-                        //validator: put here...
                       ),
                     ),
                   ),
                   SizedBox(
-                    //PASSWORD
-                    width: 360,
+                    width: screenWidth > 600 ? 360 : screenWidth * 0.8,
                     child: TextFormField(
                       controller: _password,
                       obscureText: true,
@@ -89,20 +96,6 @@ class _LoginViewState extends State<LoginView> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         ),
-                        // this button is used to toggle the password visibility
-                        // CHANGE INTO ICON BUTTON ...
-                        // suffixIcon: Icon(Icons.visibility_outlined)
-                        //IconButton(icon: Icons.visibility_outlined, onPressed: null,),
-                        // if the password is obscured, show the visibility icon
-                        // if the password is not obscured, show the visibility_off icon
-                        //    icon: Icon(_obscured
-                        //        ? Icons.visibility_outlined
-                        //        : Icons.visibility_off_outlined),
-                        //onPressed: () {
-                        //  setState(() {
-                        //    _obscured = !_obscured;
-                        //  });
-                        //})
                       ),
                     ),
                   ),
@@ -110,39 +103,41 @@ class _LoginViewState extends State<LoginView> {
                     padding: const EdgeInsets.only(top: 30, bottom: 10),
                     child: SizedBox(
                       height: 35,
-                      width: 360.0,
+                      width: screenWidth > 600 ? 360.0 : screenWidth * 0.8,
                       child: ElevatedButton(
                         style: ButtonStyle(
-                            backgroundColor:
-                                const MaterialStatePropertyAll<Color>(
-                                    Color(0xFF6B53FD)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                          backgroundColor:
+                          MaterialStateProperty.all<Color>(Color(0xFF6B53FD)),
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
-                            ))),
+                            ),
+                          ),
+                        ),
                         onPressed: () async {
                           try {
-                            print('email text: ${_email.text}');
-                            print('PW text: ${_password.text}');
                             if (_email.text.isNotEmpty &&
                                 _password.text.isNotEmpty) {
                               await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
-                                      email: _email.text,
-                                      password: _password.text);
+                                email: _email.text,
+                                password: _password.text,
+                              );
                               if (mounted) {
                                 Navigator.of(context).pushAndRemoveUntil(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const NavRailView()),
-                                    (route) => false);
+                                  MaterialPageRoute(
+                                    builder: (context) => const NavRailView(),
+                                  ),
+                                      (route) => false,
+                                );
                               }
-                              print('done navigating');
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                          Text('Fields cannot be empty!')));
+                                const SnackBar(
+                                  content: Text('Fields cannot be empty!'),
+                                ),
+                              );
                             }
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'user-not-found') {
@@ -150,64 +145,74 @@ class _LoginViewState extends State<LoginView> {
                                 print('User not found!');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('User not found!')));
+                                const SnackBar(
+                                  content: Text('User not found!'),
+                                ),
+                              );
                             } else if (e.code == 'wrong-password') {
                               if (kDebugMode) {
                                 print('Wrong Password');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Wrong password!')));
+                                const SnackBar(
+                                  content: Text('Wrong password!'),
+                                ),
+                              );
                             } else if (e.code == 'invalid-email') {
                               if (kDebugMode) {
                                 print('Invalid Email Format');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Invalid Email Format!')));
+                                const SnackBar(
+                                  content: Text('Invalid Email Format!'),
+                                ),
+                              );
                             } else if (e.code == 'user-disabled') {
                               if (kDebugMode) {
                                 print('User has been disabled');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'User account has been disabled')));
+                                const SnackBar(
+                                  content: Text('User account has been disabled'),
+                                ),
+                              );
                             } else if (e.code == 'too-many-requests') {
                               if (kDebugMode) {
-                                print(
-                                    'Too many requests, please try again later');
+                                print('Too many requests, please try again later');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Too many requests, please try again later')));
+                                const SnackBar(
+                                  content: Text('Too many requests, please try again later'),
+                                ),
+                              );
                             } else if (e.code == 'network-request-failed') {
                               if (kDebugMode) {
                                 print('Not Connected to the internet');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Connection failed, check your internet connection')));
+                                const SnackBar(
+                                  content: Text('Connection failed, check your internet connection'),
+                                ),
+                              );
                             } else {
                               if (kDebugMode) {
                                 print('Unknown Error');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                          Text('Oops! Something went wrong')));
+                                const SnackBar(
+                                  content: Text('Oops! Something went wrong'),
+                                ),
+                              );
                             }
                           }
                         },
                         child: Text(
                           'Login',
                           style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -216,119 +221,120 @@ class _LoginViewState extends State<LoginView> {
                     onPressed: null,
                     child: Text(
                       'Forgot Password?',
-                      style:
-                          GoogleFonts.inter(fontSize: 12, color: Colors.black),
+                      style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
                     ),
                   ),
-                  //
-                  // text button to register hard-coded pnp accounts
                   kDebugMode
                       ? TextButton(
-                          onPressed: () {
-                            // navigate to registerView
-                            if (kDebugMode) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const RegisterView()));
-                            } else {
-                              // snackbar to tell user to contact developers
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'Not in debug mode, contact developers.')));
-                            }
-                          },
-                          child: Text(
-                            'Register (for testing only)',
-                            style: GoogleFonts.inter(
-                                fontSize: 12, color: Colors.black),
+                    onPressed: () {
+                      // navigate to registerView
+                      if (kDebugMode) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterView(),
                           ),
-                        )
-                      : const SizedBox(),
-                  //
-                  // login hard-coded pnp accounts
-                  kDebugMode
-                      ? Container(
-                          margin: const EdgeInsets.all(5),
-                          width: 200,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: 'miagao_hanapp@gmail.com',
-                                      password: 'abc123');
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NavRailView()),
-                                  (route) => false);
-                            },
-                            child: Text('Login as Miagao'),
+                        );
+                      } else {
+                        // snackbar to tell user to contact developers
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Not in debug mode, contact developers.'),
                           ),
-                        )
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Register (for testing only)',
+                      style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
+                    ),
+                  )
                       : const SizedBox(),
                   kDebugMode
                       ? Container(
-                          margin: const EdgeInsets.all(5),
-                          width: 200,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: 'sanjoaqin_hanapp@gmail.com',
-                                      password: 'abc123');
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NavRailView()),
-                                  (route) => false);
-                            },
-                            child: Text('Login as San Joaqin'),
+                    margin: const EdgeInsets.all(5),
+                    width: 200,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: 'miagao_hanapp@gmail.com',
+                          password: 'abc123',
+                        );
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const NavRailView(),
                           ),
-                        )
+                              (route) => false,
+                        );
+                      },
+                      child: Text('Login as Miagao'),
+                    ),
+                  )
                       : const SizedBox(),
                   kDebugMode
                       ? Container(
-                          margin: const EdgeInsets.all(5),
-                          width: 200,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: 'jaro_hanapp@gmail.com',
-                                      password: 'abc123');
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NavRailView()),
-                                  (route) => false);
-                            },
-                            child: Text('Login as Jaro'),
+                    margin: const EdgeInsets.all(5),
+                    width: 200,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: 'sanjoaqin_hanapp@gmail.com',
+                          password: 'abc123',
+                        );
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const NavRailView(),
                           ),
-                        )
+                              (route) => false,
+                        );
+                      },
+                      child: Text('Login as San Joaqin'),
+                    ),
+                  )
                       : const SizedBox(),
                   kDebugMode
                       ? Container(
-                          margin: const EdgeInsets.all(5),
-                          width: 200,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                      email: 'national_hanapp@gmail.com',
-                                      password: 'abc123');
-                              Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NavRailView()),
-                                  (route) => false);
-                            },
-                            child: Text('Login as National'),
+                    margin: const EdgeInsets.all(5),
+                    width: 200,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: 'jaro_hanapp@gmail.com',
+                          password: 'abc123',
+                        );
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const NavRailView(),
                           ),
-                        )
+                              (route) => false,
+                        );
+                      },
+                      child: Text('Login as Jaro'),
+                    ),
+                  )
                       : const SizedBox(),
-                  // end of login hard-coded pnp accounts
+                  kDebugMode
+                      ? Container(
+                    margin: const EdgeInsets.all(5),
+                    width: 200,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: 'national_hanapp@gmail.com',
+                          password: 'abc123',
+                        );
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const NavRailView(),
+                          ),
+                              (route) => false,
+                        );
+                      },
+                      child: Text('Login as National'),
+                    ),
+                  )
+                      : const SizedBox(),
                   Padding(
-                    padding: const EdgeInsets.only(top: 100),
+                    padding: EdgeInsets.only(top: screenHeight/15),
                     child: Container(
                       width: 250,
                       child: RichText(
@@ -338,13 +344,15 @@ class _LoginViewState extends State<LoginView> {
                           children: <TextSpan>[
                             TextSpan(text: 'Having Troubles Logging in?'),
                             TextSpan(
-                                text: ' Contact the Developers: ',
-                                style: TextStyle(fontWeight: FontWeight.w700)),
+                              text: ' Contact the Developers: ',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
                             TextSpan(
-                                text: 'hanapp.sp@gmail.com',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                )),
+                              text: 'hanapp.sp@gmail.com',
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
                           ],
                         ),
                       ),
