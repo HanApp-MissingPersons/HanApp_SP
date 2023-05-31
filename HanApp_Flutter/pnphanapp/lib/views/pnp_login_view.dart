@@ -14,11 +14,22 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  late final TextEditingController _email;
+  late final TextEditingController _password;
+
+  @override
+  void initState() {
+    super.initState();
+    _email = TextEditingController();
+    _password = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF8F8F8),
       body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
         padding: EdgeInsets.all(MediaQuery.of(context).size.height * 0.1),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -48,7 +59,7 @@ class _LoginViewState extends State<LoginView> {
                       //EMAIL
                       width: 360,
                       child: TextFormField(
-                        //controller: _email,
+                        controller: _email,
                         autocorrect: false,
                         enableSuggestions: false,
                         keyboardType: TextInputType.emailAddress,
@@ -70,29 +81,29 @@ class _LoginViewState extends State<LoginView> {
                     //PASSWORD
                     width: 360,
                     child: TextFormField(
-                      //controller: _password,
-                      //obscureText: _obscured,
+                      controller: _password,
+                      obscureText: true,
                       decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.lock_outline_rounded),
-                          labelText: 'Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                          ),
-                          // this button is used to toggle the password visibility
-                          // CHANGE INTO ICON BUTTON ...
-                          suffixIcon: Icon(Icons.visibility_outlined)
-                          //IconButton(icon: Icons.visibility_outlined, onPressed: null,),
-                          // if the password is obscured, show the visibility icon
-                          // if the password is not obscured, show the visibility_off icon
-                          //    icon: Icon(_obscured
-                          //        ? Icons.visibility_outlined
-                          //        : Icons.visibility_off_outlined),
-                          //onPressed: () {
-                          //  setState(() {
-                          //    _obscured = !_obscured;
-                          //  });
-                          //})
-                          ),
+                        prefixIcon: Icon(Icons.lock_outline_rounded),
+                        labelText: 'Password',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                        ),
+                        // this button is used to toggle the password visibility
+                        // CHANGE INTO ICON BUTTON ...
+                        // suffixIcon: Icon(Icons.visibility_outlined)
+                        //IconButton(icon: Icons.visibility_outlined, onPressed: null,),
+                        // if the password is obscured, show the visibility icon
+                        // if the password is not obscured, show the visibility_off icon
+                        //    icon: Icon(_obscured
+                        //        ? Icons.visibility_outlined
+                        //        : Icons.visibility_off_outlined),
+                        //onPressed: () {
+                        //  setState(() {
+                        //    _obscured = !_obscured;
+                        //  });
+                        //})
+                      ),
                     ),
                   ),
                   Padding(
@@ -109,8 +120,87 @@ class _LoginViewState extends State<LoginView> {
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ))),
-                        onPressed: () {
-                          const NavRailView();
+                        onPressed: () async {
+                          try {
+                            print('email text: ${_email.text}');
+                            print('PW text: ${_password.text}');
+                            if (_email.text.isNotEmpty &&
+                                _password.text.isNotEmpty) {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: _email.text,
+                                      password: _password.text);
+                              if (mounted) {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const NavRailView()),
+                                    (route) => false);
+                              }
+                              print('done navigating');
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('Fields cannot be empty!')));
+                            }
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == 'user-not-found') {
+                              if (kDebugMode) {
+                                print('User not found!');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('User not found!')));
+                            } else if (e.code == 'wrong-password') {
+                              if (kDebugMode) {
+                                print('Wrong Password');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Wrong password!')));
+                            } else if (e.code == 'invalid-email') {
+                              if (kDebugMode) {
+                                print('Invalid Email Format');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text('Invalid Email Format!')));
+                            } else if (e.code == 'user-disabled') {
+                              if (kDebugMode) {
+                                print('User has been disabled');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'User account has been disabled')));
+                            } else if (e.code == 'too-many-requests') {
+                              if (kDebugMode) {
+                                print(
+                                    'Too many requests, please try again later');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Too many requests, please try again later')));
+                            } else if (e.code == 'network-request-failed') {
+                              if (kDebugMode) {
+                                print('Not Connected to the internet');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Connection failed, check your internet connection')));
+                            } else {
+                              if (kDebugMode) {
+                                print('Unknown Error');
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('Oops! Something went wrong')));
+                            }
+                          }
                         },
                         child: Text(
                           'Login',
