@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,6 +29,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+    DatabaseReference mainUserRef = FirebaseDatabase.instance.ref('Main Users');
 
     return Scaffold(
       backgroundColor: Color(0xFFF8F8F8),
@@ -35,20 +37,22 @@ class _LoginViewState extends State<LoginView> {
         scrollDirection: Axis.vertical,
         padding: EdgeInsets.all(screenHeight * 0.1),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            screenWidth > 600
+            screenWidth > 1000
                 ? Expanded(
-              child: Image.asset(
-                'assets/images/pnpLogin.png',
-                height: screenHeight * 0.8,
-              ),
-            )
+                    child: Image.asset(
+                      'assets/images/pnpLogin.png',
+                      height: screenHeight * 0.8,
+                    ),
+                  )
                 : SizedBox(),
             Padding(
               padding: EdgeInsets.only(
-                  top: 15, left: screenWidth > 600 ? screenHeight / 20 : 0, right: screenWidth/10),
+                  top: 15,
+                  left: screenWidth > 600 ? screenHeight / 20 : 0,
+                  right: screenWidth / 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -106,10 +110,10 @@ class _LoginViewState extends State<LoginView> {
                       width: screenWidth > 600 ? 360.0 : screenWidth * 0.8,
                       child: ElevatedButton(
                         style: ButtonStyle(
-                          backgroundColor:
-                          MaterialStateProperty.all<Color>(Color(0xFF6B53FD)),
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color(0xFF6B53FD)),
                           shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -119,19 +123,44 @@ class _LoginViewState extends State<LoginView> {
                           try {
                             if (_email.text.isNotEmpty &&
                                 _password.text.isNotEmpty) {
-                              await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                email: _email.text,
-                                password: _password.text,
-                              );
-                              if (mounted) {
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                    builder: (context) => const NavRailView(),
-                                  ),
+                              bool isUserPNP = true;
+                              mainUserRef.onValue.listen((event) async {
+                                var usersData = Map<String, dynamic>.from(event
+                                    .snapshot.value as Map<dynamic, dynamic>);
+                                for (var value in usersData.values) {
+                                  if (_email.text.toString() ==
+                                      value['email'].toString()) {
+                                    isUserPNP = false;
+                                  }
+                                }
+                                if (isUserPNP) {
+                                  print('[FOUND] USER IS PNP');
+
+                                  await FirebaseAuth.instance
+                                      .signInWithEmailAndPassword(
+                                    email: _email.text,
+                                    password: _password.text,
+                                  );
+
+                                  if (mounted) {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const NavRailView(),
+                                      ),
                                       (route) => false,
-                                );
-                              }
+                                    );
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'PNP Account error. Contact the developers for assistance.'),
+                                    ),
+                                  );
+                                }
+                                // end of conditional logging in
+                              });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -173,16 +202,19 @@ class _LoginViewState extends State<LoginView> {
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('User account has been disabled'),
+                                  content:
+                                      Text('User account has been disabled'),
                                 ),
                               );
                             } else if (e.code == 'too-many-requests') {
                               if (kDebugMode) {
-                                print('Too many requests, please try again later');
+                                print(
+                                    'Too many requests, please try again later');
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Too many requests, please try again later'),
+                                  content: Text(
+                                      'Too many requests, please try again later'),
                                 ),
                               );
                             } else if (e.code == 'network-request-failed') {
@@ -191,7 +223,8 @@ class _LoginViewState extends State<LoginView> {
                               }
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Connection failed, check your internet connection'),
+                                  content: Text(
+                                      'Connection failed, check your internet connection'),
                                 ),
                               );
                             } else {
@@ -221,120 +254,127 @@ class _LoginViewState extends State<LoginView> {
                     onPressed: null,
                     child: Text(
                       'Forgot Password?',
-                      style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
+                      style:
+                          GoogleFonts.inter(fontSize: 12, color: Colors.black),
                     ),
                   ),
                   kDebugMode
                       ? TextButton(
-                    onPressed: () {
-                      // navigate to registerView
-                      if (kDebugMode) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const RegisterView(),
+                          onPressed: () {
+                            // navigate to registerView
+                            if (kDebugMode) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterView(),
+                                ),
+                              );
+                            } else {
+                              // snackbar to tell user to contact developers
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Not in debug mode, contact developers.'),
+                                ),
+                              );
+                            }
+                          },
+                          child: Text(
+                            'Register (for testing only)',
+                            style: GoogleFonts.inter(
+                                fontSize: 12, color: Colors.black),
                           ),
-                        );
-                      } else {
-                        // snackbar to tell user to contact developers
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Not in debug mode, contact developers.'),
-                          ),
-                        );
-                      }
-                    },
-                    child: Text(
-                      'Register (for testing only)',
-                      style: GoogleFonts.inter(fontSize: 12, color: Colors.black),
-                    ),
-                  )
+                        )
                       : const SizedBox(),
                   kDebugMode
                       ? Container(
-                    margin: const EdgeInsets.all(5),
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: 'miagao_hanapp@gmail.com',
-                          password: 'abc123',
-                        );
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => const NavRailView(),
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                email: 'miagao_hanapp@gmail.com',
+                                password: 'abc123',
+                              );
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) => const NavRailView(),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                            child: Text('Login as Miagao'),
                           ),
-                              (route) => false,
-                        );
-                      },
-                      child: Text('Login as Miagao'),
-                    ),
-                  )
+                        )
                       : const SizedBox(),
                   kDebugMode
                       ? Container(
-                    margin: const EdgeInsets.all(5),
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: 'sanjoaqin_hanapp@gmail.com',
-                          password: 'abc123',
-                        );
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => const NavRailView(),
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                email: 'sanjoaqin_hanapp@gmail.com',
+                                password: 'abc123',
+                              );
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) => const NavRailView(),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                            child: Text('Login as San Joaqin'),
                           ),
-                              (route) => false,
-                        );
-                      },
-                      child: Text('Login as San Joaqin'),
-                    ),
-                  )
+                        )
                       : const SizedBox(),
                   kDebugMode
                       ? Container(
-                    margin: const EdgeInsets.all(5),
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: 'jaro_hanapp@gmail.com',
-                          password: 'abc123',
-                        );
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => const NavRailView(),
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                email: 'jaro_hanapp@gmail.com',
+                                password: 'abc123',
+                              );
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) => const NavRailView(),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                            child: Text('Login as Jaro'),
                           ),
-                              (route) => false,
-                        );
-                      },
-                      child: Text('Login as Jaro'),
-                    ),
-                  )
+                        )
                       : const SizedBox(),
                   kDebugMode
                       ? Container(
-                    margin: const EdgeInsets.all(5),
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: 'national_hanapp@gmail.com',
-                          password: 'abc123',
-                        );
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => const NavRailView(),
+                          margin: const EdgeInsets.all(5),
+                          width: 200,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                email: 'national_hanapp@gmail.com',
+                                password: 'abc123',
+                              );
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                  builder: (context) => const NavRailView(),
+                                ),
+                                (route) => false,
+                              );
+                            },
+                            child: Text('Login as National'),
                           ),
-                              (route) => false,
-                        );
-                      },
-                      child: Text('Login as National'),
-                    ),
-                  )
+                        )
                       : const SizedBox(),
                   Padding(
-                    padding: EdgeInsets.only(top: screenHeight/15),
+                    padding: EdgeInsets.only(top: screenHeight / 15),
                     child: Container(
                       width: 250,
                       child: RichText(
