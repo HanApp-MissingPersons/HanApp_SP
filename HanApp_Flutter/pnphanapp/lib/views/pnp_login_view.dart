@@ -167,6 +167,7 @@ class _LoginViewState extends State<LoginView> {
                                   content: Text('Fields cannot be empty!'),
                                 ),
                               );
+                              setState(() {});
                             }
                           } on FirebaseAuthException catch (e) {
                             if (e.code == 'user-not-found') {
@@ -236,7 +237,9 @@ class _LoginViewState extends State<LoginView> {
                                   content: Text('Oops! Something went wrong'),
                                 ),
                               );
+                              setState(() {});
                             }
+                            setState(() {});
                           }
                         },
                         child: Text(
