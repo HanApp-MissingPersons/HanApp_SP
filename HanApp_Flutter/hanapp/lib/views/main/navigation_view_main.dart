@@ -76,11 +76,11 @@ class _NavigationFieldState extends State<NavigationField> {
     Future.delayed(const Duration(seconds: 1)).then((value) async {
       serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        print('no sir no sir');
+        // print('no sir no sir');
         continuallyCheckLocationService();
       } else {
         setState(() {});
-        print('yes sir yes sir');
+        // print('yes sir yes sir');
         await _fetchData();
       }
     });
@@ -201,7 +201,7 @@ class _NavigationFieldState extends State<NavigationField> {
           print('[LOC LOC LOC] HAS BEEN ENABLED!');
         }
       });
-      if (currentLocation != null) {
+      if (currentLocation != null && mounted) {
         _locationSubscription =
             location.onLocationChanged.listen((newLocation) {
           setState(() {
