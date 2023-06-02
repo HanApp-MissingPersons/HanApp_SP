@@ -27,9 +27,11 @@ From the identified features, a rough design of how each feature would look like
 
 \textbf{Testing and Integration}
 
-During and after the development of each feature, the feature is user-tested in order to ensure that the features work as intended and any bugs are immediately fixed. For features that rely on previous features to work (i.e. user account creation must work before user login), extensive user testing was done to confirm that the integration between each feature worked as intended. 
+\textbf{Alpha Testing and Feature Integration.} During and after the development of each feature, the feature is user-tested in order to ensure that the features work as intended and any bugs are immediately fixed. For features that rely on previous features to work (i.e. user account creation must work before user login), extensive user testing was done to confirm that the integration between each feature worked as intended. 
 
-Due to both time and technical constraints, testing was done solely by user testing rather than written and automated tests. Once the current feature and its prerequisite features have been tested, the development of the next feature would commence.
+\textbf{User Tests.} Due to both time and technical constraints, testing was done solely by user testing rather than written and automated tests. Once the current feature and its prerequisite features have been tested, the development of the next feature would commence.
+
+\textbf{Beta Testing.} Beta testing was conducted solely on the main user application by developers’ colleagues and relatives of varied ages (18, 24, 25, 30, 50, 54) to identify any remaining changes needed. Beta-testing of the PNP admin application was not possible due to time constraints, as it required to have a PNP staff (of different stations/precincts) assigned for receiving missing persons cases perform the tests. However, extensive alpha testing by developers was done to ensure that the PNP admin application was functional and intuitive.
 
 \textbf{Implementation}
 
@@ -68,7 +70,7 @@ As Firebase has a variety of products and services that it provides, such as Fir
 Google Firebase is the sole and primary backend of the application suite. User authentication, database and data storage, and usage monitoring were all done under Firebase. Since Firebase is a serverless framework, utilizing Firebase as the application suite's backend allowed for development and testing without the use of a dedicated server infrastructure. 
 
 \subsubsection{Google Maps}
-Google Maps, one of the world’s most influential applications \cite{mehta2019google}, provides multiple location services needed in the proposed application. This includes choosing the last seen location of the missing person being reported, or by integrating the maps view onto the application menu, where, users can see the location of the verified missing persons reports. 
+Google Maps, one of the world’s most influential applications \cite{mehta2019google}, provides multiple location services needed in the application. This includes choosing the last seen location of the missing person being reported, or by integrating the maps view onto the application menu, where, users can see the location of the verified missing persons reports. 
 
 \subsection{Hardware}
 \subsubsection{Android Phone}
@@ -100,6 +102,41 @@ Packages in Flutter can be reviewed and downloaded from pub.dev, the official pa
 
 \section{Application Requirements}
 
+The following sections enumerate and discuss the backend, privacy and security, user interface, functional, and UI/UX design requirements that the the application suite needs to satisfy. For the purposes of tracking and verifying each feature during development and testing, a checklist of all features was developed. Table \ref{table:reqChecklist} lists down all the requirements and whether these requirements have been developed and achieved. 
+
+% start of table
+\begin{table}[h!]
+\caption{Checklist of Requirements}
+\label{table:reqChecklist}
+%table contents
+\begin{tabular}{|ll|}
+\hline
+\multicolumn{1}{|c|}{\textbf{REQUIREMENTS}}                                                                                                                         & \multicolumn{1}{c|}{\textbf{\begin{tabular}[c]{@{}c@{}}ACCOMPLISHED\\ (Y/N)\end{tabular}}} \\ \hline
+\multicolumn{2}{|l|}{\textbf{Backend Requirements}}                                                                                                                                                                                                              \\ \hline
+\multicolumn{1}{|l|}{Serverless Architecture}                                                                                                                       &                                                                                     \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Realtime Database structure \\ for Main User and PNP profiles\end{tabular}}                                         &                                                                 {\hspace{1.75cm}}                           \\ \hline
+\multicolumn{1}{|l|}{Realtime Database structure for Reports}                                                                                                       &                                                                                          \\ \hline
+\multicolumn{1}{|l|}{Images and other media storage}                                                                                                                &                                                           {\hspace{1.75cm}}                                 \\ \hline
+\multicolumn{2}{|l|}{\textbf{Privacy Requirements}}                                                                                                                                                                          \\ \hline
+\multicolumn{1}{|l|}{User Password Encryption}                                                                                                                      &                                                                 {\hspace{1.75cm}}                           \\ \hline
+\multicolumn{1}{|l|}{Data Privacy, Collection, and Usage}                                                                                                           &                                                          {\hspace{1.75cm}}                                  \\ \hline
+\multicolumn{2}{|l|}{\textbf{User Interface Requirements}}                                                                                                                                                                                                       \\ \hline
+\multicolumn{1}{|l|}{User (or Main) Interface}                                                                                                                      &                                                             {\hspace{1.75cm}}                               \\ \hline
+\multicolumn{1}{|l|}{PNP Admin App Interface}                                                                                                                       &                                                             {\hspace{1.75cm}}                               \\ \hline
+\multicolumn{2}{|l|}{\textbf{Functional Requirements}}                                                                                                                                                                                                           \\ \hline
+\multicolumn{1}{|l|}{User Registration}                                                                                                                             &                                                               {\hspace{1.75cm}}                             \\ \hline
+\multicolumn{1}{|l|}{PNP Admin Account Creation}                                                                                                                    &                                                               {\hspace{1.75cm}}                             \\ \hline
+\multicolumn{1}{|l|}{Reporting and Receiving Updates}                                                                                                               &                                                                    {\hspace{1.75cm}}                        \\ \hline
+\multicolumn{1}{|l|}{Receive, Manage, and Verify Reports (PNP)}                                                                                                     &                                                            {\hspace{1.75cm}}                                \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Accessing PNP-Verified Reports and receiving \\ Location-based notification for PNP-verified MP cases\end{tabular}} &                                                {\hspace{1.75cm}}                                            \\ \hline
+\multicolumn{2}{|l|}{\textbf{UI/UX Design Requirements}}                                                                                                                                                                                                         \\ \hline
+\multicolumn{1}{|l|}{Application Icon Design}                                                                                                                       &                                                              {\hspace{1.75cm}}                              \\ \hline
+\multicolumn{1}{|l|}{User Interface Design}                                                                                                                         &                                                              {\hspace{1.75cm}}                              \\ \hline
+\multicolumn{1}{|l|}{User Experience Design}                                                                                                                        &                                                              {\hspace{1.75cm}}                              \\ \hline
+\end{tabular}
+\end{table}
+% end of table
+
 \subsection{Backend Requirements}
 
 Listed below is the overall structure of all connections and relationships among all data, interfaces, users, and the serverless service. 
@@ -113,19 +150,37 @@ Listed below is the overall structure of all connections and relationships among
     \label{fig:ServerlessFirebase}
 \end{figure}
 
-The overall serverless architecture of the application suite and its system is portrayed in the diagram above. Firebase, as the serverless service being utilized, serves as the storage medium for all data being utilized in all of HanApp’s interfaces. 
+The overall serverless architecture of the application suite and its system is portrayed in figure \ref{fig:ServerlessFirebase}. Firebase, as the serverless service being utilized, serves as the storage medium for all data being utilized in all of HanApp’s interfaces. 
 
 \subsubsection{Realtime Database structure for Main User and PNP profiles}
 
-Each profile type will be a node just under the root node as child nodes, namely, Main Users, and PNP Admins. 
+Each profile type will be a node just under the root node as child nodes, namely, Main Users, and PNP Accounts. 
 
-\subsubsection{Realtime Database structure for sent reports}
-As Firebase’s real-time database is structured as a tree, sent reports will be listed as child nodes of the user who sent them. This way, it will be easier to know who has filed what, and only the user who has filed an unverified report can directly see it. Once the PNP Admin interface has verified it, then that report will be displayed publicly.
+\subsubsection{Realtime Database structure for Reports}
+As Firebase’s real-time database is structured as a tree, sent reports are listed as child nodes of the user who sent them, under a more general `Report' node. This way, it will make it easier to know who has filed what, and only the user who has filed an unverified report can directly see it. Once the PNP Admin interface has verified it, then that report will be displayed publicly.
 
 \subsubsection{Images and other media storage}
 The real-time database only functions on non-media data like text, integers, and location data; therefore, images used within the application interfaces (user image, missing person image) will be stored in Firebase’s cloud storage. 
 
+\subsection{Privacy and Security Requirements}
+
+Because the application deals with sensitive information, it is critical to consider security and data privacy concerns to ensure that their data is not illegally accessed or utilized beyond the purposes of the application.
+
+\subsubsection{User Password Encryption}
+
+Passwords for users (main and PNP admin users) should be encrypted so that neither the developers nor other users may access them. 
+
+\subsubsection{Data Privacy, Collection, and Usage}
+
+Users will also be required to agree to having their information used solely for the purposes of reporting and disseminating missing persons cases. In line with this, the user will be required to agree to having their data used and by the PNP in line with their guidelines and by the application for dissemination  once verified. Moreover, the users will be informed that their data is protected under the Data Privacy Act (RA 10173).
+
+\textbf{Data collection scope}. The application will not collect information for any secondary purposes, and as such, no other information will be required from users apart from those used for logging into the account and reporting, disseminating, and viewing (verified) missing persons cases.
+
+\textbf{Location Data Anonymity.} Lastly, user location data, which is utilized for location-based notification of verified missing persons cases, will not be collected by the application to protect users’ privacy.
+
+
 \subsection{User Interface Requirements}
+
 \subsubsection{User (or Main) Interface}
 
 \begin{figure}[!h]
@@ -134,13 +189,15 @@ The real-time database only functions on non-media data like text, integers, and
     \caption{Use-Case Diagram for User (Main User Interface)}
     \label{fig:UseCaseMain}
 \end{figure}
-The User use-case diagram in Figure \ref{fig:UseCaseMain} illustrates all the possible tasks that a normal user could do within the main user application. User account creation will be done within the application itself, through Firebase Auth’s authentication service using a registered email address and password. After the user has registered and confirmed their email address, their account will be created. The main feature within the application is with the reporting of missing persons. This is done through the application by filling out a form with the details required for the missing persons report, which would then be filed towards the most logically sound police-station. Users can also receive notifications with regards to the descriptions and features of any missing persons report that have been verified by the PNP.
+The User use-case diagram in Figure \ref{fig:UseCaseMain} illustrates all the possible tasks that a normal user could do within the main user application. User account creation will be done within the application itself, through Firebase Auth’s authentication service using a registered email address and password. After the user has registered and confirmed their email address, their account will be created. 
+
+The main features of this application interface is with the reporting and viewing of missing persons cases. This is done through the application by filling out a form with the details required for the missing persons report, which would then be filed towards the most logically sound police-station. Users can also receive notifications and view information regarding  descriptions and features of any PNP-verified missing persons cases within their area.
 
 \subsubsection{PNP Admin App Interface}
 
 The PNP and PNP Admin interface use-case diagram is shown in Figure \ref{fig:UseCasePNP}. The PNP admin accounts are created in a different manner compared to the previously stated accounts. First, PNP admin accounts cannot be created through the PNP admin interface (e.g., a ``Register" option) in order to control and limit the number of admin users within a police station to only one, who can only handle missing persons reports within their vicinity. 
 
-Local police stations can request PNP admin accounts from the developers in order for it to be recognized as an ``admin" account rather than any other user account . Once a PNP admin has logged in to the PNP admin interface, he or she, as an official, can then browse and either verify or reject missing person reports filed within their jurisdiction.
+Local police stations can request PNP admin accounts from the developers in order for it to be recognized as a PNP account rather than any other user account. Once a PNP admin has logged in to the PNP admin interface, he or she, as an official, can then browse and either verify or reject missing person reports filed within their jurisdiction.
 \begin{figure}[!h]
     \centering
     \includegraphics[scale=0.5]{figures/Chapter3/Chapt3_UseCase_PNP.png}
@@ -174,7 +231,7 @@ With regards to reporting, it is of utmost importance that the report form pages
     \caption{Sequence Diagram for Reporting, Updating, and Verification of MP cases}
     \label{fig:seqDiaReport}
 \end{figure}
-As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receiving updates is very straightforward: the user (reportee) needs to fill out the MP report form, it’s received by the PNP through their PNP Admin App interface, and if the person is indeed missing (and not yet reported, or registered as already found or dead in the PNP's own Missing and Found Person Database (MFPD)), then the PNP can verify the report. If any updates are made, such as if the MP is found, it will be reflected in the user’s app soon after.
+As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receiving updates is very straightforward: the user (reportee) needs to fill out the MP report form, it’s then received by the PNP through their PNP Admin App interface, and if the person is indeed missing (and not yet reported, or registered as already found or dead in the PNP's own Missing and Found Person Database (MFPD)), then the PNP can verify the report. If any updates are made, such as if the MP is found, it will be reflected in the user’s app soon after.
 
 \begin{figure}[!h]
     \centering
@@ -182,9 +239,9 @@ As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receivi
     \caption{Entity Relationship Diagram of Main App Account Reporting to PNP Admin Account}
     \label{fig:ERDReportee}
 \end{figure}
-It’s also an important requirement that any reports made by users (reportee) are sent to the PNP Admin Account of the A/MP's last known location’s nearest PNP station, as mentioned prior. As seen in Figure \ref{fig:seqDiaReport} , many users should be able to submit MP case reports of a specific location to the PNP through the application, but they will only be routed to the PNP Admin Account registered for said location.
+It’s also an important requirement that any reports made by users (reportee) are sent to the PNP Admin Account of the A/MP's last known location’s nearest PNP station, as mentioned prior. As seen in Figure \ref{fig:seqDiaReport}, many users should be able to submit MP case reports of a specific location to the PNP through the application, but they will only be routed to the PNP Admin Account registered for said location.
 
-\subsubsection{Receive, Update, and Verify Reports}
+\subsubsection{Receive, Manage, and Verify Reports}
 
 The PNP Admin should be able to receive reports from users through the PNP Admin app. PNP Admin should also be able to put updates on the report (i.e. MP case already reported, MP reported is already found, etc.), and also verify the report to state that the MP is categorized as missing. This can also be seen in the sequence diagram in Figure \ref{fig:seqDiaReport}. 
 
@@ -209,7 +266,7 @@ HanApp's Icon design should be distinct, meaningful, and cohesive with the appli
 
 \subsubsection{User Interface Design}
 
-\textbf{Colors.}The colors used in the application should prioritize accessibility and simplicity while still providing a cohesive and pleasing aesthetic. More importantly, colors should be of high contrast in order to make the application more accessible to those with color blindness.
+\textbf{Colors.} The colors used in the application should prioritize accessibility and simplicity while still providing a cohesive and pleasing aesthetic. More importantly, colors should be of high contrast in order to make the application more accessible to those with color blindness.
 
 \textbf{Text Font.} The chosen font family for the application suite should be legible and adequately-sized for readability. The text font choice should ensure that even those with mild visual impairment may still use the app.
 
@@ -217,9 +274,10 @@ HanApp's Icon design should be distinct, meaningful, and cohesive with the appli
 
 \textbf{Layout and Spacing.} The layout of text form fields, buttons, and other visual elements should have appropriate sizes and spacing in order to minimize any user errors or confusion, and prevent the application pages from looking cramped.  
 
+\hfill\\
 \textbf{User Experience Design}
 
-\subsubsection{Application Language.} The language to be used in the application suite is English. Although the scope of operations for the application suite is the Philippines, English is the widely used language for education and business in the country and is a neutral language that allows the application to be accessible to most users. Moreover, the language used in the PNP's forms for filing and processing missing persons cases are also in English. More importantly, the language used in the application should be simple and straightforward in order to cater to more users regardless of educational background or cognitive abilities.
+\textbf{Application Language.} The language to be used in the application suite is English. Although the scope of operations for the application suite is the Philippines, English is the widely used language for education and business in the country and is a neutral language that allows the application to be accessible to most users. Moreover, the language used in the PNP's forms for filing and processing missing persons cases are also in English. More importantly, the language used in the application should be simple and straightforward in order to cater to more users regardless of educational background or cognitive abilities.
 
-\subsubsection{Report Form Design and Validation}
+\textbf{Report Form Design and Validation.} 
 The report forms are a major part of the application, and it is imperative that the forms are  straightforward and intuitive. As such, there should be careful and deliberate planning on the use of radio buttons, checkboxes, date pickers, text form fields, and other user input elements to ensure that filling of reports is not only easier but also minimizes user input error. Lastly, there should be validation checks to ensure that all information required by the PNP are provided completely and correctly by the reportee.
