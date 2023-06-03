@@ -74,7 +74,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
   // static const String _authorization_PNP_upload =
   //     '“I hereby provide my consent and authorize the PNP to record and upload the information and photograph of the absent/missing person”. See full authorization text here (link).';
   static const String _hanapp_upload =
-      '“I hereby provide my consent to have the information and photograph of the absent/missing person to be posted in HanApp’s “Missing Persons Near Me” page once the report is verified by the PNP”.';
+      'I hereby provide my consent to have the information and photograph of the absent/missing person to be posted in HanApp’s “Missing Persons Near Me” page once the report is verified by the PNP.';
   // static const String _dataPrivacy =
   //     '"I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case." See full Data Privacy Act text here (link).';
 
@@ -407,7 +407,7 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                             text: TextSpan(children: [
                               const TextSpan(
                                 text:
-                                    '"I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case." For more details, see ',
+                                    'I hereby provide my consent to the processing of my personal data in accordance with the Data Privacy Act of 2012, and acknowledge that the information provided will only be used for the purposes of the the absent/missing persons case. For more details, see ',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 14,

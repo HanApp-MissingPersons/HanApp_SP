@@ -81,6 +81,7 @@ class _NotificationMain extends State<NotificationMain> {
     return SingleChildScrollView(
       physics: NeverScrollableScrollPhysics(),
       child: Container(
+          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.06),
           width: MediaQuery.of(context).size.width * 0.85,
           //padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
           child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
@@ -131,7 +132,7 @@ class _NotificationMain extends State<NotificationMain> {
                           Container(
                             height: MediaQuery.of(context).size.height * 0.70,
                             width: MediaQuery.of(context).size.width * 0.9,
-                            margin: const EdgeInsets.only(top: 30.0),
+                            margin: const EdgeInsets.only(top: 10.0),
                             child: ListView.builder(
                               itemCount: widget.reports.length,
                               itemBuilder: (context, index) {
@@ -361,7 +362,7 @@ class _NotificationMain extends State<NotificationMain> {
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  5,
+                                                  6,
                                               child: Visibility(
                                                 visible: minor ||
                                                     crime ||
@@ -388,32 +389,7 @@ class _NotificationMain extends State<NotificationMain> {
                                                         child: const Text(
                                                           'Victim of Crime',
                                                           style: TextStyle(
-                                                              fontSize: 10,
-                                                              color:
-                                                                  Colors.white),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Visibility(
-                                                      visible: over24hours,
-                                                      child: Container(
-                                                        margin: EdgeInsets.only(
-                                                            right: 5, top: 5),
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8),
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                            color:
-                                                                Colors.green),
-                                                        //Retrieve the status here
-                                                        child: const Text(
-                                                          '> 24 Hours',
-                                                          style: TextStyle(
-                                                              fontSize: 10,
+                                                              fontSize: 9,
                                                               color:
                                                                   Colors.white),
                                                         ),
@@ -438,7 +414,31 @@ class _NotificationMain extends State<NotificationMain> {
                                                         child: const Text(
                                                           'Victim of Calamity',
                                                           style: TextStyle(
-                                                              fontSize: 10,
+                                                              fontSize: 9,
+                                                              color:
+                                                                  Colors.white),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Visibility(
+                                                      visible: over24hours,
+                                                      child: Container(
+                                                        margin: EdgeInsets.only(top: 5),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15),
+                                                            color:
+                                                                Colors.green),
+                                                        //Retrieve the status here
+                                                        child: const Text(
+                                                          '> 24 Hours',
+                                                          style: TextStyle(
+                                                              fontSize: 9,
                                                               color:
                                                                   Colors.white),
                                                         ),
@@ -463,7 +463,7 @@ class _NotificationMain extends State<NotificationMain> {
                                                         child: const Text(
                                                           'Minor',
                                                           style: TextStyle(
-                                                              fontSize: 10,
+                                                              fontSize: 9,
                                                               color:
                                                                   Colors.white),
                                                         ),
