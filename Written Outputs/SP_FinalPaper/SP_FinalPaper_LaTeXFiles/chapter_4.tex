@@ -1,5 +1,5 @@
 %   Filename    : chapter_4.tex 
-\chapter{Results}
+\chapter{Results and Discussions}
 %\This chapter presents the results or the system of your SP. Include screenshots, tables, or graphs and provide the discussion of results.
 This chapter presents the results of the study, specifically the HanApp application suite's various interfaces and screens, features, and backend framework implementation. As such, the figures shown herein are screenshots of HanApp's release build interfaces as well as the backend framework, particularly Firebase.
 
@@ -10,12 +10,6 @@ The PNP Admin interface focuses on the managing and administrative side of the a
 
 Figure \ref{fig:PNP1} Login page of the PNP-side app will authenticate the user to enforce access in the reports management system of the missing persons. Input fields are provided for username and password for PNP’s credentials. When the PNP Admin user is having troubles with regards to authentication or registration, they would need to contact the developers directly, either to get an admin account for their respective PNP outpost, or to reset the password of their corresponding admin accounts. 
 
-\subsubsection{PNP Account Locations}
-
-For the proof of concept, four hard-coded PNP accounts, namely; PNP Miagao, PNP San Joaqin, PNP Jaro, and the National PNP were created by the developers directly through Firebase console's Authentication page. These accounts have the corresponding location (their "location data") of the PNP outposts in their locality (i.e. PNP San Joaqin account has the location of San Joaqin PNP outpost). 
-
-The PNP location data are utilized to filter out where the reports, based on their MP's last seen location, should be filtering to. However, it's important to note that the National PNP account will receive all reports regardless of distance, this is in order to cater to the reports filed outside of the vicinity of the Miagao, San Joaqin, and  Jaro PNP accounts.
-
 \begin{figure}[!h]
     \centering
     \includegraphics[scale=0.25]{figures/Chapter4/PNP/Login.png}
@@ -23,9 +17,15 @@ The PNP location data are utilized to filter out where the reports, based on the
     \label{fig:PNP1}
 \end{figure}
 
+\subsubsection{PNP Account Locations}
+
+For the proof of concept, four hard-coded PNP accounts, namely; PNP Miagao, PNP San Joaqin, PNP Jaro, and the National PNP were created by the developers directly through Firebase console's Authentication page. These accounts have the corresponding location (their ``location data") of the PNP outposts in their locality (i.e. PNP San Joaqin account has the location of San Joaqin PNP outpost). 
+
+The PNP location data are utilized to filter out where the reports, based on their MP's last seen location, should be filtering to. However, it's important to note that the National PNP account will receive all reports regardless of distance, this is in order to cater to the reports filed outside of the vicinity of the Miagao, San Joaqin, and  Jaro PNP accounts.
+
 \begin{figure}[!h]
     \centering
-    \includegraphics[scale=0.25]{figures/Chapter4/PNP/NavigationTab.png}
+    \includegraphics[scale=0.25]{figures/Chapter4/PNP/Pending.png}
     \caption{Admin Reports Management Suite View}
     \label{fig:PNP2}
 \end{figure}
@@ -37,14 +37,9 @@ Figure \ref{fig:PNP2} is the management suite for the PNP to access reports. The
     \centering
     \begin{subfigure}[c]{1\linewidth}
         \centering
-        \includegraphics[scale=0.25]{figures/Chapter4/PNP/reportDetails-1.png}
+        \includegraphics[scale=0.25]{figures/Chapter4/PNP/CaseView-1.png}
     \end{subfigure}
-    \centering
-    \begin{subfigure}[c]{1\linewidth}
-        \centering
-        \includegraphics[scale=0.25]{figures/Chapter4/PNP/reportDetails-2.png}
-    \end{subfigure}
-    \caption{Dialog Box of Report Details}
+    \caption{Case View of Missing Person}
     \label{fig:reportDetails}
 \end{figure}
 
@@ -55,7 +50,7 @@ The report dialog box details the list of the necessary information that the rep
 \section{User or Main Interface}
 The main interface will be subdivided into three various parts to cover all the features that was built throughout the process.
 
-\subsection{User Account Registration, Authentication, and Login}
+\subsection{User Registration, Authentication, and Login}
 Authentication is necessary for the user-side. Figures \ref{fig:userLogin} and \ref{fig:userRegister} are the Login and Register page, respectively. Input fields will be provided for the registration such as email address, full name, sex, birth date, and a numeric input field will be observed for the phone number. To ensure that the user understands the Terms and Conditions and Privacy Policy, a hyperlinked text can be used to redirect them for their perusal. Then a register button will let the user account be registered and store in the database for authentication purposes.
 \begin{figure}[!h]
     \centering
@@ -84,8 +79,6 @@ In order to validate the authentication processes, use-case testing was initiate
     \label{fig:userRegister}
 \end{figure}
 
-\subsubsection{Account Verification}
-In order to make sure that newly registered accounts are of human-origin and are legit accounts of potential users, accounts need to be authenticated first before being able to login. Figure \ref{fig:accountVerification}   illustrates the process of verification: first, after the user is registered, they will be redirected to a page where they will be given the choice to send email verification onto their newly registered email address for the application, or to redirect to the login page instead. If users select the option to send the verification email, they can then check their respective emails that ask for verification that, after clicking the link in the email, would mark their registered accounts as verified, allowing them to be able to login. If in some cases that users will opt-out of sending the verification email right after being registered, they still will be met with the same verification page if they try to login with a none email-verified account. 
 \begin{figure}[!h]
     \centering
     \begin{subfigure}[c]{0.30\linewidth}
@@ -95,16 +88,19 @@ In order to make sure that newly registered accounts are of human-origin and are
     \centering
     \begin{subfigure}[c]{0.30\linewidth}
         \centering
-        \includegraphics[scale=0.15]{figures/Chapter4/Main/Verification-4.jpg}
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/Verification-2.jpg}
     \end{subfigure}
     \centering
     \begin{subfigure}[c]{0.30\linewidth}
         \centering
-        \includegraphics[scale=0.15]{figures/Chapter4/Main/Verification-2.jpg}
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/Verification-3.jpg}
     \end{subfigure}
     \caption{Account Verification Process}
     \label{fig:accountVerification}
 \end{figure}
+
+\subsubsection{Account Verification}
+In order to make sure that newly registered accounts are of human-origin and are legit accounts of potential users, accounts need to be authenticated first before being able to login. Figure \ref{fig:accountVerification}   illustrates the process of verification: first, after the user is registered, they will be redirected to a page where they will be given the choice to send email verification onto their newly registered email address for the application, or to redirect to the login page instead. If users select the option to send the verification email, they can then check their respective emails that ask for verification that, after clicking the link in the email, would mark their registered accounts as verified, allowing them to be able to login. If in some cases that users will opt-out of sending the verification email right after being registered, they still will be met with the same verification page if they try to login with a none email-verified account. 
 
 \begin{figure}[!h]
     \centering
@@ -122,13 +118,14 @@ In order to make sure that newly registered accounts are of human-origin and are
         \label{fig:userProfile}
     \end{minipage}
 \end{figure}
-Moreover, when user authentication is completed, the login button will let them proceed to the Home page of the application where the user will have two options: Report Missing or Nearby Missing persons as shown in \ref{fig:userHome}. This will allow the user to optimally choose what course of action are they going to take on by presenting these call to action button first. A bottom navigation bar will be visible throughout the user’s interaction of the app assuring that they can easily navigate the entire features offered to them. The navigation bar will consist of five (5) sections, namely, Home, Reports, Nearby, Notifications, and Updates. Each section will be utilized to build the features of the app and functions specifically to the needs of the user. \ref{fig:userProfile} illustrates the profile page that will consist of the details about the user that was already pre-filled on the registration part. Thus, it will display: the concatenated full name of the user, email address used in account registration, birth-date, age, and lastly sex. In addition, a sign out button will also be provided in case the user decided to log out from their account.
+Moreover, when user authentication is completed, the login button will let them proceed to the Home page of the application where the user will have two options: Report Missing or Nearby Missing persons as shown in \ref{fig:userHome}. This will allow the user to optimally choose what course of action are they going to take on by presenting these call to action button first. A bottom navigation bar will be visible throughout the user’s interaction of the app assuring that they can easily navigate the entire features offered to them. The navigation bar will consist of five (5) sections, namely, Home, Reports, Nearby, Notifications, and Updates. Each section will be utilized to build the features of the app and functions specifically to the needs of the user. Figure \ref{fig:userProfile} illustrates the profile page that will consist of the details about the user that was already pre-filled on the registration part. Thus, it will display: the concatenated full name of the user, email address used in account registration, birth-date, age, and lastly sex. In addition, a sign out button will also be provided in case the user decided to log out from their account.
 
 
 \subsection{Report Pages}
 
 The Report page is one of the integral parts of this application that would allow users to give necessary information in the event of a person missing. It streamlines the reporting process done by the PNP and replicates their incident report, one that had to be done in written format in their respective outposts, so that verification is manageable \cite{NationalPoliceCommission}. Input text fields will be used throughout this page. Accompanying it with dropdown menus for categorical information such as Gender, and Blood type. Physical indicators will have mostly text/paragraph input fields for elaborations and additional details that are needed to disclose such as body marks, tattoos, and the like.
 
+\subsubsection{Report Page 1: Classifiers}
 \begin{figure}[!h]
     \centering
     \begin{minipage}[c]{0.50\linewidth}
@@ -139,9 +136,10 @@ The Report page is one of the integral parts of this application that would allo
     \end{minipage}
 \end{figure}
 
-\subsubsection{Report Page 1: Classifiers}
-
 On the first page of the reports section as seen in figure \ref{fig:p1}, the categorization of the missing person being reported is located. The reporting user will be met with checkboxes indicating that their person being reported is (1) a person missing due to natural calamities, (2) a person under the age of 18, and is therefore classified as a minor, (3) a person that has been missing for over 24 hours already, or lastly, (4) a person that is a victim of a crime such as, but not limited to, kidnapping, human trafficking, etc.
+
+\subsubsection{Report Page 2: Reportee Details}
+
 \begin{figure}[!h]
     \centering
     \begin{subfigure}[c]{0.30\linewidth}
@@ -161,13 +159,11 @@ On the first page of the reports section as seen in figure \ref{fig:p1}, the cat
     \caption{Report Form Page 2}
     \label{fig:ReportPage2}
 \end{figure}
-\subsubsection{Report Page 2: Reportee Details}
 
 On the second page of the reports page, as seen in figure \ref{fig:ReportPage2}, the reportee will be asked to fill out required information about them. This includes the reportee's relationship to the missing person, contact information, address, citizenship, and the proofs of identity through a picture of his/her identification card (ID), and a selfie. The selfie serves as a secondary authentication measure in lieu of reporting remotely rather than in person, and also allows the PNP to verify if the user's face matches that of the photo in their submitted ID. The reportee's basic information such as name, birth-date, age, and sex are no longer required to be re-entered since they are now already found in the user's profile. 
 
 \subsubsection{Report Page 3: Absent/Missing Person Details}
 
-The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, requires the necessary information about the reported missing person such as their name, birth-date, sex, address, and contact information. It's important to note the specific usage of the term "Absent/Missing Person" as it is the same term used in PNP's required forms when handling missing persons cases, specifically "Annex C: Checklist for Absent/Missing Person".
 \begin{figure}[!h]
     \centering
     \begin{subfigure}[c]{0.30\linewidth}
@@ -177,56 +173,44 @@ The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, 
     \centering
     \begin{subfigure}[c]{0.30\linewidth}
         \centering
-        \includegraphics[scale=0.15]{figures/Chapter4/Main/p3-2.jpg}
-    \end{subfigure}
-    \centering
-    \begin{subfigure}[c]{0.30\linewidth}
-        \centering
         \includegraphics[scale=0.15]{figures/Chapter4/Main/p3-3.jpg}
     \end{subfigure}
-        \centering
+    \centering
     \begin{subfigure}[c]{0.30\linewidth}
         \centering
         \includegraphics[scale=0.15]{figures/Chapter4/Main/p3-4.jpg}
-    \end{subfigure}
-    \centering
-    \begin{subfigure}[c]{0.30\linewidth}
-        \centering
-        \includegraphics[scale=0.15]{figures/Chapter4/Main/p3-5.jpg}
     \end{subfigure}
     \caption{Report Form Page 3}
     \label{fig:ReportPage3}
 \end{figure}
 
+The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, requires the necessary information about the reported missing person such as their name, birth-date, sex, address, and contact information. It's important to note the specific usage of the term ``Absent/Missing Person" as it is the same term used in PNP's required forms when handling missing persons cases, specifically ``Annex C: Checklist for Absent/Missing Person".
+
+\subsubsection{Report Page 4: Absent/Missing Person Description}
 
 \begin{figure}[!h]
     \centering
-    \begin{subfigure}[c]{0.40\linewidth}
+    \begin{subfigure}[c]{0.30\linewidth}
         \centering
         \includegraphics[scale=0.15]{figures/Chapter4/Main/p4-1.jpg}
     \end{subfigure}
     \centering
-    \begin{subfigure}[c]{0.40\linewidth}
+    \begin{subfigure}[c]{0.30\linewidth}
         \centering
         \includegraphics[scale=0.15]{figures/Chapter4/Main/p4-2.jpg}
     \end{subfigure}
     \centering
-    \begin{subfigure}[c]{0.40\linewidth}
-        \centering
-        \includegraphics[scale=0.15]{figures/Chapter4/Main/p4-3.jpg}
-    \end{subfigure}
-        \centering
-    \begin{subfigure}[c]{0.40\linewidth}
+    \begin{subfigure}[c]{0.30\linewidth}
         \centering
         \includegraphics[scale=0.15]{figures/Chapter4/Main/p4-4.jpg}
     \end{subfigure}
     \caption{Report Form Page 4}
     \label{fig:ReportPage4}
 \end{figure}
-\subsubsection{Report Page 4: Absent/Missing Person Description}
 
 The fourth page of the reports section, seen in figure \ref{fig:ReportPage4} still focuses on the information regarding the missing person. This time, however, are information relating to things that can most likely help strangers identify the missing person such as scars, marks, tattoos, hair color, eye color, prosthetic, birth defects, last known clothing and accessories, height, weight, blood type, medications, social media accounts, and of course, the last photograph of the missing person. Dental and Fingerprint records can also be added if the reportee wants to.
 
+\subsubsection{Report Page 5: Incident Details}
 
 \begin{figure}[!h]
     \centering
@@ -247,11 +231,12 @@ The fourth page of the reports section, seen in figure \ref{fig:ReportPage4} sti
     \caption{Report Form Page 5}
     \label{fig:ReportPage5}
 \end{figure}
-\subsubsection{Report Page 5: Incident Details}
 
-The fifth page of the reports, as seen in figure \ref{fig:ReportPage5} requires information about the incident relating the disappearance of the missing person and is based on the "Narrative of the Incident" section of the PNP's Incident Report Form which is used for reporting incidents including those of missing persons cases.
+The fifth page of the reports, as seen in figure \ref{fig:ReportPage5} requires information about the incident relating the disappearance of the missing person and is based on the ``Narrative of the Incident" section of the PNP's Incident Report Form which is used for reporting incidents including those of missing persons cases.
 
 The page requires information such as the report date, which is filled in as the current date, the last seen date, where users will be asked to select the date in a calendar when the missing person was last seen, the last seen location, where the users will be prompted to pin the location the missing person was last seen in a dialog that displays a map centered at the current location of the reportee, and the incident details, where users can input further details they deem as necessary in order to aide in the finding of the missing person. 
+
+\subsubsection{Report Page 6: Confirmation and Authorization}
 
 \begin{figure}[!h]
     \centering
@@ -267,7 +252,6 @@ The page requires information such as the report date, which is filled in as the
     \caption{Report Form Page 6}
     \label{fig:ReportPage6}
 \end{figure}
-\subsubsection{Report Page 6: Confirmation and Authorization}
 
 The sixth, and the last page, as seen in figure \ref{fig:ReportPage6} asks for the confirmation and authorization of the user to finally submit the report that they have filled out. The page would require the signature of the reportee on the signature pad provided citing that, by signing the report, they agree to have the information submitted published and adhere to the rules and responsibilities that come with them submitting the report to the PNP interface for verification. After which, the users can then submit the form to PNP.
 
@@ -275,19 +259,65 @@ The sixth, and the last page, as seen in figure \ref{fig:ReportPage6} asks for t
 
 \begin{figure}[!h]
     \centering
-    \begin{subfigure}[c]{0.30\linewidth}
+    \begin{subfigure}[c]{0.40\linewidth}
         \centering
-        \includegraphics[scale=0.15]{figures/Chapter4/Main/Nearby-3.jpg}
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/Nearby-1.jpg}
     \end{subfigure}
     \centering
-    \begin{subfigure}[c]{0.30\linewidth}
+    \begin{subfigure}[c]{0.40\linewidth}
         \centering
         \includegraphics[scale=0.15]{figures/Chapter4/Main/Nearby-2.jpg}
     \end{subfigure}
     \caption{Missing Persons and User Location in Nearby}
     \label{fig:userTracking}
 \end{figure}
-Figure \ref{fig:userTracking} is the interface of tracking missing persons near the user. A location marker will guide the current or last seen whereabouts of a missing person. Only the verified reports that was identified by the PNP through their reports management suite will only be shown. This will allow reports to be validated thoroughly on their end. Apart from that, the user has the liberty to navigate the map, may it be street view or city-wide view by pinching the screen. Also, users can zoom in and zoom out depending on their preference. Landmarks and familiar streets will be shown to guide the users easily on the whereabouts of the missing person. Considering, for example, that a 5-km radius will be visible, it will then encircle the last place the MP was seen. Another thing that the application also wants to note is how the user can tap on the MPs icon to see the details of descriptions pertaining to the individual. Importantly, there is an additional feature that permits the user to find the nearest route going to the last seen location of the missing person by clicking the 'right turn' icon that will redirect them to Google Maps app, given that they have it on their phone installed. Through all of this, it will enable a swift identification of the person and give the authorities a leeway to make necessary course of action to find these reported missing persons.
+Figure \ref{fig:userTracking} is the interface of tracking missing persons near the user. A location marker will guide the current or last seen whereabouts of a missing person. Only the verified reports that was identified by the PNP through their reports management suite will only be shown. This will allow reports to be validated thoroughly on their end. Apart from that, the user has the liberty to navigate the map, may it be street view or city-wide view by pinching the screen. Also, users can zoom in and zoom out depending on their preference. Landmarks and familiar streets will be shown to guide the users easily on the whereabouts of the missing person. Considering, for example, that a 5-km radius will be visible, it will then encircle the last place the MP was seen.
+
+Another thing that the application also wants to note is how the user can tap on the MPs icon to see the details of descriptions pertaining to the individual. Importantly, there is an additional feature that permits the user to find the nearest route going to the last seen location of the missing person by clicking the 'right turn' icon that will redirect them to Google Maps app, given that they have it on their phone installed. Through all of this, it will enable a swift identification of the person and give the authorities a leeway to make necessary course of action to find these reported missing persons.
+
+\begin{figure}[!h]
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/NearbyMP-1.jpg}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/NearbyMP-2.jpg}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/NearbyMP-3.jpg}
+    \end{subfigure}
+    \caption{Missing Person Details in Nearby}
+    \label{fig:notifications}
+\end{figure}
+
+\subsection{Notifications Page}
+
+\begin{figure}[!h]
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/Notifications-1.jpg}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/Notifications-2.jpg}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/Nearby-1.jpg}
+    \end{subfigure}
+    \caption{Navigating Notifications Page to Nearby}
+    \label{fig:notifications}
+\end{figure}
+
+Figure \ref{fig:notifications} illustrates the verified reports by the PNP as shown in \ref{fig:NavRail}. This would allow an easy access to information regarding the missing person in real-time. Not only that, but the user will be alerted by a missing person through the notifications icon red dot in the bottom navigation bar. The each notification will be redirected to the nearby page which gives the user the missing persons' vicinity of their last seen location in the maps.  
 
 \subsection{Updates Page}
 
@@ -330,7 +360,7 @@ Figure \ref{fig:userReportStatus} demonstrates how the user can visibly see the 
 
 \subsection{Application Suite Logo}
 
-The HanApp logo, as seen in Figure \ref{fig:hanappLogo}, is an indigo-colored logo of two horizontally-oriented hands whose thumbs meet in between and form an "eye", and with the fingers forming "speed lines". The two hands in the logo have various meanings: (1) connecting the PNP and the reporter, (2) connecting the reporter to the general community, and (3) the missing person reuniting with the reporter, whereas the eye in the middle imply that the application is about looking for missing persons. Moreover, the "speed lines" formed by the fingers help imply that the application makes the process of reporting, verifying, disseminating, and resolving missing persons cases faster. 
+The HanApp logo, as seen in Figure \ref{fig:hanappLogo}, is an indigo-colored logo of two horizontally-oriented hands whose thumbs meet in between and form an ``eye", and with the fingers forming ``speed lines". The two hands in the logo have various meanings: (1) connecting the PNP and the reporter, (2) connecting the reporter to the general community, and (3) the missing person reuniting with the reporter, whereas the eye in the middle imply that the application is about looking for missing persons. Moreover, the ``speed lines" formed by the fingers help imply that the application makes the process of reporting, verifying, disseminating, and resolving missing persons cases faster. 
 
 As such, HanApp logo meets the application logo requirement such that it is distinct, meaningful, and cohesive with the HanApp's UI/UX design and color theme.
 \begin{figure}[!h]
@@ -338,7 +368,7 @@ As such, HanApp logo meets the application logo requirement such that it is dist
     \begin{minipage}[c]{0.50\linewidth}
         \centering
         \includegraphics[scale=0.15]{figures/hanappLogo.png}
-        \caption{Report Form Page 1}
+        \caption{HanApp Application Logo}
         \label{fig:hanappLogo}
     \end{minipage}
 \end{figure}
@@ -371,7 +401,7 @@ As seen in Figure \ref{fig:firebaseAuth}, user accounts are stored in Firebase's
 \end{figure}
 \subsection{Realtime Database (RTDB) for User Data and Reports}
 
-All user data (for main and PNP accounts) and their reports are stored in the RTDB as seen in Figure \ref{fig:firebaseRTDB}. There are three main "nodes" storing the Main Users user data, PNP Accounts user data, and Reports data. The Reports node stores and organizes all reports that have been submitted through the application under each user.
+All user data (for main and PNP accounts) and their reports are stored in the RTDB as seen in Figure \ref{fig:firebaseRTDB}. There are three main ``nodes" storing the Main Users user data, PNP Accounts user data, and Reports data. The Reports node stores and organizes all reports that have been submitted through the application under each user.
 \begin{figure}[!h]
     \centering
     \begin{minipage}[c]{1\linewidth}
@@ -383,7 +413,7 @@ All user data (for main and PNP accounts) and their reports are stored in the RT
 \end{figure}
 \subsubsection{Firebase Storage for Images Submitted in Reports}
 
-Figure \ref{fig:firebaseStorage} contains all the images submitted in the reports including the reportee's signature. As seen in the header address line, images are organized under a "Reports" node, under each "User" node, and under each "Report Number" node. This setup allows for a more organized way of storing images submitted for easier retrieval.
+Figure \ref{fig:firebaseStorage} contains all the images submitted in the reports including the reportee's signature. As seen in the header address line, images are organized under a ``Reports" node, under each ``User" node, and under each ``Report Number" node. This setup allows for a more organized way of storing images submitted for easier retrieval.
 \begin{figure}[!h]
     \centering
     \begin{minipage}[c]{1\linewidth}
@@ -393,3 +423,105 @@ Figure \ref{fig:firebaseStorage} contains all the images submitted in the report
         \label{fig:firebaseStorage}
     \end{minipage}
 \end{figure}
+\section{Data Privacy and Security Measures}
+
+\subsection{Password Security}
+
+As seen in Figure \ref{fig:passwordHash}, in the Firebase Authentication Console, the password for each user is not displayed, only their email (as Identifier), the account the date was created and last signed in, and their unique Firebase UID. 
+
+Moreover, Firebase Authentication uses hash scripts to encrypt password to avoid encrypted password data from being used even when spoofed in unsafe networks.
+%TODO: insert screenshot of firebase authentication, showing that passwords are encrypted
+
+\begin{figure}[!h]
+    \centering
+    \begin{minipage}[c]{1\linewidth}
+        \centering
+        \includegraphics[scale=0.25]{figures/Chapter4/Firebase/passwordHash.png}
+        \caption{Firebase Storage}
+        \label{fig:passwordHash}
+    \end{minipage}
+\end{figure}
+
+\subsection{Data Privacy, Collection, and Usage}
+
+\subsubsection{Data Scope}
+
+To limit data privacy issues, the HanApp application suite only collects and stores information from users that pertain to account management (signing up, logging in), and reporting (reportee, absent/missing person, and incident information) and dissemination of missing persons cases. Furthermore, all the data required in the missing persons report form are the same information required by the PNP guidelines on missing persons cases, except for the reportee ID and selfie photograph which were included in lieu of  reporting and presenting their ID in-person.
+
+\subsubsection{User Agreements on Report Data}
+
+Prior to submitting a missing persons report, users are informed that by affixing their signature to the report, they:
+\begin{itemize}
+    \item Certify to the correctness of information being submitted
+    \item Consent and authorize the PNP to record and upload the information and photograph (most recent photo of the absent/missing person) to the Missing Person Website
+    \item Consent to have the aforementioned information posted in HanApp's ``Nearby Missing Persons" page once the report is verified by the PNP
+    \item Consent to the processing of their personal data in accordance with the Data Privacy Act of 2012, and acknowledge that their information will only be used for the purposes of the absent/missing persons case.
+\end{itemize}
+
+This is shown in the Confirmation and Authorization page of the Report Form, as seen in Figure \ref{fig:ReportPage6}. The users are also provided a link to official government websites containing the PNP Memorandum Circular 2016-033 and the Data Privacy Act of 2012 for their perusal.
+
+
+\subsubsection{Location Data Usage and Anonymity}
+
+The only location data being stored are the last seen location of the absent/missing person as they are required for the verification and dissemination of reports. Users' current location data will be read by the application for the purpose of location-based notifications for PNP-verified missing persons reports near the user's location. However, this data is not collected or stored in the HanApp's backend database. 
+
+
+\section{Limitations and Issues}
+
+This section discusses the technological and resource limitations and issues encountered during the application suite’s development, testing, and implementation. It is crucial to note that, while these do not hinder the application suite from working nor prevent it from meeting its requirements, they do have an impact on the quality of service provided by HanApp's system prototype. 
+
+\subsection{Geocoding Limitations}
+
+This is with regards to the Report form’s “last known location selector” in the main user application. As shown earlier, the user is prompted to select the last known location by pinning it on a map, this then retrieves the latitude and longitude of the pinned location. The Flutter geocoding package is then used to handle the Google Geocoding API to retrieve information from Google Maps in order to perform reverse geocoding which is the process of fetching the address based on the latitude and longitude provided. 
+
+The main issue with this is that the address retrieved from geocoding may sometimes be incomplete or inaccurate. For example, the geocoding API retrieves “locality” and “sublocality” information. While the locality, which should be the city or town address, is retrieved accurately, the sublocality, which should be the barangay, returns either the barangay or the district depending on what is registered as “sublocality” for that location. Additionally, the sublocality may not be registered in some circumstances and no barangay/district address is returned. 
+
+Although this issue is circumvented through the use of location snapshots (a snapshot of the pinned location in Google Maps) which allow both the PNP and users who are able to view PNP-verified reports to determine the barangay or district from the snapshot, it does affect the last known location address written on the report.
+
+\subsection{PNP Resources and Data Limitations}
+
+\subsubsection{Absence of PNP Station Directory}
+
+There is currently no comprehensive national directory that lists every police station in the country. Because of this, the address and contact information of every station must be manually searched and entered into a database. As a result, each police station’s HanApp account had its location and contact information hard-coded for testing purposes.
+
+\subsubsection{\textbf{Absence of PNP Precinct Map Data}}
+
+The PNP station in charge incidents is based on the location of the incident. In missing persons cases, the case should be reported to and is handled by a certain police station if the last known location of the absent/missing person is within its precinct (or area of jurisdiction). As such, the report routing through HanApp should also forward missing persons reports to the police station in whose jurisdiction covers the selected last known location. The problem is that there is no PNP station precinct map data.
+
+In the absence of precinct map data, the HanApp system prototype routes the reports to the PNP station account nearest to the selected last known location of the absent/missing person. However, this may sometimes result in misrouting. For example, the last known location of the missing person is closest to the Police Station A than it is to the Police Station B, but the location may actually be within the Police Station B’s precinct or area of jurisdiction.
+
+\newpage
+\section{Summary of Results}
+
+To summarize the results of the study, the checklist of application requirements, Table \ref{table:reqChecklist}, as seen in the previous chapter, was updated to show whether all the requirements for HanApp application suite have been met. As you can see in Table \ref{table:results_reqChecklist}, all requirements for the application's system prototype were satisfied.
+\begin{table}[]
+\caption{Requirements Checklist Results}
+\label{table:results_reqChecklist}
+\begin{tabular}{|lc|}
+\hline
+\multicolumn{1}{|c|}{\textbf{REQUIREMENTS}}                                                                                                                         & \textbf{\begin{tabular}[c]{@{}c@{}}ACCOMPLISHED\\ (Y/N)\end{tabular}} \\ \hline
+\multicolumn{2}{|l|}{\textbf{Backend Requirements}}                                                                                                                                                                                         \\ \hline
+\multicolumn{1}{|l|}{Serverless Architecture}                                                                                                                       & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Realtime Database structure \\ for Main User and PNP profiles\end{tabular}}                                         & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{Realtime Database structure for Reports}                                                                                                       & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{Images and other media storage}                                                                                                                & Y                                                                     \\ \hline
+\multicolumn{2}{|l|}{\textbf{Privacy Requirements}}                                                                                                                                                                                         \\ \hline
+\multicolumn{1}{|l|}{User Password Encryption}                                                                                                                      & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{Data Privacy, Collection, and Usage}                                                                                                           & Y                                                                     \\ \hline
+\multicolumn{2}{|l|}{\textbf{User Interface Requirements}}                                                                                                                                                                                  \\ \hline
+\multicolumn{1}{|l|}{User (or Main) Interface}                                                                                                                      & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{PNP Admin App Interface}                                                                                                                       & Y                                                                     \\ \hline
+\multicolumn{2}{|l|}{\textbf{Functional Requirements}}                                                                                                                                                                                      \\ \hline
+\multicolumn{1}{|l|}{User Registration}                                                                                                                             & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{PNP Admin Account Creation}                                                                                                                    & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{Reporting and Receiving Updates}                                                                                                               & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{Receive, Manage, and Verify Reports (PNP)}                                                                                                     & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Accessing PNP-Verified Reports and receiving \\ Location-based notification for PNP-verified MP cases\end{tabular}} & Y                                                                     \\ \hline
+\multicolumn{2}{|l|}{\textbf{UI/UX Design Requirements}}                                                                                                                                                                                    \\ \hline
+\multicolumn{1}{|l|}{Application Icon Design}                                                                                                                       & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{User Interface Design}                                                                                                                         & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{User Experience Design}                                                                                                                        & Y                                                                     \\ \hline
+\end{tabular}
+\end{table}
+For the main user application interface (and its features), the pre-final stable build of the application was alpha tested and were agreed on to meet the requirements. As for the PNP admin application interface, extensive alpha testing by the developers was conducted prior to verifying that the requirements for the PNP admin application interface were satisfied. Overall, despite the limitations and issues encountered, all the requirements and features were met and incorporated into HanApp's system prototype.
+

@@ -1,10 +1,11 @@
 %   Filename    : chapter_1.tex 
 \chapter{Introduction}
 \label{sec:researchdesc}    %labels help you reference sections of your document
+\doublespacing
 
 \section{Overview of the Current State of Technology}
 \label{sec:overview}
-As defined by the International Commission on Missing Persons (ICMP), subjectively, anyone who is being sought by at least another person and whose location or whereabouts are unknown can be classified as a missing person \cite{icmpMissing}. However, each country has their own standard or policies for legally defining a "missing" person, and as such, accurate statistics on the average rate of missing persons globally are harder to discern. This, together with the unconfirmed number of the unreported cases of missing persons, people who voluntarily go missing, or even victims of disasters and conflict, brings to light how obscure and challenging a search for a missing person can be.
+As defined by the International Commission on Missing Persons (ICMP), subjectively, anyone who is being sought by at least another person and whose location or whereabouts are unknown can be classified as a missing person \cite{icmpMissing}. However, each country has their own standard or policies for legally defining a ``missing" person, and as such, accurate statistics on the average rate of missing persons globally are harder to discern. This, together with the unconfirmed number of the unreported cases of missing persons, people who voluntarily go missing, or even victims of disasters and conflict, brings to light how obscure and challenging a search for a missing person can be.
 
 With this, there have been efforts globally to implement technologies and systems for organizing and solving this problem. The AMBER (America's Missing Broadcast Emergency Response) alert system, while not a standalone application, is a system that geo-locates and uses various forms of effective media such as smartphones, television, or radio to disseminate information about missing or abducted children in the United States in order to elicit citizen tips and responses in order to expedite the rescue of the said missing and/or abducted children \cite{griffin2007preliminary}.
 
@@ -26,7 +27,7 @@ The dire situation of these missing persons cases causes distress to their belov
 
 Although the PNP adopted MC 2016-033 which established a unified Missing and Found Persons Database (MFPD) and the process for receiving and handling MP reports in order to handle this issue, these guidelines stipulated that MP case reporting can only be done in person in the station of the area where the disappearance occurred and required the user to fill out numerous forms \cite{NationalPoliceCommission}. Requiring the MP case reportee to travel and file the case in-person takes away valuable time, and neglects to utilize existing technology to streamline the process and have them receive, verify, and act on the case immediately. Moreover, the PNP has advised the public against posting and sharing of unverified MP cases on social media \cite{madarang_2022}.
 
-As such, there is a need for a system that leverages the use of existing technology to streamline and accelerate the reporting and verification process, and notify users of PNP-verified missing persons cases in their area. The creation of the missing persons reports and alerts application suite, "HanApp", addresses the aforementioned issues by enabling users to file and receive updates on missing persons cases, get alerts and view PNP-verified missing persons cases, and also allowing the PNP to receive, manage, and verify missing persons reports online.
+As such, there is a need for a system that leverages the use of existing technology to streamline and accelerate the reporting and verification process, and notify users of PNP-verified missing persons cases in their area. The creation of the missing persons reports and alerts application suite, ``HanApp", addresses the aforementioned issues by enabling users to file and receive updates on missing persons cases, get alerts and view PNP-verified missing persons cases, and also allowing the PNP to receive, manage, and verify missing persons reports online.
 
 \section{Research Objectives}
 \label{sec:researchobjectives}
@@ -34,8 +35,9 @@ As such, there is a need for a system that leverages the use of existing technol
 \subsection{General Objective}
 \label{sec:generalobjective}
 
-The general objective of this study is to develop an application suite with mobile and desktop interfaces for users who want to report and get updates on missing persons cases, users who want to be altered by and view verified missing persons cases in their area, and the PNP in order to expedite and simplify the filing, managing, verifying, disseminating, and resolving of missing persons cases. The application will be called "HanApp", a portmanteau of ``Hanap" (Tagalog for ``find") and App (for ``application"). 
+The general objective of this study is to develop an application suite with mobile and desktop interfaces for users who want to report and get updates on missing persons cases, users who want to be altered by and view verified missing persons cases in their area, and the PNP in order to expedite and simplify the filing, managing, verifying, disseminating, and resolving of missing persons cases. The application will be called ``HanApp", a portmanteau of ``Hanap" (Tagalog for ``find") and App (for ``application"). 
 
+\newpage
 \subsection{Specific Objectives}
 \label{sec:specificobjectives}
 
@@ -44,27 +46,29 @@ This study specifically seeks to:
 \begin{enumerate}
    \item Develop an application that would allow users to easily report missing persons to the PNP and receive updates on such reports, as well as a PNP counterpart application that will enable the PNP to quickly receive, verify, manage, and respond to reports.
    \item Integrate a serverless database system which securely stores and manages User and PNP accounts, login authorizations, and reports without the need for a server infrastructure or dependence on local data storage, allowing the application suite to be used in any operating-system compatible device.
-   \item Implement geolocation services that allow for report routing so that reports are received and managed by the corresponding PNP account of the case’s jurisdiction. 
+   \item Implement geolocation services that enable report routing so that, depending on the location of the station and incident, reports are received and managed by the associated PNP station account.
    \item Implement location-based notifications so that users can receive alerts and view information about missing persons near their current location so they can assist in the search, thus promoting a community-based approach in resolving missing persons cases.
 \end{enumerate}
 
+\newpage
 \section{Definition of Terms and Acronyms}
-
-\textbf{Child} - refers to any person under the age of 18.
 
 \textbf{Absent Person} - according to the PNP guidelines, absent persons are defined as those who are not in their domicile or place where they are supposed to be present in less than 24 hours, and whose families, relatives, or significant others have no clue as to their whereabouts but there is no apparent risk and do not require police investigation.
 
 \textbf{Absent/Missing Person (\textbf{A/MP}) }- in accordance with the PNP guidelines and the affixed checklist when receiving and processing missing person cases, the term (A/MP) can refer to the reported person whose whereabouts is unknown and whose classification as Absent or Missing is not yet finalized.
 
-\textbf{Database} - - also referred to as “\textbf{serverless database}”, refers to the application’s own public database containing the reports filed to the PNP pending their verification, the PNP-verified missing persons reports which will be used to notify nearby users of missing persons cases in their area.
+\textbf{Child} - refers to any person under the age of 18.
+
+\textbf{Database} - also referred to as “\textbf{serverless database}”, refers to the application’s own public database containing the reports filed to the PNP pending their verification, the PNP-verified missing persons reports which will be used to notify nearby users of missing persons cases in their area.
+
+\textbf{Found/Located} - will be used to denote that the missing person has been identified and reunited with their family or guardian.
 
 \textbf{HanApp} -  also referred to as “\textbf{the application suite}”, refers to the set of applications and its various interfaces developed in this study. The interfaces include:
+\newpage
 \begin{itemize}
-    \item \textbf{Main (or User) App} - refers to the main application that has the features: reporting and getting updates on missing persons cases, receive alerts/notifications and view PNP-verified missing persons cases near their current location
-    \item \textbf{PNP Admin App} - also referred to as “\textbf{PNP Application/App}”, refers to the application interface that is accessed by the PNP in which they receive, manage, verify, and provide updates on received missing persons reports.
+    \item \textbf{Main (or User) App} - refers to the main application that has the features: reporting and getting updates on missing persons cases, receive alerts/notifications and view PNP-verified missing persons cases near their current location. Users of this interface will be referred to as``main users" or ``users" depending on the context.
+    \item \textbf{PNP Admin App} - also referred to as ``\textbf{PNP Application/App}”, refers to the application interface that is accessed by the PNP in which they receive, manage, verify, and provide updates on received missing persons reports. Accounts utilizing this interface will be referred to as ``PNP admin accounts" or ``PNP station accounts". 
 \end{itemize}
-
-\textbf{Located/Found} - will be used to denote that the missing person has been identified and reunited with their family or guardian.
 
 \textbf{Missing person (MP)} - will refer to any person who is classified under the PNP guidelines as missing; an adult person who is missing is required under the guidelines to have not been located after 24 hours, whereas a child that has gone missing is immediately referred to as an MP.
 
@@ -87,7 +91,7 @@ Finally, in order to facilitate report filing and management, as well as alertin
 
 \subsection{User and Information Access}
 \label{sec:userInfoAcccess}
-The application will only have three interfaces which will cater to its two primary users — the general user, and the PNP personnel/helpdesk in charge of missing persons cases. Since this is an online-only application suite with a mobile interface for the main users and a desktop interface for the PNP, and the application’s scope is limited to the Philippines, only users in the Philippines with compatible smartphones and access to the internet will be able to use the app.
+The application will only have two interfaces which will cater to its two primary users — the general user, and the PNP personnel/helpdesk in charge of missing persons cases. Since this is an online-only application suite with a mobile interface for the main users and a desktop interface for the PNP, and the application’s scope is limited to the Philippines, only users in the Philippines with compatible smartphones and access to the internet will be able to use the app.
 
 Due to the sensitivity of the data being handled, it’s important to define the scope and limits of each user’s access to address data privacy and security concerns.
 
@@ -111,8 +115,5 @@ Moreover, the application could serve as a great tool to the PNP by making it fa
 The focal point of this research paves the way for a systematic and technological breakthrough here in the Philippines through the development of an application suite that could potentially assist in resolving missing person cases by hastening the reporting and dissemination process.
 
 Lastly, the novelty of this study could potentially provide a baseline framework for similar studies impacting the creation of not only a more robust system for reporting missing persons cases in the country, but also the modernization of crime/incident reporting to the PNP through the use of online software rather than exclusively-in-person reporting.
-
-
-
 
 

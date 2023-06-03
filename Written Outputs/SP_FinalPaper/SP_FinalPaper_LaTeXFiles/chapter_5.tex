@@ -1,3 +1,67 @@
 %   Filename    : chapter_5.tex 
-\chapter{Conclusion}
-This chapter  summarizes your SP and provides conclusions regarding your results and analyses.  Provide recommendations on what ought to be done with your SP or provide further directions on the topic you covered.
+\chapter{Conclusion and Recommendations}
+% This chapter  summarizes your SP and provides conclusions regarding your results and analyses.  Provide recommendations on what ought to be done with your SP or provide further directions on the topic you covered.
+
+\section{Conclusion}
+Despite the PNP's specific guidelines on missing persons cases, which call for in-person report filing and posting in their missing persons website, missing persons instances continue to occur in the nation. The issue tackled in this study is that the current reporting and dissemination system does not use modern technology to improve the reporting process nor provide the means to directly enable the community to aid in resolving missing persons cases.
+
+In order to address the aforementioned issue, the research developed the “HanApp” application suite, which leverages modern technology to streamline the procedures for submitting, managing, validating, and disseminating missing persons cases. HanApp, which is based on the widely used AMBER alert system in the United States, makes use of location and map services to distribute regional alerts, mark the last known position of missing people on a map, and encourage community participation in the search operations.
+
+The creation of main user (reportees and general public) and PNP interfaces was among the research's main goals to ensure the quick and easy processing of missing person instances. The development of HanApp successfully utilized Flutter, Google Firebase, and Google Maps which is integral for geolocation services for effective report routing. Moreover, location-based notifications was seamlessly integrated into HanApp to involve the community in the search process. The use of a serverless architecture and database produced a dependable and effective application suite for the reporting, verification, and dissemination of missing persons cases. 
+
+All the aforementioned interfaces and features were deliberately planned and implemented to prove the feasibility and practicability of an online reporting, report management, and dissemination framework for missing persons cases.  HanApp does not, in any way, undermine nor revise the PNP's guidelines on the reporting and handling of missing persons cases but simply extend its scope and improve its accessibility through the use of modern technology while still remaining compliant to the aforementioned guidelines.
+
+Furthermore, the study's novelty may serve as a catalyst for related initiatives, leading to the modernization of crime/incident reporting to the PNP through online software solutions and the creation of a more dependable reporting system while still remaining compliant with the PNP's guidelines.
+
+The study concludes that a system that not only streamlines the reporting and verification process but also provides timely information regarding PNP-verified missing persons cases in their area, is both feasible and beneficial in quickly resolving these cases.
+
+
+\section{Recommendations}
+
+The recommendations section will be divided in two parts: ``Application Recommendations" and ``External Dependencies and Systems Recommendations".  These recommendations were identified during the course of development and testing of the HanApp application suite, and are crucial in improving HanApp's performance, quality of service, and user experience.
+
+\subsection{Application Recommendations}
+
+This subsection enumerates and discusses the limitations of the HanApp system prototype as well as the pertinent features and modifications required to address them.
+
+\subsubsection{1. Automated ID and Face Verification API}
+When filing a report through the main user app, the reportee is required to upload a photo of their legitimate ID as well as a selfie. The receiving PNP admin app user will then compare the selfie and ID photo to each other as well as the reportee details. However, this method of manually cross-checking the information and photos is time-consuming and cumbersome. 
+
+The researchers therefore strongly advise integrating an automated ID and Face Verification API that utilizes machine learning for text and facial feature detection. The recommended ID and Face Verification API should, upon uploading the ID photo and selfie, automatically compare the selfie photo and the reportee information with the details and photo on the ID. This automated verification system would save valuable time and allow for faster report verification and dissemination, thus enabling the PNP and the concerned general public to act sooner on the case.
+
+\subsubsection{2. Precinct-Based Report Routing}
+
+The HanApp system prototype uses a distance-based approach in its report routing due to the absence of PNP precinct map data. As a result, missing persons case reports are sent to the nearest PNP station account based on the last known location of the absent/missing person. It is strongly advised to modify the report routing from distance-based to precinct-based once a PNP precinct map data is made available in order to prevent misrouting of reports. 
+
+\subsubsection{3. Allow PNP Accounts to Manually Add In-Person-Submitted Verified Reports}
+The HanApp system prototype enables the dissemination of PNP-verified so that the public can be notified and assist with missing persons cases. The system prototype has certain limitations in this area as only reports that users have filed through the app are disseminated on the “Nearby” page of the app.
+
+Therefore, it would be beneficial to enable PNP station accounts to manually add verified reports that were submitted in person. The scope of report dissemination through the app would be expanded to include verified reports submitted both in-person and through the app.
+
+
+\subsubsection{4. In-App Direct Messaging}
+There is currently no means for users (PNP app and main app users) to communicate with each other through the application itself. If the PNP station handling the case needs to communicate with the reportee about their report or if a user with leads on the case wants to contact the reportee, they could only do so through the reportee’s phone number or email address posted in the report. As such, the researchers believe that an in-app direct messaging feature could hasten communication and coordination between concerned parties.
+
+\subsection{External Dependencies and Systems Recommendations}
+
+This subsection enumerates the external resources and systems that the application requires but whose creation, initiation, and/or modification is outside the scope of the study. 
+
+\subsubsection{1. Improve the Accuracy and Completeness on Geocoded Locations}
+
+As noted in Chapter 4, the reverse geocoding occasionally yields accurate address information regarding the selected last known location of the absent/missing person, but occasionally returns incomplete or less accurate address information based on the location data registered in Google Maps (and fetched by the Google Geocoding API). As a result, in order to ensure the accuracy and completeness of addresses  fetched through reverse geocoding in the reports, it is necessary to improve Google Maps data to represent the actual addressess. Alternatively, it is also  recommended to look for geocoding APIs that returns more accurate and comprehensive location information.
+
+\subsubsection{2. PNP Stations Directory and Precinct Map Data} 
+
+\textbf{Publishing a Comprehensive PNP National Directory}. A national directory of all police stations in the Philippines must be made available for easy access and publication into the HanApp database in order to avoid having to hard-code location and contact information for each police station. Once this is done, each PNP station's HanApp administrative account will have a more streamlined and error-free registration process, and users will have accurate PNP station location and contact information when contacting the police about leads or information that could assist in resolving missing persons cases.
+
+\textbf{Provision of a Complete Precinct Map Data}. To prevent potential misrouting of reports, it is imperative for the HanApp application suite to acquire PNP Precinct Map Data. Specifically, the map data should draw precinct (or area of jurisdiction) boundaries for each police station. Once provided, this will require modifications in HanApp application suite’s report routing function such that, instead of using distance calculations, all reports will be routed to the appropriate PNP station if the last known location’s longitude and latitude fall within the PNP station’s precinct boundaries.
+
+\subsubsection{3. Centralized Registration and Management System for PNP Admin Accounts}
+
+To reiterate the current system for registering PNP Admin Accounts, PNP stations are required to contact the developers in order to manually create an account for each station. However, for both security and efficiency, it is highly recommended that the registration system be regulated and centralized within the PNP if and when the application is fully deployed and utilized by the PNP. 
+
+Specifically, the researchers suggest the creation of national and regional administrative accounts which will be managed by the PNP Central and regional offices, respectively. The regional PNP HanApp accounts would be able to create and manage accounts and reports for each station under their area, whereas the Central PNP account has the primary administrative access to all accounts and their reports. Through centralization and regulation, the creation and management of accounts and retrieval of report data becomes more secured and streamlined.
+
+\subsubsection{4. Extending the HanApp Online Reporting  System to Other Incidents}
+
+The researchers recommend utilizing HanApp’s online reporting infrastructure to allow for the reporting (and dissemination) of other types of incidents other than missing persons cases such as kidnapping. This will require modifying the report forms and report management, as well as overhauling the backend data model to accommodate multiple types of incidents. The researchers believe that having an online police report filing system for various types of incidents can undoubtedly be beneficial to the PNP and the general public. 
