@@ -2081,7 +2081,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(15))),
                             child: Text(
-                              '$streetHouseNum, $villageSitio, Brgy. $barangay, $city, $province, Region $region',
+                              '$streetHouseNum, $villageSitio, $barangay, $city, $province,$region',
                               textAlign: TextAlign.left,
                               style: const TextStyle(fontSize: 15.0),
                             ),
