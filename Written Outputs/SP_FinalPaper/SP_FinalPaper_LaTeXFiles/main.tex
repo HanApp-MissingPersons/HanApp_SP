@@ -8,6 +8,15 @@
 \setlength{\parindent}{0pt} %this is here.
 \usepackage{setspace}
 \setstretch{1.15}
+
+\usepackage[compact]{titlesec}
+\titlespacing*{\section}
+{0pt}{5pt}{0pt}
+\titlespacing*{\subsubsection}
+{0pt}{5pt}{0pt}
+\titlespacing*{\subsection}
+{0pt}{5pt}{0pt}
+
 \begin{document}
 \include{title_page}      %includes LaTeX source file for the Title Page 
 
@@ -34,8 +43,6 @@
 \include{chapter_6}             %Chapter 6: references
 
 
-
-% removed appendix, no content
 \appendix                         %specify appendices
 \include{appendix_A}              %LaTeX source file for Appendix A
 \include{appendix_B}              %LaTeX source file for Appendix B
