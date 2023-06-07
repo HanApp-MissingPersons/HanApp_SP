@@ -62,7 +62,7 @@ Android Studio comes with an Android Emulator which was the primary tool used fo
 \subsubsection{Flutter}
 Flutter is a Google open-source framework used for creating attractive, locally built, multi-platform apps out of a single codebase. For rapid efficiency and performance on any device, Flutter code compiles to ARM or Intel machine code, as well as JavaScript. Dart, a programming language designed for speedy programs on any platform, powers it \cite{flutter}. As the developers have aimed to deploy the proposed application on both the mobile (Android) platform for the main users, and on the Web (desktop)  platform for the side of PNP, Flutter is an outstanding choice out of all the available frameworks and languages.
 
-Flutter (and the Dart programming language) was utilized in the development of all HanApp's interfaces. Flutter packages were also imported for ease of feature development.
+Flutter (and the Dart programming language) was utilized in the development of HanApp's interfaces. Flutter packages were also imported for ease of development.
 
 \subsubsection{Google Firebase}
 As Firebase has a variety of products and services that it provides, such as Firebase Auth, which is a service that can authenticate users using only client-side code, Real-time Database, a NoSQL database service, and Firebase Storage, which is a file transfer service \cite{khawas2018application}, Firebase remains to be the most optimal choice for a serverless mobile application that may require the said services, such as with the proposed application.
@@ -231,7 +231,7 @@ With regards to reporting, it is of utmost importance that the report form pages
     \caption{Sequence Diagram for Reporting, Updating, and Verification of MP cases}
     \label{fig:seqDiaReport}
 \end{figure}
-As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receiving updates is very straightforward: the user (reportee) needs to fill out the MP report form, it’s then received by the PNP through their PNP Admin App interface, and if the person is indeed missing (and not yet reported, or registered as already found or dead in the PNP's own Missing and Found Person Database (MFPD)), then the PNP can verify the report. If any updates are made, such as if the MP is found, it will be reflected in the user’s app soon after.
+As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receiving updates is very straightforward: the user (reportee) needs to fill out the MP report form, it is then received by the PNP through their PNP Admin App interface, and if the person is indeed missing (and not yet reported, or registered as already found or dead in the PNP's own Missing and Found Person Database (MFPD)), then the PNP can verify the report. If any updates are made, such as if the MP is found, it will be reflected in the user’s app soon after.
 
 \begin{figure}[!h]
     \centering
@@ -239,7 +239,7 @@ As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receivi
     \caption{Entity Relationship Diagram of Main App Account Reporting to PNP Admin Account}
     \label{fig:ERDReportee}
 \end{figure}
-It’s also an important requirement that any reports made by users (reportee) are sent to the PNP Admin Account of the A/MP's last known location’s nearest PNP station, as mentioned prior. As seen in Figure \ref{fig:seqDiaReport}, many users should be able to submit MP case reports of a specific location to the PNP through the application, but they will only be routed to the PNP Admin Account registered for said location.
+It is also an important requirement that any reports made by users (reportee) are sent to the PNP Admin Account of the A/MP's last known location’s nearest PNP station, as mentioned prior. As seen in Figure \ref{fig:seqDiaReport}, many users should be able to submit MP case reports of a specific location to the PNP through the application, but they will only be routed to the PNP Admin Account registered for said location.
 
 \subsubsection{Receive, Manage, and Verify Reports}
 
@@ -280,4 +280,4 @@ HanApp's Icon design should be distinct, meaningful, and cohesive with the appli
 \textbf{Application Language.} The language to be used in the application suite is English. Although the scope of operations for the application suite is the Philippines, English is the widely used language for education and business in the country and is a neutral language that allows the application to be accessible to most users. Moreover, the language used in the PNP's forms for filing and processing missing persons cases are also in English. More importantly, the language used in the application should be simple and straightforward in order to cater to more users regardless of educational background or cognitive abilities.
 
 \textbf{Report Form Design and Validation.} 
-The report forms are a major part of the application, and it is imperative that the forms are  straightforward and intuitive. As such, there should be careful and deliberate planning on the use of radio buttons, checkboxes, date pickers, text form fields, and other user input elements to ensure that filling of reports is not only easier but also minimizes user input error. Lastly, there should be validation checks to ensure that all information required by the PNP are provided completely and correctly by the reportee.
+The report forms are a major part of the application, and it is imperative that the forms are  straightforward and intuitive. As such, there should be thorough planning on the use of radio buttons, checkboxes, date pickers, text form fields, and other user input elements to ensure that filling of reports is not only easier but also minimizes user input error. Lastly, there should be validation checks to ensure that all information required by the PNP are provided completely and correctly by the reportee.

@@ -21,7 +21,7 @@ Figure \ref{fig:PNP1} Login page of the PNP-side app will authenticate the user 
 
 For the proof of concept, four hard-coded PNP accounts, namely; PNP Miagao, PNP San Joaqin, PNP Jaro, and the National PNP were created by the developers directly through Firebase console's Authentication page. These accounts have the corresponding location (their ``location data") of the PNP outposts in their locality (i.e. PNP San Joaqin account has the location of San Joaqin PNP outpost). 
 
-The PNP location data are utilized to filter out where the reports, based on their MP's last seen location, should be filtering to. However, it's important to note that the National PNP account will receive all reports regardless of distance, this is in order to cater to the reports filed outside of the vicinity of the Miagao, San Joaqin, and  Jaro PNP accounts.
+The PNP location data are utilized to filter out where the reports, based on their MP's last seen location, should be filtering to. However, it is important to note that the National PNP account will receive all reports regardless of distance, this is in order to cater to the reports filed outside of the vicinity of the Miagao, San Joaqin, and  Jaro PNP accounts.
 
 \begin{figure}[!h]
     \centering
@@ -45,7 +45,7 @@ Figure \ref{fig:PNP2} is the management suite for the PNP to access reports. The
 
 \subsubsection{Viewing Report Details}
 
-The report dialog box details the list of the necessary information that the reportee provided. Figure \ref{fig:reportDetails} illustrates missing person's descriptions, last seen location snapshot, and their picture that will be shown first to ease the process of identification. It's important to note that these are all the same and exact information required by the PNP when filing or verify a report of the missing person as per their guidelines on handling missing persons cases \cite{NationalPoliceCommission}. But compared to the numerous forms required in their guidelines, the details are more compact and summarized for their convenience. The data can be retrieved from the database through shared preferences plugin used.
+The report dialog box details the list of the necessary information that the reportee provided. Figure \ref{fig:reportDetails} illustrates missing person's descriptions, last seen location snapshot, and their picture that will be shown first to ease the process of identification. It is important to note that these are all the same and exact information required by the PNP when filing or verify a report of the missing person as per their guidelines on handling missing persons cases \cite{NationalPoliceCommission}. But compared to the numerous forms required in their guidelines, the details are more compact and summarized for their convenience. The data can be retrieved from the database through shared preferences plugin used.
 
 \section{User or Main Interface}
 The main interface will be subdivided into three various parts to cover all the features that was built throughout the process.
@@ -184,7 +184,7 @@ On the second page of the reports page, as seen in figure \ref{fig:ReportPage2},
     \label{fig:ReportPage3}
 \end{figure}
 
-The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, requires the necessary information about the reported missing person such as their name, birth-date, sex, address, and contact information. It's important to note the specific usage of the term ``Absent/Missing Person" as it is the same term used in PNP's required forms when handling missing persons cases, specifically ``Annex C: Checklist for Absent/Missing Person".
+The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, requires the necessary information about the reported missing person such as their name, birth-date, sex, address, and contact information. It is important to note the specific usage of the term ``Absent/Missing Person" as it is the same term used in PNP's required forms when handling missing persons cases, specifically ``Annex C: Checklist for Absent/Missing Person".
 
 \subsubsection{Report Page 4: Absent/Missing Person Description}
 
@@ -471,6 +471,7 @@ The only location data being stored are the last seen location of the absent/mis
 This section discusses the technological and resource limitations and issues encountered during the application suite’s development, testing, and implementation. It is crucial to note that, while these do not hinder the application suite from working nor prevent it from meeting its requirements, they do have an impact on the quality of service provided by HanApp's system prototype. 
 
 \subsection{Geocoding Limitations}
+\vspace{-1em}
 
 This is with regards to the Report form’s “last known location selector” in the main user application. As shown earlier, the user is prompted to select the last known location by pinning it on a map, this then retrieves the latitude and longitude of the pinned location. The Flutter geocoding package is then used to handle the Google Geocoding API to retrieve information from Google Maps in order to perform reverse geocoding which is the process of fetching the address based on the latitude and longitude provided. 
 
@@ -493,7 +494,7 @@ In the absence of precinct map data, the HanApp system prototype routes the repo
 \newpage
 \section{Summary of Results}
 
-To summarize the results of the study, the checklist of application requirements, Table \ref{table:reqChecklist}, as seen in the previous chapter, was updated to show whether all the requirements for HanApp application suite have been met. As you can see in Table \ref{table:results_reqChecklist}, all requirements for the application's system prototype were satisfied.
+To summarize the results of the study, the checklist of application requirements, Table \ref{table:reqChecklist}, as seen in the previous chapter, was updated to show whether all the requirements for HanApp application suite have been met. As seen in Table \ref{table:results_reqChecklist}, all requirements for the application's system prototype were satisfied.
 \begin{table}[]
 \caption{Requirements Checklist Results}
 \label{table:results_reqChecklist}

@@ -482,7 +482,7 @@ class _NavigationFieldState extends State<NavigationField> {
                                 textAlign: TextAlign.center,
                               ),
                               const Text(
-                                '\nHanApp requires Location Access in order to better facilitate Missing Persons reports',
+                                '\nHanApp requires Location Access and Internet Connection in order to better facilitate Missing Persons reports',
                                 textAlign: TextAlign.center,
                                 textScaleFactor: 0.70,
                               ),
