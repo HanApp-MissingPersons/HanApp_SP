@@ -343,10 +343,9 @@ class _Page1ClassifierState extends State<Page1Classifier> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Lottie.network(
-                          "https://assets8.lottiefiles.com/packages/lf20_xpxbhrm4.json",
+                      Lottie.asset("assets/lottie/swipeLeft.json",
                           animate: true,
-                          width: MediaQuery.of(context).size.width*0.15),
+                          width: MediaQuery.of(context).size.width * 0.15),
                       const SizedBox(width: 5),
                       SizedBox(
                         width: MediaQuery.of(context).size.width,

@@ -1416,26 +1416,25 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             // DEBUGGER TOOL: check shared_preferences content
             // END OF PAGE
             _verticalPadding,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Lottie.network(
-                        "https://assets8.lottiefiles.com/packages/lf20_xpxbhrm4.json",
-                        animate: true,
-                        width: MediaQuery.of(context).size.width*0.15),
-                    const SizedBox(width: 5),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: const Text(
-                        '\nEnd of Absent/Missing Person Details Form \nSwipe left to continue.',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black54,
-                        ),
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Lottie.asset("assets/lottie/swipeLeft.json",
+                    animate: true,
+                    width: MediaQuery.of(context).size.width * 0.15),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: const Text(
+                    '\nEnd of Absent/Missing Person Details Form \nSwipe left to continue.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
                     ),
-                  ],
+                  ),
                 ),
+              ],
+            ),
             // TextButton(
             //   onPressed: () async {
             //     final prefs = await SharedPreferences.getInstance();
