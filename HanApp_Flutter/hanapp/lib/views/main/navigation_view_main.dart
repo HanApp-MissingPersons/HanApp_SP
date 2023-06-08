@@ -49,7 +49,6 @@ class _NavigationFieldState extends State<NavigationField> {
   late StreamSubscription<LocationData> _locationSubscription;
   final dbRef2 = FirebaseDatabase.instance.ref().child('Reports');
   late dynamic _reports = {};
-  late Map<dynamic, dynamic> nearbyVerifiedReports = {};
   int reportLen = 0;
   late StreamSubscription _reportsSubscription;
   dynamic hiddenReports = {};
@@ -87,6 +86,7 @@ class _NavigationFieldState extends State<NavigationField> {
   }
 
   Future<void> _fetchData() async {
+    Map<dynamic, dynamic> nearbyVerifiedReports = {};
     final reportsStream = dbRef2.onValue;
     final notificationsStream = notificationRef.onValue;
     await getCurrentLocation();
@@ -100,6 +100,7 @@ class _NavigationFieldState extends State<NavigationField> {
         // print number of reports
         int reportCount = 0;
         int verifiedReportCount = 0;
+        nearbyVerifiedReports = {};
         if (sourceLocation != null) {
           _reports.forEach((key, value) {
             reportCount += 1;
@@ -124,6 +125,50 @@ class _NavigationFieldState extends State<NavigationField> {
           });
           print(
               '[DATA FETCHED] Total reports: $reportCount, Nearby verified reports: $verifiedReportCount, radius: ${REPORT_RETRIEVAL_RADIUS}m');
+          try {
+            await retrieveHiddenReports();
+            reportsClean = Map.from(
+                nearbyVerifiedReports); // make a copy of reportsUnclean
+
+            for (var key in hiddenReports.keys.toList()) {
+              reportsClean!.remove(key);
+            }
+            if (reportsClean != null) {
+              widgetOptions = <Widget>[
+                HomeMain(
+                  onReportPressed: () {
+                    setState(() {
+                      selectedIndex = 1;
+                    });
+                  },
+                  onNearbyPressed: () {
+                    setState(() {
+                      selectedIndex = 2;
+                    });
+                  },
+                ),
+                ReportMain(
+                  onReportSubmissionDone: () {
+                    setState(() {
+                      selectedIndex = 0;
+                    });
+                  },
+                ),
+                const NearbyMain(),
+                NotificationMain(
+                  reports: reportsClean!,
+                  missingPersonTap: () {
+                    setState(() {
+                      selectedIndex = 2;
+                    });
+                  },
+                ),
+                const UpdateMain(),
+              ];
+            }
+          } catch (e) {
+            print('[NEWLY ADDED ERROR] $e');
+          }
         }
       } else if (event.snapshot.ref.path == notificationRef.ref.path) {
         print('Snapshot came from notificationRef');
@@ -168,7 +213,7 @@ class _NavigationFieldState extends State<NavigationField> {
           ];
         }
       } else {
-        print('Nonee');
+        print('Snapshot came from ${event.snapshot.ref.path}');
       }
     });
   }
