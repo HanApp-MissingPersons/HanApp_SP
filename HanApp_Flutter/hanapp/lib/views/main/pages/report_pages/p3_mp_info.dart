@@ -194,10 +194,13 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
       setState(() {
         _prefs = prefs;
         // basic info
-        if (prefs.getString('p3_mp_civilStatus') == null) {
-          prefs.setString('p3_mp_civilStatus', 'Single');
-        } else {
-          mp_civilStatValue = prefs.getString('p3_mp_civilStatus') ?? 'Single';
+        // if (prefs.getString('p3_mp_civilStatus') == null) {
+        //   prefs.setString('p3_mp_civilStatus', 'Single');
+        // } else {
+        //   mp_civilStatValue = prefs.getString('p3_mp_civilStatus') ?? 'Single';
+        // }
+        if (prefs.getString('p3_mp_civilStatus') != null) {
+          mp_civilStatValue = prefs.getString('p3_mp_civilStatus');
         }
         // mp_civilStatValue = prefs.getString('p3_mp_civilStatus') ?? 'Single';
         sexValue = prefs.getString('p3_mp_sex') ?? '';
@@ -248,10 +251,13 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             prefs.getString('p3_mp_address_streetHouseNum_alt') ?? '';
         // for ocupation and highest education
         // mp_educationalAttainment = prefs.getString('p3_mp_education') ?? 'NA';
-        if (prefs.getString('p3_mp_education') == null) {
-          prefs.setString('p3_mp_education', 'NA');
-        } else {
-          mp_educationalAttainment = prefs.getString('p3_mp_education') ?? 'NA';
+        // if (prefs.getString('p3_mp_education') == null) {
+        //   prefs.setString('p3_mp_education', 'NA');
+        // } else {
+        //   mp_educationalAttainment = prefs.getString('p3_mp_education') ?? 'NA';
+        // }
+        if (prefs.getString('p3_mp_education') != null) {
+          mp_educationalAttainment = prefs.getString('p3_mp_education');
         }
 
         _mp_education.text = prefs.getString('p3_mp_education') ?? 'None';
@@ -1197,8 +1203,9 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: DropdownButtonFormField<String>(
-                hint: const Text("Select Highest Educational Attainment"),
+                hint: const Text("Select Highest Educational Attainment*"),
                 decoration: const InputDecoration(
+                  hintText: "Select Highest Educational Attainment*",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),

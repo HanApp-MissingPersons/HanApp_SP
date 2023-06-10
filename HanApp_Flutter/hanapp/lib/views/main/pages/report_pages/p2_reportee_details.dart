@@ -200,17 +200,23 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     setState(() {
       reportee_hasAltAddress = _prefs.getBool('p2_hasAltAddress') ?? false;
       // _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Single';
-      if (_prefs.getString('p2_civil_status') == null) {
-        _prefs.setString('p2_civil_status', 'Single');
-      } else {
-        _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Single';
+      // if (_prefs.getString('p2_civil_status') == null) {
+      //   _prefs.setString('p2_civil_status', 'Single');
+      // } else {
+      //   _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Single';
+      // }
+      if (_prefs.getString('p2_civil_status') != null) {
+        _civilStatusValue = _prefs.getString('p2_civil_status');
       }
 
       // _highestEduc = _prefs.getString('p2_highestEduc') ?? 'Unknown';
-      if (_prefs.getString('p2_highestEduc') == null) {
-        _prefs.setString('p2_highestEduc', 'Unknown');
-      } else {
-        _highestEduc = _prefs.getString('p2_highestEduc') ?? 'Unknown';
+      // if (_prefs.getString('p2_highestEduc') == null) {
+      //   _prefs.setString('p2_highestEduc', 'Unknown');
+      // } else {
+      //   _highestEduc = _prefs.getString('p2_highestEduc') ?? 'Unknown';
+      // }
+      if (_prefs.getString('p2_highestEduc') != null) {
+        _highestEduc = _prefs.getString('p2_highestEduc');
       }
 
       relationshipToMP = _prefs.getString('p2_relationshipToMP');
@@ -601,9 +607,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               width: MediaQuery.of(context).size.width - 40,
               child: DropdownButtonFormField<String>(
                 // text to display when no value is selected
-                hint: const Text("Select Civil Status"),
+                hint: const Text("Select Civil Status*"),
                 decoration: const InputDecoration(
-                  hintText: 'Select Civil Status',
+                  hintText: 'Select Civil Status*',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
@@ -1092,13 +1098,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
               children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 40,
-                  child: DropdownButtonFormField(
+                  child: DropdownButtonFormField<String>(
                     value: _highestEduc,
+                    hint: const Text('Select Highest Educational Attainment*'),
                     decoration: const InputDecoration(
-                      hintText: 'Select Highest Educational Attainment',
+                      hintText: 'Select Highest Educational Attainment*',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                     ),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.black54),
                     items: <String>[
                       'Elementary',
                       'High School',
