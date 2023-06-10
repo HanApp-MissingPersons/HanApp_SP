@@ -329,7 +329,12 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         _mp_height_inches.text = _prefs.getString('p4_mp_height_inches') ?? '';
         _mp_weight.text = _prefs.getString('p4_mp_weight') ?? '';
         _mp_blood_type.text = _prefs.getString('p4_mp_blood_type') ?? '';
-        mp_blood_typeValue = _prefs.getString('p4_mp_blood_type') ?? 'Unknown';
+        // mp_blood_typeValue = _prefs.getString('p4_mp_blood_type') ?? 'Unknown';
+        if (prefs.getString('p4_mp_blood_type') == null) {
+          prefs.setString('p4_mp_blood_type', 'Unknown');
+        } else {
+          mp_blood_typeValue = prefs.getString('p4_mp_blood_type') ?? 'Unknown';
+        }
         _mp_medications.text = _prefs.getString('p4_mp_medications') ?? '';
         // MP socmed details
         _mp_facebook.text =
@@ -846,6 +851,7 @@ class _Page4MPDescState extends State<Page4MPDesc> {
                             // text to display when no value is selected
                             hint: const Text('Select Blood Type'),
                             decoration: const InputDecoration(
+                              hintText: 'Select Blood Type',
                               border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),

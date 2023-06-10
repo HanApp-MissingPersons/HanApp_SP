@@ -1,4 +1,5 @@
 /* IMPORTS */
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -187,12 +188,18 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   void initState() {
     _mp_birthDate = TextEditingController();
     super.initState();
+
     // shared preferences
     SharedPreferences.getInstance().then((prefs) {
       setState(() {
         _prefs = prefs;
         // basic info
-        mp_civilStatValue = prefs.getString('p3_mp_civilStatus') ?? 'Single';
+        if (prefs.getString('p3_mp_civilStatus') == null) {
+          prefs.setString('p3_mp_civilStatus', 'Single');
+        } else {
+          mp_civilStatValue = prefs.getString('p3_mp_civilStatus') ?? 'Single';
+        }
+        // mp_civilStatValue = prefs.getString('p3_mp_civilStatus') ?? 'Single';
         sexValue = prefs.getString('p3_mp_sex') ?? '';
         _mp_lastName.text = prefs.getString('p3_mp_lastName') ?? '';
         _mp_firstName.text = prefs.getString('p3_mp_firstName') ?? '';
@@ -203,7 +210,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
         _mp_nationalityEthnicity.text =
             prefs.getString('p3_mp_nationalityEthnicity') ?? '';
         _mp_sex.text = prefs.getString('p3_mp_sex') ?? '';
-        _mp_civilStatus.text = prefs.getString('p3_mp_civilStatus') ?? '';
+        // _mp_civilStatus.text = prefs.getString('p3_mp_civilStatus') ?? 'Single';
         _mp_birthDate.text = prefs.getString('p3_mp_birthDate') ?? '';
         ageFromMPBirthDate = prefs.getString('p3_mp_age') ?? '';
         _mp_age.text = prefs.getString('p3_mp_age') ?? '';
@@ -240,7 +247,13 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
         _mp_address_streetHouseNum_alt.text =
             prefs.getString('p3_mp_address_streetHouseNum_alt') ?? '';
         // for ocupation and highest education
-        mp_educationalAttainment = prefs.getString('p3_mp_education') ?? 'NA';
+        // mp_educationalAttainment = prefs.getString('p3_mp_education') ?? 'NA';
+        if (prefs.getString('p3_mp_education') == null) {
+          prefs.setString('p3_mp_education', 'NA');
+        } else {
+          mp_educationalAttainment = prefs.getString('p3_mp_education') ?? 'NA';
+        }
+
         _mp_education.text = prefs.getString('p3_mp_education') ?? 'None';
         _mp_occupation.text = prefs.getString('p3_mp_occupation') ?? '';
         // for Work/School Address
@@ -608,6 +621,7 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
               child: DropdownButtonFormField<String>(
                 hint: const Text("Select Civil Status*"),
                 decoration: const InputDecoration(
+                  hintText: 'Select Civil Status*',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10))),
                 ),
@@ -1435,20 +1449,20 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            // TextButton(
-            //   onPressed: () async {
-            //     final prefs = await SharedPreferences.getInstance();
-            //     print(prefs.getKeys());
-            //     print(prefs.getString('p3_mp_birthDate'));
-            //     print(prefs.getString('p3_mp_sex'));
-            //     print(prefs.getString('p3_mp_civilStatus'));
-            //     print(prefs.getString('p3_mp_age'));
-            //     print(prefs.getString('p3_mp_education'));
-            //     print(prefs.getString('p3_mp_firstName'));
-            //     print(prefs.getBool('p1_isMinor'));
-            //   },
-            //   child: const Text('Print Shared Preferences'),
-            // ),
+            if (kDebugMode)
+              TextButton(
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  // print(prefs.getKeys());
+                  // print(prefs.getString('p3_mp_birthDate'));
+                  // print(prefs.getString('p3_mp_sex'));
+                  print(prefs.getString('p3_mp_civilStatus'));
+                  print(prefs.getString('p3_mp_education'));
+                },
+                child: const Text('Print Shared Preferences'),
+              ),
+
+            // add the following code in kdebugger tool to check shared_preferences content
           ]))
     ]);
   }
