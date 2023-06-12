@@ -1456,18 +1456,18 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
                 ),
               ],
             ),
-            if (kDebugMode)
-              TextButton(
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  // print(prefs.getKeys());
-                  // print(prefs.getString('p3_mp_birthDate'));
-                  // print(prefs.getString('p3_mp_sex'));
-                  print(prefs.getString('p3_mp_civilStatus'));
-                  print(prefs.getString('p3_mp_education'));
-                },
-                child: const Text('Print Shared Preferences'),
-              ),
+            // if (kDebugMode)
+            //   TextButton(
+            //     onPressed: () async {
+            //       final prefs = await SharedPreferences.getInstance();
+            //       // print(prefs.getKeys());
+            //       // print(prefs.getString('p3_mp_birthDate'));
+            //       // print(prefs.getString('p3_mp_sex'));
+            //       print(prefs.getString('p3_mp_civilStatus'));
+            //       print(prefs.getString('p3_mp_education'));
+            //     },
+            //     child: const Text('Print Shared Preferences'),
+            //   ),
 
             // add the following code in kdebugger tool to check shared_preferences content
           ]))
