@@ -101,6 +101,8 @@ class _reportsPNPState extends State<reportsPNP> {
     fetchData();
   }
 
+  Map<dynamic, dynamic> pnpLatLngs = {};
+  String userKeyName = '';
   void _activateListeners() {
     pnpAccountsRef.onValue.listen((event) {
       var pnpProfiles = Map<String, dynamic>.from(
@@ -109,6 +111,7 @@ class _reportsPNPState extends State<reportsPNP> {
         // print(value);
         if (value['uid'] == user!.uid) {
           setState(() {
+            userKeyName = key;
             userLat = value['lat'] ?? '';
             userLong = value['long'] ?? '';
             pnp_contactEmail = value['pnp_contactEmail'] ?? '';
@@ -121,7 +124,19 @@ class _reportsPNPState extends State<reportsPNP> {
             }
           });
         }
+        try {
+          if (value['lat'] != null && value['long'] != null) {
+            pnpLatLngs[key] = LatLng(double.parse(value['lat'].toString()),
+                double.parse(value['long'].toString()));
+            // print('went here, $key ${value['lat']} and ${value['long']}');
+          }
+        } catch (e) {
+          print(e);
+        }
       });
+
+      // print('pnpLatLngs::: ${pnpLatLngs}');
+      // print('userKeyName::: ${userKeyName}');
     });
   }
 
@@ -159,21 +174,50 @@ class _reportsPNPState extends State<reportsPNP> {
                 reportListCopy.add(value);
                 reportListOriginal.add(value);
               } else {
-                List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
-                double lastSeenLocLat = lastSeenLocList[0];
-                double lastSeenLocLong = lastSeenLocList[1];
-                LatLng lastSeenLocLatLng =
-                    LatLng(lastSeenLocLat, lastSeenLocLong);
-                var distance = calculateDistance(userLatLng, lastSeenLocLatLng);
-                // currently, distance is set to 10km
-                if (distance <= 10000) {
-                  // add report to list
+                num closestDistance = double.infinity;
+                String closestLocation = '';
+
+                pnpLatLngs.forEach((location, latLng) {
+                  // var distance = calculateDistance(userLatLng, latLng);
+                  // print('location; $location latlng: $latLng');
+                  // print('$location distance: $distance');
+                  List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
+                  double lastSeenLocLat = lastSeenLocList[0];
+                  double lastSeenLocLong = lastSeenLocList[1];
+                  LatLng lastSeenLocLatLng =
+                      LatLng(lastSeenLocLat, lastSeenLocLong);
+                  var distance = calculateDistance(latLng, lastSeenLocLatLng);
+                  if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestLocation = location;
+                  }
+                  print(' ');
+                });
+                print(
+                    'closest distance for ${value['keyUid']} is: $closestDistance, $closestLocation');
+
+                if (userKeyName == closestLocation &&
+                    closestDistance <= 10000) {
                   reportList!.add(value);
                   reportListCopy.add(value);
                   reportListOriginal.add(value);
-                } else {
-                  print('[NOT OK] distance is: $distance');
                 }
+
+                // List<double> lastSeenLocList = extractDoubles(lastSeenLoc);
+                // double lastSeenLocLat = lastSeenLocList[0];
+                // double lastSeenLocLong = lastSeenLocList[1];
+                // LatLng lastSeenLocLatLng =
+                //     LatLng(lastSeenLocLat, lastSeenLocLong);
+                // var distance = calculateDistance(userLatLng, lastSeenLocLatLng);
+                // // currently, distance is set to 10km
+                // if (distance <= 10000) {
+                //   // add report to list
+                //   reportList!.add(value);
+                //   reportListCopy.add(value);
+                //   reportListOriginal.add(value);
+                // } else {
+                //   print('[NOT OK] distance is: $distance');
+                // }
               }
             }
             // reportList.add(value);
@@ -2535,8 +2579,9 @@ class _reportsPNPState extends State<reportsPNP> {
         if (item.containsKey('status')) {
           var firstName = item['p3_mp_firstName'] ?? '';
           var lastName = item['p3_mp_lastName'] ?? '';
-          var combinedName =
-              firstName + lastName == '' ? 'No Name' : firstName + lastName;
+          var combinedName = firstName + lastName == ''
+              ? 'No Name'
+              : firstName + " " + lastName;
           var status = item['status'] ?? '';
           var searchToken = combinedName + status;
           var returnVal =
