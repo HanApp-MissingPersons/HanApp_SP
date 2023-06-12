@@ -421,7 +421,7 @@ class _reportsPNPState extends State<reportsPNP> {
     pinnedLocBarangay = report['p5_brgyName'] ?? '';
     incidentDetails = report['p5_incidentDetails'] ?? '';
 
-    num distance = 0;
+    num distanceFromUser = 0;
 
     // calculate distance
     if (lastSeenLoc.isNotEmpty) {
@@ -431,8 +431,8 @@ class _reportsPNPState extends State<reportsPNP> {
       double lastSeenLocLat = lastSeenLocList[0];
       double lastSeenLocLong = lastSeenLocList[1];
       LatLng lastSeenLocLatLng = LatLng(lastSeenLocLat, lastSeenLocLong);
-      distance = calculateDistance(userLatLng, lastSeenLocLatLng);
-      report['distance'] = distance;
+      distanceFromUser = calculateDistance(userLatLng, lastSeenLocLatLng);
+      report['distanceFromUser'] = distanceFromUser;
     }
 
     // calculate and update total hours missing (both for if still missing, and if already found)
@@ -577,7 +577,7 @@ class _reportsPNPState extends State<reportsPNP> {
                   onTap: () {
                     print('tapped ${report['keyUid']}');
                     print('lastSeenLoc: $lastSeenLoc');
-                    print('distance: $distance meters away from you');
+                    print('distance: $distanceFromUser meters away from you');
                     // print('\n\n');
                     // print(reportList.length);
                     // for (dynamic i in reportList) {
