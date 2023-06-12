@@ -483,65 +483,65 @@ class _reportsPNPState extends State<reportsPNP> {
 
     // calculate and update total hours missing if Already Found (deduct with dateFound) rather than current time
 
-    // CLASSIFIERS
-    // is Minor
-    if (report['p1_isMinor'] != null && report['p1_isMinor']) {
-      importanceString = 'Minor';
-      minor = true;
-    }
-    // is Missing over 24 hours
-    if (report['p1_isMissing24Hours'] != null &&
-        report['p1_isMissing24Hours']) {
-      if (importanceString.isNotEmpty) {
-        importanceString = '$importanceString, Over 24 hours missing';
-        over24hours = true;
-      } else {
-        importanceString = 'Over 24 hours missing';
-        over24hours = true;
-      }
-    }
-    // adds the isMissing24Hours tag if the total hours is over 24 hours (calculated based on the current time and date of PNP app)
-    if (
-        // date and time not missing
-        report['p5_lastSeenDate'] != null &&
-            report['p5_lastSeenTime'] != null &&
-            // over 24 hours
-            int.parse(report['p5_totalHoursSinceLastSeen'.trim()]) >= 24 &&
-            // &&
-            // isMissing24Hours tag is false when the report is created
-            (report['p1_isMissing24Hours'] == null ||
-                report['p1_isMissing24Hours'] == false)) {
-      // update RTDB on p1_isMissing24Hours
-      report['p1_isMissing24Hours'] = true;
-      databaseReportsReference
-          .child(report['uid'])
-          .child(report['key'])
-          .update({
-        'p1_isMissing24Hours': true,
-      });
-    }
-    // is victim of a crime
-    if (report['p1_isVictimCrime'] != null && report['p1_isVictimCrime']) {
-      if (importanceString.isNotEmpty) {
-        importanceString = '$importanceString, \nVictim of Crime';
-        crime = true;
-      } else {
-        importanceString = 'Victim of Crime';
-        crime = true;
-      }
-    }
-    // is victim of natural calamity or human-made accident
-    if (report['p1_isVictimNaturalCalamity'] != null &&
-        report['p1_isVictimNaturalCalamity']) {
-      if (importanceString.isNotEmpty) {
-        importanceString = '$importanceString, \nVictim of Calamity';
-        calamity = true;
-      } else {
-        importanceString = 'Victim of Calamity';
-        calamity = true;
-      }
-    }
-    report['importanceTags'] = importanceString;
+    // // CLASSIFIERS
+    // // is Minor
+    // if (report['p1_isMinor'] != null && report['p1_isMinor']) {
+    //   importanceString = 'Minor';
+    //   minor = true;
+    // }
+    // // is Missing over 24 hours
+    // if (report['p1_isMissing24Hours'] != null &&
+    //     report['p1_isMissing24Hours']) {
+    //   if (importanceString.isNotEmpty) {
+    //     importanceString = '$importanceString, Over 24 hours missing';
+    //     over24hours = true;
+    //   } else {
+    //     importanceString = 'Over 24 hours missing';
+    //     over24hours = true;
+    //   }
+    // }
+    // // adds the isMissing24Hours tag if the total hours is over 24 hours (calculated based on the current time and date of PNP app)
+    // if (
+    //     // date and time not missing
+    //     report['p5_lastSeenDate'] != null &&
+    //         report['p5_lastSeenTime'] != null &&
+    //         // over 24 hours
+    //         int.parse(report['p5_totalHoursSinceLastSeen'.trim()]) >= 24 &&
+    //         // &&
+    //         // isMissing24Hours tag is false when the report is created
+    //         (report['p1_isMissing24Hours'] == null ||
+    //             report['p1_isMissing24Hours'] == false)) {
+    //   // update RTDB on p1_isMissing24Hours
+    //   report['p1_isMissing24Hours'] = true;
+    //   databaseReportsReference
+    //       .child(report['uid'])
+    //       .child(report['key'])
+    //       .update({
+    //     'p1_isMissing24Hours': true,
+    //   });
+    // }
+    // // is victim of a crime
+    // if (report['p1_isVictimCrime'] != null && report['p1_isVictimCrime']) {
+    //   if (importanceString.isNotEmpty) {
+    //     importanceString = '$importanceString, \nVictim of Crime';
+    //     crime = true;
+    //   } else {
+    //     importanceString = 'Victim of Crime';
+    //     crime = true;
+    //   }
+    // }
+    // // is victim of natural calamity or human-made accident
+    // if (report['p1_isVictimNaturalCalamity'] != null &&
+    //     report['p1_isVictimNaturalCalamity']) {
+    //   if (importanceString.isNotEmpty) {
+    //     importanceString = '$importanceString, \nVictim of Calamity';
+    //     calamity = true;
+    //   } else {
+    //     importanceString = 'Victim of Calamity';
+    //     calamity = true;
+    //   }
+    // }
+    // report['importanceTags'] = importanceString;
 
     // mp recent photo
     // if (missingPersonImageString.isNotEmpty) {
@@ -1307,6 +1307,11 @@ class _reportsPNPState extends State<reportsPNP> {
     // DateTime reporteeBirthdate = dateTimeFormat
     //     .parse('${report['reportee_birthDate']} 12:00 am');
 
+    bool minor_dialog = report['p1_isMinor'] ?? false;
+    bool crime_dialog = report['p1_isVictimCrime'] ?? false;
+    bool calamity_dialog = report['p1_isVictimNaturalCalamity'] ?? false;
+    bool over24hours_dialog = report['p1_isMissing24Hours'] ?? false;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1804,12 +1809,11 @@ class _reportsPNPState extends State<reportsPNP> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Visibility(
-                              visible:
-                                  minor || crime || calamity || over24hours,
+                              visible: minor_dialog || crime_dialog || calamity_dialog || over24hours_dialog,
                               child: Wrap(
                                 children: [
                                   Visibility(
-                                    visible: crime,
+                                    visible: crime_dialog,
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
@@ -1826,7 +1830,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                     ),
                                   ),
                                   Visibility(
-                                    visible: calamity,
+                                    visible: calamity_dialog,
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
@@ -1843,7 +1847,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                     ),
                                   ),
                                   Visibility(
-                                    visible: over24hours,
+                                    visible: over24hours_dialog,
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
@@ -1860,7 +1864,7 @@ class _reportsPNPState extends State<reportsPNP> {
                                     ),
                                   ),
                                   Visibility(
-                                    visible: minor,
+                                    visible: minor_dialog,
                                     child: Container(
                                       margin: EdgeInsets.only(right: 5, top: 5),
                                       padding: const EdgeInsets.all(8),
