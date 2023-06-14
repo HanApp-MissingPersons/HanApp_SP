@@ -67,7 +67,7 @@ class _ReportMainState extends State<ReportMain> {
   }
 
   // set page default heights
-  double p2height = 2250;
+  double p2height = 2300;
   double p3height = 2400;
   double p4height = 2400;
   double p5height = 1700;
@@ -75,13 +75,37 @@ class _ReportMainState extends State<ReportMain> {
   // functions to increase and return page heights
   void increaseP2Height() {
     setState(() {
-      p2height = p3height + 500;
+      p2height = p2height + 450;
     });
   }
 
   void returnP2Height() {
     setState(() {
-      p2height = p3height - 500;
+      p2height = p2height - 450;
+    });
+  }
+
+  void defaultP2Height() {
+    setState(() {
+      p2height = 2300;
+    });
+  }
+
+  void defaultP3Height() {
+    setState(() {
+      p3height = 2400;
+    });
+  }
+
+  void defaultP4Height() {
+    setState(() {
+      p4height = 2400;
+    });
+  }
+
+  void enhancedHeightP5() {
+    setState(() {
+      p5height = 1700;
     });
   }
 
@@ -136,6 +160,7 @@ class _ReportMainState extends State<ReportMain> {
               child: Page2ReporteeDetails(
                 addHeightParent: increaseP2Height,
                 subtractHeightParent: returnP2Height,
+                defaultHeightParent: defaultP2Height,
               )), // change image display height
           // page 3
           SizedBox(
@@ -143,6 +168,7 @@ class _ReportMainState extends State<ReportMain> {
               child: Page3MPDetails(
                 addHeightParent: increaseP3Height,
                 subtractHeightParent: returnP3Height,
+                defaultHeightParent: defaultP3Height,
               )),
           // page 4
           SizedBox(
@@ -150,6 +176,7 @@ class _ReportMainState extends State<ReportMain> {
               child: Page4MPDesc(
                 addHeightParent: increaseP4Height,
                 subtractHeightParent: returnP4Height,
+                defaultHeightParent: defaultP4Height,
               )), // change image display height
           // page 5
           SizedBox(
@@ -157,6 +184,7 @@ class _ReportMainState extends State<ReportMain> {
               child: Page5IncidentDetails(
                 addHeightParent: increaseP5Height,
                 subtractHeightParent: decreaseP5Height,
+                enhancedHeightParent: enhancedHeightP5,
               )),
           // page 6
           Container(

@@ -88,10 +88,12 @@ class Page2ReporteeDetails extends StatefulWidget {
   // const Page2ReporteeDetails({Key? key, required void Function() addHeightParent, required void Function() subtractHeightParent}) : super(key: key);
   final VoidCallback addHeightParent;
   final VoidCallback subtractHeightParent;
+  final VoidCallback defaultHeightParent;
   const Page2ReporteeDetails(
       {super.key,
       required this.addHeightParent,
-      required this.subtractHeightParent});
+      required this.subtractHeightParent,
+      required this.defaultHeightParent});
 
   @override
   State<Page2ReporteeDetails> createState() => _Page2ReporteeDetailsState();
@@ -193,12 +195,17 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     }
   }
 
+  bool isDrafted = false;
   Future<void> getReporteeInfo() async {
     _prefs = await SharedPreferences.getInstance();
     loadImages();
     loadImage_face();
     setState(() {
-      reportee_hasAltAddress = _prefs.getBool('p2_hasAltAddress') ?? false;
+      isDrafted = _prefs.getBool('isDrafted') ?? false;
+      isDrafted ? widget.defaultHeightParent() : null;
+      bool check = _prefs.getBool('p2_hasAltAddress') ?? false;
+      reportee_hasAltAddress =
+          !isDrafted ? _prefs.getBool('p2_hasAltAddress') ?? false : false;
       // _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Single';
       // if (_prefs.getString('p2_civil_status') == null) {
       //   _prefs.setString('p2_civil_status', 'Single');

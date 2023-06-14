@@ -31,10 +31,12 @@ void clearPrefs() {
 class Page4MPDesc extends StatefulWidget {
   final VoidCallback addHeightParent;
   final VoidCallback subtractHeightParent;
+  final VoidCallback defaultHeightParent;
   const Page4MPDesc(
       {super.key,
       required this.addHeightParent,
-      required this.subtractHeightParent});
+      required this.subtractHeightParent,
+      required this.defaultHeightParent});
 
   @override
   State<Page4MPDesc> createState() => _Page4MPDescState();
@@ -351,9 +353,14 @@ class _Page4MPDescState extends State<Page4MPDesc> {
         _mp_socmed_other_username.text =
             _prefs.getString('p4_mp_socmed_other_username') ?? '';
         // bool for mp_dental_available and mp_fingerprints_available
-        mp_dental_available = _prefs.getBool('p4_mp_dental_available') ?? false;
-        mp_fingerprints_available =
-            _prefs.getBool('p4_mp_fingerprints_available') ?? false;
+        bool isDrafted = _prefs.getBool('isDrafted') ?? false;
+        isDrafted ? widget.defaultHeightParent() : null;
+        mp_dental_available = !isDrafted
+            ? _prefs.getBool('p4_mp_dental_available') ?? false
+            : false;
+        mp_fingerprints_available = !isDrafted
+            ? _prefs.getBool('p4_mp_fingerprints_available') ?? false
+            : false;
       });
     });
     getBoolChoices();

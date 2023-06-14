@@ -11,6 +11,7 @@ import 'package:hanapp/main.dart';
 import 'package:hanapp/views/main/pages/profile_main.dart';
 import 'package:location/location.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../firebase_options.dart';
 import 'pages/home_main.dart';
 import 'pages/report_main.dart';
@@ -70,6 +71,7 @@ class _NavigationFieldState extends State<NavigationField> {
     print('PRINT HIDDEN: ${hiddenReports.keys.toList()}');
   }
 
+  bool isDrafted = false;
   bool serviceEnabled = false;
   continuallyCheckLocationService() async {
     Future.delayed(const Duration(seconds: 1)).then((value) async {
@@ -295,6 +297,7 @@ class _NavigationFieldState extends State<NavigationField> {
                           Navigator.of(context).pop();
                           setState(() {
                             selectedIndex = index;
+                            prefs.setBool('isDrafted', true);
                           });
                           if (mounted) {
                             //show snackbar
@@ -387,7 +390,13 @@ class _NavigationFieldState extends State<NavigationField> {
     // _fetchData();
     Location().getLocation();
     continuallyCheckLocationService();
+    sharedPref();
     super.initState();
+  }
+
+  late SharedPreferences prefs;
+  void sharedPref() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   bool? locationPermission;

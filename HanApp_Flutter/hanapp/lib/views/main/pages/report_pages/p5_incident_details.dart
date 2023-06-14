@@ -82,10 +82,12 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
 class Page5IncidentDetails extends StatefulWidget {
   final VoidCallback addHeightParent;
   final VoidCallback subtractHeightParent;
+  final VoidCallback enhancedHeightParent;
   const Page5IncidentDetails(
       {super.key,
       required this.addHeightParent,
-      required this.subtractHeightParent});
+      required this.subtractHeightParent,
+      required this.enhancedHeightParent});
 
   @override
   State<Page5IncidentDetails> createState() => _Page5IncidentDetailsState();
@@ -170,10 +172,18 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
   Future<void> getSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
+      widget.enhancedHeightParent();
       prefs.setString('p5_reportDate', reportDate!);
       lastSeenDate = prefs.getString('p5_lastSeenDate');
       lastSeenTime = prefs.getString('p5_lastSeenTime');
       totalHoursSinceLastSeen = prefs.getString('p5_totalHoursSinceLastSeen');
+
+      prefs.containsKey('p5_lastSeenDate') ? widget.addHeightParent() : null;
+      prefs.containsKey('p5_lastSeenTime') ? widget.addHeightParent() : null;
+      prefs.containsKey('p5_totalHoursSinceLastSeen')
+          ? widget.addHeightParent()
+          : null;
+
       lastSeenLoc = prefs.getString('p5_lastSeenLoc');
       incidentDetails = prefs.getString('p5_incidentDetails');
       String? locSnapshotString = prefs.getString('p5_locSnapshot');
