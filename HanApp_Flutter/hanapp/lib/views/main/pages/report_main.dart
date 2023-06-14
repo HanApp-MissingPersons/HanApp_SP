@@ -8,6 +8,7 @@ import 'package:hanapp/views/main/pages/report_pages/p4_mp_description.dart';
 import 'package:hanapp/views/main/pages/report_pages/p5_incident_details.dart';
 import 'package:hanapp/views/main/pages/report_pages/p6_auth_confirm.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /* REQUIREMENTS:
 1. Need to have adaptive height to content for scrolling (currently hardcoded mediquery height) (find: NOTE1)
@@ -42,6 +43,27 @@ class _ReportMainState extends State<ReportMain> {
   @override
   void initState() {
     super.initState();
+    getSharedPrefLen();
+  }
+
+  void getSharedPrefLen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getKeys().length > 0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.grey[200], // Light grey background color
+            content: Text(
+              'You have an existing report. Please complete it first.',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo[900]), // Dark indigo text color
+            ),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 
   // set page default heights

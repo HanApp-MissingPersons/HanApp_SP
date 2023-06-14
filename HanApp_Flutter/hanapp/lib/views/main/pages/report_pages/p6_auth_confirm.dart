@@ -673,8 +673,23 @@ class _Page6AuthConfirmState extends State<Page6AuthConfirm> {
                                                                           areImageUploading =
                                                                               true;
                                                                         });
-                                                                        await submitReport().then((value) =>
-                                                                            popAndShowSnackbar(context));
+                                                                        try {
+                                                                          await submitReport().then((value) =>
+                                                                              popAndShowSnackbar(context));
+                                                                        } catch (e) {
+                                                                          if (mounted) {
+                                                                            // Scaffold messenger
+                                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                                              SnackBar(
+                                                                                backgroundColor: Colors.grey[200], // Light grey background color
+                                                                                content: Text(
+                                                                                  'Oops, something went wrong. Please try filling out the form again.',
+                                                                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.indigo[900]), // Dark indigo text color
+                                                                                ),
+                                                                              ),
+                                                                            );
+                                                                          }
+                                                                        }
                                                                       },
                                                             child: areImageUploading
                                                                 ? const SizedBox(

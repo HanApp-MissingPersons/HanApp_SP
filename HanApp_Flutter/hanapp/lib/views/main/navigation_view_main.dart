@@ -269,11 +269,11 @@ class _NavigationFieldState extends State<NavigationField> {
         context: context,
         builder: (_) => AlertDialog(
           title: const Text(
-            'Discard Report',
+            'Leave Report Page',
             style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w600),
           ),
           content: const Text(
-            'Are you sure? You will lose all the progress of your report',
+            'Are you sure? You can discard your report, or save the current details for you to complete at a later time.',
             style: TextStyle(
               fontSize: 15.0,
             ),
@@ -286,14 +286,42 @@ class _NavigationFieldState extends State<NavigationField> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Container(
+                      height: 35,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                          if (mounted) {
+                            //show snackbar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors
+                                    .grey[200], // Light grey background color
+                                content: Text(
+                                  'Draft Saved.',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.indigo[
+                                          900]), // Dark indigo text color
+                                ),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text(
+                          'Save Draft',
+                        ),
+                      ),
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 20),
+                    padding: const EdgeInsets.only(left: 10),
                     child: Container(
                       height: 35,
                       decoration: BoxDecoration(
@@ -310,6 +338,23 @@ class _NavigationFieldState extends State<NavigationField> {
                           // if user is on report page and wants to navigate away
                           // clear the prefs
                           clearPrefs();
+                          if (mounted) {
+                            //show snackbar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors
+                                    .grey[200], // Light grey background color
+                                content: Text(
+                                  'Report Discarded.',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.indigo[
+                                          900]), // Dark indigo text color
+                                ),
+                                duration: Duration(seconds: 3),
+                              ),
+                            );
+                          }
                         },
                         child: const Text(
                           'Discard',
