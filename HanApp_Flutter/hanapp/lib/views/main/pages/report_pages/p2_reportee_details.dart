@@ -201,11 +201,15 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
     loadImages();
     loadImage_face();
     setState(() {
-      isDrafted = _prefs.getBool('isDrafted') ?? false;
-      isDrafted ? widget.defaultHeightParent() : null;
-      bool check = _prefs.getBool('p2_hasAltAddress') ?? false;
-      reportee_hasAltAddress =
-          !isDrafted ? _prefs.getBool('p2_hasAltAddress') ?? false : false;
+      widget.defaultHeightParent();
+      reportee_hasAltAddress = _prefs.getBool('p2_hasAltAddress') ?? false;
+      reportee_hasAltAddress ? widget.addHeightParent() : null;
+      // default is false
+      // isDrafted = _prefs.getBool('isDrafted') ?? false;
+      // isDrafted ? widget.defaultHeightParent() : null;
+      // bool check = _prefs.getBool('p2_hasAltAddress') ?? false;
+      // reportee_hasAltAddress =
+      //     !isDrafted ? _prefs.getBool('p2_hasAltAddress') ?? false : false;
       // _civilStatusValue = _prefs.getString('p2_civil_status') ?? 'Single';
       // if (_prefs.getString('p2_civil_status') == null) {
       //   _prefs.setString('p2_civil_status', 'Single');

@@ -72,6 +72,30 @@ class _ReportMainState extends State<ReportMain> {
   double p4height = 2400;
   double p5height = 1700;
 
+  void setP2Height(double height) {
+    setState(() {
+      p2height = height;
+    });
+  }
+
+  void setP3Height(double height) {
+    setState(() {
+      p3height = height;
+    });
+  }
+
+  void setP4Height(double height) {
+    setState(() {
+      p4height = height;
+    });
+  }
+
+  void setP5Height(double height) {
+    setState(() {
+      p5height = height;
+    });
+  }
+
   // functions to increase and return page heights
   void increaseP2Height() {
     setState(() {

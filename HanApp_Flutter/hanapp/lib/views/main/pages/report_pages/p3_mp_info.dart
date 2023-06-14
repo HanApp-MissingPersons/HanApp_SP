@@ -189,12 +189,20 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
   @override
   void initState() {
     _mp_birthDate = TextEditingController();
-    super.initState();
 
     // shared preferences
     SharedPreferences.getInstance().then((prefs) {
       setState(() {
         _prefs = prefs;
+        widget.defaultHeightParent();
+
+        mp_hasAltAddress = _prefs.getBool('p3_mp_hasAltAddress') ?? false;
+        mp_hasSchoolWorkAddress =
+            _prefs.getBool('p3_mp_hasSchoolWorkAddress') ?? false;
+
+        mp_hasAltAddress ? widget.addHeightParent() : null;
+        mp_hasSchoolWorkAddress ? widget.addHeightParent() : null;
+
         // basic info
         // if (prefs.getString('p3_mp_civilStatus') == null) {
         //   prefs.setString('p3_mp_civilStatus', 'Single');
@@ -279,16 +287,9 @@ class _Page3MPDetailsState extends State<Page3MPDetails> {
             prefs.getString('p3_mp_workSchool_streetHouseNum') ?? '';
         _mp_workSchool_name.text =
             prefs.getString('p3_mp_workSchool_name') ?? '';
-        // for mp_hasAltAddress and mp_hasSchoolWorkAddress bool
-        bool isDrafted = prefs.getBool('isDrafted') ?? false;
-        isDrafted ? widget.defaultHeightParent() : null;
-        mp_hasAltAddress =
-            !isDrafted ? _prefs.getBool('p3_mp_hasAltAddress') ?? false : false;
-        mp_hasSchoolWorkAddress = !isDrafted
-            ? _prefs.getBool('p3_mp_hasSchoolWorkAddress') ?? false
-            : false;
       });
     });
+    super.initState();
   }
 
   /* DISPOSE CONTROLLERS */

@@ -312,6 +312,19 @@ class _Page4MPDescState extends State<Page4MPDesc> {
     SharedPreferences.getInstance().then((prefs) {
       setState(() {
         _prefs = prefs;
+        widget.defaultHeightParent();
+
+        // bool for mp_dental_available and mp_fingerprints_available
+        // bool isDrafted = _prefs.getBool('isDrafted') ?? false;
+        // isDrafted ? widget.defaultHeightParent() : null;
+
+        mp_dental_available = _prefs.getBool('p4_mp_dental_available') ?? false;
+        mp_fingerprints_available =
+            _prefs.getBool('p4_mp_fingerprints_available') ?? false;
+
+        mp_dental_available! ? widget.addHeightParent() : null;
+        mp_fingerprints_available! ? widget.addHeightParent() : null;
+
         // scars, marks, tattoos
         _mp_scars.text = _prefs.getString('p4_mp_scars') ?? '';
         _mp_marks.text = _prefs.getString('p4_mp_marks') ?? '';
@@ -352,15 +365,6 @@ class _Page4MPDescState extends State<Page4MPDesc> {
             _prefs.getString('p4_mp_socmed_other_platform') ?? '';
         _mp_socmed_other_username.text =
             _prefs.getString('p4_mp_socmed_other_username') ?? '';
-        // bool for mp_dental_available and mp_fingerprints_available
-        bool isDrafted = _prefs.getBool('isDrafted') ?? false;
-        isDrafted ? widget.defaultHeightParent() : null;
-        mp_dental_available = !isDrafted
-            ? _prefs.getBool('p4_mp_dental_available') ?? false
-            : false;
-        mp_fingerprints_available = !isDrafted
-            ? _prefs.getBool('p4_mp_fingerprints_available') ?? false
-            : false;
       });
     });
     getBoolChoices();
