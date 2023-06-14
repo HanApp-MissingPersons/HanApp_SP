@@ -70,6 +70,7 @@ class _ReportMainState extends State<ReportMain> {
   double p2height = 2250;
   double p3height = 2400;
   double p4height = 2400;
+  double p5height = 1700;
 
   // functions to increase and return page heights
   void increaseP2Height() {
@@ -99,6 +100,18 @@ class _ReportMainState extends State<ReportMain> {
   void increaseP4Height() {
     setState(() {
       p4height = p4height + 300;
+    });
+  }
+
+  void increaseP5Height() {
+    setState(() {
+      p5height = p5height + 100;
+    });
+  }
+
+  void decreaseP5Height() {
+    setState(() {
+      p5height = p5height - 100;
     });
   }
 
@@ -139,7 +152,12 @@ class _ReportMainState extends State<ReportMain> {
                 subtractHeightParent: returnP4Height,
               )), // change image display height
           // page 5
-          const SizedBox(height: 2000, child: Page5IncidentDetails()),
+          SizedBox(
+              height: p5height,
+              child: Page5IncidentDetails(
+                addHeightParent: increaseP5Height,
+                subtractHeightParent: decreaseP5Height,
+              )),
           // page 6
           Container(
             margin: const EdgeInsets.only(top: 40),

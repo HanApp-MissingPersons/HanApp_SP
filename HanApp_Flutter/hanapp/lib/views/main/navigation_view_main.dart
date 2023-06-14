@@ -321,7 +321,7 @@ class _NavigationFieldState extends State<NavigationField> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 10),
+                    padding: const EdgeInsets.only(left: 10, right: 15),
                     child: Container(
                       height: 35,
                       decoration: BoxDecoration(

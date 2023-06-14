@@ -80,7 +80,12 @@ List reformatDate(String dateTime, DateTime dateTimeBday) {
 }
 
 class Page5IncidentDetails extends StatefulWidget {
-  const Page5IncidentDetails({super.key});
+  final VoidCallback addHeightParent;
+  final VoidCallback subtractHeightParent;
+  const Page5IncidentDetails(
+      {super.key,
+      required this.addHeightParent,
+      required this.subtractHeightParent});
 
   @override
   State<Page5IncidentDetails> createState() => _Page5IncidentDetailsState();
@@ -456,6 +461,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                                 totalHoursSinceLastSeen!);
                           });
                         }
+                        widget.addHeightParent();
                       },
                     ),
                   ),
@@ -530,6 +536,7 @@ class _Page5IncidentDetailsState extends State<Page5IncidentDetails> {
                                   totalHoursSinceLastSeen!);
                             });
                           }
+                          widget.addHeightParent();
                         },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
