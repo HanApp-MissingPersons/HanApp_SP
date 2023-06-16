@@ -1189,13 +1189,149 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                   color: Colors.black54),
             ),
             _verticalPadding,
-            const Text(
-              "Identification Card/Document*",
-              style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black38),
+            Row(
+              children: [
+                const Text(
+                  "Identification Card/Document*",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black38,
+                  ),
+                ),
+                IconButton(
+                  alignment: Alignment.centerLeft,
+                  icon: Icon(Icons.info_outline, color: Colors.indigo[500]),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          title: Text("Valid IDs"),
+                          content: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: Colors.grey[200],
+                                  ),
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: const [
+                                      Text(
+                                        'A Valid ID can be any Government-issued ID with photo and signature, or a Student ID.',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Text(
+                                        'Valid ID examples:',
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Container(
+                                  height: 200,
+                                  child: ListView(
+                                    shrinkWrap: true,
+                                    children: const [
+                                      ListTile(
+                                        leading: Icon(Icons.book),
+                                        title: Text("Passport"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.drive_eta),
+                                        title: Text("Driver's License"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.credit_card),
+                                        title: Text(
+                                            "Unified Multi-purpose Identification (UMID) Card"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.person),
+                                        title: Text(
+                                            "Social Security System (SSS) ID"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.work),
+                                        title: Text(
+                                            "Government Service Insurance System (GSIS) ID"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.healing),
+                                        title: Text("PhilHealth ID"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.markunread_mailbox),
+                                        title: Text("Postal ID"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.school),
+                                        title: Text(
+                                            "Professional Regulation Commission (PRC) ID"),
+                                      ),
+                                      ListTile(
+                                        leading: Icon(Icons.how_to_vote),
+                                        title: Text("Voter's ID"),
+                                      ),
+                                      ListTile(
+                                        leading:
+                                            Icon(Icons.confirmation_number),
+                                        title: Text(
+                                            "Tax Identification Number (TIN) ID"),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 20,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.info_outline,
+                                        color: Colors.grey,
+                                        size: 14,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text(
+                                        'Scroll down to view more',
+                                        style: TextStyle(
+                                            color: Colors.grey, fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: [
+                            Container(
+                              margin: const EdgeInsets.only(right: 20),
+                              child: ElevatedButton(
+                                child: Text("Close"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
+
             // use image picker to upload ID
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
