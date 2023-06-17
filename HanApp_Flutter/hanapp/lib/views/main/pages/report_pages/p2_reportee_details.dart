@@ -1210,11 +1210,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          title: Text("Valid IDs"),
+                          title: const Text("Valid IDs"),
                           content: SingleChildScrollView(
                             child: Column(
                               children: [
                                 Container(
+                                  width: 300,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: Colors.grey[200],
@@ -1235,8 +1236,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                Container(
+                                SizedBox(
                                   height: 200,
+                                  width: 300,
                                   child: ListView(
                                     shrinkWrap: true,
                                     children: const [
