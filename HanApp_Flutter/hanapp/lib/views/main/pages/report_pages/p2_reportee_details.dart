@@ -1215,7 +1215,9 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                             child: Column(
                               children: [
                                 Container(
-                                  width: 300,
+                                  // width: 300,
+                                  width:
+                                      MediaQuery.of(context).size.width - 100,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: Colors.grey[200],
@@ -1237,8 +1239,12 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                                 ),
                                 const SizedBox(height: 20),
                                 SizedBox(
-                                  height: 200,
-                                  width: 300,
+                                  // height: 200,
+                                  height:
+                                      MediaQuery.of(context).size.height - 400,
+                                  // width: 300,
+                                  width:
+                                      MediaQuery.of(context).size.width - 100,
                                   child: ListView(
                                     shrinkWrap: true,
                                     children: const [
