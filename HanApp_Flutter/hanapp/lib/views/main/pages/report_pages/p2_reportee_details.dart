@@ -1223,13 +1223,20 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                                   child: Column(
                                     children: const [
                                       Text(
-                                        'A Valid ID can be any Government-issued ID with photo and signature, or a Student ID.',
-                                        style: TextStyle(color: Colors.black),
+                                        'A Valid ID can be any (but are not limited to) Government-issued ID, Company ID, or a Student ID.',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500),
+                                        textAlign: TextAlign.start,
                                       ),
                                       SizedBox(height: 10),
                                       Text(
-                                        'Valid ID examples:',
-                                        style: TextStyle(color: Colors.black),
+                                        'Some valid ID examples:',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500),
                                       ),
                                     ],
                                   ),
@@ -1295,15 +1302,15 @@ class _Page2ReporteeDetailsState extends State<Page2ReporteeDetails> {
                                   height: 20,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
+                                    children: const [
                                       Icon(
-                                        Icons.info_outline,
+                                        Icons.info_rounded,
                                         color: Colors.grey,
                                         size: 14,
                                       ),
                                       SizedBox(width: 5),
                                       Text(
-                                        'Scroll down to view more',
+                                        'Scroll to view examples',
                                         style: TextStyle(
                                             color: Colors.grey, fontSize: 12),
                                       ),
