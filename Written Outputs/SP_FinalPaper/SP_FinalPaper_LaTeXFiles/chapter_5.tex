@@ -23,44 +23,52 @@ The recommendations section will be divided in two parts: ``Application Recommen
 
 This subsection enumerates and discusses the limitations of the HanApp system prototype as well as the pertinent features and modifications required to address them.
 
-\subsubsection{1. Automated ID and Face Verification API}
+\begin{enumerate}
+    \item \subsubsection{Automated ID and Face Verification API}
 When filing a report through the main user app, the reportee is required to upload a photo of their legitimate ID as well as a selfie. The receiving PNP admin app user will then compare the selfie and ID photo to each other as well as the reportee details. However, this method of manually cross-checking the information and photos is time-consuming and cumbersome. 
 
 The researchers therefore strongly advise integrating an automated ID and Face Verification API that utilizes machine learning for text and facial feature detection. The recommended ID and Face Verification API should, upon uploading the ID photo and selfie, automatically compare the selfie photo and the reportee information with the details and photo on the ID. This automated verification system would save valuable time and allow for faster report verification and dissemination, thus enabling the PNP and the concerned general public to act sooner on the case.
+    
+    \item \subsubsection{Allow Users to Reset Password}
+To improve application availability and ensure that users are always able to log into their accounts, it is imperative to implement a ``Password Reset" feature to all users (Main App Users, PNP users). The researchers suggest adding this feature on the the respective interfaces' login screens (through a ``Forget Password" or ``Reset Password" button), and should allow users to reset their password using their registered email address. Firebase already has a ``Send a password reset email" API, which should make this feature easy to implement.
 
-\subsubsection{2. Precinct-Based Report Routing}
+    \item \subsubsection{Precinct-Based Report Routing}
 
 The HanApp system prototype uses a distance-based approach in its report routing due to the absence of PNP precinct map data. As a result, missing persons case reports are sent to the nearest PNP station account based on the last known location of the absent/missing person. It is strongly advised to modify the report routing from distance-based to precinct-based once a PNP precinct map data is made available in order to prevent misrouting of reports. 
 
-\subsubsection{3. Allow PNP Accounts to Manually Add In-Person-Submitted Verified Reports}
+    \item \subsubsection{Allow PNP Accounts to Manually Add In-Person-Submitted Verified Reports}
 The HanApp system prototype enables the dissemination of PNP-verified so that the public can be notified and assist with missing persons cases. The system prototype has certain limitations in this area as only reports that users have filed through the app are disseminated on the “Nearby” page of the app.
 
 Therefore, it would be beneficial to enable PNP station accounts to manually add verified reports that were submitted in person. The scope of report dissemination through the app would be expanded to include verified reports submitted both in-person and through the app.
 
-
-\subsubsection{4. In-App Direct Messaging}
+    \item \subsubsection{In-App Direct Messaging}
 There is currently no means for users (PNP app and main app users) to communicate with each other through the application itself. If the PNP station handling the case needs to communicate with the reportee about their report or if a user with leads on the case wants to contact the reportee, they could only do so through the reportee’s phone number or email address posted in the report. As such, the researchers believe that an in-app direct messaging feature could hasten communication and coordination between concerned parties.
+\end{enumerate}
 
 \subsection{External Dependencies and Systems Recommendations}
 
 This subsection enumerates the external resources and systems that the application requires but whose creation, initiation, and/or modification is outside the scope of the study. 
 
-\subsubsection{1. Improve the Accuracy and Completeness on Geocoded Locations}
-
+\begin{enumerate}
+    \item \subsubsection{Improve the Accuracy and Completeness on Geocoded Locations}
 As noted in Chapter 4, the reverse geocoding provides accurate address information regarding the selected last known location of the absent/missing person, but occasionally returns incomplete or less accurate address information based on the location data registered in Google Maps (and fetched by the Google Geocoding API). As a result, in order to ensure the accuracy and completeness of addresses  fetched through reverse geocoding in the reports, it is necessary to improve Google Maps data to represent the actual addressess. Alternatively, it is also  recommended to look for geocoding APIs that returns more accurate and comprehensive location information.
 
-\subsubsection{2. PNP Stations Directory and Precinct Map Data} 
-
+    \item \subsubsection{PNP Stations Directory and Precinct Map Data}
 \textbf{Publishing a Comprehensive PNP National Directory}. A national directory of all police stations in the Philippines must be made available for easy access and publication into the HanApp database in order to avoid having to hard-code location and contact information for each police station. Once this is done, each PNP station's HanApp administrative account will have a more streamlined and error-free registration process, and users will have accurate PNP station location and contact information when contacting the police about leads or information that could assist in resolving missing persons cases.
 
 \textbf{Provision of a Complete Precinct Map Data}. To prevent potential misrouting of reports, it is imperative for the HanApp application suite to acquire PNP Precinct Map Data. Specifically, the map data should draw precinct (or area of jurisdiction) boundaries for each police station. Once provided, this will require modifications in HanApp application suite’s report routing function such that, instead of using distance calculations, all reports will be routed to the appropriate PNP station if the last known location’s longitude and latitude fall within the PNP station’s precinct boundaries.
 
-\subsubsection{3. Centralized Registration and Management System for PNP Admin Accounts}
-
+    \item \subsubsection{Centralized Registration and Management System for PNP Admin Accounts}
 To reiterate the current system for registering PNP Admin Accounts, PNP stations are required to contact the developers in order to manually create an account for each station. However, for both security and efficiency, it is highly recommended that the registration system be regulated and centralized within the PNP if and when the application is fully deployed and utilized by the PNP. 
 
 Specifically, the researchers suggest the creation of national and regional administrative accounts which will be managed by the PNP Central and regional offices, respectively. The regional PNP HanApp accounts would be able to create and manage accounts and reports for each station under their area, whereas the Central PNP account has the primary administrative access to all accounts and their reports. Through centralization and regulation, the creation and management of accounts and retrieval of report data becomes more secured and streamlined.
 
-\subsubsection{4. Extending the HanApp Online Reporting  System to Other Incidents}
+\item \subsubsection{Enabling LGU Involvement and Coordination}
+To further supplement the community-based search efforts, it is highly recommended to involve the local government unit (from the City/Municipality to the Barangay level) where the missing person was last seen. As such, the creation of a HanApp LGU interface and accounts is necessary. 
 
+The proposed interface should allow the LGU to be immediately notified as soon as a report is verified within their area, and enable them to add details to the reports which should be visible to the PNP station account via report details as well as the Nearby page for main app users. Moreover, the interface should provide an in-application direct communication channel between the PNP station and LGU accounts to improve coordination between the LGU units and the PNP. Lastly, in addition to being able to contact the PNP (via the ``Call/Email PNP station" in the Nearby page), main app users should also have the option of communicating leads to the LGU.
+
+    \item \subsubsection{Extending the HanApp Online Reporting  System to Other Incidents}
 The researchers recommend utilizing HanApp’s online reporting infrastructure to allow for the reporting (and dissemination) of other types of incidents other than missing persons cases such as kidnapping. This will require modifying the report forms and report management, as well as overhauling the backend data model to accommodate multiple types of incidents. The researchers believe that having an online police report filing system for various types of incidents can undoubtedly be beneficial to the PNP and the general public. 
+
+\end{enumerate}

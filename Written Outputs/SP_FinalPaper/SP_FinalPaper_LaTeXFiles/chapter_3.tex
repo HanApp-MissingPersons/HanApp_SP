@@ -105,7 +105,7 @@ Packages in Flutter can be reviewed and downloaded from pub.dev, the official pa
 The following sections enumerate and discuss the backend, privacy and security, user interface, functional, and UI/UX design requirements that the the application suite needs to satisfy. For the purposes of tracking and verifying each feature during development and testing, a checklist of all features was developed. Table \ref{table:reqChecklist} lists down all the requirements and whether these requirements have been developed and achieved. 
 
 % start of table
-\begin{table}[h!]
+\begin{table}[!ht]
 \caption{Checklist of Requirements}
 \label{table:reqChecklist}
 %table contents
@@ -127,6 +127,7 @@ The following sections enumerate and discuss the backend, privacy and security, 
 \multicolumn{1}{|l|}{User Registration}                                                                                                                             &                                                               {\hspace{1.75cm}}                             \\ \hline
 \multicolumn{1}{|l|}{PNP Admin Account Creation}                                                                                                                    &                                                               {\hspace{1.75cm}}                             \\ \hline
 \multicolumn{1}{|l|}{Reporting and Receiving Updates}                                                                                                               &                                                                    {\hspace{1.75cm}}                        \\ \hline
+\multicolumn{1}{|l|}{Save Report as Draft}                                                                                                               &                                                                    {\hspace{1.75cm}}                        \\ \hline
 \multicolumn{1}{|l|}{Receive, Manage, and Verify Reports (PNP)}                                                                                                     &                                                            {\hspace{1.75cm}}                                \\ \hline
 \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Accessing PNP-Verified Reports and receiving \\ Location-based notification for PNP-verified MP cases\end{tabular}} &                                                {\hspace{1.75cm}}                                            \\ \hline
 \multicolumn{2}{|l|}{\textbf{UI/UX Design Requirements}}                                                                                                                                                                                                         \\ \hline
@@ -142,6 +143,7 @@ The following sections enumerate and discuss the backend, privacy and security, 
 Listed below is the overall structure of all connections and relationships among all data, interfaces, users, and the serverless service. 
 
 \subsubsection{Serverless Architecture}
+The overall serverless architecture of the application suite and its system is portrayed in figure \ref{fig:ServerlessFirebase}. Firebase, as the serverless service being utilized, serves as the storage medium for all data being utilized in all of HanApp’s interfaces. 
 
 \begin{figure}[!h]
     \centering
@@ -150,10 +152,27 @@ Listed below is the overall structure of all connections and relationships among
     \label{fig:ServerlessFirebase}
 \end{figure}
 
-The overall serverless architecture of the application suite and its system is portrayed in figure \ref{fig:ServerlessFirebase}. Firebase, as the serverless service being utilized, serves as the storage medium for all data being utilized in all of HanApp’s interfaces. 
+\subsubsection{Database Structure Design}
+Creating a comprehensive map of the data to be used in the application suite (and how they interact with each other) was a crucial requirement prior to developing HanApp's database in Firebase's Realtime Database (RTDB). This would ensure the completeness and cohesiveness of the data, as well as minimize redundancy and confusion when developing the database. In order to achieve this, an Enhanced Entity-Relationship Diagram (ERD), shown in Figure \ref{fig:EERD}, was designed which provides an overview of the HanApp application suite's entities and their relations.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Chapter3/eerd.jpeg}
+    \caption{Enhanced Entity-Relationship Diagram for HanApp Database Structure}
+    \label{fig:EERD}
+\end{figure}
+
+For a more compact and comprehensive visualization of the HanApp application suite’s database entities, relationships, and read/write rules, an Entity-Relationship(ER) - Database Schema hybrid diagram, as shown in Figure \ref{fig:hybridERDSchema}, was designed. The succeeding backend requirements were based on the aforementioned hybrid diagram.
+
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Chapter3/erd_schema.jpeg}
+    \caption{Entity-Relationship - Database Schema Hybrid Diagram for HanApp Database Structure}
+    \label{fig:hybridERDSchema}
+\end{figure}
 
 \subsubsection{Realtime Database structure for Main User and PNP profiles}
-
 Each profile type will be a node just under the root node as child nodes, namely, Main Users, and PNP Accounts. 
 
 \subsubsection{Realtime Database structure for Reports}
@@ -161,6 +180,8 @@ As Firebase’s real-time database is structured as a tree, sent reports are lis
 
 \subsubsection{Images and other media storage}
 The real-time database only functions on non-media data like text, integers, and location data; therefore, images used within the application interfaces (user image, missing person image) will be stored in Firebase’s cloud storage. 
+
+
 
 \subsection{Privacy and Security Requirements}
 
@@ -183,13 +204,14 @@ Users will also be required to agree to having their information used solely for
 
 \subsubsection{User (or Main) Interface}
 
+The User use-case diagram in Figure \ref{fig:UseCaseMain} illustrates all the possible tasks that a normal user could do within the main user application. User account creation will be done within the application itself, through Firebase Auth’s authentication service using a registered email address and password. After the user has registered and confirmed their email address, their account will be created. 
+
 \begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{figures/Chapter3/Chapt3_UseCase_Main.jpeg}
     \caption{Use-Case Diagram for User (Main User Interface)}
     \label{fig:UseCaseMain}
 \end{figure}
-The User use-case diagram in Figure \ref{fig:UseCaseMain} illustrates all the possible tasks that a normal user could do within the main user application. User account creation will be done within the application itself, through Firebase Auth’s authentication service using a registered email address and password. After the user has registered and confirmed their email address, their account will be created. 
 
 The main features of this application interface is with the reporting and viewing of missing persons cases. This is done through the application by filling out a form with the details required for the missing persons report, which would then be filed towards the most logically sound police-station. Users can also receive notifications and view information regarding  descriptions and features of any PNP-verified missing persons cases within their area.
 
@@ -225,21 +247,27 @@ General users should be able to fill out and send the MP case report form via th
 
 With regards to reporting, it is of utmost importance that the report form pages of the main user interface should be intuitive, and be able to condense and simplify the forms required in the PNP's guidelines on reporting missing persons cases.
 
-\begin{figure}[!h]
+As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receiving updates is very straightforward: the user (reportee) needs to fill out the MP report form, it is then received by the PNP through their PNP Admin App interface, and if the person is indeed missing (and not yet reported, or registered as already found or dead in the PNP's own Missing and Found Person Database (MFPD)), then the PNP can verify the report. If any updates are made, such as if the MP is found, it will be reflected in the user’s app soon after.
+
+\begin{figure}[ht!]
     \centering
     \includegraphics{figures/Chapter3/Chapt3_seqDiag_report.jpeg}
     \caption{Sequence Diagram for Reporting, Updating, and Verification of MP cases}
     \label{fig:seqDiaReport}
 \end{figure}
-As seen in Figure \ref{fig:seqDiaReport} sequence diagram, reporting and receiving updates is very straightforward: the user (reportee) needs to fill out the MP report form, it is then received by the PNP through their PNP Admin App interface, and if the person is indeed missing (and not yet reported, or registered as already found or dead in the PNP's own Missing and Found Person Database (MFPD)), then the PNP can verify the report. If any updates are made, such as if the MP is found, it will be reflected in the user’s app soon after.
 
-\begin{figure}[!h]
+It is also an important requirement that any reports made by users (reportee) are sent to the PNP Admin Account of the A/MP's last known location’s nearest PNP station, as mentioned prior. As seen in Figure \ref{fig:ERDReportee}, many users should be able to submit MP case reports of a specific location to the PNP through the application, but they will only be routed to the PNP Admin Account closest (and within the vicinity) of the missing person's last known location.
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=\textwidth]{figures/Chapter3/Chapt3_ERDiag_reporteePNP.jpeg}
     \caption{Entity Relationship Diagram of Main App Account Reporting to PNP Admin Account}
     \label{fig:ERDReportee}
 \end{figure}
-It is also an important requirement that any reports made by users (reportee) are sent to the PNP Admin Account of the A/MP's last known location’s nearest PNP station, as mentioned prior. As seen in Figure \ref{fig:seqDiaReport}, many users should be able to submit MP case reports of a specific location to the PNP through the application, but they will only be routed to the PNP Admin Account registered for said location.
+
+\subsubsection{Save Report as Draft}
+One of the main issues with in-person reporting  process is the number of fields and forms required to be filled-in completely in order for the PNP to proceed with processing the report. This issue is partially addressed  in the previous requirement, such that the researchers ensured that the forms are condensed and simplified. 
+
+However, despite this, the report forms are still considerably lengthy, and it is possible that the reportee is unable to complete the form in one sitting. As such, it is crucial that the main user app's report forms feature a ``Save as Draft" feature that allows the user to either discard the report or save it as a draft which they can continue filling out at a later time.  
 
 \subsubsection{Receive, Manage, and Verify Reports}
 
@@ -274,7 +302,7 @@ HanApp's Icon design should be distinct, meaningful, and cohesive with the appli
 
 \textbf{Layout and Spacing.} The layout of text form fields, buttons, and other visual elements should have appropriate sizes and spacing in order to minimize any user errors or confusion, and prevent the application pages from looking cramped.  
 
-\hfill\\
+% \hfill\\
 \textbf{User Experience Design}
 
 \textbf{Application Language.} The language to be used in the application suite is English. Although the scope of operations for the application suite is the Philippines, English is the widely used language for education and business in the country and is a neutral language that allows the application to be accessible to most users. Moreover, the language used in the PNP's forms for filing and processing missing persons cases are also in English. More importantly, the language used in the application should be simple and straightforward in order to cater to more users regardless of educational background or cognitive abilities.

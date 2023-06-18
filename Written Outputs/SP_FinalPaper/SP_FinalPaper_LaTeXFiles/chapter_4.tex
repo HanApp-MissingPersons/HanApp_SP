@@ -162,7 +162,22 @@ On the first page of the reports section as seen in figure \ref{fig:p1}, the cat
 
 On the second page of the reports page, as seen in figure \ref{fig:ReportPage2}, the reportee will be asked to fill out required information about them. This includes the reportee's relationship to the missing person, contact information, address, citizenship, and the proofs of identity through a picture of his/her identification card (ID), and a selfie. The selfie serves as a secondary authentication measure in lieu of reporting remotely rather than in person, and also allows the PNP to verify if the user's face matches that of the photo in their submitted ID. The reportee's basic information such as name, birth-date, age, and sex are no longer required to be re-entered since they are now already found in the user's profile. 
 
+\textbf{List of Valid IDs}. In Report Page 2, to avoid confusion when submitting reportee IDs as proof of identity and minimize issues during report verification by the PNP, it is imperative to provide the reportee with a list of Valid IDs that are required by the PNP when filing a report. The list is shown when the users tap the ``information" (i) icon seen in Figure \ref{fig:ReportPage2} under proof of identity, while the pop-up dialogue enumerating the list of Valid IDs is shown in Figure \ref{fig:validIDs}.
+
+The list of Valid IDs include government-issued IDs or other IDs (such as work or school IDs) that should at least have the reportee's name, photo, and birth date for verification purposes. If the user does not have their ID at the moment of filling out the report, they can make use of the ``Save as Draft" feature to allow them to upload their ID at a later time once available.
+\begin{figure}[!h]
+    \centering
+    \begin{subfigure}[c]{0.40\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/validID.jpg}
+    \end{subfigure}
+    \caption{Valid IDs Information for Proof of Identity}
+    \label{fig:validIDs}
+\end{figure}
+
 \subsubsection{Report Page 3: Absent/Missing Person Details}
+
+The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, requires the necessary information about the reported missing person such as their name, birth-date, sex, address, and contact information. It is important to note the specific usage of the term ``Absent/Missing Person" as it is the same term used in PNP's required forms when handling missing persons cases, specifically ``Annex C: Checklist for Absent/Missing Person".
 
 \begin{figure}[!h]
     \centering
@@ -184,9 +199,9 @@ On the second page of the reports page, as seen in figure \ref{fig:ReportPage2},
     \label{fig:ReportPage3}
 \end{figure}
 
-The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, requires the necessary information about the reported missing person such as their name, birth-date, sex, address, and contact information. It is important to note the specific usage of the term ``Absent/Missing Person" as it is the same term used in PNP's required forms when handling missing persons cases, specifically ``Annex C: Checklist for Absent/Missing Person".
-
 \subsubsection{Report Page 4: Absent/Missing Person Description}
+
+The fourth page of the reports section, seen in figure \ref{fig:ReportPage4} still focuses on the information regarding the missing person. This time, however, are information relating to things that can most likely help strangers identify the missing person such as scars, marks, tattoos, hair color, eye color, prosthetic, birth defects, last known clothing and accessories, height, weight, blood type, medications, social media accounts, and of course, the last photograph of the missing person. Dental and Fingerprint records can also be added if the reportee wants to.
 
 \begin{figure}[!h]
     \centering
@@ -208,9 +223,9 @@ The third page of the reports section, as seen in figure \ref{fig:ReportPage3}, 
     \label{fig:ReportPage4}
 \end{figure}
 
-The fourth page of the reports section, seen in figure \ref{fig:ReportPage4} still focuses on the information regarding the missing person. This time, however, are information relating to things that can most likely help strangers identify the missing person such as scars, marks, tattoos, hair color, eye color, prosthetic, birth defects, last known clothing and accessories, height, weight, blood type, medications, social media accounts, and of course, the last photograph of the missing person. Dental and Fingerprint records can also be added if the reportee wants to.
-
 \subsubsection{Report Page 5: Incident Details}
+
+The fifth page of the reports, as seen in figure \ref{fig:ReportPage5} requires information about the incident relating the disappearance of the missing person and is based on the ``Narrative of the Incident" section of the PNP's Incident Report Form which is used for reporting incidents including those of missing persons cases.
 
 \begin{figure}[!h]
     \centering
@@ -232,11 +247,11 @@ The fourth page of the reports section, seen in figure \ref{fig:ReportPage4} sti
     \label{fig:ReportPage5}
 \end{figure}
 
-The fifth page of the reports, as seen in figure \ref{fig:ReportPage5} requires information about the incident relating the disappearance of the missing person and is based on the ``Narrative of the Incident" section of the PNP's Incident Report Form which is used for reporting incidents including those of missing persons cases.
-
 The page requires information such as the report date, which is filled in as the current date, the last seen date, where users will be asked to select the date in a calendar when the missing person was last seen, the last seen location, where the users will be prompted to pin the location the missing person was last seen in a dialog that displays a map centered at the current location of the reportee, and the incident details, where users can input further details they deem as necessary in order to aide in the finding of the missing person. 
 
 \subsubsection{Report Page 6: Confirmation and Authorization}
+
+The sixth, and the last page, as seen in figure \ref{fig:ReportPage6} asks for the confirmation and authorization of the user to finally submit the report that they have filled out. The page would require the signature of the reportee on the signature pad provided citing that, by signing the report, they agree to have the information submitted published and adhere to the rules and responsibilities that come with them submitting the report to the PNP interface for verification. After which, the users can then submit the form to PNP.
 
 \begin{figure}[!h]
     \centering
@@ -253,9 +268,33 @@ The page requires information such as the report date, which is filled in as the
     \label{fig:ReportPage6}
 \end{figure}
 
-The sixth, and the last page, as seen in figure \ref{fig:ReportPage6} asks for the confirmation and authorization of the user to finally submit the report that they have filled out. The page would require the signature of the reportee on the signature pad provided citing that, by signing the report, they agree to have the information submitted published and adhere to the rules and responsibilities that come with them submitting the report to the PNP interface for verification. After which, the users can then submit the form to PNP.
+\subsubsection{Report Page Feature: ``Save Report as Draft"}
+Upon leaving the report page, by switching to a different page in the main user application, the user is prompted with the options to either discard their report or save it as a draft. If ``Save Draft" is chosen, the user will be shown a confirmation snackbar informing them that the draft of their report has been saved. When the user returns to the report pages with an existing draft page, they will also be shown a snackbar informing them that they are continuing an existing report. These are shown in Figure \ref{fig:saveDraft}.
+
+With this feature, the user will be able to fill out the report at their own pace and convenience. This drastically improves the user (reportee) experience, especially when compared to in-person reporting where they are required to submit all the required information upon filing.
+\begin{figure}[!h]
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/leaveDialog.jpg}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/draftSaved.jpg}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[c]{0.30\linewidth}
+        \centering
+        \includegraphics[scale=0.15]{figures/Chapter4/Main/existingReport.jpg}
+    \end{subfigure}
+    \caption{Save Report As Draft}
+    \label{fig:saveDraft}
+\end{figure}
 
 \subsection{Nearby Page}
+
+Figure \ref{fig:userTracking} is the interface of tracking missing persons near the user. A location marker will guide the current or last seen whereabouts of a missing person. Only the verified reports that was identified by the PNP through their reports management suite will only be shown. This will allow reports to be validated thoroughly on their end. Apart from that, the user has the liberty to navigate the map, may it be street view or city-wide view by pinching the screen. Also, users can zoom in and zoom out depending on their preference. Landmarks and familiar streets will be shown to guide the users easily on the whereabouts of the missing person. Considering, for example, that a 5-km radius will be visible, it will then encircle the last place the MP was seen.
 
 \begin{figure}[!h]
     \centering
@@ -271,7 +310,6 @@ The sixth, and the last page, as seen in figure \ref{fig:ReportPage6} asks for t
     \caption{Missing Persons and User Location in Nearby}
     \label{fig:userTracking}
 \end{figure}
-Figure \ref{fig:userTracking} is the interface of tracking missing persons near the user. A location marker will guide the current or last seen whereabouts of a missing person. Only the verified reports that was identified by the PNP through their reports management suite will only be shown. This will allow reports to be validated thoroughly on their end. Apart from that, the user has the liberty to navigate the map, may it be street view or city-wide view by pinching the screen. Also, users can zoom in and zoom out depending on their preference. Landmarks and familiar streets will be shown to guide the users easily on the whereabouts of the missing person. Considering, for example, that a 5-km radius will be visible, it will then encircle the last place the MP was seen.
 
 Another thing that the application also wants to note is how the user can tap on the MPs icon to see the details of descriptions pertaining to the individual. Importantly, there is an additional feature that permits the user to find the nearest route going to the last seen location of the missing person by clicking the 'right turn' icon that will redirect them to Google Maps app, given that they have it on their phone installed. Through all of this, it will enable a swift identification of the person and give the authorities a leeway to make necessary course of action to find these reported missing persons.
 
@@ -297,6 +335,8 @@ Another thing that the application also wants to note is how the user can tap on
 
 \subsection{Notifications Page}
 
+Figure \ref{fig:notifications} illustrates the verified reports by the PNP as shown in \ref{fig:NavRail}. This would allow an easy access to information regarding the missing person in real-time. Not only that, but the user will be alerted by a missing person through the notifications icon red dot in the bottom navigation bar. The each notification will be redirected to the nearby page which gives the user the missing persons' vicinity of their last seen location in the maps.  
+
 \begin{figure}[!h]
     \centering
     \begin{subfigure}[c]{0.30\linewidth}
@@ -316,8 +356,6 @@ Another thing that the application also wants to note is how the user can tap on
     \caption{Navigating Notifications Page to Nearby}
     \label{fig:notifications}
 \end{figure}
-
-Figure \ref{fig:notifications} illustrates the verified reports by the PNP as shown in \ref{fig:NavRail}. This would allow an easy access to information regarding the missing person in real-time. Not only that, but the user will be alerted by a missing person through the notifications icon red dot in the bottom navigation bar. The each notification will be redirected to the nearby page which gives the user the missing persons' vicinity of their last seen location in the maps.  
 
 \subsection{Updates Page}
 
@@ -430,7 +468,6 @@ Figure \ref{fig:firebaseStorage} contains all the images submitted in the report
 As seen in Figure \ref{fig:passwordHash}, in the Firebase Authentication Console, the password for each user is not displayed, only their email (as Identifier), the account the date was created and last signed in, and their unique Firebase UID. 
 
 Moreover, Firebase Authentication uses hash scripts to encrypt password to avoid encrypted password data from being used even when spoofed in unsafe networks.
-%TODO: insert screenshot of firebase authentication, showing that passwords are encrypted
 
 \begin{figure}[!h]
     \centering
@@ -471,7 +508,6 @@ The only location data being stored are the last seen location of the absent/mis
 This section discusses the technological and resource limitations and issues encountered during the application suite’s development, testing, and implementation. It is crucial to note that, while these do not hinder the application suite from working nor prevent it from meeting its requirements, they do have an impact on the quality of service provided by HanApp's system prototype. 
 
 \subsection{Geocoding Limitations}
-\vspace{-1em}
 
 This is with regards to the Report form’s “last known location selector” in the main user application. As shown earlier, the user is prompted to select the last known location by pinning it on a map, this then retrieves the latitude and longitude of the pinned location. The Flutter geocoding package is then used to handle the Google Geocoding API to retrieve information from Google Maps in order to perform reverse geocoding which is the process of fetching the address based on the latitude and longitude provided. 
 
@@ -516,6 +552,8 @@ To summarize the results of the study, the checklist of application requirements
 \multicolumn{1}{|l|}{User Registration}                                                                                                                             & Y                                                                     \\ \hline
 \multicolumn{1}{|l|}{PNP Admin Account Creation}                                                                                                                    & Y                                                                     \\ \hline
 \multicolumn{1}{|l|}{Reporting and Receiving Updates}                                                                                                               & Y                                                                     \\ \hline
+\multicolumn{1}{|l|}{Save Report as Draft}                                                                                                               & Y                                                                                                \\ \hline
+
 \multicolumn{1}{|l|}{Receive, Manage, and Verify Reports (PNP)}                                                                                                     & Y                                                                     \\ \hline
 \multicolumn{1}{|l|}{\begin{tabular}[c]{@{}l@{}}Accessing PNP-Verified Reports and receiving \\ Location-based notification for PNP-verified MP cases\end{tabular}} & Y                                                                     \\ \hline
 \multicolumn{2}{|l|}{\textbf{UI/UX Design Requirements}}                                                                                                                                                                                    \\ \hline
